@@ -1,0 +1,5 @@
+../../output/
+
+../../include; ../../fmod/inc;
+
+../../lib; ../../fmod/lib/x64;
