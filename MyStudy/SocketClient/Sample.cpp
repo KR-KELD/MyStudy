@@ -10,6 +10,18 @@ struct myMsg
 	int  iCount;
 	char buffer[3000];
 };
+
+void Check(const TCHAR* msg)
+{
+	TCHAR* lpMsg = 0;;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+				  FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL,WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
+		lpMsg,0,NULL);
+	MessageBox(NULL, lpMsg, msg, MB_ICONERROR);
+	LocalFree(lpMsg);
+}
 void main()
 {
 	// 2.2 ver
@@ -20,10 +32,16 @@ void main()
 	}
 	while (1)
 	{
+		int iRet;
 		// 주소체계
 		// 소켓타입(TCP:SOCK_STREAM,UDP:SOCK_DGRAM)
 		// 프로토콜(IPPROTO_TCP,    IPPROTO_UDP )
 		SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+		if (sock == INVALID_SOCKET)
+		{
+			Check(L"Socket");
+			return;
+		}
 		int optval = 1;
 		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR,
 			(char*)&optval, sizeof(optval)) != 0)
@@ -44,10 +62,12 @@ void main()
 		// 바이트 정렬 구조 	
 		USHORT jValue = 10000;
 		sa.sin_family = AF_INET;
-		sa.sin_addr.s_addr = inet_addr("175.194.89.106");
+		//모든 어드레스를 받겠다
+		sa.sin_addr.s_addr = inet_addr(INADDR_ANY);
+		//sa.sin_addr.s_addr = inet_addr("175.194.89.106");
 		//error C4996 : 'inet_addr' : Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS
 		sa.sin_port = htons(10000);
-		int iRet = connect(sock, (SOCKADDR*)&sa, sizeof(sa));
+		iRet = connect(sock, (SOCKADDR*)&sa, sizeof(sa));
 		if (iRet == SOCKET_ERROR)
 		{
 			return;

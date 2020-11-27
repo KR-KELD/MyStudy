@@ -8,6 +8,23 @@
 using namespace std;
 #pragma comment (lib, "ws2_32.lib")
 
+void Error(const TCHAR* msg)
+{
+	LPVOID lpMsg = 0;;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(TCHAR*)&lpMsg, 0, NULL);
+	MessageBox(NULL, (TCHAR*)lpMsg, msg, MB_ICONERROR);
+	LocalFree(lpMsg);
+}
+
+bool Check(int iRet)
+{
+	return false;
+}
+
 struct myMsg
 {
 	int  iCount;
@@ -29,6 +46,11 @@ void main()
 	int iRet;
 	//소켓 생성 TCP타입
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (sock == INVALID_SOCKET)
+	{
+		//Check(L"Socket");
+		return;
+	}
 	//소켓 타입 확인
 	int iSockType;
 	//데이터 타입 길이
@@ -96,7 +118,7 @@ void main()
 	USHORT jValue = 10000;
 	sa.sin_family = AF_INET;
 	//ip주소
-	sa.sin_addr.s_addr = inet_addr("175.194.89.106");
+	sa.sin_addr.s_addr = inet_addr("192.168.0.169");
 	//error C4996 : 'inet_addr' : Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS
 	//htons -> 호스트의 메모리 체계에서 네트워크의 메모리 체계로 변환 해 주는 함수
 	sa.sin_port = htons(10000);
