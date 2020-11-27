@@ -62,8 +62,8 @@ void main()
 		// 바이트 정렬 구조 	
 		USHORT jValue = 10000;
 		sa.sin_family = AF_INET;
-		//모든 어드레스를 받겠다
-		sa.sin_addr.s_addr = inet_addr(INADDR_ANY);
+
+		sa.sin_addr.s_addr = inet_addr("");
 		//sa.sin_addr.s_addr = inet_addr("175.194.89.106");
 		//error C4996 : 'inet_addr' : Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS
 		sa.sin_port = htons(10000);
