@@ -86,7 +86,7 @@ void main()
 	sa.sin_family = AF_INET;
 	//ip주소
 	//모든 어드레스를 받겠다
-	sa.sin_addr.s_addr = inet_addr(INADDR_ANY);//inet_addr("175.194.89.106");
+	sa.sin_addr.s_addr = inet_addr("175.194.89.106"); //inet_addr(INADDR_ANY);
 	//error C4996 : 'inet_addr' : Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS
 	//htons -> 호스트의 메모리 체계에서 네트워크의 메모리 체계로 변환 해 주는 함수
 	sa.sin_port = htons(10000);
@@ -110,6 +110,7 @@ void main()
 
 	list<SOCKET> userList;
 	list<SOCKET>::iterator userIter;
+	bool bConnect = false;
 	while (true)
 	{
 		//연결 확인
@@ -139,6 +140,7 @@ void main()
 		for (userIter = userList.begin();
 			userIter != userList.end();)
 		{
+			bConnect = true;
 			while (iRecvSize < iPacketSize)
 			{
 				iRecvSize += recv(*userIter, recvBuf,
@@ -147,11 +149,49 @@ void main()
 				{
 					if (WSAGetLastError() != WSAEWOULDBLOCK)
 					{
-
+						bConnect = false;
+						shutdown(*userIter, SD_SEND);
+						closesocket(*userIter);
+						userIter = userList.erase(userIter);
 					}
+					break;
 				}
 			}
-		}
+			if (bConnect == false || iRecvSize == -1)
+			{
+				iSendSize = 0;
+				iRecvSize = 0;
+				continue;
+			}
 
+			while (iSendSize < iPacketSize)
+			{
+				memcpy(&msg, recvBuf, sizeof(myMsg));
+				iSendSize += send(*userIter, (char*)&msg,
+					iPacketSize - iSendSize, 0);
+				if (iSendSize == 0 || iSendSize == SOCKET_ERROR)
+				{
+					if (WSAGetLastError() != WSAEWOULDBLOCK)
+					{
+						bConnect = false;
+						shutdown(*userIter, SD_SEND);
+						closesocket(*userIter);
+						userIter = userList.erase(userIter);
+					}
+					break;
+				}
+			}
+			if (bConnect == false)
+			{
+				iSendSize = 0;
+				iRecvSize = 0;
+				continue;
+			}
+			iSendSize = 0;
+			iRecvSize = 0;
+			userIter++;
+		}
 	}
+	closesocket(sock);
+	WSACleanup();
 }
