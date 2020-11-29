@@ -16,6 +16,41 @@ struct myMsg
 	char buffer[3000];
 };
 
+void Error(const TCHAR* szHeader = L"ERROR", const TCHAR* szMsg = L"\0")
+{
+	LPVOID* lpMsg = 0;;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(TCHAR*)lpMsg, 0, NULL);
+	wstring szBuffer = szMsg;
+	szBuffer += L"\n";
+	szBuffer += (TCHAR*)lpMsg;
+	MessageBox(NULL, szBuffer.c_str(), szHeader, MB_ICONERROR);
+	LocalFree(lpMsg);
+}
+
+void Check(int iRet, int line)
+{
+	if (iRet == SOCKET_ERROR)
+	{
+		TCHAR szBuffer[256] = { 0, };
+		_stprintf_s(szBuffer, _countof(szBuffer),
+			L"%s\n[line:%d]", __FILE__, line);
+		Error(L"ERROR", szBuffer);
+		exit(1);
+	}
+}
+
+struct myUser
+{
+	SOCKET			sock;
+	SOCKADDR_IN		addr;
+	vector<myMsg>	msgList;
+	bool			bConnect;
+};
+
 void main()
 {
 	WSADATA wsa;
@@ -29,6 +64,7 @@ void main()
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (sock == INVALID_SOCKET)
 	{
+		Error(L"SOCKET");
 		return;
 	}
 	//소켓 타입 확인
@@ -47,8 +83,8 @@ void main()
 	//송수신 버퍼 크기 확인	
 	int iSendBuffer = 100000;
 	//소켓 옵션 설정-샌드버퍼 크기
-	setsockopt(sock, SOL_SOCKET, SO_SNDBUF,
-		(char*)&iSendBuffer, sizeof(iSendBuffer));
+	Check(setsockopt(sock, SOL_SOCKET, SO_SNDBUF,
+		(char*)&iSendBuffer, sizeof(iSendBuffer)),__LINE__);
 	//소켓 옵션 조회-샌드버퍼 크기
 	getsockopt(sock, SOL_SOCKET, SO_SNDBUF,
 		(char*)&iSockType, &iSockTypeLen);
@@ -58,12 +94,8 @@ void main()
 		(char*)&iSockType, &iSockTypeLen);
 	printf("RecvBuffer=%d\n", iSockType);
 	int iOptValue = 1;
-	iRet = setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE,
-		(char*)&iOptValue, sizeof(iOptValue));
-	if (iRet == SOCKET_ERROR)
-	{
-		return;
-	}
+	Check(setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE,
+		(char*)&iOptValue, sizeof(iOptValue)),__LINE__);
 
 	//클라이언트의 연결이 끊겼을 때
 	//대기시간을 주는 옵션
@@ -73,11 +105,8 @@ void main()
 	optLinger.l_onoff = 1;
 	//시간
 	optLinger.l_linger = 1000;
-	if (setsockopt(sock, SOL_SOCKET, SO_LINGER,
-		(char*)&optLinger, iLingerLen) != 0)
-	{
-		return;
-	}
+	Check(setsockopt(sock, SOL_SOCKET, SO_LINGER,
+		(char*)&optLinger, iLingerLen), __LINE__);
 	//주소
 	//바이트 정렬 구조 	
 	SOCKADDR_IN sa;
@@ -92,13 +121,10 @@ void main()
 	sa.sin_port = htons(10000);
 
 	//SO_REUSEADDR가 설정된 소켓이 있을 경우는 오류가 된다.
-	iRet = bind(sock, (SOCKADDR*)&sa, sizeof(sa));
-	if (iRet == SOCKET_ERROR)
-	{
-		return;
-	}
+	Check(bind(sock, (SOCKADDR*)&sa, sizeof(sa)), __LINE__);
+
 	//서버가 요청을 받을 수 있는 상태로 만들어 준다.
-	iRet = listen(sock, SOMAXCONN);
+	Check(listen(sock, SOMAXCONN), __LINE__);
 
 	//클라이언트 주소
 	SOCKADDR_IN clientAddr;
@@ -106,7 +132,7 @@ void main()
 
 	// 넌블로킹 소켓으로 전환
 	unsigned long iMode = 1;
-	ioctlsocket(sock, FIONBIO, &iMode);
+	Check(ioctlsocket(sock, FIONBIO, &iMode), __LINE__);
 
 	list<SOCKET> userList;
 	list<SOCKET>::iterator userIter;
@@ -119,7 +145,7 @@ void main()
 		{
 			if (WSAGetLastError() != WSAEWOULDBLOCK)
 			{
-				break;
+				continue;
 			}
 		}
 		else

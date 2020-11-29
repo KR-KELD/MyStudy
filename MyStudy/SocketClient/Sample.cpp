@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <time.h>
+#include <string>
+
 #pragma comment (lib, "ws2_32.lib")
 
 struct myMsg
@@ -11,7 +13,7 @@ struct myMsg
 	char buffer[3000];
 };
 
-void Check(const TCHAR* msg)
+void Error(const TCHAR* szHeader, const TCHAR* szMsg)
 {
 	TCHAR* lpMsg = 0;;
 	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
@@ -19,8 +21,21 @@ void Check(const TCHAR* msg)
 		NULL,WSAGetLastError(),
 		MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
 		lpMsg,0,NULL);
-	MessageBox(NULL, lpMsg, msg, MB_ICONERROR);
+
+	MessageBox(NULL, lpMsg, szHeader, MB_ICONERROR);
 	LocalFree(lpMsg);
+}
+
+void Check(int iRet, int line)
+{
+	if (iRet == SOCKET_ERROR)
+	{
+		TCHAR szBuffer[256] = { 0, };
+		_stprintf_s(szBuffer, _countof(szBuffer),
+			L"%s\n[line:%d]\n", __FILE__, line);
+		Error(L"ERROR", szBuffer);
+		exit(1);
+	}
 }
 void main()
 {
@@ -39,7 +54,7 @@ void main()
 		SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (sock == INVALID_SOCKET)
 		{
-			Check(L"Socket");
+			//Check(L"Socket");
 			return;
 		}
 		int optval = 1;
