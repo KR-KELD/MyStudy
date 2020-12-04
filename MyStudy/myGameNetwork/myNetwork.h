@@ -1,11 +1,11 @@
 #pragma once
-#include "myUser.h"
+#include "myNetUser.h"
 
 //유저 정보를 가지고 있는 패킷
 struct myPacket
 {
 	//유저
-	myUser*  pUser;
+	myNetUser*  pUser;
 	UPACKET packet;
 };
 
@@ -14,7 +14,7 @@ class myNetwork
 {
 public:
 	//유저 리스트
-	std::list<myUser>		m_UserList;
+	std::list<myNetUser>		m_UserList;
 	//소켓
 	SOCKET					m_Sock;
 	//유저로부터 받은 패킷
@@ -22,17 +22,19 @@ public:
 	//임계구역 변수
 	CRITICAL_SECTION		m_cs;
 public:
+	//필수
 	bool	MakePacket(UPACKET& packet,
 		char* msg, int iLen, uint16_t type);
+	//필수
 	bool	AddUser(SOCKET sock, SOCKADDR_IN addr);
-	bool	DelUser(myUser& user);
-	void	AddPacket(myUser& user, UPACKET* packet);
-	virtual bool	RecvData(myUser& user);
-	bool	SendData(myUser& user, UPACKET& msg);
+	bool	DelUser(myNetUser& user);
+	void	AddPacket(myNetUser& user, UPACKET* packet);
+	virtual bool	RecvData(myNetUser& user);
+	bool	SendData(myNetUser& user, UPACKET& msg);
 	int		SendMsg(SOCKET sock, char* msg, int iLen, uint16_t type);
 public:
 	virtual bool Run();
-	virtual bool RecvUserList();
+	virtual bool RecvDataList();
 	virtual bool Broadcastting();
 	virtual bool InitNetwork(std::string ip, int iPort);
 	virtual bool InitSocket(std::string ip, int iPort);

@@ -1,6 +1,6 @@
 #pragma once
 #include "myNetStd.h"
-class myUser
+class myNetUser
 {
 public:
 	SOCKET		m_Sock;						//소켓
@@ -10,7 +10,7 @@ public:
 	int			iSendSize;					//샌드사이즈
 	T_STR		szName;						//유저이름
 	std::vector<UPACKET>	m_SendPacket;	//개인적으로 보낼 패킷
-	myUser();
-	virtual ~myUser();
+	myNetUser();
+	virtual ~myNetUser();
 };
 

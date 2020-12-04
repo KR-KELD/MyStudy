@@ -49,10 +49,13 @@ int myNetwork::SendMsg(SOCKET sock, char* msg, int iLen, uint16_t type)
 	return iSendSize;
 }
 //데이터 수신
-bool myNetwork::RecvData(myUser& user)
+bool myNetwork::RecvData(myNetUser& user)
 {
+	//데이터가 들어오면 받아라
 	int iLen = recv(user.m_Sock, &user.recvBuf[user.iRecvSize],
 		PACKET_HEADER_SIZE - user.iRecvSize, 0);
+	//받은 데이터가 있으면 내려가고 없으면 경우에따라 쓰레드를 종료하거나 유저의
+	//연결을 끊어라
 	if (iLen == 0 || iLen == SOCKET_ERROR)
 	{
 		if (WSAGetLastError() != WSAEWOULDBLOCK)
@@ -69,24 +72,36 @@ bool myNetwork::RecvData(myUser& user)
 		//헤더를 다 받았으면 나머지 데이터를 받는다
 		while (user.iRecvSize < packet->ph.len)
 		{
-			user.iRecvSize += recv(user.m_Sock,
-				&user.recvBuf[user.iRecvSize],
+			iLen = recv(user.m_Sock, &user.recvBuf[user.iRecvSize],
 				packet->ph.len - user.iRecvSize, 0);
+			if (iLen == 0 || iLen == SOCKET_ERROR)
+			{
+				if (WSAGetLastError() != WSAEWOULDBLOCK)
+				{
+					return false;
+				}
+				return true;
+			}
+			user.iRecvSize += iLen;
 		}
+		//전송 할 패킷 리스트에 패킷 추가
 		AddPacket(user, packet);
+		//유저의 리시브 버퍼,사이즈 초기화
 		memset(user.recvBuf, 0, sizeof(char) * 10000);
 		user.iRecvSize = 0;
 	}
 	return true;
 }
 //유저에게 데이터 전송
-bool myNetwork::SendData(myUser& user, UPACKET& msg)
+bool myNetwork::SendData(myNetUser& user, UPACKET& msg)
 {
+	//패킷 데이터 전송
 	while (user.iSendSize < msg.ph.len)
 	{
 		user.iSendSize += send(user.m_Sock,
 			(char*)&msg,
 			msg.ph.len - user.iSendSize, 0);
+		
 		if (user.iSendSize == 0)
 		{
 			return false;
@@ -108,9 +123,9 @@ bool myNetwork::SendData(myUser& user, UPACKET& msg)
 	return true;
 }
 //유저로부터 데이터 받아오기
-bool myNetwork::RecvUserList()
+bool myNetwork::RecvDataList()
 {
-	std::list<myUser>::iterator iter;
+	std::list<myNetUser>::iterator iter;
 	for (iter = m_UserList.begin();
 		iter != m_UserList.end();
 		)
@@ -169,7 +184,7 @@ bool myNetwork::Process()
 {
 	PacketProcess();
 
-	std::list<myUser>::iterator iter;
+	std::list<myNetUser>::iterator iter;
 	for (iter = m_UserList.begin();
 		iter != m_UserList.end();
 		)
@@ -206,7 +221,7 @@ bool myNetwork::Process()
 //리스트에 저장된 메시지를 모든 유저에게 전달
 bool myNetwork::Broadcastting()
 {
-	std::list<myUser>::iterator iter;
+	std::list<myNetUser>::iterator iter;
 	for (iter = m_UserList.begin();
 		iter != m_UserList.end();
 		)
@@ -348,7 +363,7 @@ bool myNetwork::DeleteNetwork()
 //리스트에 유저 추가
 bool myNetwork::AddUser(SOCKET sock, SOCKADDR_IN addr)
 {
-	myUser user;
+	myNetUser user;
 	user.m_Sock = sock;
 	user.addr = addr;
 	m_UserList.push_back(user);
@@ -358,7 +373,7 @@ bool myNetwork::AddUser(SOCKET sock, SOCKADDR_IN addr)
 	return true;
 }
 //리스트에서 유저 제거
-bool myNetwork::DelUser(myUser& user)
+bool myNetwork::DelUser(myNetUser& user)
 {
 	shutdown(user.m_Sock, SD_SEND);
 	closesocket(user.m_Sock);
@@ -368,7 +383,7 @@ bool myNetwork::DelUser(myUser& user)
 	return true;
 }
 //전송할 패킷 리스트에 추가
-void myNetwork::AddPacket(myUser & user, UPACKET* packet)
+void myNetwork::AddPacket(myNetUser & user, UPACKET* packet)
 {
 	myPacket myPacket;
 	myPacket.packet = *packet;
@@ -403,7 +418,7 @@ bool myNetwork::Run()
 		{
 			break;
 		}
-		if (RecvUserList() == false)
+		if (RecvDataList() == false)
 		{
 			break;
 		}

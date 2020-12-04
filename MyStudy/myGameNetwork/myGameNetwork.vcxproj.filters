@@ -21,7 +21,7 @@
     <ClCompile Include="myNetwork.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="myUser.cpp">
+    <ClCompile Include="myNetUser.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClInclude Include="myProtocol.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="myUser.h">
+    <ClInclude Include="myNetUser.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
