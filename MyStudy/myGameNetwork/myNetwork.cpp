@@ -1,4 +1,5 @@
 #include "myNetwork.h"
+#include "myDraw.h"
 //쓰레드 주의할점
 //스위치를 하면 다른 쓰레드로 작업핸들이 넘어간다
 //동기화를 쓰는 이유 : static 메모리, heap 메모리에 들어있는 데이터를
@@ -66,6 +67,19 @@ bool myNetwork::RecvData(myNetUser& user)
 	}
 	user.iRecvSize += iLen;
 	//헤더부터 받는다
+	//if (user.iRecvSize == PACKET_HEADER_SIZE)
+	//{
+	//	UPACKET* packet = (UPACKET*)&user.recvBuf;
+	//	while (user.iRecvSize < packet->ph.len)
+	//	{
+	//		user.iRecvSize += recv(user.m_Sock,
+	//			&user.recvBuf[user.iRecvSize],
+	//			packet->ph.len - user.iRecvSize, 0);
+	//	}
+	//	AddPacket(user, packet);
+	//	memset(user.recvBuf, 0, sizeof(char) * 10000);
+	//	user.iRecvSize = 0;
+	//}
 	if (user.iRecvSize == PACKET_HEADER_SIZE)
 	{
 		UPACKET* packet = (UPACKET*)&user.recvBuf;
@@ -153,19 +167,27 @@ void myNetwork::PacketProcess()
 		UPACKET* packet = (UPACKET*)&senditer->packet;
 		if (packet->ph.type == PACKET_CHAT_MSG)
 		{
-			TChatMsg* pMsg = (TChatMsg*)&packet->msg;
+			myChatMsg* pMsg = (myChatMsg*)&packet->msg;
 			printf("\n[%s]%s:%d", pMsg->szName,
 				pMsg->buffer, pMsg->iCnt);
+			string str = pMsg->szName;
+			str += " : ";
+			str += pMsg->buffer;
+			str += " ";
+			str += to_string(pMsg->iCnt);
+			str += " ";
+			myMsg temp(to_mw(str), {100,100,300,300});
+			g_Draw.Push(temp);
 		}
 		if (packet->ph.type == PACKET_LOGIN_REQ)
 		{
 			UPACKET sendPacket;
 			T_STR szID = L"kgca";
 			T_STR szPS = L"game";
-			TLogin* login = (TLogin*)packet->msg;
+			myLogin* login = (myLogin*)packet->msg;
 			T_STR szIDUser = to_mw(login->szID);
 			T_STR szPSUser = to_mw(login->szPS);
-			TLoginResult ret;
+			myLoginResult ret;
 			if (szID == szIDUser && szPS == szPSUser)
 			{
 				ret.iRet = 1;
@@ -174,7 +196,7 @@ void myNetwork::PacketProcess()
 			{
 				ret.iRet = 0;
 			}
-			MakePacket(sendPacket, (char*)&ret, sizeof(TLoginResult),
+			MakePacket(sendPacket, (char*)&ret, sizeof(myLoginResult),
 				PACKET_LOGIN_ACK);
 			senditer->pUser->m_SendPacket.push_back(sendPacket);
 		}
@@ -334,7 +356,8 @@ bool myNetwork::InitSocket(std::string ip, int port)
 	SOCKADDR_IN sa;
 	// 바이트 정렬 구조 	
 	sa.sin_family = AF_INET;
-	sa.sin_addr.s_addr = htonl(INADDR_ANY);// inet_addr("192.168.0.151");
+
+	sa.sin_addr.s_addr = htonl(INADDR_ANY);//inet_addr("175.194.89.26");// inet_addr("192.168.0.151");
 	//error C4996 : 'inet_addr' : Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS
 	sa.sin_port = htons(port);
 

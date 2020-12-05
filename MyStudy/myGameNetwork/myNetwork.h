@@ -13,8 +13,10 @@ struct myPacket
 class myNetwork
 {
 public:
+	HANDLE					m_hRecvThread;
+	DWORD					m_dwRecvThreadID;
 	//유저 리스트
-	std::list<myNetUser>		m_UserList;
+	std::list<myNetUser>	m_UserList;
 	//소켓
 	SOCKET					m_Sock;
 	//유저로부터 받은 패킷

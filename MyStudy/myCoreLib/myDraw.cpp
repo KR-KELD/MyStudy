@@ -15,8 +15,8 @@ void myDraw::Push(myMsg msg)
 	if (m_TextList.size() > 10)
 	{
 		m_TextList.pop_back();
-		m_TextList.insert(m_TextList.begin(),msg);
 	}
+	m_TextList.insert(m_TextList.begin(), msg);
 }
 void myDraw::Push(wstring msg, int x, int y)
 {

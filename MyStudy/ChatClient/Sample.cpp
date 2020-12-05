@@ -68,7 +68,7 @@ void main()
 	SOCKADDR_IN sa;
 	// 바이트 정렬 구조 	
 	sa.sin_family = AF_INET;
-	sa.sin_addr.s_addr = inet_addr("192.168.0.169");
+	sa.sin_addr.s_addr = inet_addr("175.194.89.26");
 		//inet_addr("175.194.89.106");
 	//error C4996 : 'inet_addr' : Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS
 	sa.sin_port = htons(10000);

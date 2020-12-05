@@ -115,7 +115,7 @@ void main()
 	sa.sin_family = AF_INET;
 	//ip주소
 	//모든 어드레스를 받겠다
-	sa.sin_addr.s_addr = inet_addr("175.194.89.106"); //inet_addr(INADDR_ANY);
+	sa.sin_addr.s_addr = inet_addr("175.194.89.26"); //inet_addr(INADDR_ANY);
 	//error C4996 : 'inet_addr' : Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS
 	//htons -> 호스트의 메모리 체계에서 네트워크의 메모리 체계로 변환 해 주는 함수
 	sa.sin_port = htons(10000);

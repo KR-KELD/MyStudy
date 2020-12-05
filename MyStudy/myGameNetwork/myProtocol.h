@@ -20,21 +20,21 @@ typedef struct
 }UPACKET, *P_UPACKET;
 
 //채팅 메시지 구조체
-struct TChatMsg
+struct myChatMsg
 {
 	int  iCnt;			//채팅 카운트
 	char szName[32];	//유저 이름
 	char buffer[128];	//채팅 메시지 버퍼
 };
 //로그인 구조체
-struct TLogin
+struct myLogin
 {
 	char szID[16];	//아이디
 	char szPS[16];	//비밀번호
 };
-#define TLoginSize sizeof(TLogin)
+#define myLoginSize sizeof(myLogin)
 //로그인 결과 구조체
-struct TLoginResult
+struct myLoginResult
 {
 	int   iRet; //0:falid, 1:succeed, 2
 };
@@ -68,7 +68,7 @@ typedef struct
 }TSCORE_VARS;
 #pragma pack(pop)
 //패킷 타입
-enum TPACKET_TYPE
+enum MYPACKET_TYPE
 {
 	PACKET_LOGIN_REQ = 10,
 	PACKET_LOGIN_ACK,
