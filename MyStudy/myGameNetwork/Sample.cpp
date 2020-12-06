@@ -11,19 +11,19 @@ bool Sample::Init()
 bool Sample::Frame()
 {
 
-	if (m_Net.Accept() == false)
-	{
-		//break;
-	}
-	if (m_Net.RecvDataList() == false)
-	{
-		//break;
-	}
-	if (m_Net.Process() == false)
-	{
-		//break;
-	}
-	return true;
+	//if (m_Net.Accept() == false)
+	//{
+	//	//break;
+	//}
+	//if (m_Net.RecvDataList() == false)
+	//{
+	//	//break;
+	//}
+	//if (m_Net.Process() == false)
+	//{
+	//	//break;
+	//}
+	//return true;
 }
 
 bool Sample::Render()

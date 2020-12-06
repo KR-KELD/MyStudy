@@ -13,8 +13,16 @@ struct myPacket
 class myNetwork
 {
 public:
+	HANDLE					m_hMutex;
+
+	HANDLE					m_hAcceptThread;
+	DWORD					m_dwAccepThreadID;
+
 	HANDLE					m_hRecvThread;
 	DWORD					m_dwRecvThreadID;
+
+	HANDLE					m_hSendThread;
+	DWORD					m_dwSendThreadID;
 	//유저 리스트
 	std::list<myNetUser>	m_UserList;
 	//소켓
@@ -22,7 +30,7 @@ public:
 	//유저로부터 받은 패킷
 	std::vector<myPacket>	m_recvPacket;
 	//임계구역 변수
-	CRITICAL_SECTION		m_cs;
+	//CRITICAL_SECTION		m_cs;
 public:
 	//필수
 	bool	MakePacket(UPACKET& packet,

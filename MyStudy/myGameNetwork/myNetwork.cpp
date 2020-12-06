@@ -13,6 +13,95 @@
 
 //수정하기 내 입맛대로
 
+DWORD WINAPI AcceptThread(LPVOID arg)
+{
+	//뮤텍스 시작
+	myNetwork* net = (myNetwork*)arg;
+	WaitForSingleObject(net->m_hMutex, INFINITE);
+	while (true)
+	{
+		SOCKADDR_IN clientAddr;
+		int len = sizeof(clientAddr);
+
+		SOCKET client = accept(net->m_Sock, (SOCKADDR*)&clientAddr, &len);
+		if (client == INVALID_SOCKET)
+		{
+			if (WSAGetLastError() != WSAEWOULDBLOCK)
+			{
+				//스레드 파괴
+				break;
+			}
+		}
+		else
+		{
+			net->AddUser(client, clientAddr);
+		}
+		//뮤텍스 해제
+	}
+}
+
+DWORD WINAPI RecvThread(LPVOID arg)
+{
+	//뮤텍스 시작
+	myNetwork* net = (myNetwork*)arg;
+
+	std::list<myNetUser>::iterator iter;
+	for (iter = net->m_UserList.begin();
+		iter != net->m_UserList.end();
+		)
+	{
+		if (net->RecvData(*iter) == false)
+		{
+			net->DelUser(*iter);
+			iter = net->m_UserList.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+}
+
+DWORD WINAPI SendThread(LPVOID arg)
+{
+	myNetwork* net = (myNetwork*)arg;
+	net->PacketProcess();
+
+	std::list<myNetUser>::iterator iter;
+	for (iter = net->m_UserList.begin();
+		iter != net->m_UserList.end();
+		)
+	{
+		bool bDelete = false;
+		//각자에게 저장된 메시지를 각자에게 전달
+		std::vector<UPACKET>::iterator senditer;
+		for (senditer = iter->m_SendPacket.begin();
+			senditer != iter->m_SendPacket.end();
+			senditer++)
+		{
+			if (net->SendData(*iter, *senditer) == false)
+			{
+				bDelete == true;
+				break;
+			}
+		}
+		iter->m_SendPacket.clear();
+
+		if (bDelete == true)
+		{
+			net->DelUser(*iter);
+			iter = net->m_UserList.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+
+	}
+	net->Broadcastting();
+}
+
+
 //패킷생성
 bool myNetwork::MakePacket(UPACKET& packet,
 	char* msg, int iLen, uint16_t type)
@@ -170,6 +259,7 @@ void myNetwork::PacketProcess()
 			myChatMsg* pMsg = (myChatMsg*)&packet->msg;
 			printf("\n[%s]%s:%d", pMsg->szName,
 				pMsg->buffer, pMsg->iCnt);
+			//임시
 			string str = pMsg->szName;
 			str += " : ";
 			str += pMsg->buffer;
@@ -178,6 +268,7 @@ void myNetwork::PacketProcess()
 			str += " ";
 			myMsg temp(to_mw(str), {100,100,300,300});
 			g_Draw.Push(temp);
+			//
 		}
 		if (packet->ph.type == PACKET_LOGIN_REQ)
 		{
@@ -275,7 +366,16 @@ bool myNetwork::Broadcastting()
 }
 bool myNetwork::InitNetwork(std::string ip, int port)
 {
-	InitializeCriticalSection(&m_cs);
+	m_hMutex = CreateMutex(NULL, FALSE, L"myNetMutex");
+
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
+	{
+		CloseHandle(m_hMutex);
+		return;
+	}
+
+
+	//InitializeCriticalSection(&m_cs);
 	// 2.2 ver
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -348,6 +448,20 @@ bool myNetwork::InitNetwork(std::string ip, int port)
 	unsigned long iMode = 1;
 	ioctlsocket(m_Sock, FIONBIO, &iMode);
 
+
+	//수정
+	//m_hAcceptThread = CreateThread(0, 0, AcceptThread,
+	//	(LPVOID)this, 0,//CREATE_SUSPENDED,
+	//	&m_dwAccepThreadID);
+
+	//m_hRecvThread = CreateThread(0, 0, RecvThread,
+	//	(LPVOID)this, 0,//CREATE_SUSPENDED,
+	//	&m_dwRecvThreadID);
+
+	//m_hSendThread = CreateThread(0, 0, SendThread,
+	//	(LPVOID)this, 0,//CREATE_SUSPENDED,
+	//	&m_dwSendThreadID);
+
 	return true;
 }
 //소켓 초기화
@@ -380,7 +494,8 @@ bool myNetwork::DeleteNetwork()
 	closesocket(m_Sock);
 	WSACleanup();
 
-	DeleteCriticalSection(&m_cs);
+	//DeleteCriticalSection(&m_cs);
+	CloseHandle(m_hMutex);
 	return true;
 }
 //리스트에 유저 추가
