@@ -15,11 +15,12 @@
 
 DWORD WINAPI AcceptThread(LPVOID arg)
 {
-	//뮤텍스 시작
+
 	myNetwork* net = (myNetwork*)arg;
-	WaitForSingleObject(net->m_hMutex, INFINITE);
 	while (true)
 	{
+		//뮤텍스 시작
+		WaitForSingleObject(net->m_hMutex, INFINITE);
 		SOCKADDR_IN clientAddr;
 		int len = sizeof(clientAddr);
 
@@ -37,68 +38,83 @@ DWORD WINAPI AcceptThread(LPVOID arg)
 			net->AddUser(client, clientAddr);
 		}
 		//뮤텍스 해제
+		ReleaseMutex(net->m_hMutex);
 	}
+	return 0;
 }
 
 DWORD WINAPI RecvThread(LPVOID arg)
 {
-	//뮤텍스 시작
 	myNetwork* net = (myNetwork*)arg;
-
-	std::list<myNetUser>::iterator iter;
-	for (iter = net->m_UserList.begin();
-		iter != net->m_UserList.end();
-		)
+	while (true)
 	{
-		if (net->RecvData(*iter) == false)
+		//뮤텍스 시작
+		WaitForSingleObject(net->m_hMutex, INFINITE);
+		std::list<myNetUser>::iterator iter;
+		for (iter = net->m_UserList.begin();
+			iter != net->m_UserList.end();
+			)
 		{
-			net->DelUser(*iter);
-			iter = net->m_UserList.erase(iter);
+			if (net->RecvData(*iter) == false)
+			{
+				net->DelUser(*iter);
+				iter = net->m_UserList.erase(iter);
+			}
+			else
+			{
+				iter++;
+			}
 		}
-		else
-		{
-			iter++;
-		}
+		//뮤텍스 해제
+		ReleaseMutex(net->m_hMutex);
 	}
+	return 0;
 }
 
 DWORD WINAPI SendThread(LPVOID arg)
 {
 	myNetwork* net = (myNetwork*)arg;
-	net->PacketProcess();
-
-	std::list<myNetUser>::iterator iter;
-	for (iter = net->m_UserList.begin();
-		iter != net->m_UserList.end();
-		)
+	while (true)
 	{
-		bool bDelete = false;
-		//각자에게 저장된 메시지를 각자에게 전달
-		std::vector<UPACKET>::iterator senditer;
-		for (senditer = iter->m_SendPacket.begin();
-			senditer != iter->m_SendPacket.end();
-			senditer++)
+		//뮤텍스 시작
+		WaitForSingleObject(net->m_hMutex, INFINITE);
+		net->PacketProcess();
+		std::list<myNetUser>::iterator iter;
+		for (iter = net->m_UserList.begin();
+			iter != net->m_UserList.end();
+			)
 		{
-			if (net->SendData(*iter, *senditer) == false)
+			bool bDelete = false;
+			//각자에게 저장된 메시지를 각자에게 전달
+			std::vector<UPACKET>::iterator senditer;
+			for (senditer = iter->m_SendPacket.begin();
+				senditer != iter->m_SendPacket.end();
+				senditer++)
 			{
-				bDelete == true;
-				break;
+				if (net->SendData(*iter, *senditer) == false)
+				{
+					bDelete == true;
+					break;
+				}
 			}
-		}
-		iter->m_SendPacket.clear();
+			iter->m_SendPacket.clear();
 
-		if (bDelete == true)
-		{
-			net->DelUser(*iter);
-			iter = net->m_UserList.erase(iter);
-		}
-		else
-		{
-			iter++;
-		}
+			if (bDelete == true)
+			{
+				net->DelUser(*iter);
+				iter = net->m_UserList.erase(iter);
+			}
+			else
+			{
+				iter++;
+			}
 
+		}
+		net->Broadcastting();
+		//뮤텍스 해제
+		ReleaseMutex(net->m_hMutex);
 	}
-	net->Broadcastting();
+	return 0;
 }
 
 
@@ -371,7 +387,7 @@ bool myNetwork::InitNetwork(std::string ip, int port)
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
 		CloseHandle(m_hMutex);
-		return;
+		return false;
 	}
 
 
@@ -450,17 +466,17 @@ bool myNetwork::InitNetwork(std::string ip, int port)
 
 
 	//수정
-	//m_hAcceptThread = CreateThread(0, 0, AcceptThread,
-	//	(LPVOID)this, 0,//CREATE_SUSPENDED,
-	//	&m_dwAccepThreadID);
+	m_hAcceptThread = CreateThread(0, 0, AcceptThread,
+		(LPVOID)this, 0,//CREATE_SUSPENDED,
+		&m_dwAccepThreadID);
 
-	//m_hRecvThread = CreateThread(0, 0, RecvThread,
-	//	(LPVOID)this, 0,//CREATE_SUSPENDED,
-	//	&m_dwRecvThreadID);
+	m_hRecvThread = CreateThread(0, 0, RecvThread,
+		(LPVOID)this, 0,//CREATE_SUSPENDED,
+		&m_dwRecvThreadID);
 
-	//m_hSendThread = CreateThread(0, 0, SendThread,
-	//	(LPVOID)this, 0,//CREATE_SUSPENDED,
-	//	&m_dwSendThreadID);
+	m_hSendThread = CreateThread(0, 0, SendThread,
+		(LPVOID)this, 0,//CREATE_SUSPENDED,
+		&m_dwSendThreadID);
 
 	return true;
 }

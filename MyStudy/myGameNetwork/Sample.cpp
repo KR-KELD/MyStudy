@@ -4,7 +4,8 @@ GAMERUN;
 
 bool Sample::Init()
 {
-	m_Net.InitNetwork("175.194.89.26", 10000);
+	m_Net.InitNetwork("192.168.0.169", 10000);
+	//m_Net.InitNetwork("175.194.89.26", 10000);
 	return true;
 }
 
@@ -23,7 +24,7 @@ bool Sample::Frame()
 	//{
 	//	//break;
 	//}
-	//return true;
+	return true;
 }
 
 bool Sample::Render()
