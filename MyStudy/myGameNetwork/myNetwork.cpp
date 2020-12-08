@@ -19,26 +19,7 @@ DWORD WINAPI AcceptThread(LPVOID arg)
 	myNetwork* net = (myNetwork*)arg;
 	while (true)
 	{
-		//뮤텍스 시작
-		WaitForSingleObject(net->m_hMutex, INFINITE);
-		SOCKADDR_IN clientAddr;
-		int len = sizeof(clientAddr);
-
-		SOCKET client = accept(net->m_Sock, (SOCKADDR*)&clientAddr, &len);
-		if (client == INVALID_SOCKET)
-		{
-			if (WSAGetLastError() != WSAEWOULDBLOCK)
-			{
-				//스레드 파괴
-				break;
-			}
-		}
-		else
-		{
-			net->AddUser(client, clientAddr);
-		}
-		//뮤텍스 해제
-		ReleaseMutex(net->m_hMutex);
+		net->Accept();
 	}
 	return 0;
 }
@@ -48,25 +29,7 @@ DWORD WINAPI RecvThread(LPVOID arg)
 	myNetwork* net = (myNetwork*)arg;
 	while (true)
 	{
-		//뮤텍스 시작
-		WaitForSingleObject(net->m_hMutex, INFINITE);
-		std::list<myNetUser>::iterator iter;
-		for (iter = net->m_UserList.begin();
-			iter != net->m_UserList.end();
-			)
-		{
-			if (net->RecvData(*iter) == false)
-			{
-				net->DelUser(*iter);
-				iter = net->m_UserList.erase(iter);
-			}
-			else
-			{
-				iter++;
-			}
-		}
-		//뮤텍스 해제
-		ReleaseMutex(net->m_hMutex);
+		net->RecvDataList();
 	}
 	return 0;
 }
@@ -244,6 +207,7 @@ bool myNetwork::SendData(myNetUser& user, UPACKET& msg)
 //유저로부터 데이터 받아오기
 bool myNetwork::RecvDataList()
 {
+	WaitForSingleObject(m_hMutex, INFINITE);
 	std::list<myNetUser>::iterator iter;
 	for (iter = m_UserList.begin();
 		iter != m_UserList.end();
@@ -259,11 +223,13 @@ bool myNetwork::RecvDataList()
 			iter++;
 		}
 	}
+	ReleaseMutex(m_hMutex);
 	return true;
 }
 //유저로부터 전달받은 메시지를 패킷화
 void myNetwork::PacketProcess()
 {
+	WaitForSingleObject(m_hMutex, INFINITE);
 	std::vector<myPacket>::iterator senditer;
 	for (senditer = m_recvPacket.begin();
 		senditer != m_recvPacket.end();
@@ -308,6 +274,7 @@ void myNetwork::PacketProcess()
 			senditer->pUser->m_SendPacket.push_back(sendPacket);
 		}
 	}
+	ReleaseMutex(m_hMutex);
 }
 bool myNetwork::Process()
 {
@@ -520,7 +487,9 @@ bool myNetwork::AddUser(SOCKET sock, SOCKADDR_IN addr)
 	myNetUser user;
 	user.m_Sock = sock;
 	user.addr = addr;
+	WaitForSingleObject(m_hMutex, INFINITE);
 	m_UserList.push_back(user);
+	ReleaseMutex(m_hMutex);
 	printf("\n접속->%s:%d",
 		inet_ntoa(addr.sin_addr),
 		ntohs(addr.sin_port));
