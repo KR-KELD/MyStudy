@@ -30,6 +30,12 @@
     <ClCompile Include="myServerObj.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="myIOCP.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myNetUser.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myAcceptor.h">
@@ -51,6 +57,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="myProtocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myIOCP.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myNetUser.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

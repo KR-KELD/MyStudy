@@ -1,14 +1,14 @@
 #pragma once
-#include "myAcceptor.h"
+#include "myLoginAcceptor.h"
 class myLoginServer
 {
 public:
-	myAcceptor	m_Acceptor;
-	bool		m_bRun;
+	myLoginAcceptor	m_Acceptor;
+	bool			m_bRun;
 public:
-	bool		Init();
-	bool		Run();
-	bool		Release();
+	bool			Init();
+	bool			Run();
+	bool			Release();
 public:
 	myLoginServer();
 	virtual ~myLoginServer();

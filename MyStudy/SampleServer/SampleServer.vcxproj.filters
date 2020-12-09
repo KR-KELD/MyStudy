@@ -24,12 +24,18 @@
     <ClCompile Include="myLoginAcceptor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="myChatUser.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myLoginServer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="myLoginAcceptor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myChatUser.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

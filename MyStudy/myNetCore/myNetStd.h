@@ -111,3 +111,13 @@ static bool Check(int iRet, int line)
 		exit(1);
 	}
 }
+
+template <class T> class NetSingleTon
+{
+public:
+	static T& GetInstance()
+	{
+		static T Single;
+		return Single;
+	}
+};

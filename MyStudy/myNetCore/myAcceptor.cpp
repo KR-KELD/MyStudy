@@ -65,11 +65,6 @@ bool myAcceptor::InitNetwork(std::string ip, int port)
 	{
 		return false;
 	}
-
-	// 넌블로킹 소켓으로 전환
-	unsigned long iMode = 1;
-	ioctlsocket(m_Sock, FIONBIO, &iMode);
-
 	return true;
 }
 //소켓 초기화
@@ -148,17 +143,6 @@ bool myAcceptor::Accept()
 
 bool myAcceptor::AddSession(SOCKET sock, SOCKADDR_IN addr)
 {
-	//myNetUser user;
-	//user.m_Sock = sock;
-	//user.addr = addr;
-
-	//EnterCriticalSection(&m_cs);
-	//m_UserList.push_back(user);
-	//LeaveCriticalSection(&m_cs);
-
-	//printf("\n접속->%s:%d",
-	//	inet_ntoa(addr.sin_addr),
-	//	ntohs(addr.sin_port));
 	return true;
 }
 

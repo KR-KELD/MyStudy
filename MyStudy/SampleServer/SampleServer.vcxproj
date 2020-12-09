@@ -146,11 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="myChatUser.cpp" />
     <ClCompile Include="myLoginAcceptor.cpp" />
     <ClCompile Include="myLoginServer.cpp" />
     <ClCompile Include="Sample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="myChatUser.h" />
     <ClInclude Include="myLoginAcceptor.h" />
     <ClInclude Include="myLoginServer.h" />
   </ItemGroup>

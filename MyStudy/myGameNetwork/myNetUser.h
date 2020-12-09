@@ -1,5 +1,11 @@
 #pragma once
 #include "myNetStd.h"
+
+struct OVERLAPPED2 : OVERLAPPED
+{
+	int		iType; // 0:recv , 1:send
+};
+
 class myNetUser
 {
 public:

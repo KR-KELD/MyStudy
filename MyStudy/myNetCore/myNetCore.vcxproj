@@ -150,15 +150,19 @@ copy "*.h" "..\\..\\include\\NetCore"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="myAcceptor.cpp" />
+    <ClCompile Include="myIOCP.cpp" />
     <ClCompile Include="myLock.cpp" />
+    <ClCompile Include="myNetUser.cpp" />
     <ClCompile Include="myServerObj.cpp" />
     <ClCompile Include="mySessionMgr.cpp" />
     <ClCompile Include="myThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myAcceptor.h" />
+    <ClInclude Include="myIOCP.h" />
     <ClInclude Include="myLock.h" />
     <ClInclude Include="myNetStd.h" />
+    <ClInclude Include="myNetUser.h" />
     <ClInclude Include="myProtocol.h" />
     <ClInclude Include="myServerObj.h" />
     <ClInclude Include="mySessionMgr.h" />

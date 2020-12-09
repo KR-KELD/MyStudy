@@ -12,7 +12,7 @@ bool myLoginServer::Run()
 {
 	while (m_bRun)
 	{
-		Sleep(1);
+		Sleep(10);
 	}
 	WaitForSingleObject((HANDLE)m_Acceptor.m_hThread, INFINITE);
 	return true;
