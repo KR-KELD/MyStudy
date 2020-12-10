@@ -25,18 +25,14 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 		if (m_iReadPos > 0)
 		{
 			//데이터 버퍼의 시작위치에 마지막 패킷포스부터 잔여 포스만큼 복사한다
-			memmove(m_szRecvBuffer, &m_szRecvBuffer[m_iPacketPos], m_iReadPos);
+			memmove(m_szDataBuffer, &m_szDataBuffer[m_iPacketPos], m_iReadPos);
 		}
 		//패킷포스 초기화
 		m_iPacketPos = 0;
 		m_iWritePos = m_iReadPos;
 	}
-	if (m_iWritePos < 0)
-	{
-		int k = 0;
-	}
 	// 받은 데이터 누적
-	memcpy(&m_szRecvBuffer[m_iWritePos], recvBuf, dwTrans);
+	memcpy(&m_szDataBuffer[m_iWritePos], m_szRecvBuffer, dwTrans);
 	m_iWritePos += dwTrans;
 	m_iReadPos += dwTrans;
 
@@ -44,7 +40,7 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 	if (m_iReadPos >= PACKET_HEADER_SIZE)
 	{
 		//헤더 정보를 세팅하고
-		UPACKET* packet = (UPACKET*)&m_szRecvBuffer[m_iPacketPos];
+		UPACKET* packet = (UPACKET*)&m_szDataBuffer[m_iPacketPos];
 		// 1개의 패킷 이상의 데이터가 존재한다면
 
 		// 패킷을 쪼개라
@@ -53,7 +49,7 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 			tPacket.pUser = this;
 			//데이터 버퍼의 패킷 시작위치부터 패킷 1개 크기만큼 복사해라
 			memcpy(&tPacket.packet,
-				&m_szRecvBuffer[m_iPacketPos],
+				&m_szDataBuffer[m_iPacketPos],
 				packet->ph.len);
 			// 페킷 풀에 완성 패킷을 넣어주어야 한다.
 			I_Session.AddPacket(tPacket);
@@ -68,13 +64,9 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 				break;
 			}
 			//?
-			//UPACKET* packet = (UPACKET*)&m_szRecvBuffer[m_iPacketPos];
+			//UPACKET* packet = (UPACKET*)&m_szDataBuffer[m_iPacketPos];
 		} while (packet->ph.len <= m_iReadPos);
 
-	}
-	else
-	{
-		int k = 0;
 	}
 	//데이터 리시브
 	WaitReceive();
@@ -82,20 +74,6 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 }
 bool myNetUser::DispatchWrite(DWORD dwTrans, OVERLAPPED2 * ov)
 {
-	//ZeroMemory(recvBuf, sizeof(char) * MAX_BUFFER_SIZE);
-	//m_wsaRecvBuffer.len = MAX_BUFFER_SIZE;
-	//m_wsaRecvBuffer.buf = recvBuf;
-	//DWORD cbTrans;
-	//DWORD dwFlags = 0;
-	//int iRet = WSARecv(m_Sock, &m_wsaRecvBuffer, 1,
-	//	&cbTrans, &dwFlags, (OVERLAPPED*)&m_ovRead, NULL);
-	//if (iRet == SOCKET_ERROR)
-	//{
-	//	if (WSAGetLastError() != WSA_IO_PENDING)
-	//	{
-	//		return false;
-	//	}
-	//}
 	return true;
 }
 bool myNetUser::WaitReceive()
@@ -104,9 +82,9 @@ bool myNetUser::WaitReceive()
 	ZeroMemory(&m_ovRead, sizeof(OVERLAPPED));
 	m_ovRead.iType = OVERLAPPED2::MODE_RECV;
 	//리시브버퍼 초기화
-	ZeroMemory(recvBuf, MAX_BUFFER_SIZE);
+	ZeroMemory(m_szRecvBuffer, MAX_BUFFER_SIZE);
 	m_wsaRecvBuffer.len = MAX_BUFFER_SIZE;
-	m_wsaRecvBuffer.buf = recvBuf;
+	m_wsaRecvBuffer.buf = m_szRecvBuffer;
 	DWORD cbTrans;	//?
 	DWORD dwflags = 0;//플래그
 	//리시브
@@ -124,9 +102,10 @@ bool myNetUser::WaitReceive()
 }
 myNetUser::myNetUser()
 {
-	iRecvSize = 0;
-	iSendSize = 0;
-
+	m_bExit = false;
+	m_iPacketPos = 0;
+	m_iWritePos = 0;
+	m_iReadPos = 0;
 }
 myNetUser::~myNetUser()
 {

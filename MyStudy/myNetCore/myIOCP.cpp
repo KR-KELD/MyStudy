@@ -1,4 +1,5 @@
 #include "myIOCP.h"
+#include "mySessionMgr.h"
 
 bool myIOCP::Init()
 {
@@ -18,6 +19,18 @@ bool myIOCP::Run()
 	return true;
 }
 
+bool myIOCP::Release()
+{
+	CloseHandle(m_hIOCP);
+	for (int iThread = 0;
+		iThread < MAX_WORKER_THREAD;
+		iThread++)
+	{
+		CloseHandle(m_hWorkerThread[iThread]);
+	}
+	return true;
+}
+
 void myIOCP::SetBind(SOCKET sock, ULONG_PTR key)
 {
 	//iocp에 컴플리션 포트 생성
@@ -33,32 +46,47 @@ DWORD __stdcall myIOCP::WorkerThread(LPVOID param)
 	//컴플리션 키값
 	ULONG_PTR keyValue;
 	//오버랩 구조체
-	OVERLAPPED* pOV;
+	OVERLAPPED2* pOV;
 	while (1)
 	{
 		//비동기 작업 결과를 iocp 큐에서 가져오기
 		bReturn = ::GetQueuedCompletionStatus(iocp->m_hIOCP,
 			&dwTransfor,
 			&keyValue,
-			&pOV, 1);
+			(LPOVERLAPPED*)&pOV, 1);
+		myNetUser* pUser = (myNetUser*)keyValue;
+		if (pOV != nullptr && pOV->iType == OVERLAPPED2::MODE_EXIT)
+		{
+			I_Session.DelUser(pUser);
+			continue;
+		}
 		//쓰레드 깨우기
 		if (bReturn == TRUE)
 		{
-			myNetUser* pUser = (myNetUser*)keyValue;
-			OVERLAPPED2* tOV = (OVERLAPPED2*)pOV;
-			if (tOV->iType == OVERLAPPED2::MODE_RECV)
+			// 정상종료
+			if (dwTransfor == 0)
+			{
+				pOV->iType = OVERLAPPED2::MODE_EXIT;
+				PostQueuedCompletionStatus(iocp->m_hIOCP, 0,
+					keyValue, (LPOVERLAPPED)pOV);
+			}
+			if (pOV->iType == OVERLAPPED2::MODE_RECV)
 			{
 				//// 로드완료
-				if (pUser->DispatchRead(dwTransfor, tOV) == false)
+				if (pUser->DispatchRead(dwTransfor, pOV) == false)
 				{
-					//::SetEvent(g_hKillEvent);
+					pOV->iType = OVERLAPPED2::MODE_EXIT;
+					PostQueuedCompletionStatus(iocp->m_hIOCP, 0,
+						keyValue, (LPOVERLAPPED)pOV);
 				}
 			}
-			if (tOV->iType == OVERLAPPED2::MODE_SEND)
+			if (pOV->iType == OVERLAPPED2::MODE_SEND)
 			{
-				if (pUser->DispatchWrite(dwTransfor, tOV) == false)
+				if (pUser->DispatchWrite(dwTransfor, pOV) == false)
 				{
-					//::SetEvent(g_hKillEvent);
+					pOV->iType = OVERLAPPED2::MODE_EXIT;
+					PostQueuedCompletionStatus(iocp->m_hIOCP, 0,
+						keyValue, (LPOVERLAPPED)pOV);
 				}
 			}
 		}
@@ -66,6 +94,7 @@ DWORD __stdcall myIOCP::WorkerThread(LPVOID param)
 		{
 			DWORD dwError = WSAGetLastError();
 			if (dwError == WAIT_TIMEOUT) { continue; }
+			closesocket(pUser->m_Sock);
 		}
 	}
 

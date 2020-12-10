@@ -13,6 +13,7 @@ public:
 public:
 	bool		Init();
 	bool		Run();
+	bool		Release();
 	void		SetBind(SOCKET sock, ULONG_PTR key);
 	static DWORD WINAPI WorkerThread(LPVOID param);
 public:

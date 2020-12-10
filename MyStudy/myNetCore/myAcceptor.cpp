@@ -1,9 +1,8 @@
 #include "myAcceptor.h"
-
+#include "myIOCP.h"
+#include "mySessionMgr.h"
 bool myAcceptor::InitNetwork(std::string ip, int port)
 {
-	InitializeCriticalSection(&m_cs);
-
 	int iRet;
 	m_Sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (m_Sock == INVALID_SOCKET)
@@ -143,6 +142,18 @@ bool myAcceptor::Accept()
 
 bool myAcceptor::AddSession(SOCKET sock, SOCKADDR_IN addr)
 {
+	{
+		myLock lock(this);
+		myNetUser* user = new myNetUser;
+		user->m_Sock = sock;
+		user->m_SockAddr = addr;
+		I_Session.AddUser(user);
+		I_Iocp.SetBind(sock, (ULONG_PTR)user);
+		user->WaitReceive();
+		printf("\nÁ¢¼Ó->%s:%d",
+			inet_ntoa(addr.sin_addr),
+			ntohs(addr.sin_port));
+	}
 	return true;
 }
 
