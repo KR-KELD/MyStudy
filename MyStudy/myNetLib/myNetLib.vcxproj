@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{C78DFAB6-9327-4727-863C-557B04057975}</ProjectGuid>
+    <ProjectGuid>{51017DE8-BD59-4406-8BA9-206DA797EB7C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>myCoreLib</RootNamespace>
+    <RootNamespace>myNetLib</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,13 +72,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>../../output/</OutDir>
-    <IntDir>../../output/myCoreLib/</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>../../output/</OutDir>
-    <IntDir>../../output/myCoreLib/</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -93,22 +89,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../fmod/inc;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Command>copy "..\\..\\output\\myCoreLib.lib" "..\\..\\lib"
-copy "*.h" "..\\..\\include"</Command>
-    </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>copy "..\\..\\fmod\\lib\\x64\\*.dll" "..\\..\\output\\"</Command>
-    </PreBuildEvent>
-    <Lib>
-      <AdditionalLibraryDirectories>../../fmod/lib/x64;</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -117,21 +102,11 @@ copy "*.h" "..\\..\\include"</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../fmod/inc;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>../../fmod/lib/x64;</AdditionalLibraryDirectories>
-    </Lib>
-    <PreBuildEvent>
-      <Command>copy "..\\..\\fmod\\lib\\x64\\*.dll" "..\\..\\output\\"</Command>
-    </PreBuildEvent>
-    <PostBuildEvent>
-      <Command>copy "..\\..\\output\\myCoreLib.lib" "..\\..\\lib"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -168,61 +143,14 @@ copy "*.h" "..\\..\\include"</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="myBitmap.cpp" />
-    <ClCompile Include="myBitmapManager.cpp" />
-    <ClCompile Include="myButton.cpp" />
-    <ClCompile Include="myCameraManager.cpp" />
-    <ClCompile Include="myCollision.cpp" />
-    <ClCompile Include="myCore.cpp" />
-    <ClCompile Include="myDraw.cpp" />
-    <ClCompile Include="myEffect.cpp" />
-    <ClCompile Include="myGrapicsAPI.cpp" />
-    <ClCompile Include="myInput.cpp" />
-    <ClCompile Include="myNetUser.cpp" />
-    <ClCompile Include="myNetwork.cpp" />
-    <ClCompile Include="myObject.cpp" />
-    <ClCompile Include="myObjectInfo.cpp" />
-    <ClCompile Include="myObjectPoolManager.cpp" />
-    <ClCompile Include="myObjManager.cpp" />
-    <ClCompile Include="myParsingScript.cpp" />
-    <ClCompile Include="myProjectile.cpp" />
-    <ClCompile Include="myScene.cpp" />
-    <ClCompile Include="mySound.cpp" />
-    <ClCompile Include="mySoundManager.cpp" />
-    <ClCompile Include="myTimer.cpp" />
-    <ClCompile Include="myUI.cpp" />
-    <ClCompile Include="myWindow.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="myBitmap.h" />
-    <ClInclude Include="myBitmapManager.h" />
-    <ClInclude Include="myButton.h" />
-    <ClInclude Include="myCameraManager.h" />
-    <ClInclude Include="myCollision.h" />
-    <ClInclude Include="myCore.h" />
-    <ClInclude Include="myCoreStd.h" />
-    <ClInclude Include="myDraw.h" />
-    <ClInclude Include="myEffect.h" />
-    <ClInclude Include="myGrapicsAPI.h" />
-    <ClInclude Include="myInput.h" />
-    <ClInclude Include="myMath.h" />
     <ClInclude Include="myNetStd.h" />
     <ClInclude Include="myNetUser.h" />
     <ClInclude Include="myNetwork.h" />
-    <ClInclude Include="myObject.h" />
-    <ClInclude Include="myObjectInfo.h" />
-    <ClInclude Include="myObjectPoolManager.h" />
-    <ClInclude Include="myObjManager.h" />
-    <ClInclude Include="myParsingScript.h" />
-    <ClInclude Include="myProjectile.h" />
     <ClInclude Include="myProtocol.h" />
-    <ClInclude Include="myScene.h" />
-    <ClInclude Include="mySound.h" />
-    <ClInclude Include="mySoundManager.h" />
-    <ClInclude Include="myStd.h" />
-    <ClInclude Include="myTimer.h" />
-    <ClInclude Include="myUI.h" />
-    <ClInclude Include="myWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="myNetUser.cpp" />
+    <ClCompile Include="myNetwork.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

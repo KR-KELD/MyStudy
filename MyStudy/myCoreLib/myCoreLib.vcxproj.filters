@@ -99,6 +99,12 @@
     <ClCompile Include="myWindow.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="myNetUser.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myNetwork.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myBitmapManager.h">
@@ -175,6 +181,18 @@
     </ClInclude>
     <ClInclude Include="myScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="myNetStd.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myNetUser.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myNetwork.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myProtocol.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

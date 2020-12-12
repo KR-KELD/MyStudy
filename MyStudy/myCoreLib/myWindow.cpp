@@ -73,14 +73,14 @@ bool myWindow::MsgProcess()
 		{
 			return false;
 		}
-		MsgEvent(m_msg);
+		//MsgEvent(m_msg);
 	}
 	return true;
 }
 
-void myWindow::MsgEvent(MSG msg)
-{
-}
+//void myWindow::MsgEvent(MSG msg)
+//{
+//}
 
 myWindow::myWindow()
 {
