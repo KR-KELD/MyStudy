@@ -9,6 +9,10 @@ struct myMsg
 		msg = _msg;
 		rt = _rt;
 	}
+	myMsg()
+	{
+
+	}
 };
 class myDraw : public SingleTon<myDraw>
 {

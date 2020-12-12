@@ -14,7 +14,6 @@
 #include <process.h>
 #include "myProtocol.h"
 #pragma comment (lib, "ws2_32.lib")
-#pragma comment (lib, "myNetLib.lib")
 
 typedef std::basic_string<TCHAR>		T_STR;
 typedef std::basic_string<CHAR>			C_STR;

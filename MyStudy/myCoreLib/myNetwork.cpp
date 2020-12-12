@@ -60,6 +60,7 @@ int myNetwork::SendMsg(SOCKET sock, char* msg, int iLen, uint16_t type)
 		{
 			if (WSAGetLastError() != WSAEWOULDBLOCK)
 			{
+				myNetwork::g_bConnect = false;
 				return -1;
 			}
 			return 0;
@@ -71,41 +72,83 @@ int myNetwork::SendMsg(SOCKET sock, char* msg, int iLen, uint16_t type)
 
 bool myNetwork::RecvData()
 {
-	// header
-	if (m_User.iRecvSize < PACKET_HEADER_SIZE)
+	//// header
+	//if (m_User.iRecvSize < PACKET_HEADER_SIZE)
+	//{
+	//	m_User.iRecvSize += recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
+	//		PACKET_HEADER_SIZE - m_User.iRecvSize, 0);
+	//	if (m_User.iRecvSize == 0 || m_User.iRecvSize == SOCKET_ERROR)
+	//	{
+	//		m_User.iRecvSize = 0;
+	//		if (WSAGetLastError() != WSAEWOULDBLOCK)
+	//		{
+	//			return false;
+	//		}
+	//		return true;
+	//	}
+	//}
+	//else
+	//{
+	//	UPACKET* packet = (UPACKET*)&m_User.recvBuf;
+	//	m_User.iRecvSize += recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
+	//		packet->ph.len - m_User.iRecvSize, 0);
+	//	if (m_User.iRecvSize == 0 || m_User.iRecvSize == SOCKET_ERROR)
+	//	{
+	//		m_User.iRecvSize = 0;
+	//		if (WSAGetLastError() != WSAEWOULDBLOCK)
+	//		{
+	//			return false;
+	//		}
+	//		return true;
+	//	}
+	//	if (m_User.iRecvSize == packet->ph.len)
+	//	{
+	//		AddRecvPacket(m_User, packet);
+	//		memset(m_User.recvBuf, 0, sizeof(char) * MAX_BUFFER_SIZE);
+	//		m_User.iRecvSize = 0;
+	//	}
+	//}
+
+	//데이터가 들어오면 받아라
+	int iLen = recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
+		PACKET_HEADER_SIZE - m_User.iRecvSize, 0);
+	//받은 데이터가 있으면 내려가고 없으면 경우에따라 쓰레드를 종료하거나 유저의
+	//연결을 끊어라
+	if (iLen == 0 || iLen == SOCKET_ERROR)
 	{
-		m_User.iRecvSize += recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
-			PACKET_HEADER_SIZE - m_User.iRecvSize, 0);
-		if (m_User.iRecvSize == 0 || m_User.iRecvSize == SOCKET_ERROR)
+		if (WSAGetLastError() != WSAEWOULDBLOCK)
 		{
-			m_User.iRecvSize = 0;
-			if (WSAGetLastError() != WSAEWOULDBLOCK)
-			{
-				return false;
-			}
-			return true;
+			myNetwork::g_bConnect = false;
+			return false;
 		}
+		return true;
 	}
-	else
+	m_User.iRecvSize += iLen;
+	//헤더부터 받는다
+	if (m_User.iRecvSize == PACKET_HEADER_SIZE)
 	{
 		UPACKET* packet = (UPACKET*)&m_User.recvBuf;
-		m_User.iRecvSize += recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
-			packet->ph.len - m_User.iRecvSize, 0);
-		if (m_User.iRecvSize == 0 || m_User.iRecvSize == SOCKET_ERROR)
+		//헤더를 다 받았으면 나머지 데이터를 받는다
+		while (m_User.iRecvSize < packet->ph.len)
 		{
-			m_User.iRecvSize = 0;
-			if (WSAGetLastError() != WSAEWOULDBLOCK)
+			iLen = recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
+				packet->ph.len - m_User.iRecvSize, 0);
+			if (iLen == 0 || iLen == SOCKET_ERROR)
 			{
-				return false;
+				if (WSAGetLastError() != WSAEWOULDBLOCK)
+				{
+					myNetwork::g_bConnect = false;
+					return false;
+				}
+				return true;
 			}
-			return true;
+			m_User.iRecvSize += iLen;
 		}
-		if (m_User.iRecvSize == packet->ph.len)
-		{
-			AddRecvPacket(m_User, packet);
-			memset(m_User.recvBuf, 0, sizeof(char) * 10000);
-			m_User.iRecvSize = 0;
-		}
+		//전송 할 패킷 리스트에 패킷 추가
+		AddRecvPacket(m_User, packet);
+		//유저의 리시브 버퍼,사이즈 초기화
+		memset(m_User.recvBuf, 0, sizeof(char) * MAX_BUFFER_SIZE);
+		m_User.iRecvSize = 0;
 	}
 	return true;
 }
@@ -125,6 +168,7 @@ bool myNetwork::SendData(UPACKET& msg)
 		{
 			if (WSAGetLastError() != WSAEWOULDBLOCK)
 			{
+				myNetwork::g_bConnect = false;
 				return false;
 			}
 			m_User.iSendSize = 0;

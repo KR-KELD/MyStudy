@@ -10,6 +10,8 @@ public:
 public:
 	bool			SetWindow(HINSTANCE hInstance);
 	bool			MsgProcess();
+//public:
+	//virtual	void	MsgEvent(MSG msg);
 public:
 	myWindow();
 	virtual ~myWindow();

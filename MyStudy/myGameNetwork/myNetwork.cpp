@@ -135,19 +135,6 @@ bool myNetwork::RecvData(myNetUser& user)
 	}
 	user.iRecvSize += iLen;
 	//헤더부터 받는다
-	//if (user.iRecvSize == PACKET_HEADER_SIZE)
-	//{
-	//	UPACKET* packet = (UPACKET*)&user.recvBuf;
-	//	while (user.iRecvSize < packet->ph.len)
-	//	{
-	//		user.iRecvSize += recv(user.m_Sock,
-	//			&user.recvBuf[user.iRecvSize],
-	//			packet->ph.len - user.iRecvSize, 0);
-	//	}
-	//	AddPacket(user, packet);
-	//	memset(user.recvBuf, 0, sizeof(char) * 10000);
-	//	user.iRecvSize = 0;
-	//}
 	if (user.iRecvSize == PACKET_HEADER_SIZE)
 	{
 		UPACKET* packet = (UPACKET*)&user.recvBuf;
