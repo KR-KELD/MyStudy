@@ -4,9 +4,11 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <time.h>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <list>
+#include <map>
 #include <atlconv.h> // A2W
 //#include <Ws2tcpip.h>	//inet_pton Çì´õ
 #include <process.h>

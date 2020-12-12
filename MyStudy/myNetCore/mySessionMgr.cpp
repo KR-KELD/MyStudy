@@ -12,6 +12,49 @@ bool mySessionMgr::MakePacket(UPACKET& packet,
 	return true;
 }
 
+void mySessionMgr::PacketChatMsg(myPacket& packet)
+{
+	myChatMsg* pMsg = (myChatMsg*)packet.packet.msg;
+	printf("\n[%s]%s:%d", pMsg->szName,
+		pMsg->buffer, pMsg->iCnt);
+	m_BroadcasttingPacketPool.push_back(packet.packet);
+}
+
+void mySessionMgr::PacketLoginLeq(myPacket& packet)
+{
+	UPACKET sendPacket;
+	T_STR szID = L"kgca";
+	T_STR szPS = L"game";
+	myLogin* login = (myLogin*)packet.packet.msg;
+	T_STR szIDUser = to_mw(login->szID);
+	T_STR szPSUser = to_mw(login->szPS);
+	myLoginResult ret;
+	if (szID == szIDUser && szPS == szPSUser)
+	{
+		ret.iRet = 1;
+	}
+	else
+	{
+		ret.iRet = 0;
+	}
+	MakePacket(sendPacket, (char*)&ret, sizeof(myLoginResult),
+		PACKET_LOGIN_ACK);
+	if (packet.pUser != nullptr)
+	{
+		packet.pUser->m_SendPacket.push_back(sendPacket);
+	}
+}
+
+void mySessionMgr::PacketUserPos(myPacket & packet)
+{
+	myUnitPos* pMsg = (myUnitPos*)packet.packet.msg;
+	printf("\n[%10.4f:%10.4f:%10.4f",
+		pMsg->p[0],
+		pMsg->p[1],
+		pMsg->p[2]);
+	m_BroadcasttingPacketPool.push_back(packet.packet);
+}
+
 bool mySessionMgr::SendData(myNetUser& user, UPACKET& msg)
 {
 	DWORD dwSendByte;
@@ -89,37 +132,17 @@ bool mySessionMgr::Run()
 			senditer != m_PacketPool.end();
 			senditer++)
 		{
-			UPACKET* packet = (UPACKET*)&senditer->packet;
-			if (packet->ph.type == PACKET_CHAT_MSG)
-			{
-				myChatMsg* pMsg = (myChatMsg*)&packet->msg;
-				printf("\n[%s]%s:%d", pMsg->szName,
-					pMsg->buffer, pMsg->iCnt);
-			}
-			if (packet->ph.type == PACKET_LOGIN_REQ)
-			{
-				UPACKET sendPacket;
-				T_STR szID = L"kgca";
-				T_STR szPS = L"game";
-				myLogin* login = (myLogin*)packet->msg;
-				T_STR szIDUser = to_mw(login->szID);
-				T_STR szPSUser = to_mw(login->szPS);
-				myLoginResult ret;
-				if (szID == szIDUser && szPS == szPSUser)
-				{
-					ret.iRet = 1;
-				}
-				else
-				{
-					ret.iRet = 0;
-				}
-				/*MakePacket(sendPacket, (char*)&ret, sizeof(TLoginResult),
-					PACKET_LOGIN_ACK);
-				if (senditer->pUser != nullptr)
-				{
-					senditer->pUser->m_SendPacket.push_back(sendPacket);
-				}*/
-			}
+			//UPACKET* packet = (UPACKET*)&senditer->packet;
+			(this->*m_vecPacketFunc[senditer->packet.ph.type])(*senditer);
+
+			//if (packet->ph.type == PACKET_CHAT_MSG)
+			//{
+
+			//}
+			//if (packet->ph.type == PACKET_LOGIN_REQ)
+			//{
+
+			//}
 		}
 		m_PacketPool.clear();
 		ReleaseMutex(m_hMutexPacketPool);
@@ -215,6 +238,9 @@ mySessionMgr::mySessionMgr()
 {
 	m_hMutexPacketPool = CreateMutex(NULL, FALSE, L"packetpool");
 	CreateThread();
+	m_vecPacketFunc[PACKET_CHAT_MSG] = &mySessionMgr::PacketChatMsg;
+	m_vecPacketFunc[PACKET_LOGIN_REQ] = &mySessionMgr::PacketLoginLeq;
+	m_vecPacketFunc[PACKET_USER_POSITION] = &mySessionMgr::PacketUserPos;
 }
 
 mySessionMgr::~mySessionMgr()
