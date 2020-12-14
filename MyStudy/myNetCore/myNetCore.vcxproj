@@ -155,6 +155,7 @@ copy "*.h" "..\\..\\include\\NetCore"</Command>
     <ClCompile Include="myNetUser.cpp" />
     <ClCompile Include="myPacketPool.cpp" />
     <ClCompile Include="myServer.cpp" />
+    <ClCompile Include="myServerCallFunction.cpp" />
     <ClCompile Include="myServerObj.cpp" />
     <ClCompile Include="mySessionMgr.cpp" />
     <ClCompile Include="myThread.cpp" />

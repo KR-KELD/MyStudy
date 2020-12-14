@@ -57,7 +57,8 @@ DWORD __stdcall myIOCP::WorkerThread(LPVOID param)
 		myNetUser* pUser = (myNetUser*)keyValue;
 		if (pOV != nullptr && pOV->iType == OVERLAPPED2::MODE_EXIT)
 		{
-			I_Session.DelUser(pUser);
+			//바꾸기
+			//I_Session.DelUser(pUser);
 			continue;
 		}
 		//쓰레드 깨우기
