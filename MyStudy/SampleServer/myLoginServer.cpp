@@ -1,7 +1,9 @@
 #include "myLoginServer.h"
 #include "myIOCP.h"
+#include "myServer.h"
 bool myLoginServer::Init()
 {
+	I_Server.Init();
 	I_Iocp.Init();
 	m_Acceptor.InitNetwork("175.194.89.26",10000);
 	m_Acceptor.CreateThread();

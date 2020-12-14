@@ -96,6 +96,7 @@ bool myServer::Run()
 
 bool myServer::Broadcastting()
 {
+	m_SessionMgr.Lock();
 	std::map<SOCKET, myNetUser*>::iterator iterUser;
 	for (iterUser = m_SessionMgr.m_UserList.begin();
 		iterUser != m_SessionMgr.m_UserList.end();
@@ -126,14 +127,17 @@ bool myServer::Broadcastting()
 			iterUser++;
 		}
 	}
-
+	m_SessionMgr.UnLock();
 	m_SendBroadcastPacketPool.Clear();
 	return true;
 }
 
 bool myServer::Init()
 {
-	return false;
+	m_fnExecutePacket[PACKET_CHAT_MSG] = &myServer::PacketChatMsg;
+	m_fnExecutePacket[PACKET_USER_POSITION] = &myServer::PacketUserPos;
+	m_fnExecutePacket[PACKET_LOGIN_REQ] = &myServer::PacketLoginLeq;
+	return true;
 }
 
 myServer::myServer()
