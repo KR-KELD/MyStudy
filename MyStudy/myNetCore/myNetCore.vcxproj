@@ -153,6 +153,8 @@ copy "*.h" "..\\..\\include\\NetCore"</Command>
     <ClCompile Include="myIOCP.cpp" />
     <ClCompile Include="myLock.cpp" />
     <ClCompile Include="myNetUser.cpp" />
+    <ClCompile Include="myPacketPool.cpp" />
+    <ClCompile Include="myServer.cpp" />
     <ClCompile Include="myServerObj.cpp" />
     <ClCompile Include="mySessionMgr.cpp" />
     <ClCompile Include="myThread.cpp" />
@@ -163,7 +165,9 @@ copy "*.h" "..\\..\\include\\NetCore"</Command>
     <ClInclude Include="myLock.h" />
     <ClInclude Include="myNetStd.h" />
     <ClInclude Include="myNetUser.h" />
+    <ClInclude Include="myPacketPool.h" />
     <ClInclude Include="myProtocol.h" />
+    <ClInclude Include="myServer.h" />
     <ClInclude Include="myServerObj.h" />
     <ClInclude Include="mySessionMgr.h" />
     <ClInclude Include="myThread.h" />

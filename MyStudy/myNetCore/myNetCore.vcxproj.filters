@@ -36,6 +36,12 @@
     <ClCompile Include="myNetUser.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="myPacketPool.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myServer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myAcceptor.h">
@@ -63,6 +69,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="myNetUser.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myPacketPool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myServer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

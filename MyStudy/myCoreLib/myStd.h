@@ -114,6 +114,7 @@ extern HINSTANCE	g_hInstance;
 extern HDC			g_hScreenDC;
 extern HDC			g_hOffScreenDC;
 extern RECT			g_rtClient;
+extern bool			g_bActive;
 extern float		g_fGameTimer;
 extern float		g_fSecondPerFrame;
 

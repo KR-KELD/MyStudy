@@ -13,6 +13,18 @@ LRESULT CALLBACK WndProc(
 {
 	switch (message)
 	{
+	case WM_ACTIVATE:
+	{
+		if (LOWORD(wParam) == WA_INACTIVE)
+		{
+			g_bActive = false;
+		}
+		else
+		{
+			g_bActive = true;
+		}
+
+	}break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

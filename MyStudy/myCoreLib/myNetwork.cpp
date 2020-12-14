@@ -72,43 +72,6 @@ int myNetwork::SendMsg(SOCKET sock, char* msg, int iLen, uint16_t type)
 
 bool myNetwork::RecvData()
 {
-	//// header
-	//if (m_User.iRecvSize < PACKET_HEADER_SIZE)
-	//{
-	//	m_User.iRecvSize += recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
-	//		PACKET_HEADER_SIZE - m_User.iRecvSize, 0);
-	//	if (m_User.iRecvSize == 0 || m_User.iRecvSize == SOCKET_ERROR)
-	//	{
-	//		m_User.iRecvSize = 0;
-	//		if (WSAGetLastError() != WSAEWOULDBLOCK)
-	//		{
-	//			return false;
-	//		}
-	//		return true;
-	//	}
-	//}
-	//else
-	//{
-	//	UPACKET* packet = (UPACKET*)&m_User.recvBuf;
-	//	m_User.iRecvSize += recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
-	//		packet->ph.len - m_User.iRecvSize, 0);
-	//	if (m_User.iRecvSize == 0 || m_User.iRecvSize == SOCKET_ERROR)
-	//	{
-	//		m_User.iRecvSize = 0;
-	//		if (WSAGetLastError() != WSAEWOULDBLOCK)
-	//		{
-	//			return false;
-	//		}
-	//		return true;
-	//	}
-	//	if (m_User.iRecvSize == packet->ph.len)
-	//	{
-	//		AddRecvPacket(m_User, packet);
-	//		memset(m_User.recvBuf, 0, sizeof(char) * MAX_BUFFER_SIZE);
-	//		m_User.iRecvSize = 0;
-	//	}
-	//}
-
 	//데이터가 들어오면 받아라
 	int iLen = recv(m_Sock, &m_User.recvBuf[m_User.iRecvSize],
 		PACKET_HEADER_SIZE - m_User.iRecvSize, 0);
@@ -192,16 +155,20 @@ void myNetwork::SendLoginData(SOCKET sock, std::string id, std::string ps)
 
 bool myNetwork::Frame()
 {
+	//연결된 네트워크들의 연결상태 확인
 	int iIndex = WSAWaitForMultipleEvents(m_iArrayCount,
 		m_EventArray, FALSE,
 		0, FALSE);
 	if (iIndex == WSA_WAIT_FAILED) return false;
 	if (iIndex == WSA_WAIT_TIMEOUT) return true;
+	//?
 	iIndex -= WSA_WAIT_EVENT_0;
 
 	WSANETWORKEVENTS NetworkEvent;
+	//네트워크들에서 이벤트를 받는다
 	for (int iEvent = iIndex; iEvent < m_iArrayCount; iEvent++)
 	{
+		//네트워크를 하나씩 불러와라
 		int iSignal = WSAWaitForMultipleEvents(1,
 			&m_EventArray[iEvent], TRUE, 0, FALSE);
 		if (iSignal == WSA_WAIT_FAILED)
@@ -213,7 +180,7 @@ bool myNetwork::Frame()
 		{
 			continue;
 		}
-
+		//이벤트를 받아와라
 		int iRet = WSAEnumNetworkEvents(m_Sock,
 			m_EventArray[iEvent], &NetworkEvent);
 		if (iRet == SOCKET_ERROR)
@@ -348,9 +315,11 @@ bool  myNetwork::InitNetwork()
 
 bool  myNetwork::InitSocket()
 {
+	//네트워크 추가
 	m_EventArray[m_iArrayCount] = WSACreateEvent();
 	WSAEventSelect(m_Sock, m_EventArray[m_iArrayCount],
 		FD_CONNECT | FD_READ | FD_WRITE | FD_CLOSE);
+	//네트워크 카운트 증가
 	m_iArrayCount++;
 	return true;
 }

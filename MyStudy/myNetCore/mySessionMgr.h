@@ -12,7 +12,7 @@ private:
 	std::list<myNetUser*>		m_UserList;
 	std::vector<myPacket>	    m_PacketPool;
 	std::vector<UPACKET>	    m_BroadcasttingPacketPool;
-	std::map<int,void(mySessionMgr::*)(myPacket&)>	m_vecPacketFunc;
+	std::map<int,void(mySessionMgr::*)(myPacket&)>	m_mapPacketFunc;
 public:
 	void			AddUser(myNetUser * pUser);
 	void			AddPacket(myPacket& packet);

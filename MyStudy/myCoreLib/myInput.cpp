@@ -18,6 +18,7 @@ bool myInput::Init()
 
 bool myInput::Frame()
 {
+	if (g_bActive == false) return true;
 	//커서의 위치를 받아오는 함수
 	GetCursorPos(&m_MousePos);
 	//화면 좌표를 클라이언트 좌표로 변환해주는 함수

@@ -133,7 +133,7 @@ bool mySessionMgr::Run()
 			senditer++)
 		{
 			//UPACKET* packet = (UPACKET*)&senditer->packet;
-			(this->*m_vecPacketFunc[senditer->packet.ph.type])(*senditer);
+			(this->*m_mapPacketFunc[senditer->packet.ph.type])(*senditer);
 
 			//if (packet->ph.type == PACKET_CHAT_MSG)
 			//{
@@ -238,9 +238,9 @@ mySessionMgr::mySessionMgr()
 {
 	m_hMutexPacketPool = CreateMutex(NULL, FALSE, L"packetpool");
 	CreateThread();
-	m_vecPacketFunc[PACKET_CHAT_MSG] = &mySessionMgr::PacketChatMsg;
-	m_vecPacketFunc[PACKET_LOGIN_REQ] = &mySessionMgr::PacketLoginLeq;
-	m_vecPacketFunc[PACKET_USER_POSITION] = &mySessionMgr::PacketUserPos;
+	m_mapPacketFunc[PACKET_CHAT_MSG] = &mySessionMgr::PacketChatMsg;
+	m_mapPacketFunc[PACKET_LOGIN_REQ] = &mySessionMgr::PacketLoginLeq;
+	m_mapPacketFunc[PACKET_USER_POSITION] = &mySessionMgr::PacketUserPos;
 }
 
 mySessionMgr::~mySessionMgr()
