@@ -1,5 +1,5 @@
 #include "myNetUser.h"
-#include "mySessionMgr.h"
+#include "myServer.h"
 
 // |p1------p1e:p2-------p2e:p3-------t----p3e-------|
 // 1, 패킷 헤더 > dwTrans
@@ -52,7 +52,7 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 				&m_szDataBuffer[m_iPacketPos],
 				packet->ph.len);
 			// 페킷 풀에 완성 패킷을 넣어주어야 한다.
-			I_Session.AddPacket(tPacket);
+			I_Server.m_RecvPacketPool.AddPacket(tPacket);
 
 			//패킷을 만든만큼 리드포스를 차감해준다
 			m_iReadPos -= packet->ph.len;

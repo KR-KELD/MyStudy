@@ -91,6 +91,7 @@ bool myServer::Run()
 
 		Broadcastting();
 	}
+	return true;
 }
 
 bool myServer::Broadcastting()
@@ -127,6 +128,7 @@ bool myServer::Broadcastting()
 	}
 
 	m_SendBroadcastPacketPool.Clear();
+	return true;
 }
 
 bool myServer::Init()

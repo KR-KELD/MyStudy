@@ -3,7 +3,7 @@
 #include "myPacketPool.h"
 #include "myThread.h"
 
-class myServer :public NetSingleTon<myServer>, public myThread
+class myServer : public NetSingleTon<myServer>, public myThread
 {
 private:
 	friend class NetSingleTon<myServer>;
@@ -31,4 +31,4 @@ public:
 	myServer();
 	virtual ~myServer();
 };
-#define I_Server myServer::GetInstance();
+#define I_Server myServer::GetInstance()

@@ -3,6 +3,8 @@
 
 class mySessionMgr : public myServerObj
 {
+private:
+	friend NetSingleTon<mySessionMgr>;
 public:
 	std::map<SOCKET, myNetUser*>		m_UserList;
 public:
