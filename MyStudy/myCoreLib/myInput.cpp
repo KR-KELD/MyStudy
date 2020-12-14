@@ -22,6 +22,7 @@ bool myInput::Frame()
 	GetCursorPos(&m_MousePos);
 	//화면 좌표를 클라이언트 좌표로 변환해주는 함수
 	ScreenToClient(g_hWnd, &m_MousePos);
+	g_KeyMap.bKeyDown = false;
 	for (int iKey = 0; iKey < 256; iKey++)
 	{
 		//키의 입력을 비동기로 받아오는 함수(입력한 시점을 감지)
@@ -31,6 +32,7 @@ bool myInput::Frame()
 			if (m_dwKeyState[iKey] == KEY_FREE)
 			{
 				m_dwKeyState[iKey] = KEY_PUSH;
+				g_KeyMap.bKeyDown = true;
 			}
 			else
 			{

@@ -35,8 +35,9 @@ public:
 public:
 	virtual bool	Frame();
 public:
-	virtual bool	InitNetwork(std::string ip, int port);
-	virtual bool	InitSocket(std::string ip, int port);
+	virtual bool	InitNetwork();
+	virtual bool	InitSocket();
+	virtual bool	ConnectServer(std::string ip, int port);
 	virtual bool	DeleteNetwork();
 public:
 	myNetwork();

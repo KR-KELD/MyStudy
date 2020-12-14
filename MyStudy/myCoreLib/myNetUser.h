@@ -9,7 +9,8 @@ public:
 	char		recvBuf[MAX_BUFFER_SIZE];
 	int			iRecvSize;
 	int			iSendSize;
-	T_STR		szName;
+	//T_STR		szName;
+	std::wstring		strName;
 	std::vector<UPACKET>	m_SendPacket;
 	myNetUser();
 	virtual ~myNetUser();

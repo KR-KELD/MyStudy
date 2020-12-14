@@ -270,7 +270,7 @@ bool myNetwork::Frame()
 	return true;
 }
 
-bool  myNetwork::InitNetwork(std::string ip, int port)
+bool  myNetwork::InitNetwork()
 {
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -333,26 +333,30 @@ bool  myNetwork::InitNetwork(std::string ip, int port)
 		Error(L"SO_LINGER");
 		return false;
 	}
-
-	if (InitSocket(ip, port) == false)
+	if (InitSocket() == false)
 	{
 		return false;
 	}
+
+	unsigned long iMode = 1;
+	ioctlsocket(m_Sock, FIONBIO, &iMode);
 
 	//myNetwork::g_bConnect = true;
 	//SendLoginData(m_Sock, "kgca", "game");
 	return true;
 }
 
-bool  myNetwork::InitSocket(std::string ip, int port)
+bool  myNetwork::InitSocket()
 {
 	m_EventArray[m_iArrayCount] = WSACreateEvent();
 	WSAEventSelect(m_Sock, m_EventArray[m_iArrayCount],
 		FD_CONNECT | FD_READ | FD_WRITE | FD_CLOSE);
 	m_iArrayCount++;
+	return true;
+}
 
-	unsigned long iMode = 1;
-	ioctlsocket(m_Sock, FIONBIO, &iMode);
+bool myNetwork::ConnectServer(std::string ip, int port)
+{
 	SOCKADDR_IN sa;
 	// 바이트 정렬 구조 	
 	USHORT jValue = 10000;
@@ -370,7 +374,6 @@ bool  myNetwork::InitSocket(std::string ip, int port)
 			return false;
 		}
 	}
-	return true;
 }
 
 bool myNetwork::DeleteNetwork()
@@ -382,7 +385,7 @@ bool myNetwork::DeleteNetwork()
 
 myNetwork::myNetwork()
 {
-	m_User.szName = L"defalt";
+	m_User.strName = L"defalt";
 	m_bLogin = false;
 }
 

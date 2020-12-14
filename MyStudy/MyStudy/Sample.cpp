@@ -1,5 +1,45 @@
 #include "Sample.h"
 GAMERUN;
+string Sample::strServerIP;
+
+void Sample::PacketChatMsg(myPacket & packet)
+{
+	static int iCount = 0;
+	iCount++;
+	myChatMsg* pMsg = (myChatMsg*)packet.packet.msg;
+	myMsg msg;
+	msg.msg = to_mw(pMsg->buffer);
+	msg.msg += to_wstring(iCount);
+	msg.rt.top = 100;
+	msg.rt.left = 100;
+	g_Draw.Push(msg);
+}
+
+void Sample::PacketLoginAck(myPacket & packet)
+{
+	myLoginResult* ret = (myLoginResult*)packet.packet.msg;
+	if (ret->iRet == 1)
+	{
+		m_Net.m_bLogin = true;
+	}
+	else
+	{
+		m_Net.SendLoginData(m_Net.m_Sock, "kgca", "game");
+	}
+}
+
+void Sample::LoginSeq()
+{
+
+	if (!m_Net.m_bLogin)
+	{
+
+		//if (m_Net.ConnectServer(ip, 10000) == false)
+		//{
+
+		//}
+	}
+}
 
 void Sample::SendTest(const char * pData)
 {
@@ -14,12 +54,39 @@ void Sample::SendTest(const char * pData)
 	m_Net.m_sendPacket.push_back(packet);
 }
 
+DWORD WINAPI IPInput(LPVOID arg)
+{
+	char buf[500] = { 0, };
+	int iMsgLength = 0;
+	while (1)
+	{
+		if (g_KeyMap.bKeyDown)
+		{
+			int iValue = _getche();
+			if (iValue == '\r')
+			{
+				iMsgLength = 0;
+			}
+			else
+			{
+				buf[iMsgLength++] = iValue;
+				Sample::strServerIP = buf;
+			}
+		}
+	}
+	return 0;
+}
+
 bool  Sample::Init()
 {
 	m_Net.m_User.szName = L"테스트";
-	if (m_Net.InitNetwork("175.194.89.26", 10000) == false)
+	m_vecPacketFunc[PACKET_CHAT_MSG] = &Sample::PacketChatMsg;
+	m_vecPacketFunc[PACKET_LOGIN_ACK] = &Sample::PacketLoginAck;
+	//DWORD dwID;
+	//m_hThread = CreateThread(0, 0, IPInput, (LPVOID)this,0, &dwID);
+	if (m_Net.InitNetwork() == false)
 	{
-		return false;
+		return true;
 	}
 	return true;
 }
@@ -37,35 +104,15 @@ bool  Sample::Frame()
 		senditer++)
 	{
 		UPACKET* packet = (UPACKET*)&senditer->packet;
-		if (packet->ph.type == PACKET_USER_POSITION)
-		{
-			myUnitPos* ret = (myUnitPos*)packet->msg;
-			myPoint p = { ret->p[0],ret->p[1] };
-			//myScene::m_pGamePlayer->SetPos(p);
-		}
-		if (packet->ph.type == PACKET_CHAT_MSG)
-		{
-			static int iCount = 0;
-			iCount++;
-			myChatMsg* pMsg = (myChatMsg*)&packet->msg;
-			myMsg msg;
-			msg.msg = to_mw(pMsg->buffer);
-			msg.msg += to_wstring(iCount);
+		(this->*m_vecPacketFunc[senditer->packet.ph.type])(*senditer);
+		//if (packet->ph.type == PACKET_CHAT_MSG)
+		//{
 
-			g_Draw.Push(msg);
-		}
-		if (packet->ph.type == PACKET_LOGIN_ACK)
-		{
-			myLoginResult* ret = (myLoginResult*)packet->msg;
-			if (ret->iRet == 1)
-			{
-				m_Net.m_bLogin = true;
-			}
-			else
-			{
-				m_Net.SendLoginData(m_Net.m_Sock, "kgca", "game");
-			}
-		}
+		//}
+		//if (packet->ph.type == PACKET_LOGIN_ACK)
+		//{
+
+		//}
 	}
 	m_Net.m_recvPacket.clear();
 
@@ -74,6 +121,27 @@ bool  Sample::Frame()
 
 bool  Sample::Render() 
 {
+	g_Draw.Draw(100, 100, L"IP를 입력해주세요 ");
+	for (int iKey = 0; iKey < 256; iKey++)
+	{
+		if (g_Input.GetKey(iKey) == KEY_PUSH)
+		{
+			
+			
+		}
+	}
+
+	int iValue = _getche();
+	if (iValue != -1)
+	{
+		Sample::strServerIP = (char)iValue;
+	}
+
+
+
+
+	g_Draw.Draw(100, 200, to_mw(strServerIP));
+	LoginSeq();
 	if (m_Net.m_bLogin && myNetwork::g_bConnect)
 	{
 		if (!m_Net.SendPackets())
@@ -94,6 +162,7 @@ bool  Sample::Render()
 
 bool  Sample::Release()
 {
+	//CloseHandle(m_hThread);
 	m_Net.DeleteNetwork();
 	return true;
 }

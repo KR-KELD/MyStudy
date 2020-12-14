@@ -9,6 +9,8 @@
 #include <sstream>
 #include <fstream>
 #include <assert.h>
+#include <conio.h>
+#include <stdio.h>
 #include "myMath.h"
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "myCoreLib.lib")
@@ -26,6 +28,7 @@ using namespace std;
 struct myKeyMap
 {
 	bool bCapsLockActive;
+	bool bKeyDown;
 };
 struct myPoint
 {

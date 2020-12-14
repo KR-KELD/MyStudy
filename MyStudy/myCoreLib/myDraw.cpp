@@ -53,7 +53,6 @@ bool myDraw::Render()
 		SetBkMode(g_hOffScreenDC, TRANSPARENT);
 		for (int iMsg = 0; iMsg < m_TextList.size(); iMsg++)
 		{
-			m_TextList[iMsg].rt.top = iMsg * 25;
 			DrawText(g_hOffScreenDC, m_TextList[iMsg].msg.c_str(),
 				-1, &m_TextList[iMsg].rt, DT_LEFT);
 		}
