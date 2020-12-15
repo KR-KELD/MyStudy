@@ -10,7 +10,8 @@ void myServer::PacketChatMsg(myPacket& packet)
 
 void myServer::PacketLoginLeq(myPacket& packet)
 {
-	UPACKET sendPacket;
+	myPacket userPacket;
+	userPacket.pUser = packet.pUser;
 	T_STR szID = L"kgca";
 	T_STR szPS = L"game";
 	myLogin* login = (myLogin*)packet.packet.msg;
@@ -25,11 +26,12 @@ void myServer::PacketLoginLeq(myPacket& packet)
 	{
 		ret.iRet = 0;
 	}
-	MakePacket(sendPacket, (char*)&ret, sizeof(myLoginResult),
+	MakePacket(userPacket.packet, (char*)&ret, sizeof(myLoginResult),
 		PACKET_LOGIN_ACK);
 	if (packet.pUser != nullptr)
 	{
-		packet.pUser->m_SendPacket.push_back(sendPacket);
+		//packet.pUser->m_SendPacket.push_back(sendPacket);
+		m_SendPacketPool.AddPacket(userPacket);
 	}
 }
 

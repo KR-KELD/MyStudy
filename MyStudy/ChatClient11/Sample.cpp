@@ -152,6 +152,10 @@ bool  Sample::Frame()
 			if(m_strChat.size() > 0)
 				m_strChat.pop_back();
 		}
+		else if (iValue == 27)
+		{
+			return false;
+		}
 		else
 		{
 			m_strChat += (char)iValue;

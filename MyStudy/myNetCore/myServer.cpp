@@ -54,40 +54,60 @@ bool myServer::Run()
 		m_RecvPacketPool.Unlock();
 		m_RecvPacketPool.Clear();
 #pragma endregion
-		m_SessionMgr.Lock();
-		std::map<SOCKET, myNetUser*>::iterator iterUser;
-		for (iterUser = m_SessionMgr.m_UserList.begin();
-			iterUser != m_SessionMgr.m_UserList.end();
-			)
+		m_SendPacketPool.Lock();
+		//{
+		//	myLock(&m_SendPacketPool);
+		//}
+		std::vector<myPacket>::iterator iterSend;
+		for (iterSend = m_SendPacketPool.m_list.begin();
+			iterSend != m_SendPacketPool.m_list.end();
+			iterSend++)
 		{
-			myNetUser* pUser = iterUser->second;
-			bool bDelete = false;
-			std::vector<UPACKET>::iterator senditer;
-			//여기 추가
-			for (senditer = pUser->m_SendPacket.begin();
-				senditer != pUser->m_SendPacket.end();
-				senditer++)
+			myNetUser* pUser = iterSend->pUser;
+			if (pUser == nullptr) continue;
+			if (SendData(*pUser, iterSend->packet) == false)
 			{
-				if (SendData(*pUser, *senditer) == false)
-				{
-					pUser->m_bExit = true;
-					bDelete = true;
-					break;
-				}
-			}
-			pUser->m_SendPacket.clear();
-
-			if (bDelete == true)
-			{
-				m_SessionMgr.CloseUser(pUser);
-				iterUser = m_SessionMgr.m_UserList.erase(iterUser);
-			}
-			else
-			{
-				iterUser++;
+				pUser->m_bExit = true;
+				m_SessionMgr.DelUser(pUser);
 			}
 		}
-		m_SessionMgr.UnLock();
+		m_SendPacketPool.Unlock();
+		m_SendPacketPool.Clear();
+
+		//m_SessionMgr.Lock();
+		//std::map<SOCKET, myNetUser*>::iterator iterUser;
+		//for (iterUser = m_SessionMgr.m_UserList.begin();
+		//	iterUser != m_SessionMgr.m_UserList.end();
+		//	)
+		//{
+		//	myNetUser* pUser = iterUser->second;
+		//	bool bDelete = false;
+		//	std::vector<UPACKET>::iterator senditer;
+		//	//여기 추가
+		//	for (senditer = pUser->m_SendPacket.begin();
+		//		senditer != pUser->m_SendPacket.end();
+		//		senditer++)
+		//	{
+		//		if (SendData(*pUser, *senditer) == false)
+		//		{
+		//			pUser->m_bExit = true;
+		//			bDelete = true;
+		//			break;
+		//		}
+		//	}
+		//	pUser->m_SendPacket.clear();
+
+		//	if (bDelete == true)
+		//	{
+		//		m_SessionMgr.CloseUser(pUser);
+		//		iterUser = m_SessionMgr.m_UserList.erase(iterUser);
+		//	}
+		//	else
+		//	{
+		//		iterUser++;
+		//	}
+		//}
+		//m_SessionMgr.UnLock();
 
 		Broadcastting();
 	}

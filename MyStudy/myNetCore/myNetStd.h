@@ -14,7 +14,12 @@
 #include <process.h>
 #include "myProtocol.h"
 #pragma comment (lib, "ws2_32.lib")
-#pragma comment (lib, "myNetCore.lib")
+
+#if NDEBUG
+#pragma comment (lib, "myNetCore_R.lib")
+#else
+#pragma comment (lib, "myNetCore_D.lib")
+#endif
 
 typedef std::basic_string<TCHAR>		T_STR;
 typedef std::basic_string<CHAR>			C_STR;

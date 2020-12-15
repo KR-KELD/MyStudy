@@ -29,7 +29,7 @@ public:
 	OVERLAPPED2			 m_ovRead;	//오버랩드 리드
 	OVERLAPPED2			 m_ovSend;	//오버랩드 샌드
 	T_STR				 szName;	//유저이름
-	std::vector<UPACKET> m_SendPacket;	//개인적으로 보낼 패킷
+	//std::vector<UPACKET> m_SendPacket;	//개인적으로 보낼 패킷
 public:
 	char	m_szDataBuffer[MAX_DATA_BUFFER_SIZE];	//데이터 버퍼
 	int		m_iPacketPos; // 패킷의 시작 주소

@@ -13,7 +13,13 @@
 #include <stdio.h>
 #include "myMath.h"
 #pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "myCoreLib.lib")
+
+#if NDEBUG
+#pragma comment (lib, "myCoreLib_R.lib")
+#else
+#pragma comment (lib, "myCoreLib_D.lib")
+#endif
+
 #pragma comment(lib, "fmod_vc.lib")
 #pragma comment(lib, "Msimg32.lib")
 using namespace std;
@@ -114,6 +120,7 @@ extern HINSTANCE	g_hInstance;
 extern HDC			g_hScreenDC;
 extern HDC			g_hOffScreenDC;
 extern RECT			g_rtClient;
+extern bool			g_bActive;
 extern float		g_fGameTimer;
 extern float		g_fSecondPerFrame;
 
