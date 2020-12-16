@@ -19,6 +19,8 @@
 
 bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 {
+	//다 쓴 오브랩드 구조체를 오브젝트풀에 담는다
+	delete ov;
 	//데이터 버퍼가 가득차면 메모리를 당겨준다
 	if (m_iWritePos + dwTrans >= MAX_DATA_BUFFER_SIZE)
 	{
@@ -74,23 +76,55 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 }
 bool myNetUser::DispatchWrite(DWORD dwTrans, OVERLAPPED2 * ov)
 {
+	delete ov;
 	return true;
+}
+OVERLAPPED2 * myNetUser::OverlappedRecv(int type)
+{
+	OVERLAPPED2* ov = new OVERLAPPED2(type);
+	ZeroMemory(m_szRecvBuffer, MAX_BUFFER_SIZE);
+	m_wsaRecvBuffer.len = MAX_BUFFER_SIZE;
+	m_wsaRecvBuffer.buf = m_szRecvBuffer;
+	return ov;
+}
+OVERLAPPED2 * myNetUser::OverlappedSend(int type, UPACKET& msg)
+{
+	OVERLAPPED2* ov = new OVERLAPPED2(type);
+	m_wsaSendBuffer.buf = (char*)&msg;
+	m_wsaSendBuffer.len = msg.ph.len;
+	return ov;
 }
 bool myNetUser::WaitReceive()
 {
 	//오버랩구조체 초기화
-	ZeroMemory(&m_ovRead, sizeof(OVERLAPPED));
-	m_ovRead.iType = OVERLAPPED2::MODE_RECV;
+	//ZeroMemory(&m_ovRead, sizeof(OVERLAPPED));
+	//m_ovRead.iType = OVERLAPPED2::MODE_RECV;
+	//ZeroMemory(m_szRecvBuffer, MAX_BUFFER_SIZE);
+	//m_wsaRecvBuffer.len = MAX_BUFFER_SIZE;
+	//m_wsaRecvBuffer.buf = m_szRecvBuffer;
+	OVERLAPPED2* ov = OverlappedRecv(OVERLAPPED2::MODE_RECV);
 	//리시브버퍼 초기화
-	ZeroMemory(m_szRecvBuffer, MAX_BUFFER_SIZE);
-	m_wsaRecvBuffer.len = MAX_BUFFER_SIZE;
-	m_wsaRecvBuffer.buf = m_szRecvBuffer;
 	DWORD cbTrans;	//?
 	DWORD dwflags = 0;//플래그
 	//리시브
-	//질문 언제 iocp에 완료 정보가 전달되는지
-	int iRet = WSARecv(m_Sock, &m_wsaRecvBuffer, 1,
-		&cbTrans, &dwflags, (OVERLAPPED*)&m_ovRead, NULL);
+	int iRet = WSARecv(m_Sock, &m_wsaRecvBuffer, 1, 
+		&cbTrans, &dwflags, (LPOVERLAPPED)ov, NULL);
+	if (iRet == SOCKET_ERROR)
+	{
+		if (WSAGetLastError() != WSA_IO_PENDING)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+bool myNetUser::WaitSend(UPACKET& msg)
+{
+	DWORD dwSendByte;
+	int iRet;
+	OVERLAPPED2* ov = OverlappedSend(OVERLAPPED2::MODE_SEND, msg);
+	iRet = WSASend(m_Sock, &m_wsaSendBuffer, 1,
+		&dwSendByte, 0, (LPOVERLAPPED)ov, NULL);
 	if (iRet == SOCKET_ERROR)
 	{
 		if (WSAGetLastError() != WSA_IO_PENDING)

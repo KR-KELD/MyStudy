@@ -128,7 +128,9 @@ bool  Sample::Init()
 		}
 		break;
 	}
-
+	//if (m_Net.ConnectServer("175.194.89.26", 10000) == false)
+	//{
+	//}
 
 	return true;
 }
@@ -167,6 +169,7 @@ bool  Sample::Frame()
 	if (fTime >= 1.0f)
 	{
 		MsgProcess();
+		//SendMsg("test");
 		fTime -= 1.0f;
 	}
 

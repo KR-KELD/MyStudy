@@ -1,5 +1,6 @@
 #pragma once
 #include "myServerObj.h"
+#include "myObjectPool.h"
 #define MAX_BUFFER_SIZE 512
 #define MAX_DATA_BUFFER_SIZE  (MAX_BUFFER_SIZE * 3)
 
@@ -10,10 +11,21 @@ struct myPacket
 	UPACKET packet;
 };
 
-struct OVERLAPPED2 : OVERLAPPED
+struct OVERLAPPED2 : myObjectPool<OVERLAPPED2>
 {
-	enum { MODE_RECV = 1, MODE_SEND = 2, MODE_EXIT};
-	int		iType; // 0:recv , 1:send
+	enum { MODE_RECV = 1, MODE_SEND = 2, MODE_EXIT };
+	OVERLAPPED ov;
+	int	 iType; // 0:recv, 1:send
+	OVERLAPPED2(int type)
+	{
+		memset(&ov, 0, sizeof(OVERLAPPED));
+		iType = type;
+	}
+	OVERLAPPED2()
+	{
+		memset(&ov, 0, sizeof(OVERLAPPED));
+		iType = MODE_RECV;
+	}
 };
 
 class myNetUser
@@ -38,7 +50,12 @@ public:
 public:
 	virtual bool DispatchRead(DWORD dwTrans, OVERLAPPED2* ov);
 	virtual bool DispatchWrite(DWORD dwTrans, OVERLAPPED2* ov);
+
+	OVERLAPPED2* OverlappedRecv(int type);
+	OVERLAPPED2* OverlappedSend(int type, UPACKET& msg);
+
 	virtual bool WaitReceive();
+	virtual bool WaitSend(UPACKET& msg);
 public:
 	myNetUser();
 	virtual ~myNetUser();

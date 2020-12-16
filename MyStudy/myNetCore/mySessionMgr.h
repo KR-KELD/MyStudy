@@ -1,7 +1,7 @@
 #pragma once
 #include "myNetUser.h"
 
-class mySessionMgr : public myServerObj
+class mySessionMgr : public NetSingleTon<mySessionMgr>, public myServerObj
 {
 private:
 	friend NetSingleTon<mySessionMgr>;
@@ -18,4 +18,4 @@ public:
 	mySessionMgr();
 	virtual ~mySessionMgr();
 };
-
+#define I_Session mySessionMgr::GetInstance()

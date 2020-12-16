@@ -1,6 +1,6 @@
 #include "myAcceptor.h"
 #include "myIOCP.h"
-#include "myServer.h"
+#include "mySessionMgr.h"
 bool myAcceptor::InitNetwork(std::string ip, int port)
 {
 	int iRet;
@@ -147,7 +147,7 @@ bool myAcceptor::AddSession(SOCKET sock, SOCKADDR_IN addr)
 		myNetUser* user = new myNetUser;
 		user->m_Sock = sock;
 		user->m_SockAddr = addr;
-		I_Server.m_SessionMgr.AddUser(user);
+		I_Session.AddUser(user);
 		I_Iocp.SetBind(sock, (ULONG_PTR)user);
 		user->WaitReceive();
 		printf("\nÁ¢¼Ó->%s:%d",

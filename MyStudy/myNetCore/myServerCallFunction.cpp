@@ -1,14 +1,16 @@
 #include "myServer.h"
 
-void myServer::PacketChatMsg(myPacket& packet)
+void myServer::PacketChatMsg(myPacket packet)
 {
 	myChatMsg* pMsg = (myChatMsg*)packet.packet.msg;
-	printf("\n[%s]%s:%d", pMsg->szName,
-		pMsg->buffer, pMsg->iCnt);
+	std::cout << "[" << pMsg->szName << "] : " <<
+		pMsg->buffer << " : " << pMsg->iCnt << std::endl;
+	//printf("\n[%s]%s:%d", pMsg->szName,
+	//	pMsg->buffer, pMsg->iCnt);
 	m_SendBroadcastPacketPool.AddPacket(packet);
 }
 
-void myServer::PacketLoginLeq(myPacket& packet)
+void myServer::PacketLoginLeq(myPacket packet)
 {
 	myPacket userPacket;
 	userPacket.pUser = packet.pUser;
@@ -35,12 +37,14 @@ void myServer::PacketLoginLeq(myPacket& packet)
 	}
 }
 
-void myServer::PacketUserPos(myPacket & packet)
+void myServer::PacketUserPos(myPacket packet)
 {
 	myUnitPos* pMsg = (myUnitPos*)packet.packet.msg;
-	printf("\n[%10.4f:%10.4f:%10.4f",
-		pMsg->p[0],
-		pMsg->p[1],
-		pMsg->p[2]);
+	std::cout << pMsg->p[0] << " : " << pMsg->p[1]<< " : "
+		<< pMsg->p[2] << std::endl;
+	//printf("\n[%10.4f:%10.4f:%10.4f",
+	//	pMsg->p[0],
+	//	pMsg->p[1],
+	//	pMsg->p[2]);
 	m_SendBroadcastPacketPool.AddPacket(packet);
 }
