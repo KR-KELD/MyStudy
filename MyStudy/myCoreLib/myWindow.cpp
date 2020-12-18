@@ -45,6 +45,7 @@ bool myWindow::SetWindow(HINSTANCE hInstance)
 	wc.lpfnWndProc = WndProc;			//프로시저 등록
 	wc.hbrBackground =					//배경색 지정
 		(HBRUSH)GetStockObject(WHITE_BRUSH);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hInstance = m_hInstance;			//인스턴스 핸들 지정
 	wc.lpszClassName = L"MyWindow";		//프로세스 이름 지정
 	if (RegisterClassEx(&wc) == 0)

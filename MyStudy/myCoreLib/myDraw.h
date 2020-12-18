@@ -16,7 +16,7 @@ struct myMsg
 };
 class myDraw : public SingleTon<myDraw>
 {
-private:
+public:
 	HFONT			m_hFont;
 	vector<myMsg>	m_TextList;
 public:

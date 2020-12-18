@@ -1,6 +1,10 @@
 #include "Sample.h"
 GAMERUN;
-string Sample::strServerIP;
+HWND	g_hEdit;
+HWND	g_hButton;
+RECT	g_rtEdit;
+RECT	g_rtButton;
+
 
 void Sample::PacketChatMsg(myPacket & packet)
 {
@@ -46,7 +50,7 @@ void Sample::SendTest(const char * pData)
 	myChatMsg chatmsg;
 	memset(&chatmsg, 0, sizeof(chatmsg));
 
-	strcpy_s(chatmsg.szName, to_wm(m_Net.m_User.szName).c_str());
+	strcpy_s(chatmsg.szName, to_wm(m_Net.m_User.strName).c_str());
 	strcpy_s(chatmsg.buffer, pData);
 	chatmsg.iCnt = 0;// iCount++;
 	UPACKET packet;
@@ -79,7 +83,24 @@ DWORD WINAPI IPInput(LPVOID arg)
 
 bool  Sample::Init()
 {
-	m_Net.m_User.szName = L"테스트";
+	g_rtEdit = { 0,g_rtClient.bottom - 30, g_rtClient.right - 100, 30 };
+	g_rtButton = { g_rtEdit.right + 10, g_rtEdit.top, 50, 20 };
+	WNDCLASS WndClass;
+	GetClassInfo(NULL, L"edit", &WndClass);
+	WndClass.style = CS_OWNDC;
+	WndClass.lpszClassName = L"myEdit";
+	RegisterClass(&WndClass);
+	DWORD style = WS_CHILD | WS_VISIBLE;
+	g_hEdit = CreateWindow(L"myEdit", NULL, style,
+		g_rtEdit.left, g_rtClient.top, g_rtClient.right,
+		g_rtClient.bottom, g_hWnd, (HMENU)100, g_hInstance, 0);
+	SendMessage(g_hEdit, WM_SETFONT, (WPARAM)g_Draw.m_hFont,NULL);
+	g_hButton = CreateWindow(L"button",L"Send", style,
+		g_rtEdit.left, g_rtClient.top, g_rtClient.right,
+		g_rtClient.bottom, g_hWnd, (HMENU)200, g_hInstance, NULL);
+	//g_OldButtonProc = SetWindowLongPtr(g_hButton, GWLP_WNDPROC, (LONG_PTR)ButtonProc);
+
+	m_Net.m_User.strName = L"테스트";
 	m_vecPacketFunc[PACKET_CHAT_MSG] = &Sample::PacketChatMsg;
 	m_vecPacketFunc[PACKET_LOGIN_ACK] = &Sample::PacketLoginAck;
 	//DWORD dwID;

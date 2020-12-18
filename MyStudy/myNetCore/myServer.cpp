@@ -113,7 +113,7 @@ bool myServer::Run()
 		//	}
 		//}
 		//m_SessionMgr.UnLock();
-#pragma region Session
+#pragma region BroadcastPool
 		{
 			myLock lock((myServerObj*)&I_Session);
 			Broadcastting();

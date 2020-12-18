@@ -17,11 +17,11 @@ bool mySessionMgr::DelUser(myNetUser* pUser)
 			inet_ntoa(pUser->m_SockAddr.sin_addr),
 			ntohs(pUser->m_SockAddr.sin_port));
 
-		CloseUser(pUser);
 		std::map<SOCKET, myNetUser*>::iterator iter =
 			m_UserList.find(pUser->m_Sock);
 		if (iter != m_UserList.end())
 		{
+			CloseUser(pUser);
 			m_UserList.erase(iter);
 		}
 	}
