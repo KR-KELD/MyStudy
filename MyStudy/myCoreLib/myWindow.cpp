@@ -13,6 +13,12 @@ LRESULT CALLBACK WndProc(
 {
 	switch (message)
 	{
+	case WM_LBUTTONDOWN:
+	{
+		SetFocus(NULL);
+		//윈도우 포커스로 잡고있는데 따로 만드는걸 추천
+		g_bActive = true;
+	}
 	case WM_ACTIVATE:
 	{
 		if (LOWORD(wParam) == WA_INACTIVE)

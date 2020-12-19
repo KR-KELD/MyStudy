@@ -13,15 +13,15 @@ void myPacketPool::Clear()
 	LeaveCriticalSection(&m_cs);
 }
 
-void myPacketPool::Lock()
-{
-	EnterCriticalSection(&m_cs);
-}
-
-void myPacketPool::Unlock()
-{
-	LeaveCriticalSection(&m_cs);
-}
+//void myPacketPool::Lock()
+//{
+//	EnterCriticalSection(&m_cs);
+//}
+//
+//void myPacketPool::Unlock()
+//{
+//	LeaveCriticalSection(&m_cs);
+//}
 
 myPacketPool::myPacketPool()
 {

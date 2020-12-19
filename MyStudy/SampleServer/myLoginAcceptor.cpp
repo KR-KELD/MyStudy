@@ -1,5 +1,5 @@
 #include "myLoginAcceptor.h"
-#include "mySessionMgr.h"
+#include "myServer.h"
 #include "myIOCP.h"
 
 bool myLoginAcceptor::AddSession(SOCKET sock, SOCKADDR_IN addr)
@@ -9,7 +9,7 @@ bool myLoginAcceptor::AddSession(SOCKET sock, SOCKADDR_IN addr)
 		myChatUser* user = new myChatUser;
 		user->m_Sock = sock;
 		user->m_SockAddr = addr;
-		I_Session.AddUser(user);
+		I_Server.m_SessionMgr.AddUser(user);
 		//iocp에 핸들엔 소켓 키엔 유저 주소값을 넘겨서 연결
 		I_Iocp.SetBind(sock, (ULONG_PTR)user);
 		user->WaitReceive();

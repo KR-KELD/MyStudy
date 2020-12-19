@@ -72,7 +72,7 @@ bool myServer::Run()
 				//if (SendData(*pUser,iterSend->packet) == false)
 				{
 					pUser->m_bExit = true;
-					I_Session.DelUser(pUser);
+					m_SessionMgr.DelUser(pUser);
 				}
 			}
 			m_SendPacketPool.m_list.clear();
@@ -115,7 +115,7 @@ bool myServer::Run()
 		//m_SessionMgr.UnLock();
 #pragma region BroadcastPool
 		{
-			myLock lock((myServerObj*)&I_Session);
+			myLock lock(&m_SessionMgr);
 			Broadcastting();
 		}
 #pragma endregion
@@ -128,8 +128,8 @@ bool myServer::Broadcastting()
 	{
 		myLock lock(&m_SendBroadcastPacketPool);
 		std::map<SOCKET, myNetUser*>::iterator iterUser;
-		for (iterUser = I_Session.m_UserList.begin();
-			iterUser != I_Session.m_UserList.end();
+		for (iterUser = m_SessionMgr.m_UserList.begin();
+			iterUser != m_SessionMgr.m_UserList.end();
 			)
 		{
 			myNetUser* pUser = iterUser->second;
@@ -150,8 +150,8 @@ bool myServer::Broadcastting()
 			//m_SendBroadcastPacketPool.Unlock();
 			if (bDelete == true)
 			{
-				I_Session.CloseUser(pUser);
-				iterUser = I_Session.m_UserList.erase(iterUser);
+				m_SessionMgr.CloseUser(pUser);
+				iterUser = m_SessionMgr.m_UserList.erase(iterUser);
 			}
 			else
 			{

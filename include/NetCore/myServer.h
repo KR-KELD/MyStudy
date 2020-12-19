@@ -11,8 +11,8 @@ public:
 	myPacketPool	m_RecvPacketPool;
 	myPacketPool	m_SendPacketPool;
 	myPacketPool	m_SendBroadcastPacketPool;
-//public:
-//	mySessionMgr	m_SessionMgr;
+public:
+	mySessionMgr	m_SessionMgr;
 public:
 	typedef	void (myServer::*CallFuction)(myPacket t);
 	typedef std::map<int, CallFuction>::iterator FunctionIterator;

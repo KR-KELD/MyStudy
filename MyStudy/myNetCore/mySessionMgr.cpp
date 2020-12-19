@@ -1,18 +1,15 @@
 #include "mySessionMgr.h"
-#include "myLock.h"
 
 void mySessionMgr::AddUser(myNetUser * pUser)
 {
-	{
-		myLock lock(this);
+	EnterCriticalSection(&m_cs);
 		this->m_UserList[pUser->m_Sock] = pUser;
-	}
+	LeaveCriticalSection(&m_cs);
 }
 
 bool mySessionMgr::DelUser(myNetUser* pUser)
 {
-	{
-		myLock lock(this);
+	EnterCriticalSection(&m_cs);
 		printf("\nÇØÁ¦->%s:%d",
 			inet_ntoa(pUser->m_SockAddr.sin_addr),
 			ntohs(pUser->m_SockAddr.sin_port));
@@ -24,7 +21,7 @@ bool mySessionMgr::DelUser(myNetUser* pUser)
 			CloseUser(pUser);
 			m_UserList.erase(iter);
 		}
-	}
+	LeaveCriticalSection(&m_cs);
 	return true;
 }
 
@@ -38,15 +35,15 @@ bool mySessionMgr::CloseUser(myNetUser* pUser)
 	return true;
 }
 
-void mySessionMgr::Lock()
-{
-	EnterCriticalSection(&m_cs);
-}
-
-void mySessionMgr::UnLock()
-{
-	LeaveCriticalSection(&m_cs);
-}
+//void mySessionMgr::Lock()
+//{
+//	EnterCriticalSection(&m_cs);
+//}
+//
+//void mySessionMgr::UnLock()
+//{
+//	LeaveCriticalSection(&m_cs);
+//}
 
 mySessionMgr::mySessionMgr()
 {

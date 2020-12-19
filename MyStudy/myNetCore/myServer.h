@@ -11,8 +11,8 @@ public:
 	myPacketPool	m_RecvPacketPool;
 	myPacketPool	m_SendPacketPool;
 	myPacketPool	m_SendBroadcastPacketPool;
-//public:
-//	mySessionMgr	m_SessionMgr;
+public:
+	mySessionMgr	m_SessionMgr;	//楷搬等 葛电 蜡历 包府
 public:
 	typedef	void (myServer::*CallFuction)(myPacket t);
 	typedef std::map<int, CallFuction>::iterator FunctionIterator;

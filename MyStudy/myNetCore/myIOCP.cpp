@@ -1,5 +1,5 @@
 #include "myIOCP.h"
-#include "mySessionMgr.h"
+#include "myServer.h"
 
 bool myIOCP::Init()
 {
@@ -58,7 +58,7 @@ DWORD __stdcall myIOCP::WorkerThread(LPVOID param)
 		if (pOV != nullptr && pOV->iType == OVERLAPPED2::MODE_EXIT)
 		{
 			//바꾸기
-			I_Session.DelUser(pUser);
+			I_Server.m_SessionMgr.DelUser(pUser);
 			continue;
 		}
 		//쓰레드 깨우기

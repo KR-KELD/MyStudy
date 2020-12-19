@@ -8,8 +8,8 @@ public:
 public:
 	void	AddPacket(myPacket& packet);
 	void	Clear();
-	void	Lock();
-	void	Unlock();
+	//void	Lock();
+	//void	Unlock();
 public:
 	myPacketPool();
 	virtual ~myPacketPool();
