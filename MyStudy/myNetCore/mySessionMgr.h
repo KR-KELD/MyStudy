@@ -11,7 +11,8 @@ public:
 public:
 	void			AddUser(myNetUser * pUser);
 	virtual bool	DelUser(myNetUser* pUser);
-	virtual bool	CloseUser(myNetUser* user);
+	virtual bool	CloseUser(myNetUser* pUser);
+	bool			MoveOtherSession(mySessionMgr& other, myNetUser* pUser);
 	//void			Lock();
 	//void			UnLock();
 

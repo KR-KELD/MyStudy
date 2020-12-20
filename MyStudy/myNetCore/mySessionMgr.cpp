@@ -3,7 +3,7 @@
 void mySessionMgr::AddUser(myNetUser * pUser)
 {
 	EnterCriticalSection(&m_cs);
-		this->m_UserList[pUser->m_Sock] = pUser;
+		m_UserList[pUser->m_Sock] = pUser;
 	LeaveCriticalSection(&m_cs);
 }
 
@@ -32,6 +32,20 @@ bool mySessionMgr::CloseUser(myNetUser* pUser)
 	closesocket(pUser->m_Sock);
 	delete pUser;
 	pUser = nullptr;
+	return true;
+}
+
+bool mySessionMgr::MoveOtherSession(mySessionMgr & other, myNetUser * pUser)
+{
+	EnterCriticalSection(&m_cs);
+	std::map<SOCKET, myNetUser*>::iterator iter =
+		m_UserList.find(pUser->m_Sock);
+	if (iter != m_UserList.end())
+	{
+		m_UserList.erase(iter);
+		other.m_UserList[pUser->m_Sock] = pUser;
+	}
+	LeaveCriticalSection(&m_cs);
 	return true;
 }
 
