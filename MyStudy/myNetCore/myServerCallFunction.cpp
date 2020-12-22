@@ -1,6 +1,6 @@
 #include "myServer.h"
 
-void myServer::PacketChatMsg(myPacket packet)
+void myServer::PacketChatMsg(myPacket& packet)
 {
 	myChatMsg* pMsg = (myChatMsg*)packet.packet.msg;
 	std::cout << "[" << pMsg->szName << "] : " <<
@@ -10,7 +10,7 @@ void myServer::PacketChatMsg(myPacket packet)
 	m_SendBroadcastPacketPool.AddPacket(packet);
 }
 
-void myServer::PacketLoginLeq(myPacket packet)
+void myServer::PacketLoginLeq(myPacket& packet)
 {
 	myPacket userPacket;
 	userPacket.pUser = packet.pUser;
@@ -37,7 +37,7 @@ void myServer::PacketLoginLeq(myPacket packet)
 	}
 }
 
-void myServer::PacketUserPos(myPacket packet)
+void myServer::PacketUserPos(myPacket& packet)
 {
 	myUnitPos* pMsg = (myUnitPos*)packet.packet.msg;
 	std::cout << pMsg->p[0] << " : " << pMsg->p[1]<< " : "
@@ -47,4 +47,10 @@ void myServer::PacketUserPos(myPacket packet)
 	//	pMsg->p[1],
 	//	pMsg->p[2]);
 	m_SendBroadcastPacketPool.AddPacket(packet);
+}
+
+void myServer::PacketLogoutPlayer(myPacket & packet)
+{
+	m_SendBroadcastPacketPool.AddPacket(packet);
+	m_SessionMgr.DelUser(packet.pUser);
 }

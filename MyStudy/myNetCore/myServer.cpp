@@ -1,26 +1,21 @@
 #include "myServer.h"
-//
-//bool myServer::SendData(myNetUser & user, UPACKET & msg)
-//{
-//	DWORD dwSendByte;
-//	int iRet;
-//	user.m_wsaSendBuffer.buf = (char*)&msg;
-//	user.m_wsaSendBuffer.len = msg.ph.len;
-//	ZeroMemory(&user.m_ovSend, sizeof(OVERLAPPED));
-//	user.m_ovSend.iType = OVERLAPPED2::MODE_SEND;
-//
-//	iRet = WSASend(user.m_Sock, &user.m_wsaSendBuffer, 1,
-//		&dwSendByte, 0, (LPOVERLAPPED)&user.m_ovSend, NULL);
-//
-//	if (iRet == SOCKET_ERROR)
-//	{
-//		if (WSAGetLastError() != WSA_IO_PENDING)
-//		{
-//			return false;
-//		}
-//	}
-//	return true;
-//}
+
+void myServer::SendLogoutUser(myNetUser * pUser)
+{
+	UPACKET sendPacket;
+	myLoginResult ret;
+	ret.id = pUser->m_Sock;
+	ret.iRet = 1;
+	MakePacket(sendPacket, (char*)&ret, sizeof(myLoginResult), PACKET_LOGOUT_PLAYER);
+	if (pUser != nullptr)
+	{
+		myPacket packet = { 0, };
+		packet.pUser = pUser;
+		packet.packet = sendPacket;
+		m_RecvPacketPool.AddPacket(packet);
+	}
+	pUser->m_bExit = true;
+}
 
 bool myServer::MakePacket(UPACKET & packet, char * msg, int iLen, uint16_t type)
 {
@@ -57,7 +52,6 @@ bool myServer::Run()
 		//밖으로 빼면 빈 구간에서 add가 발생시 문제가 생김
 		//m_RecvPacketPool.Clear();
 #pragma endregion
-
 #pragma region SendPool
 		{
 			myLock lock(&m_SendPacketPool);
@@ -67,57 +61,16 @@ bool myServer::Run()
 				iterSend++)
 			{
 				myNetUser* pUser = iterSend->pUser;
-				if (pUser == nullptr) continue;
 				if (pUser->WaitSend(iterSend->packet) == false)
-				//if (SendData(*pUser,iterSend->packet) == false)
 				{
-					pUser->m_bExit = true;
-					m_SessionMgr.DelUser(pUser);
+					SendLogoutUser(pUser);
 				}
 			}
 			m_SendPacketPool.m_list.clear();
 		}
 #pragma endregion
-
-		//m_SessionMgr.Lock();
-		//std::map<SOCKET, myNetUser*>::iterator iterUser;
-		//for (iterUser = m_SessionMgr.m_UserList.begin();
-		//	iterUser != m_SessionMgr.m_UserList.end();
-		//	)
-		//{
-		//	myNetUser* pUser = iterUser->second;
-		//	bool bDelete = false;
-		//	std::vector<UPACKET>::iterator senditer;
-		//	//여기 추가
-		//	for (senditer = pUser->m_SendPacket.begin();
-		//		senditer != pUser->m_SendPacket.end();
-		//		senditer++)
-		//	{
-		//		if (SendData(*pUser, *senditer) == false)
-		//		{
-		//			pUser->m_bExit = true;
-		//			bDelete = true;
-		//			break;
-		//		}
-		//	}
-		//	pUser->m_SendPacket.clear();
-
-		//	if (bDelete == true)
-		//	{
-		//		m_SessionMgr.CloseUser(pUser);
-		//		iterUser = m_SessionMgr.m_UserList.erase(iterUser);
-		//	}
-		//	else
-		//	{
-		//		iterUser++;
-		//	}
-		//}
-		//m_SessionMgr.UnLock();
 #pragma region BroadcastPool
-		{
-			myLock lock(&m_SessionMgr);
-			Broadcastting();
-		}
+		Broadcastting();
 #pragma endregion
 	}
 	return true;
@@ -126,36 +79,23 @@ bool myServer::Run()
 bool myServer::Broadcastting()
 {
 	{
+		myLock lock(&m_SessionMgr);
 		myLock lock(&m_SendBroadcastPacketPool);
 		std::map<SOCKET, myNetUser*>::iterator iterUser;
 		for (iterUser = m_SessionMgr.m_UserList.begin();
 			iterUser != m_SessionMgr.m_UserList.end();
-			)
+			iterUser++)
 		{
 			myNetUser* pUser = iterUser->second;
-			bool bDelete = false;
-			//m_SendBroadcastPacketPool.Lock();
 			std::vector<myPacket>::iterator iterBroadcast;
 			for (iterBroadcast = m_SendBroadcastPacketPool.m_list.begin();
 				iterBroadcast != m_SendBroadcastPacketPool.m_list.end();
 				iterBroadcast++)
 			{
 				if (pUser->WaitSend(iterBroadcast->packet) == false)
-				//if (SendData(*pUser,iterBroadcast->packet) == false)
 				{
-					bDelete = true;
-					break;
+					SendLogoutUser(pUser);
 				}
-			}
-			//m_SendBroadcastPacketPool.Unlock();
-			if (bDelete == true)
-			{
-				m_SessionMgr.CloseUser(pUser);
-				iterUser = m_SessionMgr.m_UserList.erase(iterUser);
-			}
-			else
-			{
-				iterUser++;
 			}
 		}
 		m_SendBroadcastPacketPool.m_list.clear();
@@ -170,6 +110,7 @@ bool myServer::Init()
 	m_fnExecutePacket[PACKET_CHAT_MSG] = &myServer::PacketChatMsg;
 	m_fnExecutePacket[PACKET_USER_POSITION] = &myServer::PacketUserPos;
 	m_fnExecutePacket[PACKET_LOGIN_REQ] = &myServer::PacketLoginLeq;
+	m_fnExecutePacket[PACKET_LOGOUT_PLAYER] = &myServer::PacketLogoutPlayer;
 	return true;
 }
 
