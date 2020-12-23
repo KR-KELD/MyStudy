@@ -3,7 +3,6 @@
 #include "myCore.h"
 class Sample
 {
-	myNetwork	m_Net;
 public:
 	string		m_strChat;
 	std::vector<myNetUser>	m_vecUser;

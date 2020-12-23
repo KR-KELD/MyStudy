@@ -14,4 +14,4 @@
 #define RA_TO_DE(p) 180.0f / PI * (p)
 #define DE_TO_RA(p) PI / 180.0f * (p)
 #define FLOAT_TO_INT(p) static_cast<int>(p + EPSILON)
-#define FLOAT_EQUAL(f1, f2) (abs(f1 - f2) <= EPSILON)
+#define FLOAT_EQUAL(f1, f2) (fabs(f1 - f2) <= EPSILON)

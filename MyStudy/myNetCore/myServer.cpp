@@ -51,7 +51,7 @@ bool myServer::Run()
 		}
 		//밖으로 빼면 빈 구간에서 add가 발생시 문제가 생김
 		//m_RecvPacketPool.Clear();
-#pragma endregion
+#pragma endregion RecvPool
 #pragma region SendPool
 		{
 			myLock lock(&m_SendPacketPool);
@@ -68,10 +68,13 @@ bool myServer::Run()
 			}
 			m_SendPacketPool.m_list.clear();
 		}
-#pragma endregion
+#pragma endregion SendPool
 #pragma region BroadcastPool
-		Broadcastting();
-#pragma endregion
+		myLock lock(&m_SessionMgr);
+		{
+			Broadcastting();
+		}
+#pragma endregion BroadcastPool
 	}
 	return true;
 }
@@ -79,7 +82,6 @@ bool myServer::Run()
 bool myServer::Broadcastting()
 {
 	{
-		myLock lock(&m_SessionMgr);
 		myLock lock(&m_SendBroadcastPacketPool);
 		std::map<SOCKET, myNetUser*>::iterator iterUser;
 		for (iterUser = m_SessionMgr.m_UserList.begin();
@@ -100,6 +102,7 @@ bool myServer::Broadcastting()
 		}
 		m_SendBroadcastPacketPool.m_list.clear();
 	}
+
 	return true;
 }
 

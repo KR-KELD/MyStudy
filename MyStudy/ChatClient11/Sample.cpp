@@ -37,20 +37,20 @@ void Sample::PacketLoginAck(myPacket & packet)
 	myLoginResult* ret = (myLoginResult*)packet.packet.msg;
 	if (ret->iRet == 1)
 	{
-		m_Net.m_bLogin = true;
+		I_Network.m_bLogin = true;
 	}
 	else
 	{
-		m_Net.SendLoginData(m_Net.m_Sock, "kgca", "game");
+		I_Network.SendLoginData(I_Network.m_Sock, "kgca", "game");
 	}
 }
 
 void Sample::LoginSeq()
 {
 
-	if (!m_Net.m_bLogin)
+	if (!I_Network.m_bLogin)
 	{
-		//if (m_Net.ConnectServer(ip, 10000) == false)
+		//if (I_Network.ConnectServer(ip, 10000) == false)
 		//{
 
 		//}
@@ -62,13 +62,13 @@ void Sample::SendMsg(const char * pData)
 	myChatMsg chatmsg;
 	memset(&chatmsg, 0, sizeof(chatmsg));
 	string str;
-	str.assign(m_Net.m_User.strName.begin(), m_Net.m_User.strName.end());
+	str.assign(I_Network.m_User.strName.begin(), I_Network.m_User.strName.end());
 	strcpy_s(chatmsg.szName, str.c_str());
 	strcpy_s(chatmsg.buffer, pData);
 	chatmsg.iCnt = 0;// iCount++;
 	UPACKET packet;
-	m_Net.MakePacket(packet, (char*)&chatmsg, sizeof(myChatMsg), PACKET_CHAT_MSG);
-	m_Net.m_sendPacket.push_back(packet);
+	I_Network.MakePacket(packet, (char*)&chatmsg, sizeof(myChatMsg), PACKET_CHAT_MSG);
+	I_Network.AddSendPacket(packet);
 }
 
 void Sample::MsgProcess()
@@ -105,39 +105,39 @@ void Sample::Timer()
 bool  Sample::Init()
 {
 	m_fBeforeTime = 0.0f;
-	m_Net.m_User.strName = L"테스트";
+	I_Network.m_User.strName = L"테스트";
 	m_mapPacketFunc[PACKET_CHAT_MSG] = &Sample::PacketChatMsg;
 	m_mapPacketFunc[PACKET_LOGIN_ACK] = &Sample::PacketLoginAck;
 	//DWORD dwID;
 	//m_hThread = CreateThread(0, 0, IPInput, (LPVOID)this,0, &dwID);
-	if (m_Net.InitNetwork() == false)
+	if (I_Network.InitNetwork() == false)
 	{
 		return false;
 	}
 	system("cls");
 
 	string ip;
-	while (true)
-	{
-		cout << "닉네임을 입력해 주세요." << endl;
-		wcin >> m_Net.m_User.strName;
-		cout << "IP를 입력해 주세요." << endl;
-		cin >> ip;
-		if (m_Net.ConnectServer(ip, 10000) == false)
-		{
-		}
-		break;
-	}
-	//if (m_Net.ConnectServer("175.194.89.26", 10000) == false)
+	//while (true)
 	//{
+	//	cout << "닉네임을 입력해 주세요." << endl;
+	//	wcin >> I_Network.m_User.strName;
+	//	cout << "IP를 입력해 주세요." << endl;
+	//	cin >> ip;
+	//	if (I_Network.ConnectServer(ip, 10000) == false)
+	//	{
+	//	}
+	//	break;
 	//}
+	if (I_Network.ConnectServer("175.194.89.26", 10000) == false)
+	{
+	}
 
 	return true;
 }
 
 bool  Sample::Frame()
 {
-	if (m_Net.Frame() == false)
+	if (I_Network.Frame() == false)
 	{
 		return false;
 	}
@@ -169,20 +169,20 @@ bool  Sample::Frame()
 	if (fTime >= 1.0f)
 	{
 		MsgProcess();
-		//SendMsg("test");
+		SendMsg("test");
 		fTime -= 1.0f;
 	}
 
 	//함수 포인터 벡터
 	std::vector<myPacket>::iterator senditer;
-	for (senditer = m_Net.m_recvPacket.begin();
-		senditer != m_Net.m_recvPacket.end();
+	for (senditer = I_Network.m_recvPacket.begin();
+		senditer != I_Network.m_recvPacket.end();
 		senditer++)
 	{
 		UPACKET* packet = (UPACKET*)&senditer->packet;
 		(this->*m_mapPacketFunc[senditer->packet.ph.type])(*senditer);
 	}
-	m_Net.m_recvPacket.clear();
+	I_Network.m_recvPacket.clear();
 
 	return true;
 }
@@ -207,9 +207,9 @@ bool  Sample::Render()
 
 	//g_Draw.Draw(100, 200, to_mw(strServerIP));
 	//LoginSeq();
-	if (m_Net.m_bLogin && myNetwork::g_bConnect)
+	if (I_Network.m_bLogin && myNetwork::g_bConnect)
 	{
-		if (!m_Net.SendPackets())
+		if (!I_Network.SendPackets())
 		{
 			return true;
 		}
@@ -223,6 +223,6 @@ bool  Sample::Render()
 bool  Sample::Release()
 {
 	//CloseHandle(m_hThread);
-	m_Net.DeleteNetwork();
+	I_Network.DeleteNetwork();
 	return true;
 }

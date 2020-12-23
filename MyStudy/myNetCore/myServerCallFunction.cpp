@@ -20,6 +20,8 @@ void myServer::PacketLoginLeq(myPacket& packet)
 	T_STR szIDUser = to_mw(login->szID);
 	T_STR szPSUser = to_mw(login->szPS);
 	myLoginResult ret;
+	ZeroMemory(&ret, sizeof(myLoginResult));
+	ret.id = userPacket.pUser->m_Sock;
 	if (szID == szIDUser && szPS == szPSUser)
 	{
 		ret.iRet = 1;
@@ -32,7 +34,6 @@ void myServer::PacketLoginLeq(myPacket& packet)
 		PACKET_LOGIN_ACK);
 	if (packet.pUser != nullptr)
 	{
-		//packet.pUser->m_SendPacket.push_back(sendPacket);
 		m_SendPacketPool.AddPacket(userPacket);
 	}
 }

@@ -1,5 +1,5 @@
 #include "myNetwork.h"
-#define NETWORK_MSG WM_USER + 80
+#define NETWORK_MSG WM_USER+80
 bool myNetwork::g_bConnect = false;
 
 bool myNetwork::SendPackets()

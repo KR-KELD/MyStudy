@@ -43,8 +43,8 @@ struct myLogin
 //로그인 결과 구조체
 struct myLoginResult
 {
-	SOCKET id;
 	int   iRet; //0:falid, 1:succeed, 2
+	SOCKET id;
 };
 typedef struct
 {

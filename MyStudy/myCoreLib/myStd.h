@@ -1,4 +1,5 @@
 #pragma once
+#include <winsock2.h>
 #include <Windows.h>
 #include <string>
 #include <tchar.h>
@@ -54,7 +55,28 @@ struct myPoint
 		pt.y = y - p.y;
 		return pt;
 	}
-
+	bool operator == (myPoint& p)
+	{
+		if (FLOAT_EQUAL(x, p.x))
+		{
+			if (FLOAT_EQUAL(y, p.y))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	bool operator != (myPoint& p)
+	{
+		if (FLOAT_EQUAL(x, p.x))
+		{
+			if (FLOAT_EQUAL(y, p.y))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 	myPoint operator + (myPoint p)
 	{
 		myPoint pt;

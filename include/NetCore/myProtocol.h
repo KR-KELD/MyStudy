@@ -44,6 +44,7 @@ struct myLogin
 struct myLoginResult
 {
 	int   iRet; //0:falid, 1:succeed, 2
+	SOCKET id;
 };
 typedef struct
 {

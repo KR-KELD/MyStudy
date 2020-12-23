@@ -47,14 +47,14 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 
 		// 패킷을 쪼개라
 		do {
-			myPacket tPacket;
-			tPacket.pUser = this;
+			myPacket myPacket;
+			myPacket.pUser = this;
 			//데이터 버퍼의 패킷 시작위치부터 패킷 1개 크기만큼 복사해라
-			memcpy(&tPacket.packet,
+			memcpy(&myPacket.packet,
 				&m_szDataBuffer[m_iPacketPos],
 				packet->ph.len);
 			// 페킷 풀에 완성 패킷을 넣어주어야 한다.
-			I_Server.m_RecvPacketPool.AddPacket(tPacket);
+			I_Server.m_RecvPacketPool.AddPacket(myPacket);
 
 			//패킷을 만든만큼 리드포스를 차감해준다
 			m_iReadPos -= packet->ph.len;

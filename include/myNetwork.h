@@ -9,8 +9,10 @@ struct myPacket
 	UPACKET packet;
 };
 
-class myNetwork
+class myNetwork : public SingleTon<myNetwork>
 {
+private:
+	friend SingleTon<myNetwork>;
 private:
 	HANDLE		m_EventArray[WSA_MAXIMUM_WAIT_EVENTS];
 	int			m_iArrayCount;
@@ -43,4 +45,5 @@ public:
 	myNetwork();
 	virtual ~myNetwork();
 };
+#define I_Network SingleTon<myNetwork>::GetInstance()
 
