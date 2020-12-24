@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="myCallFunc.cpp" />
     <ClCompile Include="myChatUser.cpp" />
     <ClCompile Include="myLoginAcceptor.cpp" />
     <ClCompile Include="myLoginServer.cpp" />

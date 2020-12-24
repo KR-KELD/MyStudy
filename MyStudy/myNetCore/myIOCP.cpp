@@ -37,6 +37,16 @@ void myIOCP::SetBind(SOCKET sock, ULONG_PTR key)
 	m_hIOCP = ::CreateIoCompletionPort((HANDLE)sock, m_hIOCP, key, 0);
 }
 
+void myIOCP::SendLogoutUser(myNetUser * pUser)
+{
+	m_pServer->SendLogoutUser(pUser);
+}
+
+void myIOCP::GetServer(myServer * pServer)
+{
+	m_pServer = pServer;
+}
+
 DWORD __stdcall myIOCP::WorkerThread(LPVOID param)
 {
 	myIOCP* iocp = (myIOCP*)param;
@@ -58,7 +68,7 @@ DWORD __stdcall myIOCP::WorkerThread(LPVOID param)
 		if (pOV != nullptr && pOV->iType == OVERLAPPED2::MODE_EXIT)
 		{
 			//바꾸기
-			I_Server.SendLogoutUser(pUser);
+			iocp->SendLogoutUser(pUser);
 			continue;
 		}
 		//쓰레드 깨우기
@@ -74,7 +84,7 @@ DWORD __stdcall myIOCP::WorkerThread(LPVOID param)
 			if (pOV->iType == OVERLAPPED2::MODE_RECV)
 			{
 				//// 로드완료
-				if (pUser->DispatchRead(dwTransfor, pOV) == false)
+				if (pUser->DispatchRead(iocp->m_pServer, dwTransfor, pOV) == false)
 				{
 					pOV->iType = OVERLAPPED2::MODE_EXIT;
 					PostQueuedCompletionStatus(iocp->m_hIOCP, 0,
@@ -83,7 +93,7 @@ DWORD __stdcall myIOCP::WorkerThread(LPVOID param)
 			}
 			if (pOV->iType == OVERLAPPED2::MODE_SEND)
 			{
-				if (pUser->DispatchWrite(dwTransfor, pOV) == false)
+				if (pUser->DispatchWrite(iocp->m_pServer, dwTransfor, pOV) == false)
 				{
 					pOV->iType = OVERLAPPED2::MODE_EXIT;
 					PostQueuedCompletionStatus(iocp->m_hIOCP, 0,

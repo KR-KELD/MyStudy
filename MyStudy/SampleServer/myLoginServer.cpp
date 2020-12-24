@@ -1,28 +1,26 @@
 #include "myLoginServer.h"
-#include "myIOCP.h"
-#include "myServer.h"
+#include "myLoginAcceptor.h"
 bool myLoginServer::Init()
 {
-	I_Server.Init();
-	I_Iocp.Init();
-	m_Acceptor.InitNetwork("175.194.89.26",10000);
-	m_Acceptor.CreateThread();
+	m_IOCP = new myIOCP;
+	m_IOCP->GetServer(this);
+	m_Acceptor = new myLoginAcceptor;
+	m_Acceptor->GetServer(this);
+	m_Acceptor->InitNetwork("", 10000);
+	m_Acceptor->CreateThread();
+	CreateThread();
 	m_bRun = true;
-	return true;
-}
 
-bool myLoginServer::Run()
-{
-	while (m_bRun)
-	{
-		Sleep(10);
-	}
-	WaitForSingleObject((HANDLE)m_Acceptor.m_hThread, INFINITE);
+	//m_fnExecutePacket[PACKET_CHAT_MSG] = &myServer::PacketChatMsg;
+	//m_fnExecutePacket[PACKET_USER_POSITION] = &myServer::PacketUserPos;
+	//m_fnExecutePacket[PACKET_LOGIN_REQ] = &myServer::PacketLoginLeq;
+	//m_fnExecutePacket[PACKET_LOGOUT_PLAYER] = &myServer::PacketLogoutPlayer;
 	return true;
 }
 
 bool myLoginServer::Release()
 {
+	myServer::Release();
 	return true;
 }
 
@@ -32,5 +30,5 @@ myLoginServer::myLoginServer() : m_bRun(false)
 
 myLoginServer::~myLoginServer()
 {
-	I_Iocp.Release();
+
 }

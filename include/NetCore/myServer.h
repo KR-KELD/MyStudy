@@ -1,9 +1,10 @@
 #pragma once
-#include "mySessionMgr.h"
 #include "myPacketPool.h"
-#include "myThread.h"
+#include "mySessionMgr.h"
+#include "myIOCP.h"
+#include "myAcceptor.h"
 
-class myServer : public NetSingleTon<myServer>, public myThread
+class myServer : /*public NetSingleTon<myServer>,*/ public myThread
 {
 private:
 	friend class NetSingleTon<myServer>;
@@ -13,6 +14,8 @@ public:
 	myPacketPool	m_SendBroadcastPacketPool;
 public:
 	mySessionMgr	m_SessionMgr;	//楷搬等 葛电 蜡历 包府
+	myIOCP*			m_IOCP;
+	myAcceptor*		m_Acceptor;
 public:
 	typedef	void (myServer::*CallFuction)(myPacket& t);
 	typedef std::map<int, CallFuction>::iterator FunctionIterator;
@@ -28,8 +31,9 @@ public:
 	virtual  bool Run() override;
 	virtual  bool Broadcastting();
 	virtual  bool Init();
+	virtual  bool Release();
 public:
 	myServer();
 	virtual ~myServer();
 };
-#define I_Server myServer::GetInstance()
+//#define I_Server myServer::GetInstance()

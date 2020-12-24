@@ -17,7 +17,7 @@
 // 주 버퍼에 임시버퍼의 잔여량 데이터 복사
 //clear   0~5: 50byte   ~    10000
 
-bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
+bool myNetUser::DispatchRead(myServer* pServer, DWORD dwTrans, OVERLAPPED2 * ov)
 {
 	//다 쓴 오브랩드 구조체를 오브젝트풀에 담는다
 	delete ov;
@@ -54,7 +54,7 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 				&m_szDataBuffer[m_iPacketPos],
 				packet->ph.len);
 			// 페킷 풀에 완성 패킷을 넣어주어야 한다.
-			I_Server.m_RecvPacketPool.AddPacket(myPacket);
+			pServer->m_RecvPacketPool.AddPacket(myPacket);
 
 			//패킷을 만든만큼 리드포스를 차감해준다
 			m_iReadPos -= packet->ph.len;
@@ -74,7 +74,7 @@ bool myNetUser::DispatchRead(DWORD dwTrans, OVERLAPPED2 * ov)
 	WaitReceive();
 	return true;
 }
-bool myNetUser::DispatchWrite(DWORD dwTrans, OVERLAPPED2 * ov)
+bool myNetUser::DispatchWrite(myServer* pServer, DWORD dwTrans, OVERLAPPED2 * ov)
 {
 	delete ov;
 	return true;

@@ -4,6 +4,7 @@
 #define MAX_BUFFER_SIZE 512
 #define MAX_DATA_BUFFER_SIZE  (MAX_BUFFER_SIZE * 3)
 
+class myServer;
 class myNetUser;
 struct myPacket
 {
@@ -48,8 +49,8 @@ public:
 	int		m_iWritePos; // 패킷 데이터 저장 주소
 	int		m_iReadPos; // 패킷 데이터 저장 주소
 public:
-	virtual bool DispatchRead(DWORD dwTrans, OVERLAPPED2* ov);
-	virtual bool DispatchWrite(DWORD dwTrans, OVERLAPPED2* ov);
+	virtual bool DispatchRead(myServer* pServer, DWORD dwTrans, OVERLAPPED2* ov);
+	virtual bool DispatchWrite(myServer* pServer, DWORD dwTrans, OVERLAPPED2* ov);
 
 	OVERLAPPED2* OverlappedRecv(int type);
 	OVERLAPPED2* OverlappedSend(int type, UPACKET& msg);

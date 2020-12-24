@@ -1,14 +1,17 @@
 #pragma once
-#include "myLoginAcceptor.h"
-class myLoginServer
+#include "myServer.h"
+class myLoginServer : public myServer
 {
 public:
-	myLoginAcceptor	m_Acceptor;
 	bool			m_bRun;
 public:
 	bool			Init();
-	bool			Run();
 	bool			Release();
+public:
+	void	PacketChatMsg(myPacket& packet);
+	void	PacketLoginLeq(myPacket& packet);
+	void	PacketUserPos(myPacket& packet);
+	void	PacketLogoutPlayer(myPacket& packet);
 public:
 	myLoginServer();
 	virtual ~myLoginServer();

@@ -27,6 +27,9 @@
     <ClCompile Include="myChatUser.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="myCallFunc.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myLoginServer.h">

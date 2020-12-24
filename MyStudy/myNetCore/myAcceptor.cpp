@@ -1,5 +1,4 @@
 #include "myAcceptor.h"
-#include "myIOCP.h"
 #include "myServer.h"
 bool myAcceptor::InitNetwork(std::string ip, int port)
 {
@@ -120,6 +119,11 @@ bool myAcceptor::Run()
 	return true;
 }
 
+void myAcceptor::GetServer(myServer* pServer)
+{
+	m_pServer = pServer;
+}
+
 bool myAcceptor::Accept()
 {
 	SOCKADDR_IN clientAddr;
@@ -147,8 +151,8 @@ bool myAcceptor::AddSession(SOCKET sock, SOCKADDR_IN addr)
 		myNetUser* user = new myNetUser;
 		user->m_Sock = sock;
 		user->m_SockAddr = addr;
-		I_Server.m_SessionMgr.AddUser(user);
-		I_Iocp.SetBind(sock, (ULONG_PTR)user);
+		m_pServer->m_SessionMgr.AddUser(user);
+		m_pServer->m_IOCP->SetBind(sock, (ULONG_PTR)user);
 		user->WaitReceive();
 		printf("\nÁ¢¼Ó->%s:%d",
 			inet_ntoa(addr.sin_addr),

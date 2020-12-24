@@ -108,8 +108,14 @@ bool myServer::Broadcastting()
 
 bool myServer::Init()
 {
-	//멀티 스레드 출력 작업
-	std::cout.sync_with_stdio(true);
+	m_IOCP = new myIOCP;
+	m_IOCP->GetServer(this);
+	m_Acceptor = new myAcceptor;
+	m_Acceptor->GetServer(this);
+	m_Acceptor->InitNetwork("", 10000);
+	m_Acceptor->CreateThread();
+	CreateThread();
+	
 	m_fnExecutePacket[PACKET_CHAT_MSG] = &myServer::PacketChatMsg;
 	m_fnExecutePacket[PACKET_USER_POSITION] = &myServer::PacketUserPos;
 	m_fnExecutePacket[PACKET_LOGIN_REQ] = &myServer::PacketLoginLeq;
@@ -117,11 +123,22 @@ bool myServer::Init()
 	return true;
 }
 
+bool myServer::Release()
+{
+	m_IOCP->Release();
+	m_Acceptor->DeleteNetwork();
+	delete m_IOCP;
+	delete m_Acceptor;
+	return true;
+}
+
 myServer::myServer()
 {
-	CreateThread();
+	//멀티 스레드 출력 작업
+	std::cout.sync_with_stdio(true);
 }
 
 myServer::~myServer()
 {
+
 }
