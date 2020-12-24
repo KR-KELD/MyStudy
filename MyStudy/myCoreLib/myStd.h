@@ -35,7 +35,6 @@ using namespace std;
 struct myKeyMap
 {
 	bool bCapsLockActive;
-	bool bKeyDown;
 };
 struct myPoint
 {

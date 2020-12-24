@@ -3,6 +3,7 @@
 //전역 핸들과 전역 클라이언트렉트 초기화
 HWND		g_hWnd = 0;
 HINSTANCE	g_hInstance = 0;
+bool		g_bActive = false;
 RECT		g_rtClient = {0, 0, 0, 0};
 //프로시저
 LRESULT CALLBACK WndProc(
