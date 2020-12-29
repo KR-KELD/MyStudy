@@ -1,6 +1,6 @@
 #include "myChatUser.h"
 
-myChatUser::myChatUser()
+myChatUser::myChatUser(myServer* pServer) : myNetUser(pServer)
 {
 }
 

@@ -27,6 +27,11 @@ bool myServer::MakePacket(UPACKET & packet, char * msg, int iLen, uint16_t type)
 	return true;
 }
 
+bool myServer::PreRun()
+{
+	return true;
+}
+
 bool myServer::Run()
 {
 	while (m_bStarted)
@@ -40,11 +45,17 @@ bool myServer::Run()
 				iterRecv++)
 			{
 				UPACKET* packet = (UPACKET*)&iterRecv->packet;
-				FunctionIterator calliter = m_fnExecutePacket.find(packet->ph.type);
-				if (calliter != m_fnExecutePacket.end())
+				//FunctionIterator calliter = m_fnExecutePacket.find(packet->ph.type);
+				//if (calliter != m_fnExecutePacket.end())
+				//{
+				//	CallFuction call = calliter->second;
+				//	(this->*call)(*iterRecv);
+				//}
+				IterCallFunc = m_fnExecuteHandler.find(packet->ph.type);
+				if (IterCallFunc != m_fnExecuteHandler.end())
 				{
-					CallFuction call = calliter->second;
-					(this->*call)(*iterRecv);
+					CallFunc call = IterCallFunc->second;
+					call(*iterRecv);
 				}
 			}
 			m_RecvPacketPool.m_list.clear();
@@ -79,6 +90,11 @@ bool myServer::Run()
 	return true;
 }
 
+bool myServer::PostRun()
+{
+	return true;
+}
+
 bool myServer::Broadcastting()
 {
 	{
@@ -108,27 +124,20 @@ bool myServer::Broadcastting()
 
 bool myServer::Init()
 {
-	m_IOCP = new myIOCP;
-	m_IOCP->GetServer(this);
-	m_Acceptor = new myAcceptor;
-	m_Acceptor->GetServer(this);
-	m_Acceptor->InitNetwork("", 10000);
-	m_Acceptor->CreateThread();
-	CreateThread();
-	
-	m_fnExecutePacket[PACKET_CHAT_MSG] = &myServer::PacketChatMsg;
-	m_fnExecutePacket[PACKET_USER_POSITION] = &myServer::PacketUserPos;
-	m_fnExecutePacket[PACKET_LOGIN_REQ] = &myServer::PacketLoginLeq;
-	m_fnExecutePacket[PACKET_LOGOUT_PLAYER] = &myServer::PacketLogoutPlayer;
+	//m_fnExecutePacket[PACKET_CHAT_MSG] = &myServer::PacketChatMsg;
+	//m_fnExecutePacket[PACKET_USER_POSITION] = &myServer::PacketUserPos;
+	//m_fnExecutePacket[PACKET_LOGIN_REQ] = &myServer::PacketLoginLeq;
+	//m_fnExecutePacket[PACKET_LOGOUT_PLAYER] = &myServer::PacketLogoutPlayer;
+
+	m_fnExecuteHandler[PACKET_CHAT_MSG] = bind(&myServer::PacketChatMsg, this, std::placeholders::_1);
+	m_fnExecuteHandler[PACKET_USER_POSITION] = bind(&myServer::PacketUserPos, this, std::placeholders::_1);
+	m_fnExecuteHandler[PACKET_LOGIN_REQ] = bind(&myServer::PacketLoginLeq, this, std::placeholders::_1);
+	m_fnExecuteHandler[PACKET_LOGOUT_PLAYER] = bind(&myServer::PacketLogoutPlayer, this, std::placeholders::_1);
 	return true;
 }
 
 bool myServer::Release()
 {
-	m_IOCP->Release();
-	m_Acceptor->DeleteNetwork();
-	delete m_IOCP;
-	delete m_Acceptor;
 	return true;
 }
 

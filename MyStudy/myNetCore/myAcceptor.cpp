@@ -119,11 +119,6 @@ bool myAcceptor::Run()
 	return true;
 }
 
-void myAcceptor::GetServer(myServer* pServer)
-{
-	m_pServer = pServer;
-}
-
 bool myAcceptor::Accept()
 {
 	SOCKADDR_IN clientAddr;
@@ -148,11 +143,10 @@ bool myAcceptor::AddSession(SOCKET sock, SOCKADDR_IN addr)
 {
 	{
 		myLock lock(this);
-		myNetUser* user = new myNetUser;
+		myNetUser* user = new myNetUser(m_pServer);
 		user->m_Sock = sock;
 		user->m_SockAddr = addr;
 		m_pServer->m_SessionMgr.AddUser(user);
-		m_pServer->m_IOCP->SetBind(sock, (ULONG_PTR)user);
 		user->WaitReceive();
 		printf("\nÁ¢¼Ó->%s:%d",
 			inet_ntoa(addr.sin_addr),
@@ -161,7 +155,7 @@ bool myAcceptor::AddSession(SOCKET sock, SOCKADDR_IN addr)
 	return true;
 }
 
-myAcceptor::myAcceptor()
+myAcceptor::myAcceptor(myServer* pServer) : m_pServer(pServer)
 {
 	// 2.2 ver
 	WSADATA wsa;
@@ -170,5 +164,6 @@ myAcceptor::myAcceptor()
 
 myAcceptor::~myAcceptor()
 {
+	DeleteNetwork();
 	WSACleanup();
 }

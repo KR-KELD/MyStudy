@@ -2,10 +2,11 @@
 #include "myLoginAcceptor.h"
 bool myLoginServer::Init()
 {
-	m_IOCP = new myIOCP;
-	m_IOCP->GetServer(this);
-	m_Acceptor = new myLoginAcceptor;
-	m_Acceptor->GetServer(this);
+	myServer::Init();
+	m_IOCP = new myIOCP(this);
+	m_Acceptor = new myLoginAcceptor(this);
+	m_SessionMgr.Init(this);
+	m_IOCP->Init();
 	m_Acceptor->InitNetwork("", 10000);
 	m_Acceptor->CreateThread();
 	CreateThread();
@@ -21,6 +22,9 @@ bool myLoginServer::Init()
 bool myLoginServer::Release()
 {
 	myServer::Release();
+	m_IOCP->Release();
+	delete m_Acceptor;
+	delete m_IOCP;
 	return true;
 }
 

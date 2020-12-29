@@ -3,7 +3,7 @@
 class myChatUser : public myNetUser
 {
 public:
-	myChatUser();
+	myChatUser(myServer* pServer);
 	virtual ~myChatUser();
 };
 

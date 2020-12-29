@@ -32,6 +32,7 @@ struct OVERLAPPED2 : myObjectPool<OVERLAPPED2>
 class myNetUser
 {
 public:
+	myServer*			 m_pServer;
 	bool				 m_bExit;	//立加 咯何 敲贰弊
 	SOCKET				 m_Sock;	//家南
 	SOCKADDR_IN			 m_SockAddr;	//林家	
@@ -49,8 +50,8 @@ public:
 	int		m_iWritePos; // 菩哦 单捞磐 历厘 林家
 	int		m_iReadPos; // 菩哦 单捞磐 历厘 林家
 public:
-	virtual bool DispatchRead(myServer* pServer, DWORD dwTrans, OVERLAPPED2* ov);
-	virtual bool DispatchWrite(myServer* pServer, DWORD dwTrans, OVERLAPPED2* ov);
+	virtual bool DispatchRead(DWORD dwTrans, OVERLAPPED2* ov);
+	virtual bool DispatchWrite(DWORD dwTrans, OVERLAPPED2* ov);
 
 	OVERLAPPED2* OverlappedRecv(int type);
 	OVERLAPPED2* OverlappedSend(int type, UPACKET& msg);
@@ -58,7 +59,7 @@ public:
 	virtual bool WaitReceive();
 	virtual bool WaitSend(UPACKET& msg);
 public:
-	myNetUser();
+	myNetUser(myServer* pServer);
 	virtual ~myNetUser();
 };
 
