@@ -5,6 +5,10 @@ HWND		g_hWnd = 0;
 HINSTANCE	g_hInstance = 0;
 bool		g_bActive = false;
 RECT		g_rtClient = {0, 0, 0, 0};
+
+static bool		m_bDrag = false;
+static POINT	m_ptClick;
+
 //프로시저
 LRESULT CALLBACK WndProc(
 	HWND hWnd,
@@ -14,12 +18,31 @@ LRESULT CALLBACK WndProc(
 {
 	switch (message)
 	{
-	case WM_LBUTTONDOWN:
+	case WM_MBUTTONDOWN:
 	{
-		SetFocus(NULL);
-		//윈도우 포커스로 잡고있는데 따로 만드는걸 추천
-		g_bActive = true;
-	}
+		m_bDrag = true;
+		m_ptClick.x = LOWORD(lParam);
+		m_ptClick.y = HIWORD(lParam);
+	}return 0;
+	case WM_MOUSEMOVE:
+	{
+		if (m_bDrag)
+		{
+			RECT rtWindow;
+			GetWindowRect(hWnd, &rtWindow);
+			rtWindow.left -= m_ptClick.x - LOWORD(lParam);
+			rtWindow.top -= m_ptClick.y - HIWORD(lParam);
+#if NDEBUG
+			SetWindowPos(hWnd, HWND_TOPMOST, rtWindow.left, rtWindow.top, 0, 0, SWP_NOSIZE);//HWND_TOP
+#else
+			SetWindowPos(hWnd, HWND_NOTOPMOST, rtWindow.left, rtWindow.top, 0, 0, SWP_NOSIZE);
+#endif
+		}
+	}return 0;
+	case WM_MBUTTONUP:
+	{
+		m_bDrag = false;
+	}return 0;
 	case WM_ACTIVATE:
 	{
 		if (LOWORD(wParam) == WA_INACTIVE)
@@ -28,6 +51,7 @@ LRESULT CALLBACK WndProc(
 		}
 		else
 		{
+			::SetFocus(g_hWnd);
 			g_bActive = true;
 		}
 
@@ -54,27 +78,30 @@ bool myWindow::SetWindow(HINSTANCE hInstance)
 		(HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hInstance = m_hInstance;			//인스턴스 핸들 지정
-	wc.lpszClassName = L"MyWindow";		//프로세스 이름 지정
+	wc.lpszClassName = m_szClassName.c_str();		//프로세스 이름 지정
 	if (RegisterClassEx(&wc) == 0)
 	{
 		return false;
 	}
 	//메뉴를 제외한 클라이언트의 크기를 렉트에 담는다
 	RECT rt = { 0, 0, WINDOWSIZEX, WINDOWSIZEY };
-	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, FALSE);
+	AdjustWindowRectEx(&rt, m_dwStyle, FALSE,m_dwExStyle);
 	m_hWnd = CreateWindowEx(
-		WS_EX_APPWINDOW,
-		L"MyWindow",						//프로세스 이름
-		L"MyGame",							//프로그램 이름
-		WS_OVERLAPPEDWINDOW,				//윈도우 옵션
+		m_dwExStyle,
+		m_szClassName.c_str(),				//프로세스 이름
+		m_szWindowName.c_str(),				//프로그램 이름
+		m_dwStyle,							//윈도우 옵션
 		WINDOWSTARTX, WINDOWSTARTY,			//윈도우 시작 위치
 		rt.right-rt.left, rt.bottom-rt.top,	//윈도우 크기
 		nullptr, nullptr,
 		m_hInstance, nullptr);
 	if (m_hWnd == NULL)
+	{
 		return false;
+	}
 	g_hWnd = m_hWnd;						//전역 핸들에 전달
-	GetClientRect(g_hWnd, &m_rtClient);		//클라이언트의 크기를 클라이언트 렉트에 담는다
+	GetClientRect(m_hWnd, &m_rtClient);		//클라이언트의 크기를 클라이언트 렉트에 담는다
+	GetWindowRect(m_hWnd, &m_rtWindow);
 	g_rtClient = m_rtClient;				//전역 클라이언트 렉트에 전달
 	ShowWindow(m_hWnd, SW_SHOW);			//윈도우 띄우기
 	return true;
@@ -104,7 +131,18 @@ bool myWindow::MsgProcess()
 
 myWindow::myWindow()
 {
-	ZeroMemory(&m_msg, sizeof(m_msg));
+	ZeroMemory(&m_msg, sizeof(MSG));
+	m_bDrag = false;
+	m_szClassName = L"MyWindow";
+#if NDEBUG
+	m_dwExStyle = WS_EX_TOPMOST;
+	m_szWindowName = L"MyGame(Release)";
+	m_dwStyle = WS_POPUPWINDOW;// WS_OVERLAPPEDWINDOW,,;
+#else
+	m_dwExStyle = WS_EX_APPWINDOW;
+	m_szWindowName = L"MyGame(Debug)";
+	m_dwStyle = WS_POPUPWINDOW;// WS_OVERLAPPEDWINDOW,,;
+#endif
 }
 
 myWindow::~myWindow()

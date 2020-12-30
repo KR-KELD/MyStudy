@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <iostream>
+#include "myMath.h"
 
 #pragma pack(push,1)
 //패킷 헤더
@@ -19,11 +20,21 @@ typedef struct
 	int8_t			msg[1024];	//메시지
 }UPACKET, *P_UPACKET;
 
+enum MYUNIT_STATE
+{
+	UNIT_STOP,
+	UNIT_MOVE,
+	UNIT_ATTACK,
+	UNIT_DEAD,
+};
+
 struct myUnitPos
 {
-	int    index;
-	float  p[3];
-	float  d[3];  // 0~7	
+	int		index;
+	myPoint p;
+	myPoint t;
+	myPoint d;
+	MYUNIT_STATE state;
 };
 
 //채팅 메시지 구조체

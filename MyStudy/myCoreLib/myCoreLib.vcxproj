@@ -238,6 +238,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myStd.h" />
     <ClInclude Include="myTimer.h" />
     <ClInclude Include="myUI.h" />
+    <ClInclude Include="myUtil.h" />
     <ClInclude Include="myWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

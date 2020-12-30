@@ -149,5 +149,5 @@ myServer::myServer()
 
 myServer::~myServer()
 {
-
+	myObjectPool<OVERLAPPED2>::AllFree();
 }

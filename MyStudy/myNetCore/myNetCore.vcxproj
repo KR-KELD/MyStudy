@@ -177,6 +177,7 @@ copy "*.h" "..\\..\\include\\NetCore"</Command>
     <ClInclude Include="myAcceptor.h" />
     <ClInclude Include="myIOCP.h" />
     <ClInclude Include="myLock.h" />
+    <ClInclude Include="myNetMath.h" />
     <ClInclude Include="myNetStd.h" />
     <ClInclude Include="myNetUser.h" />
     <ClInclude Include="myObjectPool.h" />
