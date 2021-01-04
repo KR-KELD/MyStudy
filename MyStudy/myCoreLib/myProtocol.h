@@ -13,11 +13,12 @@ typedef struct
 	uint32_t time;	// 패킷전송 시간
 }PACKET_HEADER;
 #define PACKET_HEADER_SIZE 10
+#define PACKET_DATA_MAXSIZE 4096
 //패킷
 typedef struct
 {
 	PACKET_HEADER	ph;			//헤더
-	int8_t			msg[1024];	//메시지
+	int8_t			msg[PACKET_DATA_MAXSIZE];	//메시지
 }UPACKET, *P_UPACKET;
 
 enum MYUNIT_STATE

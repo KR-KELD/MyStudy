@@ -31,6 +31,9 @@
     <Filter Include="Resource">
       <UniqueIdentifier>{201cb891-2a46-49a3-b8e6-20234ed8aff2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{917c8be2-0477-4bee-ae70-dee415daf456}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -99,11 +102,11 @@
     <ClCompile Include="myWindow.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="myNetUser.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="myNetwork.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="myNetUser.cpp">
+      <Filter>Net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,20 +185,20 @@
     <ClInclude Include="myScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="myNetStd.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="myNetUser.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="myNetwork.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="myUtil.h">
+      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="myProtocol.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Net</Filter>
     </ClInclude>
-    <ClInclude Include="myUtil.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="myNetwork.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="myNetUser.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="myNetStd.h">
+      <Filter>Net</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
