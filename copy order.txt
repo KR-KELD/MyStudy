@@ -1,4 +1,5 @@
-../../output/
+../../output/Debug/
+../../output/Release/
 
 ../../include; ../../fmod/inc;
 
