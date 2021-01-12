@@ -37,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleODBC", "SampleODBC\Sa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{52133A21-D30D-4BDD-85AA-454FB9216F20}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mtAstar", "mtAstar\mtAstar.vcxproj", "{7301ECEA-248B-490B-A394-ED38EEB327AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -149,6 +151,14 @@ Global
 		{F7801E2F-5E6E-4FCB-B2EE-60BFA16A8460}.Release|x64.Build.0 = Release|x64
 		{F7801E2F-5E6E-4FCB-B2EE-60BFA16A8460}.Release|x86.ActiveCfg = Release|Win32
 		{F7801E2F-5E6E-4FCB-B2EE-60BFA16A8460}.Release|x86.Build.0 = Release|Win32
+		{7301ECEA-248B-490B-A394-ED38EEB327AA}.Debug|x64.ActiveCfg = Debug|x64
+		{7301ECEA-248B-490B-A394-ED38EEB327AA}.Debug|x64.Build.0 = Debug|x64
+		{7301ECEA-248B-490B-A394-ED38EEB327AA}.Debug|x86.ActiveCfg = Debug|Win32
+		{7301ECEA-248B-490B-A394-ED38EEB327AA}.Debug|x86.Build.0 = Debug|Win32
+		{7301ECEA-248B-490B-A394-ED38EEB327AA}.Release|x64.ActiveCfg = Release|x64
+		{7301ECEA-248B-490B-A394-ED38EEB327AA}.Release|x64.Build.0 = Release|x64
+		{7301ECEA-248B-490B-A394-ED38EEB327AA}.Release|x86.ActiveCfg = Release|Win32
+		{7301ECEA-248B-490B-A394-ED38EEB327AA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

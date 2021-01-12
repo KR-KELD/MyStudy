@@ -4,7 +4,14 @@
 #include <sqlext.h>
 #include <tchar.h>
 #include <string>
+#include <vector>
 #pragma comment(lib,"odbc32.lib")
+
+///
+//ODBC 데이터 원본(64비트) 드라이버 설치
+//설치프로그램->Microsoft Access Database Engine 2010 재배포 가능 패키지
+//https ://www.microsoft.com/ko-kr/download/details.aspx?id=13255
+///
 
 class myQuery
 {
