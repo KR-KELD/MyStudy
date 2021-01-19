@@ -1,0 +1,4 @@
+﻿  Sample.cpp
+d:\mystudy\mystudy\samplec++11\sample.cpp(24): warning C4326: 'main'의 반환 형식이 'int'이어야 하는데 'void'입니다.
+d:\mystudy\mystudy\samplec++11\sample.cpp(44): warning C4101: 'b' :참조되지 않은 지역 변수입니다.
+  SampleC++11.vcxproj -> D:\MyStudy\MyStudy\x64\Debug\SampleC++11.exe
