@@ -12,6 +12,9 @@ static const float PI32D	= float(PI/2.0f);
 static const float PI64D	= float(PI/2.0f); 
 static const float PI128D	= float(PI/2.0f); 
 
+#define randf(x) (x * rand() / (float)RAND_MAX)
+#define randf2(x,off) 
+
 static float RA_TO_DE(float f)
 {
 	return (180.0f / PI * f);
