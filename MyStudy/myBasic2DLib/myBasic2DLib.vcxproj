@@ -72,6 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>../../output/Debug/</OutDir>
+    <IntDir>../../output/Debug/myBasic2DLib/</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -81,6 +83,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>../../output/Release/</OutDir>
+    <IntDir>../../output/Release/myBasic2DLib/</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -89,11 +93,22 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../../fmod/inc;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../../fmod/lib/x64;</AdditionalLibraryDirectories>
+    </Lib>
+    <PreBuildEvent>
+      <Command>copy "..\\..\\fmod\\lib\\x64\\*.dll" "..\\..\\output\\Debug"</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy  "..\\..\\output\\Debug\\myBasic2DLib.lib" "..\\..\\lib\\myBasic2DLib_D.lib"
+copy "*.h" "..\\..\\include\\Basic2D"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -134,6 +149,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../../fmod/inc;</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +158,16 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../../fmod/lib/x64;</AdditionalLibraryDirectories>
+    </Lib>
+    <PreBuildEvent>
+      <Command>copy "..\\..\\fmod\\lib\\x64\\*.dll" "..\\..\\output\\Debug"</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy  "..\\..\\output\\Debug\\myBasic2DLib.lib" "..\\..\\lib\\myBasic2DLib_R.lib"
+copy "*.h" "..\\..\\include\\Basic2D"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="myBitmap.cpp" />

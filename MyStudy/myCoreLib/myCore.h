@@ -18,8 +18,8 @@ public:
 	virtual bool		PreFrame() { return true; }
 	virtual bool		PostFrame() { return true; }
 	virtual bool		Render() { return true; }
-	virtual bool		PreRender() { return true; }
-	virtual bool		PostRender() { return true; }
+	virtual bool		PreRender();
+	virtual bool		PostRender();
 	virtual bool		Release() { return true; }
 	virtual HRESULT DeleteDXResource();
 	virtual HRESULT CreateDXResource(UINT w, UINT h);

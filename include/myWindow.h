@@ -9,6 +9,7 @@ protected:
 	DWORD		m_dwStyle;
 	T_STR		m_szClassName;
 	T_STR		m_szWindowName;
+	bool		m_bFullScreen = false;
 public:
 	MSG			m_msg;			//메시지 구조체
 	RECT		m_rtClient;		//클라이언트 렉트
@@ -18,8 +19,9 @@ public:
 public:
 	bool		SetWindow(HINSTANCE hInstance);
 	bool		MsgProcess();
-//public:
+public:
 	//virtual	void	MsgEvent(MSG msg);
+	virtual void ResizeDevice(UINT w, UINT h);
 public:
 	myWindow();
 	virtual ~myWindow();

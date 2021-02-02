@@ -3,22 +3,25 @@
 bool myDraw::Set(HWND hWnd, int iWidth, int iHeight,
 	IDXGISurface1* pSurface)
 {
-	// 디바이스 종속성, 디바이스 독립적
+
 	m_iWidth = iWidth;
 	m_iHeight = iHeight;
-
+	//독립적인 리소스 생성
 	CreateIndependentResource();
+	//종속적인 리소스 생성
 	CreateDependentResource(iWidth, iHeight, pSurface);
 	return false;
 }
 
 void myDraw::ResizeDevice(int iWidth, int iHeight, IDXGISurface1 * pSurface)
 {
+	//종속적인 리소스 생성
 	CreateDependentResource(iWidth, iHeight, pSurface);
 }
 
 HRESULT myDraw::CreateIndependentResource()
 {
+	//2d 팩토리 생성
 	HRESULT hr = D2D1CreateFactory(
 		D2D1_FACTORY_TYPE_MULTI_THREADED,
 		&m_pd2dFactory);
@@ -26,8 +29,9 @@ HRESULT myDraw::CreateIndependentResource()
 	{
 		return hr;
 	}
+	//인치당 점의 갯수를 받아온다
 	m_pd2dFactory->GetDesktopDpi(&m_fdpiX, &m_fdpiY);
-
+	//출력 팩토리 생성
 	IDWriteFactory*		m_pd2dWrite;
 	hr = DWriteCreateFactory(
 		DWRITE_FACTORY_TYPE_SHARED,
@@ -37,6 +41,7 @@ HRESULT myDraw::CreateIndependentResource()
 	{
 		return hr;
 	}
+	//텍스트 옵션 설정
 	hr = m_pd2dWrite->CreateTextFormat(
 		L"궁서",//L"Gabriola",
 		NULL,
@@ -57,7 +62,9 @@ HRESULT myDraw::CreateIndependentResource()
 
 HRESULT myDraw::CreateDependentResource(int iWidth, int iHeight, IDXGISurface1 * pSurface)
 {
+	//2d팩토리가 생성되어있지 않으면 리턴
 	if (m_pd2dFactory == nullptr) return S_OK;
+	//랜더타겟의 정보 세팅
 	D2D1_RENDER_TARGET_PROPERTIES Properties;
 	Properties.type = D2D1_RENDER_TARGET_TYPE_DEFAULT;
 	Properties.pixelFormat.format = DXGI_FORMAT_UNKNOWN;
@@ -67,7 +74,7 @@ HRESULT myDraw::CreateDependentResource(int iWidth, int iHeight, IDXGISurface1 *
 	Properties.dpiY = m_fdpiY;
 	Properties.usage = D2D1_RENDER_TARGET_USAGE_NONE;
 	Properties.minLevel = D2D1_FEATURE_LEVEL_DEFAULT;
-
+	//랜더타겟 서페이스 생성
 	HRESULT hr = m_pd2dFactory->CreateDxgiSurfaceRenderTarget(
 		pSurface,
 		&Properties,
@@ -81,7 +88,7 @@ HRESULT myDraw::CreateDependentResource(int iWidth, int iHeight, IDXGISurface1 *
 	color.g = 0.0f;
 	color.b = 0.0f;
 	color.a = 255.0f;
-
+	//브러시 생성
 	hr = m_pd2dRT->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF::Red),
 		&m_pBrush);

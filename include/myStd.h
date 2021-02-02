@@ -12,12 +12,17 @@
 #include <stdio.h>
 #include "myUtil.h"
 #include "myMath.h"
+
+#include <d3d11.h>
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
+
 #pragma comment(lib, "winmm.lib")
 
 #if NDEBUG
-#pragma comment (lib, "myBasic2DLib_R.lib")
+#pragma comment (lib, "myCoreLib_R.lib")
 #else
-#pragma comment (lib, "myBasic2DLib_D.lib")
+#pragma comment (lib, "myCoreLib_D.lib")
 #endif
 
 #pragma comment(lib, "fmod_vc.lib")

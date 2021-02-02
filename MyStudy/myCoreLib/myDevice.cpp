@@ -2,16 +2,18 @@
 
 HRESULT myDevice::CreateGIFactory()
 {
+	//디바이스가 생성되어 있지 않으면 리턴
 	if (m_pd3dDevice == NULL) return E_FAIL;
 	HRESULT hr;
 	IDXGIDevice * pDXGIDevice;
+	//GI디바이스의 정보를 uid번호로 불러온다
 	hr = m_pd3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void **)&pDXGIDevice);
-
+	//GI어뎁터(그래픽카드) 정보를 불러온다
 	IDXGIAdapter * pDXGIAdapter;
 	hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void **)&pDXGIAdapter);
-
+	//이 프로세스의 상위 GIFactory를 불러온다
 	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void **)&m_pGIFactory);
-
+	//불러오는데 사용한 디바이스와 어뎁터를 릴리즈 해준다
 	pDXGIDevice->Release();
 	pDXGIAdapter->Release();
 	return S_OK;
@@ -20,10 +22,13 @@ HRESULT myDevice::CreateGIFactory()
 HRESULT myDevice::CreateDevice()
 {
 	//D2D RT
+	//dx3d와 dx2d를 병행하는 플래그
 	UINT	Flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #ifdef _DEBUG
+	//디버그 모드 플래그
 	Flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
+	//DirectX 버전
 	D3D_FEATURE_LEVEL	pFeatureLevels[] =
 	{
 		//D3D_FEATURE_LEVEL_12_0,
@@ -32,6 +37,7 @@ HRESULT myDevice::CreateDevice()
 	};
 	// 그래픽카드
 	IDXGIAdapter*		 pAdapter = nullptr;
+	//사용할 드라이버 타입
 	D3D_DRIVER_TYPE		DriverType[] =
 	{
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -46,6 +52,7 @@ HRESULT myDevice::CreateDevice()
 	D3D_FEATURE_LEVEL   OutputFeatureLevel;
 
 	HRESULT hr = S_OK;
+	//디바이스 생성
 	for (int iType = 0; iType < ARRAYSIZE(DriverType); iType++)
 	{
 		hr = D3D11CreateDevice(
@@ -70,21 +77,30 @@ HRESULT myDevice::CreateDevice()
 
 HRESULT myDevice::CreateSwapChain()
 {
+	//스왑체인 세부정보
 	DXGI_SWAP_CHAIN_DESC pSwapChainDesc;
 	ZeroMemory(&pSwapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+	//버퍼 사이즈
 	pSwapChainDesc.BufferDesc.Width = g_rtClient.right;
 	pSwapChainDesc.BufferDesc.Height = g_rtClient.bottom;
+	//버퍼 타입 = RGBA 32비트를 사용하고 노말라이즈 하지 않는다
 	pSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//프레임
 	pSwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
 	pSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	pSwapChainDesc.SampleDesc.Count = 1;
+	//랜더 타겟 설정
 	pSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	//버퍼 갯수
 	pSwapChainDesc.BufferCount = 1;
+	//뿌려줄 윈도우 핸들
 	pSwapChainDesc.OutputWindow = g_hWnd;
+	//창모드 여부
 	pSwapChainDesc.Windowed = true;
 	//pSwapChainDesc.SwapEffect;
+	//플래그 값 사용
 	pSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
+	//스왑체인 생성
 	HRESULT hr = m_pGIFactory->CreateSwapChain(
 		m_pd3dDevice,
 		&pSwapChainDesc,
@@ -94,18 +110,22 @@ HRESULT myDevice::CreateSwapChain()
 
 HRESULT myDevice::SetRenderTargetView()
 {
+	//백버퍼를 비워준다
 	ID3D11Texture2D* pBackBuffer = nullptr;
+	//스왑체인에서 백버퍼를 가져온다
 	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D),
 		(LPVOID*)&pBackBuffer);
+	//랜더 타겟을 백버퍼를 사용해서 만들어준다
 	HRESULT hr = m_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL,
 		&m_pRednerTargetView);
+	//백버퍼를 사용한 뒤 릴리즈 해준다
 	if (pBackBuffer) pBackBuffer->Release();
 	return hr;
 }
 
 bool myDevice::SetViewport()
 {
-
+	//뷰포트 설정
 	m_Viewport.TopLeftX = 0;
 	m_Viewport.TopLeftY = 0;
 	m_Viewport.Width = WINDOWSIZEX;
@@ -133,13 +153,13 @@ bool myDevice::Init()
 	{
 		return false;
 	}
-	if (FAILED(m_pGIFactory->MakeWindowAssociation(m_hWnd,
-		DXGI_MWA_NO_WINDOW_CHANGES |
-		DXGI_MWA_NO_ALT_ENTER)))
+	if (SetViewport() == false)
 	{
 		return false;
 	}
-	if (SetViewport == false)
+	if (FAILED(m_pGIFactory->MakeWindowAssociation(m_hWnd,
+		DXGI_MWA_NO_WINDOW_CHANGES |
+		DXGI_MWA_NO_ALT_ENTER)))
 	{
 		return false;
 	}
@@ -155,12 +175,15 @@ bool myDevice::PreRender()
 {
 	if (m_pd3dContext)
 	{
+		//랜더링 파이프라인 아웃풋 병합에 랜더타겟을 설정해준다
 		m_pd3dContext->OMSetRenderTargets(1, &m_pRednerTargetView, NULL);
 		/*float clearColor[] = { cosf(g_fGameTimer)*0.5f + 0.5f,
 								-cosf(g_fGameTimer)*0.5f + 0.5f,
 								sinf(g_fGameTimer)*0.5f + 0.5f,1 };*/
 		float clearColor[] = { 0,0,0,1 };
+		//랜더타겟을 초기화해준다
 		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView, clearColor);
+		//화면 좌표로 변환해준다
 		m_pd3dContext->RSSetViewports(1, &m_Viewport);
 	}
 	return true;
@@ -173,6 +196,7 @@ bool myDevice::Render()
 
 bool myDevice::PostRender()
 {
+	//백버퍼와 프론트 버퍼를 스왑해준다
 	if (m_pSwapChain)
 	{
 		m_pSwapChain->Present(0, 0);
@@ -194,7 +218,9 @@ void myDevice::SetMode(bool bFullScreen)
 {
 	//주의 윈도우 포커스를 놓지 않게 해야함
 	m_bFullScreen = bFullScreen;
+	//풀스크린 전환
 	m_pSwapChain->SetFullscreenState(m_bFullScreen, NULL);
+	//풀스크린이 아니면 윈도우 띄우기
 	if (m_bFullScreen == FALSE)
 	{
 		ShowWindow(m_hWnd, SW_SHOW);
@@ -203,23 +229,29 @@ void myDevice::SetMode(bool bFullScreen)
 
 void myDevice::ResizeDevice(UINT w, UINT h)
 {
+	//디바이스가 설정되어있지 않으면 리턴
 	if (m_pd3dDevice == NULL)  return;
-
+	//기존 리소스를 제거
 	DeleteDXResource();
-
+	//랜더타겟 초기화
 	m_pd3dContext->OMSetRenderTargets(0, NULL, NULL);
+	//랜더타겟 릴리즈
 	if (m_pRednerTargetView) m_pRednerTargetView->Release();
 	DXGI_SWAP_CHAIN_DESC pSwapChainDesc;
+	//스왑체인 설정 가져오기
 	m_pSwapChain->GetDesc(&pSwapChainDesc);
+	//버퍼 사이즈 조절
 	m_pSwapChain->ResizeBuffers(
 		pSwapChainDesc.BufferCount,
 		w,
 		h,
 		pSwapChainDesc.BufferDesc.Format,
 		pSwapChainDesc.Flags);
-
+	//랜더타겟 세팅
 	SetRenderTargetView();
+	//뷰포트 세팅
 	SetViewport();
+	//리소스 생성
 	CreateDXResource(w, h);
 }
 
