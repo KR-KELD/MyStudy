@@ -8,6 +8,7 @@ RECT		g_rtClient = {0, 0, 0, 0};
 
 static bool		m_bDrag = false;
 static POINT	m_ptClick;
+myWindow*		g_pWindow;
 
 //프로시저
 LRESULT CALLBACK WndProc(
@@ -16,8 +17,22 @@ LRESULT CALLBACK WndProc(
 	WPARAM wParam,
 	LPARAM lParam)
 {
+
 	switch (message)
 	{
+	case WM_SIZE:
+	{
+		//if (SIZE_MAXHIDE)// 다른윈도우가 최대화 되어 가려지면
+		//if (SIZE_MAXSHOW) // 최대화 되어 가려진 후 다시 복구될 때
+		//if (SIZE_MAXIMIZED)// 최대화		
+		//if (SIZE_RESTORED) // 크기가 변경되었을 때
+		if (SIZE_MINIMIZED != wParam) // 최소화
+		{
+			UINT w = LOWORD(lParam);
+			UINT h = HIWORD(lParam);
+			g_pWindow->ResizeDevice(w, h);
+		}
+	}break;
 	case WM_MBUTTONDOWN:
 	{
 		m_bDrag = true;
@@ -48,6 +63,7 @@ LRESULT CALLBACK WndProc(
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
 			g_bActive = false;
+			m_bDrag = false;
 		}
 		else
 		{
@@ -103,7 +119,7 @@ bool myWindow::SetWindow(HINSTANCE hInstance)
 	GetClientRect(m_hWnd, &m_rtClient);		//클라이언트의 크기를 클라이언트 렉트에 담는다
 	GetWindowRect(m_hWnd, &m_rtWindow);
 	g_rtClient = m_rtClient;				//전역 클라이언트 렉트에 전달
-	ShowWindow(m_hWnd, SW_SHOW);			//윈도우 띄우기
+	//ShowWindow(m_hWnd, SW_SHOW);			//윈도우 띄우기
 	return true;
 }
 //메시지큐 처리 프로세스
@@ -129,8 +145,13 @@ bool myWindow::MsgProcess()
 //{
 //}
 
+void myWindow::ResizeDevice(UINT w, UINT h)
+{
+}
+
 myWindow::myWindow()
 {
+	g_pWindow = this;
 	ZeroMemory(&m_msg, sizeof(MSG));
 	m_bDrag = false;
 	m_szClassName = L"MyWindow";
@@ -141,7 +162,7 @@ myWindow::myWindow()
 #else
 	m_dwExStyle = WS_EX_APPWINDOW;
 	m_szWindowName = L"MyGame(Debug)";
-	m_dwStyle = WS_POPUPWINDOW;// WS_OVERLAPPEDWINDOW,,;
+	m_dwStyle = WS_OVERLAPPEDWINDOW; //WS_POPUPWINDOW;
 #endif
 }
 

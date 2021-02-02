@@ -191,6 +191,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myCameraManager.cpp" />
     <ClCompile Include="myCollision.cpp" />
     <ClCompile Include="myCore.cpp" />
+    <ClCompile Include="myDevice.cpp" />
     <ClCompile Include="myDraw.cpp" />
     <ClCompile Include="myEffect.cpp" />
     <ClCompile Include="myGrapicsAPI.cpp" />
@@ -208,6 +209,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="mySoundManager.cpp" />
     <ClCompile Include="myTimer.cpp" />
     <ClCompile Include="myUI.cpp" />
+    <ClCompile Include="myVertex.cpp" />
     <ClCompile Include="myWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +220,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myCollision.h" />
     <ClInclude Include="myCore.h" />
     <ClInclude Include="myCoreStd.h" />
+    <ClInclude Include="myDevice.h" />
     <ClInclude Include="myDraw.h" />
     <ClInclude Include="myEffect.h" />
     <ClInclude Include="myGrapicsAPI.h" />
@@ -240,6 +243,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myTimer.h" />
     <ClInclude Include="myUI.h" />
     <ClInclude Include="myUtil.h" />
+    <ClInclude Include="myVertex.h" />
     <ClInclude Include="myWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -108,6 +108,12 @@
     <ClCompile Include="myNetUser.cpp">
       <Filter>Net</Filter>
     </ClCompile>
+    <ClCompile Include="myVertex.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myDevice.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myBitmapManager.h">
@@ -199,6 +205,12 @@
     </ClInclude>
     <ClInclude Include="myNetStd.h">
       <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="myVertex.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myDevice.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
