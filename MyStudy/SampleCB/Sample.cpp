@@ -2,15 +2,30 @@
 GAMERUN;
 bool Sample::Init()
 {
-	//D3D11_RASTERIZER_DESC rdesc;
-	//ZeroMemory(&rdesc, sizeof(D3D11_RASTERIZER_DESC));
-	//rdesc.FillMode = D3D11_FILL_WIREFRAME;
-	//rdesc.CullMode = D3D11_CULL_BACK;
-	//HRESULT hr = m_pd3dDevice->CreateRasterizerState(&rdesc, &m_pRS);
-	//if (FAILED(hr))
-	//{
-	//	return false;
-	//}
+	// Rasterizer State
+	m_FillMode = D3D11_FILL_SOLID;
+	m_CullMode = D3D11_CULL_BACK;
+	SetRasterizerState();
+
+	D3D11_RASTERIZER_DESC rdesc;
+	ZeroMemory(&rdesc, sizeof(D3D11_RASTERIZER_DESC));
+	rdesc.FillMode = D3D11_FILL_SOLID;
+	rdesc.CullMode = D3D11_CULL_BACK;
+	HRESULT hr = m_pd3dDevice->CreateRasterizerState(&rdesc, &m_pRSSolidBack);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	ZeroMemory(&rdesc, sizeof(D3D11_RASTERIZER_DESC));
+	rdesc.FillMode = D3D11_FILL_WIREFRAME;
+	rdesc.CullMode = D3D11_CULL_BACK;
+	hr = m_pd3dDevice->CreateRasterizerState(&rdesc, &m_pRSWireBack);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
 
 	//버텍스 리스트 만들기
 	m_VertexList.resize(4);
@@ -37,7 +52,7 @@ bool Sample::Init()
 	//시스템 메모리의 시작주소 넘겨주기
 	sd.pSysMem = &m_cbData;
 	//버텍스 버퍼 생성
-	HRESULT hr = m_pd3dDevice->CreateBuffer(&bd, &sd, &m_pConstantBuffer);
+	hr = m_pd3dDevice->CreateBuffer(&bd, &sd, &m_pConstantBuffer);
 
 
 	//버퍼 옵션 설정
@@ -194,4 +209,20 @@ void Sample::CompilerCheck(ID3DBlob * pErrorMsgs)
 	C_STR szMsg = (char*)pErrorMsgs->GetBufferPointer();
 	T_STR szError = to_mw(szMsg);
 	MessageBox(NULL, szError.c_str(), L"ERROR", MB_OK);
+}
+
+void Sample::SetRasterizerState()
+{
+	HRESULT hr;
+	// Rasterizer State
+	if (m_pRS != nullptr) m_pRS->Release();
+	D3D11_RASTERIZER_DESC rdesc;
+	ZeroMemory(&rdesc, sizeof(D3D11_RASTERIZER_DESC));
+	rdesc.FillMode = m_FillMode;
+	rdesc.CullMode = m_CullMode;
+	hr = m_pd3dDevice->CreateRasterizerState(&rdesc, &m_pRS);
+	if (FAILED(hr))
+	{
+		return;
+	}
 }

@@ -33,6 +33,11 @@ class Sample : public myCore
 	ID3D11InputLayout*		m_pInputLayout;
 	ID3D11VertexShader*		m_pVertexShader;
 	ID3D11PixelShader*		m_pPixelShader;
+	ID3D11RasterizerState*	m_pRSSolidBack;
+	ID3D11RasterizerState*	m_pRSWireBack;
+	ID3D11RasterizerState*	m_pRS;
+	D3D11_FILL_MODE			m_FillMode;
+	D3D11_CULL_MODE			m_CullMode;
 	//ID3D11RasterizerState*	m_pRS;
 public:
 	bool Init() override;
@@ -41,5 +46,6 @@ public:
 	bool Release() override;
 public:
 	void CompilerCheck(ID3DBlob* pErrorMsgs);
+	void SetRasterizerState();
 };
 
