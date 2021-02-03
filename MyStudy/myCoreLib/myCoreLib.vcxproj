@@ -107,7 +107,7 @@
 copy "*.h" "..\\..\\include"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>copy "..\\..\\fmod\\lib\\x64\\*.dll" "..\\..\\output\\"</Command>
+      <Command>copy "..\\..\\fmod\\lib\\x64\\*.dll" "..\\..\\output\\Debug\\"</Command>
     </PreBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>../../fmod/lib/x64;</AdditionalLibraryDirectories>
