@@ -2,16 +2,54 @@
 GAMERUN;
 bool Sample::Init()
 {
+	HRESULT hr = NULL;
+	// load texture
+	ID3D11Resource* texture;
+	//텍스쳐 불러오기
+	hr = DirectX::CreateWICTextureFromFile(
+		m_pd3dDevice, L"../../data/bitmap/flametank.bmp",
+		NULL,
+		&m_pTextureSRV);
+
+	//hr = DirectX::CreateWICTextureFromFile(
+	//	m_pd3dDevice, L"../../data/main_start_nor.png",
+	//	NULL,
+	//	&m_pTextureSRV);
+	//샘플러 옵션 세팅(보간법 세팅)
+	D3D11_SAMPLER_DESC samplerDesc;
+	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
+	//축소 확대 밉맵에서 선형보간 사용
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	//
+	samplerDesc.BorderColor[0] = 1;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 1;
+	//Lod에 사용할 밉맵 최소 최대값
+	samplerDesc.MinLOD = FLT_MIN;
+	samplerDesc.MaxLOD = FLT_MAX;
+	//샘플러 세팅
+	hr = m_pd3dDevice->CreateSamplerState(&samplerDesc, &m_pWrapLinear);
+
+
 	// Rasterizer State
+	//그리기 모드
 	m_FillMode = D3D11_FILL_SOLID;
+	//컬링 모드
 	m_CullMode = D3D11_CULL_BACK;
+	//레스터라이저 스테이트 세팅
 	SetRasterizerState();
 
+	//레스터라이저 옵션 세팅
 	D3D11_RASTERIZER_DESC rdesc;
 	ZeroMemory(&rdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rdesc.FillMode = D3D11_FILL_SOLID;
 	rdesc.CullMode = D3D11_CULL_BACK;
-	HRESULT hr = m_pd3dDevice->CreateRasterizerState(&rdesc, &m_pRSSolidBack);
+	hr = m_pd3dDevice->CreateRasterizerState(&rdesc, &m_pRSSolidBack);
 	if (FAILED(hr))
 	{
 		return false;
@@ -29,10 +67,26 @@ bool Sample::Init()
 
 	//버텍스 리스트 만들기
 	m_VertexList.resize(4);
-	m_VertexList[0] = { myVertex3(-0.5f, 0.5f, 0.5f), myVertex3(0,0,0) };
-	m_VertexList[1] = { myVertex3( 0.5f, 0.5f, 0.5f), myVertex3(0,0,0) };
-	m_VertexList[2] = { myVertex3(-0.5f,-0.5f, 0.5f), myVertex3(0,0,0) };
-	m_VertexList[3] = { myVertex3( 0.5f,-0.5f, 0.5f), myVertex3(0,0,0) };
+	m_VertexList[0] = {
+		myVertex3(-1.0f, 1.0f, 0.5f),
+		myVertex3(0,0,0),
+		myVertex4(1,0,0,1),
+		myVertex2(0,0) };
+	m_VertexList[1] = {
+		myVertex3(1.0f, 1.0f, 0.5f),
+		myVertex3(0,0,0),
+		myVertex4(0,1,0,1),
+		myVertex2(3,0) };
+	m_VertexList[2] = {
+		myVertex3(-1.0f, -1.0f, 0.5f),
+		myVertex3(0,0,0),
+		myVertex4(0,0,1,1),
+		myVertex2(0,3) };
+	m_VertexList[3] = {
+		myVertex3(1.0f, -1.0f, 0.5f),
+		myVertex3(0,0,0),
+		myVertex4(1,1,1,1),
+		myVertex2(3,3) };
 
 
 	D3D11_BUFFER_DESC bd;
@@ -53,8 +107,10 @@ bool Sample::Init()
 	sd.pSysMem = &m_cbData;
 	//버텍스 버퍼 생성
 	hr = m_pd3dDevice->CreateBuffer(&bd, &sd, &m_pConstantBuffer);
-
-
+	if (FAILED(hr))
+	{
+		return false;
+	}
 	//버퍼 옵션 설정
 	//D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
@@ -129,6 +185,9 @@ bool Sample::Init()
 	const D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXTURE",  0, DXGI_FORMAT_R32G32_FLOAT, 0, 40,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT iNumElement = sizeof(layout) / sizeof(layout[0]);
 	//인풋 레이아웃 생성
@@ -186,7 +245,12 @@ bool Sample::Render()
 	//IA에 그려줄 타입 설정
 	m_pd3dContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//m_pd3dContext->Draw(m_VertexList.size(), 0);
-	//m_pd3dContext->RSSetState(m_pRS);
+	//레스터라이저 스테이트 세팅
+	m_pd3dContext->RSSetState(m_pRS);
+	//픽셀 섀이더에 텍스쳐 전달
+	m_pd3dContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
+	//픽셀 섀이더에 샘플러 세팅(보간법)
+	m_pd3dContext->PSSetSamplers(0, 1, &m_pWrapLinear);
 	//그리기
 	m_pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
 	return true;
@@ -194,6 +258,11 @@ bool Sample::Render()
 
 bool Sample::Release()
 {
+	m_pWrapLinear->Release();
+	m_pTextureSRV->Release();
+	m_pRS->Release();
+	m_pRSSolidBack->Release();
+	m_pRSWireBack->Release();
 	m_pConstantBuffer->Release();
 	m_pVertexBuffer->Release();
 	m_pIndexBuffer->Release();

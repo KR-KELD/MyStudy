@@ -128,8 +128,8 @@ bool myDevice::SetViewport()
 	//ºäÆ÷Æ® ¼³Á¤
 	m_Viewport.TopLeftX = 0;
 	m_Viewport.TopLeftY = 0;
-	m_Viewport.Width = WINDOWSIZEX;
-	m_Viewport.Height = WINDOWSIZEY;
+	m_Viewport.Width = g_rtClient.right;
+	m_Viewport.Height = g_rtClient.bottom;
 	m_Viewport.MinDepth = 0.0f;
 	m_Viewport.MaxDepth = 1.0f;
 	return true;

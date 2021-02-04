@@ -119,7 +119,7 @@ bool myCore::Run()
 		}
 	}
 	GameRelease();
-	//질문
+	//이니셜라이즈 해제
 	CoUninitialize();
 	return true;
 }

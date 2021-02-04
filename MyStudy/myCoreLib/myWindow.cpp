@@ -30,6 +30,9 @@ LRESULT CALLBACK WndProc(
 		{
 			UINT w = LOWORD(lParam);
 			UINT h = HIWORD(lParam);
+			g_pWindow->m_rtClient.right = w;
+			g_pWindow->m_rtClient.bottom = h;
+			g_rtClient = g_pWindow->m_rtClient;
 			g_pWindow->ResizeDevice(w, h);
 		}
 	}break;

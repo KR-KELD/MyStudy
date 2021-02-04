@@ -2,17 +2,23 @@
 #include "myCore.h"
 #include "myVertex.h"
 #include <d3dcompiler.h>
+#include "WICTextureLoader.h"
+#pragma comment(lib, "DirectXTK.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
 struct MY_VERTEX
 {
 	myVertex3 p;
 	myVertex3 n;
+	myVertex4 c;
+	myVertex2 t;
 	MY_VERTEX() {}
-	MY_VERTEX(myVertex3 p, myVertex3 n = { 0,0,0 })
+	MY_VERTEX(myVertex3 p, myVertex3 n, myVertex4 c, myVertex2 t)
 	{
 		this->p = p;
 		this->n = n;
+		this->c = c;
+		this->t = t;
 	}
 };
 
@@ -36,6 +42,8 @@ class Sample : public myCore
 	ID3D11RasterizerState*	m_pRSSolidBack;
 	ID3D11RasterizerState*	m_pRSWireBack;
 	ID3D11RasterizerState*	m_pRS;
+	ID3D11ShaderResourceView* m_pTextureSRV;
+	ID3D11SamplerState*		  m_pWrapLinear;
 	D3D11_FILL_MODE			m_FillMode;
 	D3D11_CULL_MODE			m_CullMode;
 	//ID3D11RasterizerState*	m_pRS;

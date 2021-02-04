@@ -11,15 +11,12 @@ struct myMsg
 	RECT	rt;
 	wstring	msg;
 	DWORD   dwColor;
+	myMsg() {}
 	myMsg(wstring _msg, RECT _rt, DWORD _dwColor)
 	{
 		msg = _msg;
 		rt = _rt;
 		dwColor = _dwColor;
-	}
-	myMsg()
-	{
-
 	}
 };
 class myDraw : public SingleTon<myDraw>
