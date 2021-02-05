@@ -23,6 +23,9 @@ struct MY_VERTEX
 
 struct myDataCB
 {
+	myMatrix  matWorld;
+	myMatrix  matView;
+	myMatrix  matProject;
 	float vColor[4];
 	float vTime[4];
 };
@@ -30,9 +33,11 @@ struct myDataCB
 class Sample : public myCore
 {
 public:
-	myMatrix	m_World;
-	myMatrix	m_View;
-	myMatrix	m_Proj;
+	myMatrix    m_matWorld;
+	myMatrix    m_matView;
+	myMatrix    m_matProj;
+	myVector3	   m_vCameraPos = { 0,0,-10 };
+	myVector3	   m_vCameraTarget = { 0,0,0 };
 public:
 	myDataCB					m_cbData;
 	std::vector<MY_VERTEX>		m_VertexList;

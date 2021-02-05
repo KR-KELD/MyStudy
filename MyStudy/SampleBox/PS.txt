@@ -2,10 +2,14 @@
 Texture2D g_txDiffuse;// : register(t0);
 SamplerState g_Sample;// : register(s0);
 
-cbuffer myDataCB
+cbuffer TDataCB
 {
-	float4 vColor : packoffset(c0.x);
-	float  fTime  : packoffset(c1.x);
+	float4x4  g_matWorld: packoffset(c0);
+	float4x4  g_matView: packoffset(c4);
+	float4x4  g_matProj: packoffset(c8);
+	float4 vColor : packoffset(c12.x);
+	float  fTime  : packoffset(c13.x);
+	float  fGameTime  : packoffset(c13.y);
 };
 struct VS_OUTPUT
 {

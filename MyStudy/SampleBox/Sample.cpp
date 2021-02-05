@@ -4,6 +4,17 @@ bool Sample::Init()
 {
 	HRESULT hr = NULL;
 
+	m_matWorld.Identity();
+	myVector3 p = m_vCameraPos;
+	myVector3 t = m_vCameraTarget;
+	myVector3 u = { 0,1,0 };
+	m_matView.CreateViewLook(p, t, u);
+	float fN = 1;
+	float fF = 1000;
+	float fFov = PI / 2.0f;
+	float fAspect = g_rtClient.right / g_rtClient.bottom;
+	m_matProj.PerspectiveFovLH(fN, fF, fFov, fAspect);
+
 
 	//뎁스 텍스쳐를 만들어라
 	ID3D11Texture2D* pTexture = nullptr;
@@ -235,6 +246,15 @@ bool Sample::Init()
 
 bool Sample::Frame()
 {
+	myMatrix matScale;
+	myMatrix matRotation;
+	matScale.Scale(2, 2, 2);
+	matRotation.YRotate(g_fGameTimer);
+	m_matWorld = matScale * matRotation;
+	myVector3 u = { 0,1,0 };
+	m_matView.CreateViewLook(m_vCameraPos, m_vCameraTarget, u);
+
+
 	D3D11_MAPPED_SUBRESOURCE mr;
 
 	HRESULT hr = m_pd3dContext->
@@ -242,6 +262,10 @@ bool Sample::Frame()
 	if (SUCCEEDED(hr))
 	{
 		myDataCB* pData = (myDataCB*)mr.pData;
+		pData->matWorld = m_matWorld.Transpose();
+		pData->matView = m_matView.Transpose();
+		pData->matProject = m_matProj.Transpose();
+
 		pData->vColor[0] = cosf(g_fGameTimer);
 		pData->vColor[1] = sinf(g_fGameTimer);
 		pData->vColor[2] = 1.0f - cosf(g_fGameTimer);
