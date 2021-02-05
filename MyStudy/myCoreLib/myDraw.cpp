@@ -48,7 +48,7 @@ HRESULT myDraw::CreateIndependentResource()
 		DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_NORMAL,
-		30,
+		20,
 		L"ko-kr",//L"en-us",//L"ko-kr"
 		&m_pTextFormat);
 	if (FAILED(hr))

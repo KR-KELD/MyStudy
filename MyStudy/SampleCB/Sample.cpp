@@ -3,6 +3,38 @@ GAMERUN;
 bool Sample::Init()
 {
 	HRESULT hr = NULL;
+
+
+	//뎁스 텍스쳐를 만들어라
+	ID3D11Texture2D* pTexture = nullptr;
+	D3D11_TEXTURE2D_DESC texDesc;
+	ZeroMemory(&texDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	texDesc.Width = g_rtClient.right;
+	texDesc.Height = g_rtClient.bottom;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	m_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
+	ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+
+	m_pd3dDevice->CreateDepthStencilView(pTexture, &dsvDesc, &m_pDSV);
+
+	D3D11_DEPTH_STENCIL_DESC dssDesc;
+	ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	dssDesc.DepthEnable = TRUE;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+
+	m_pd3dDevice->CreateDepthStencilState(&dssDesc, &m_pDSS);
 	// load texture
 	ID3D11Resource* texture;
 	//텍스쳐 불러오기
@@ -251,6 +283,8 @@ bool Sample::Render()
 	m_pd3dContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 	//픽셀 섀이더에 샘플러 세팅(보간법)
 	m_pd3dContext->PSSetSamplers(0, 1, &m_pWrapLinear);
+	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
+	m_pd3dContext->OMSetDepthStencilState(m_pDSS, 0);
 	//그리기
 	m_pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
 	return true;
@@ -258,6 +292,8 @@ bool Sample::Render()
 
 bool Sample::Release()
 {
+	m_pDSV->Release();
+	m_pDSS->Release();
 	m_pWrapLinear->Release();
 	m_pTextureSRV->Release();
 	m_pRS->Release();
@@ -269,6 +305,26 @@ bool Sample::Release()
 	m_pInputLayout->Release();
 	m_pVertexShader->Release();
 	m_pPixelShader->Release();
+	return true;
+}
+
+bool Sample::PreRender()
+{
+	if (m_pd3dContext)
+	{
+		//랜더링 파이프라인 아웃풋 병합에 랜더타겟을 설정해준다
+		m_pd3dContext->OMSetRenderTargets(1, &m_pRednerTargetView, m_pDSV);
+		/*float clearColor[] = { cosf(g_fGameTimer)*0.5f + 0.5f,
+								-cosf(g_fGameTimer)*0.5f + 0.5f,
+								sinf(g_fGameTimer)*0.5f + 0.5f,1 };*/
+		float clearColor[] = { 0,0,0,1 };
+		//랜더타겟을 초기화해준다
+		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView, clearColor);
+		m_pd3dContext->ClearDepthStencilView(
+			m_pDSV, D3D10_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+		//화면 좌표로 변환해준다
+		m_pd3dContext->RSSetViewports(1, &m_Viewport);
+	}
 	return true;
 }
 

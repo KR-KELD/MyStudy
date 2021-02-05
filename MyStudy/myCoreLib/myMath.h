@@ -61,6 +61,23 @@ struct float2
 	};
 };
 
+struct float3
+{
+	union
+	{
+		struct { float x, y, z; };
+		float v[3];
+	};
+};
+struct float4
+{
+	union
+	{
+		struct { float x, y, z, w; };
+		float v[4];
+	};
+};
+
 struct myPoint : float2
 {
 	myPoint() = default;

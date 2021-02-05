@@ -34,6 +34,9 @@
     <Filter Include="Net">
       <UniqueIdentifier>{917c8be2-0477-4bee-ae70-dee415daf456}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dxtk">
+      <UniqueIdentifier>{bcdd0f02-4749-4573-b59f-ce5cb24e66ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -110,6 +113,12 @@
     </ClCompile>
     <ClCompile Include="myDevice.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="dxtk\DDSTextureLoader.cpp">
+      <Filter>dxtk</Filter>
+    </ClCompile>
+    <ClCompile Include="dxtk\WICTextureLoader.cpp">
+      <Filter>dxtk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +214,27 @@
     </ClInclude>
     <ClInclude Include="myDevice.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtk\DDS.h">
+      <Filter>dxtk</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtk\DDSTextureLoader.h">
+      <Filter>dxtk</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtk\DirectXHelpers.h">
+      <Filter>dxtk</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtk\LoaderHelpers.h">
+      <Filter>dxtk</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtk\pch.h">
+      <Filter>dxtk</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtk\PlatformHelpers.h">
+      <Filter>dxtk</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtk\WICTextureLoader.h">
+      <Filter>dxtk</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

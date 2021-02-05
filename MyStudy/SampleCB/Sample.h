@@ -30,28 +30,32 @@ struct myDataCB
 
 class Sample : public myCore
 {
-	myDataCB				m_cbData;
-	std::vector<MY_VERTEX>	m_VertexList;
-	std::vector<DWORD>		m_IndexList;
-	ID3D11Buffer*			m_pVertexBuffer;
-	ID3D11Buffer*			m_pIndexBuffer;
-	ID3D11Buffer*			m_pConstantBuffer;
-	ID3D11InputLayout*		m_pInputLayout;
-	ID3D11VertexShader*		m_pVertexShader;
-	ID3D11PixelShader*		m_pPixelShader;
-	ID3D11RasterizerState*	m_pRSSolidBack;
-	ID3D11RasterizerState*	m_pRSWireBack;
-	ID3D11RasterizerState*	m_pRS;
-	ID3D11ShaderResourceView* m_pTextureSRV;
-	ID3D11SamplerState*		  m_pWrapLinear;
-	D3D11_FILL_MODE			m_FillMode;
-	D3D11_CULL_MODE			m_CullMode;
+	myDataCB					m_cbData;
+	std::vector<MY_VERTEX>		m_VertexList;
+	std::vector<DWORD>			m_IndexList;
+	ID3D11Buffer*				m_pVertexBuffer;
+	ID3D11Buffer*				m_pIndexBuffer;
+	ID3D11Buffer*				m_pConstantBuffer;
+	ID3D11InputLayout*			m_pInputLayout;
+	ID3D11VertexShader*			m_pVertexShader;
+	ID3D11PixelShader*			m_pPixelShader;
+	ID3D11RasterizerState*		m_pRSSolidBack;
+	ID3D11RasterizerState*		m_pRSWireBack;
+	ID3D11RasterizerState*		m_pRS;
+	ID3D11ShaderResourceView*	m_pTextureSRV;
+	ID3D11SamplerState*			m_pWrapLinear;
+	D3D11_FILL_MODE				m_FillMode;
+	D3D11_CULL_MODE				m_CullMode;
 	//ID3D11RasterizerState*	m_pRS;
+public:
+	ID3D11DepthStencilView*		m_pDSV;
+	ID3D11DepthStencilState*	m_pDSS;
 public:
 	bool Init() override;
 	bool Frame() override;
 	bool Render() override;
 	bool Release() override;
+	bool PreRender() override;
 public:
 	void CompilerCheck(ID3DBlob* pErrorMsgs);
 	void SetRasterizerState();

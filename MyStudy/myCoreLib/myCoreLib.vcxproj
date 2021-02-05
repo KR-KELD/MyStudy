@@ -104,10 +104,12 @@
     </Link>
     <PostBuildEvent>
       <Command>copy  "..\\..\\output\\Debug\\myCoreLib.lib" "..\\..\\lib\\myCoreLib_D.lib"
-copy "*.h" "..\\..\\include"</Command>
+copy "*.h" "..\\..\\include"
+copy "dxtk\\*.h" "..\\..\\include\\dxtk"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>copy "..\\..\\fmod\\lib\\x64\\*.dll" "..\\..\\output\\Debug\\"</Command>
+      <Command>md "..\\..\\include\\dxtk"
+copy "..\\..\\fmod\\lib\\x64\\*.dll" "..\\..\\output\\Debug\\"</Command>
     </PreBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>../../fmod/lib/x64;</AdditionalLibraryDirectories>
@@ -183,6 +185,8 @@ copy "*.h" "..\\..\\include"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dxtk\DDSTextureLoader.cpp" />
+    <ClCompile Include="dxtk\WICTextureLoader.cpp" />
     <ClCompile Include="myBitmap.cpp" />
     <ClCompile Include="myBitmapManager.cpp" />
     <ClCompile Include="myButton.cpp" />
@@ -210,6 +214,13 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dxtk\DDS.h" />
+    <ClInclude Include="dxtk\DDSTextureLoader.h" />
+    <ClInclude Include="dxtk\DirectXHelpers.h" />
+    <ClInclude Include="dxtk\LoaderHelpers.h" />
+    <ClInclude Include="dxtk\pch.h" />
+    <ClInclude Include="dxtk\PlatformHelpers.h" />
+    <ClInclude Include="dxtk\WICTextureLoader.h" />
     <ClInclude Include="myBitmap.h" />
     <ClInclude Include="myBitmapManager.h" />
     <ClInclude Include="myButton.h" />

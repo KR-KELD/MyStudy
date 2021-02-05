@@ -41,9 +41,9 @@ bool myTimer::Render()
 	fTimer += m_fSecondPerFrame;
 	if (fTimer >= 1.0f)
 	{
-		//ZeroMemory(m_szBuffer, sizeof(WCHAR) * 256);
-		//_stprintf_s(m_szBuffer, L"게임시간 %8.2f초 , SPF:(%7.4f) , FPS:(%d)\n",
-		//	m_fGameTimer, m_fSecondPerFrame, m_iFPS);
+		ZeroMemory(m_szBuffer, sizeof(WCHAR) * 256);
+		_stprintf_s(m_szBuffer, L"게임시간 %8.2f초 , SPF:(%7.4f) , FPS:(%d)\n",
+			m_fGameTimer, m_fSecondPerFrame, m_iFPS);
 		//OutputDebugString(m_szBuffer);
 		fTimer -= 1.0f;
 		m_iFPS = 0;
