@@ -49,15 +49,15 @@ bool Sample::Init()
 	// load texture
 	//ID3D11Resource* texture;
 	//텍스쳐 불러오기
-	hr = DirectX::CreateWICTextureFromFile(
-		m_pd3dDevice, L"../../data/bitmap/flametank.bmp",
-		NULL,
-		&m_pTextureSRV);
-
 	//hr = DirectX::CreateWICTextureFromFile(
-	//	m_pd3dDevice, L"../../data/main_start_nor.png",
+	//	m_pd3dDevice, L"../../data/bitmap/flametank.bmp",
 	//	NULL,
 	//	&m_pTextureSRV);
+
+	hr = DirectX::CreateWICTextureFromFile(
+		m_pd3dDevice, L"../../data/main_start_nor.png",
+		NULL,
+		&m_pTextureSRV);
 	//샘플러 옵션 세팅(보간법 세팅)
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -107,29 +107,29 @@ bool Sample::Init()
 		return false;
 	}
 
-
+	MakeBox();
 	//버텍스 리스트 만들기
-	m_VertexList.resize(4);
-	m_VertexList[0] = {
-		myVector3(-1.0f, 1.0f, 0.5f),
-		myVector3(0,0,0),
-		myVector4(1,0,0,1),
-		myVector2(0,0) };
-	m_VertexList[1] = {
-		myVector3(1.0f, 1.0f, 0.5f),
-		myVector3(0,0,0),
-		myVector4(0,1,0,1),
-		myVector2(3,0) };
-	m_VertexList[2] = {
-		myVector3(-1.0f, -1.0f, 0.5f),
-		myVector3(0,0,0),
-		myVector4(0,0,1,1),
-		myVector2(0,3) };
-	m_VertexList[3] = {
-		myVector3(1.0f, -1.0f, 0.5f),
-		myVector3(0,0,0),
-		myVector4(1,1,1,1),
-		myVector2(3,3) };
+	//m_VertexList.resize(4);
+	//m_VertexList[0] = {
+	//	myVector3(-1.0f, 1.0f, 0.5f),
+	//	myVector3(0,0,0),
+	//	myVector4(1,0,0,1),
+	//	myVector2(0,0) };
+	//m_VertexList[1] = {
+	//	myVector3(1.0f, 1.0f, 0.5f),
+	//	myVector3(0,0,0),
+	//	myVector4(0,1,0,1),
+	//	myVector2(3,0) };
+	//m_VertexList[2] = {
+	//	myVector3(-1.0f, -1.0f, 0.5f),
+	//	myVector3(0,0,0),
+	//	myVector4(0,0,1,1),
+	//	myVector2(0,3) };
+	//m_VertexList[3] = {
+	//	myVector3(1.0f, -1.0f, 0.5f),
+	//	myVector3(0,0,0),
+	//	myVector4(1,1,1,1),
+	//	myVector2(3,3) };
 
 
 	D3D11_BUFFER_DESC bd;
@@ -177,13 +177,13 @@ bool Sample::Init()
 		return false;
 	}
 	//인덱스 리스트 만들기
-	m_IndexList.resize(6);
-	m_IndexList[0] = 0;
-	m_IndexList[1] = 1;
-	m_IndexList[2] = 2;
-	m_IndexList[3] = 2;
-	m_IndexList[4] = 1;
-	m_IndexList[5] = 3;
+	//m_IndexList.resize(6);
+	//m_IndexList[0] = 0;
+	//m_IndexList[1] = 1;
+	//m_IndexList[2] = 2;
+	//m_IndexList[3] = 2;
+	//m_IndexList[4] = 1;
+	//m_IndexList[5] = 3;
 
 	//버퍼 옵션 초기화
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
@@ -228,8 +228,8 @@ bool Sample::Init()
 	const D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXTURE",  0, DXGI_FORMAT_R32G32_FLOAT, 0, 40,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT iNumElement = sizeof(layout) / sizeof(layout[0]);
@@ -248,12 +248,30 @@ bool Sample::Frame()
 {
 	myMatrix matScale;
 	myMatrix matRotation;
-	matScale.Scale(2, 2, 2);
-	matRotation.YRotate(g_fGameTimer);
-	m_matWorld = matScale * matRotation;
+	//matScale.Scale(2, 2, 2);
+	//matRotation.YRotate(g_fGameTimer);
+	//m_matWorld = matScale * matRotation;
+	myMatrix RotY;
+
+	if (g_Input.GetKey('A') == KEY_PUSH)
+	{
+		RotY._11 = cosf(PI32D);
+		RotY._13 = sinf(PI32D);
+		RotY._31 = -sinf(PI32D);
+		RotY._33 = cosf(PI32D);
+		m_vCameraPos = RotY * m_vCameraPos;
+	}
+
+	if (g_Input.GetKey('D') == KEY_PUSH)
+	{
+		RotY._11 = cosf(PI32D);
+		RotY._13 = sinf(PI32D);
+		RotY._31 = -sinf(PI32D);
+		RotY._33 = cosf(PI32D);
+		m_vCameraPos = RotY * m_vCameraPos;
+	}
 	myVector3 u = { 0,1,0 };
 	m_matView.CreateViewLook(m_vCameraPos, m_vCameraTarget, u);
-
 
 	D3D11_MAPPED_SUBRESOURCE mr;
 
@@ -272,7 +290,7 @@ bool Sample::Frame()
 		pData->vColor[3] = 1;
 		pData->vTime[0] = cosf(g_fGameTimer) * 0.5f + 0.5f;
 		pData->vTime[1] = g_fGameTimer;
-		m_pd3dContext->Unmap(m_pConstantBuffer,0);
+		m_pd3dContext->Unmap(m_pConstantBuffer, 0);
 	}
 	return true;
 }
@@ -348,6 +366,73 @@ bool Sample::PreRender()
 			m_pDSV, D3D10_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 		//화면 좌표로 변환해준다
 		m_pd3dContext->RSSetViewports(1, &m_Viewport);
+	}
+	return true;
+}
+
+bool Sample::MakeBox()
+{
+	m_VertexList.resize(24);
+	myMatrix Rot;
+	Rot._11 = cosf(PI2D);
+	Rot._13 = sinf(PI2D);
+	Rot._31 = -sinf(PI2D);
+	Rot._33 = cosf(PI2D);
+	m_VertexList[0] = {
+		myVector3(-1.0f, 1.0f, -1.0f),
+		myVector3(0,0,0),
+		myVector4(1,0,0,1),
+		myVector2(0,0) };
+	m_VertexList[1] = {
+		myVector3(1.0f, 1.0f, -1.0f),
+		myVector3(0,0,0),
+		myVector4(0,1,0,1),
+		myVector2(1,0) };
+	m_VertexList[2] = {
+		myVector3(-1.0f, -1.0f, 1.0f),
+		myVector3(0,0,0),
+		myVector4(0,0,1,1),
+		myVector2(0,1) };
+	m_VertexList[3] = {
+		myVector3(1.0f, -1.0f, 1.0f),
+		myVector3(0,0,0),
+		myVector4(1,1,1,1),
+		myVector2(1,1) };
+
+	for (int i = 1; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			m_VertexList[j + i * 4].p = Rot * m_VertexList[(i - 1) * 4 + j].p;
+		}
+	}
+	Rot.Identity();
+	Rot._22 = cosf(PI2D);
+	Rot._23 = -sinf(PI2D);
+	Rot._32 = sinf(PI2D);
+	Rot._33 = cosf(PI2D);
+	for (int j = 0; j < 4; j++)
+	{
+		m_VertexList[j + 16].p = Rot * m_VertexList[j].p;
+	}
+	Rot.Identity();
+	Rot._22 = cosf(PI2D);
+	Rot._23 = sinf(PI2D);
+	Rot._32 = -sinf(PI2D);
+	Rot._33 = cosf(PI2D);
+	for (int j = 0; j < 4; j++)
+	{
+		m_VertexList[j + 20].p = Rot * m_VertexList[j].p;
+	}
+	m_IndexList.resize(36);
+	for (int i = 0; i < 6; i++)
+	{
+		m_IndexList[0 + i * 6] = 0 + i * 6;
+		m_IndexList[1 + i * 6] = 1 + i * 6;
+		m_IndexList[2 + i * 6] = 2 + i * 6;
+		m_IndexList[3 + i * 6] = 2 + i * 6;
+		m_IndexList[4 + i * 6] = 1 + i * 6;
+		m_IndexList[5 + i * 6] = 3 + i * 6;
 	}
 	return true;
 }

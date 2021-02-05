@@ -5,12 +5,12 @@ static const float PI = 3.141592654f;
 static const float EPSILON = 0.00001f;
 static const float PI2M		= PI * 2;
 static const float PI2D		= float(PI/2.0f);
-static const float PI4D		= float(PI/2.0f);
-static const float PI8D		= float(PI/2.0f); 
-static const float PI16D	= float(PI/2.0f); 
-static const float PI32D	= float(PI/2.0f); 
-static const float PI64D	= float(PI/2.0f); 
-static const float PI128D	= float(PI/2.0f); 
+static const float PI4D		= float(PI/4.0f);
+static const float PI8D		= float(PI/8.0f); 
+static const float PI16D	= float(PI/16.0f); 
+static const float PI32D	= float(PI/32.0f); 
+static const float PI64D	= float(PI/64.0f); 
+static const float PI128D	= float(PI/128.0f); 
 
 #define randf(x) (x * rand() / (float)RAND_MAX)
 #define randf2(x,off) 

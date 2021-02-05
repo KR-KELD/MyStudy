@@ -1,25 +1,7 @@
 #pragma once
 #include "myCore.h"
-#include "myMatrix.h"
-#include <d3dcompiler.h>
-#include "WICTextureLoader.h"
-#pragma comment(lib, "d3dcompiler.lib")
+#include "myFigure.h"
 
-struct MY_VERTEX
-{
-	myVector3 p;
-	myVector3 n;
-	myVector4 c;
-	myVector2 t;
-	MY_VERTEX() {}
-	MY_VERTEX(myVector3 p, myVector3 n, myVector4 c, myVector2 t)
-	{
-		this->p = p;
-		this->n = n;
-		this->c = c;
-		this->t = t;
-	}
-};
 
 struct myDataCB
 {
@@ -33,11 +15,11 @@ struct myDataCB
 class Sample : public myCore
 {
 public:
-	myMatrix    m_matWorld;
-	myMatrix    m_matView;
-	myMatrix    m_matProj;
-	myVector3	   m_vCameraPos = { 0,0,-10 };
-	myVector3	   m_vCameraTarget = { 0,0,0 };
+	myMatrix		m_matWorld;
+	myMatrix		m_matView;
+	myMatrix		m_matProj;
+	myVector3		m_vCameraPos = { 0,0,-10 };
+	myVector3		m_vCameraTarget = { 0,0,0 };
 public:
 	myDataCB					m_cbData;
 	std::vector<MY_VERTEX>		m_VertexList;
@@ -65,6 +47,8 @@ public:
 	bool Render() override;
 	bool Release() override;
 	bool PreRender() override;
+public:
+	bool MakeBox();
 public:
 	void CompilerCheck(ID3DBlob* pErrorMsgs);
 	void SetRasterizerState();

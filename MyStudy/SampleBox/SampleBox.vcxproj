@@ -147,11 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="myFigure.cpp" />
     <ClCompile Include="myMatrix.cpp" />
     <ClCompile Include="myVector.cpp" />
     <ClCompile Include="Sample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="myFigure.h" />
     <ClInclude Include="myMatrix.h" />
     <ClInclude Include="myVector.h" />
     <ClInclude Include="Sample.h" />
