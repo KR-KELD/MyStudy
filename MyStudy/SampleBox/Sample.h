@@ -2,7 +2,6 @@
 #include "myCore.h"
 #include "myFigure.h"
 
-
 struct myDataCB
 {
 	myMatrix  matWorld;
@@ -15,10 +14,14 @@ struct myDataCB
 class Sample : public myCore
 {
 public:
+	myBox			m_Box;
+public:
+	float			m_CameraAngleX = 0.0f;
+	float			m_CameraAngleY = 0.0f;
 	myMatrix		m_matWorld;
 	myMatrix		m_matView;
 	myMatrix		m_matProj;
-	myVector3		m_vCameraPos = { 0,0,-10 };
+	myVector3		m_vCameraPos = { 0,0,-5 };
 	myVector3		m_vCameraTarget = { 0,0,0 };
 public:
 	myDataCB					m_cbData;

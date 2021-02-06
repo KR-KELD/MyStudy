@@ -4,6 +4,7 @@ bool Sample::Init()
 {
 	HRESULT hr = NULL;
 
+	//카메라
 	m_matWorld.Identity();
 	myVector3 p = m_vCameraPos;
 	myVector3 t = m_vCameraTarget;
@@ -15,7 +16,7 @@ bool Sample::Init()
 	float fAspect = g_rtClient.right / g_rtClient.bottom;
 	m_matProj.PerspectiveFovLH(fN, fF, fFov, fAspect);
 
-
+	//뎁스 텍스쳐 - 1개
 	//뎁스 텍스쳐를 만들어라
 	ID3D11Texture2D* pTexture = nullptr;
 	D3D11_TEXTURE2D_DESC texDesc;
@@ -31,6 +32,7 @@ bool Sample::Init()
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	m_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
 
+	//뎁스 스텐실 - 1개
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
 	ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -54,6 +56,7 @@ bool Sample::Init()
 	//	NULL,
 	//	&m_pTextureSRV);
 
+	//텍스쳐 - 공유가능
 	hr = DirectX::CreateWICTextureFromFile(
 		m_pd3dDevice, L"../../data/main_start_nor.png",
 		NULL,
@@ -80,6 +83,7 @@ bool Sample::Init()
 
 
 	// Rasterizer State
+	//레스터라이저 - 공유가능
 	//그리기 모드
 	m_FillMode = D3D11_FILL_SOLID;
 	//컬링 모드
@@ -107,29 +111,30 @@ bool Sample::Init()
 		return false;
 	}
 
-	MakeBox();
+	//버텍스 버퍼 - 공유불가능
+	//MakeBox();
 	//버텍스 리스트 만들기
-	//m_VertexList.resize(4);
-	//m_VertexList[0] = {
-	//	myVector3(-1.0f, 1.0f, 0.5f),
-	//	myVector3(0,0,0),
-	//	myVector4(1,0,0,1),
-	//	myVector2(0,0) };
-	//m_VertexList[1] = {
-	//	myVector3(1.0f, 1.0f, 0.5f),
-	//	myVector3(0,0,0),
-	//	myVector4(0,1,0,1),
-	//	myVector2(3,0) };
-	//m_VertexList[2] = {
-	//	myVector3(-1.0f, -1.0f, 0.5f),
-	//	myVector3(0,0,0),
-	//	myVector4(0,0,1,1),
-	//	myVector2(0,3) };
-	//m_VertexList[3] = {
-	//	myVector3(1.0f, -1.0f, 0.5f),
-	//	myVector3(0,0,0),
-	//	myVector4(1,1,1,1),
-	//	myVector2(3,3) };
+	m_VertexList.resize(4);
+	m_VertexList[0] = {
+		myVector3(-1.0f, 1.0f, 0.5f),
+		myVector3(0,0,0),
+		myVector4(1,0,0,1),
+		myVector2(0,0) };
+	m_VertexList[1] = {
+		myVector3(1.0f, 1.0f, 0.5f),
+		myVector3(0,0,0),
+		myVector4(0,1,0,1),
+		myVector2(3,0) };
+	m_VertexList[2] = {
+		myVector3(-1.0f, -1.0f, 0.5f),
+		myVector3(0,0,0),
+		myVector4(0,0,1,1),
+		myVector2(0,3) };
+	m_VertexList[3] = {
+		myVector3(1.0f, -1.0f, 0.5f),
+		myVector3(0,0,0),
+		myVector4(1,1,1,1),
+		myVector2(3,3) };
 
 
 	D3D11_BUFFER_DESC bd;
@@ -176,14 +181,15 @@ bool Sample::Init()
 	{
 		return false;
 	}
+	//인덱스 버퍼 - 공유불가능
 	//인덱스 리스트 만들기
-	//m_IndexList.resize(6);
-	//m_IndexList[0] = 0;
-	//m_IndexList[1] = 1;
-	//m_IndexList[2] = 2;
-	//m_IndexList[3] = 2;
-	//m_IndexList[4] = 1;
-	//m_IndexList[5] = 3;
+	m_IndexList.resize(6);
+	m_IndexList[0] = 0;
+	m_IndexList[1] = 1;
+	m_IndexList[2] = 2;
+	m_IndexList[3] = 2;
+	m_IndexList[4] = 1;
+	m_IndexList[5] = 3;
 
 	//버퍼 옵션 초기화
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
@@ -201,6 +207,7 @@ bool Sample::Init()
 	{
 		return false;
 	}
+	//픽셀,버텍스 섀이더 - 공유가능
 	//섀이더,에러 블롭 생성
 	ID3DBlob* pVSObj;
 	ID3DBlob* pPSObj;
@@ -241,6 +248,7 @@ bool Sample::Init()
 		pVSObj->GetBufferSize(),
 		&m_pInputLayout
 	);
+	m_Box.Init(m_pd3dDevice);
 	return true;
 }
 
@@ -252,26 +260,37 @@ bool Sample::Frame()
 	//matRotation.YRotate(g_fGameTimer);
 	//m_matWorld = matScale * matRotation;
 	myMatrix RotY;
-
-	if (g_Input.GetKey('A') == KEY_PUSH)
+	myMatrix RotX;
+	if (g_Input.GetKey('A') == KEY_HOLD)
 	{
-		RotY._11 = cosf(PI32D);
-		RotY._13 = sinf(PI32D);
-		RotY._31 = -sinf(PI32D);
-		RotY._33 = cosf(PI32D);
-		m_vCameraPos = RotY * m_vCameraPos;
+		m_CameraAngleY += 0.001f;
 	}
 
-	if (g_Input.GetKey('D') == KEY_PUSH)
+	if (g_Input.GetKey('D') == KEY_HOLD)
 	{
-		RotY._11 = cosf(PI32D);
-		RotY._13 = sinf(PI32D);
-		RotY._31 = -sinf(PI32D);
-		RotY._33 = cosf(PI32D);
-		m_vCameraPos = RotY * m_vCameraPos;
+		m_CameraAngleY -= 0.001f;
 	}
+	if (g_Input.GetKey('W') == KEY_HOLD)
+	{
+		m_CameraAngleX -= 0.001f;
+	}
+	if (g_Input.GetKey('S') == KEY_HOLD)
+	{
+		m_CameraAngleX += 0.001f;
+	}
+	RotY._11 = cosf(m_CameraAngleY);
+	RotY._13 = sinf(m_CameraAngleY);
+	RotY._31 = -sinf(m_CameraAngleY);
+	RotY._33 = cosf(m_CameraAngleY);
+	RotX._22 = cosf(m_CameraAngleX);
+	RotX._23 = -sinf(m_CameraAngleX);
+	RotX._32 = sinf(m_CameraAngleX);
+	RotX._33 = cosf(m_CameraAngleX);
+
+	myMatrix Rot = RotX * RotY;
+	myVector3 CameraPos = Rot * m_vCameraPos;
 	myVector3 u = { 0,1,0 };
-	m_matView.CreateViewLook(m_vCameraPos, m_vCameraTarget, u);
+	m_matView.CreateViewLook(CameraPos, m_vCameraTarget, u);
 
 	D3D11_MAPPED_SUBRESOURCE mr;
 
@@ -329,11 +348,13 @@ bool Sample::Render()
 	m_pd3dContext->OMSetDepthStencilState(m_pDSS, 0);
 	//그리기
 	m_pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
+	m_Box.Render(m_pd3dContext);
 	return true;
 }
 
 bool Sample::Release()
 {
+	m_Box.Release();
 	m_pDSV->Release();
 	m_pDSS->Release();
 	m_pWrapLinear->Release();
