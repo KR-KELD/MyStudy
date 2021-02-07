@@ -147,29 +147,62 @@ bool mySquare::SetSquareRot(myVector3 & vCenter, SquareRot type)
 	return true;
 }
 
-bool myBox::Init(ID3D11Device * pDevice)
+bool myBox::SetBox(myVector3 & vCenter)
 {
-	for (int i = 0; i < 6; i++)
-	{
-		m_sSquare[i].Init(pDevice);
-	}
-	return true;
-}
 
-bool myBox::Render(ID3D11DeviceContext * pDeviceContext)
-{
-	for (int i = 0; i < 6; i++)
-	{
-		m_sSquare[i].Render(pDeviceContext);
-	}
-	return true;
-}
+	m_VertexList[0]   = { myVector3(-m_fRange + vCenter.x, m_fRange + vCenter.y, -m_fRange + vCenter.z ),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,0)};
+	m_VertexList[1]   = { myVector3( m_fRange + vCenter.x, m_fRange + vCenter.y, -m_fRange + vCenter.z ),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,0)};
+	m_VertexList[2]   = { myVector3(-m_fRange + vCenter.x,-m_fRange + vCenter.y, -m_fRange + vCenter.z ),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,1)};
+	m_VertexList[3]   = { myVector3( m_fRange + vCenter.x,-m_fRange + vCenter.y, -m_fRange + vCenter.z ),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,1)};
 
-bool myBox::Release()
-{
-	for (int i = 0; i < 6; i++)
-	{
-		m_sSquare[i].Release();
-	}
+	m_VertexList[4]   = { myVector3( m_fRange + vCenter.x, m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,0) };
+	m_VertexList[5] = { myVector3(-m_fRange + vCenter.x, m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,0) };
+	m_VertexList[6] = { myVector3(m_fRange + vCenter.x,-m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,1) };
+	m_VertexList[7] = { myVector3(-m_fRange + vCenter.x,-m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,1) };
+
+	m_VertexList[8]   = { myVector3(-m_fRange + vCenter.x, m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,0) };
+	m_VertexList[9] = { myVector3(-m_fRange + vCenter.x, m_fRange + vCenter.y,-m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,0) };
+	m_VertexList[10] = { myVector3(-m_fRange + vCenter.x,-m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,1) };
+	m_VertexList[11] = { myVector3(-m_fRange + vCenter.x,-m_fRange + vCenter.y,-m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,1) };
+
+	m_VertexList[12]  = { myVector3(m_fRange + vCenter.x, m_fRange + vCenter.y,-m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,0) };
+	m_VertexList[13] = { myVector3(m_fRange + vCenter.x, m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,0) };
+	m_VertexList[14] = { myVector3(m_fRange + vCenter.x,-m_fRange + vCenter.y,-m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,1) };
+	m_VertexList[15] = { myVector3(m_fRange + vCenter.x,-m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,1) };
+
+	m_VertexList[16]  = { myVector3(-m_fRange + vCenter.x, m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,0) };
+	m_VertexList[17] = { myVector3(m_fRange + vCenter.x, m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,0) };
+	m_VertexList[18] = { myVector3(-m_fRange + vCenter.x, m_fRange + vCenter.y,-m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,1) };
+	m_VertexList[19] = { myVector3(m_fRange + vCenter.x, m_fRange + vCenter.y,-m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,1) };
+
+	m_VertexList[20]  = { myVector3(-m_fRange + vCenter.x,-m_fRange + vCenter.y,-m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,0) };
+	m_VertexList[21] = { myVector3(m_fRange + vCenter.x,-m_fRange + vCenter.y,-m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(1,0) };
+	m_VertexList[22] = { myVector3(-m_fRange + vCenter.x,-m_fRange + vCenter.y, m_fRange + vCenter.z),
+						myVector3(0,0,0), myVector4(1,1,1,1), myVector2(0,1) };
+	m_VertexList[23] = { myVector3(m_fRange + vCenter.x,-m_fRange + vCenter.y, m_fRange + vCenter.z),
+				  myVector3(0, 0, 0), myVector4(1, 1, 1, 1), myVector2(1,1) };
+
 	return true;
 }

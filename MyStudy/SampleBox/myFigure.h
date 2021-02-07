@@ -148,35 +148,57 @@ public:
 	}
 };
 
-class myBox/* : public myBaseFigure*/
+class myBox : public myBaseFigure
 {
+public:
+	enum SquareRot
+	{
+		FRONT = 0,
+		BACK,
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN,
+	};
 public:
 	myVector3			m_vCenter;
 	float				m_fRange;
-	mySquare			m_sSquare[6];
 public:
+
 	myBox(myVector3 vCenter, float fRange)
 	{
 		m_vCenter = vCenter;
 		m_fRange = fRange;
+		m_VertexList.resize(24);
+		m_IndexList.resize(36);
 		for (int i = 0; i < 6; i++)
 		{
-			m_sSquare[i].m_fRange = fRange;
-			m_sSquare[i].SetSquareRot(vCenter, (mySquare::SquareRot)i);
+			m_IndexList[0 + i * 6] = 0 + i * 4;
+			m_IndexList[1 + i * 6] = 1 + i * 4;
+			m_IndexList[2 + i * 6] = 2 + i * 4;
+			m_IndexList[3 + i * 6] = 2 + i * 4;
+			m_IndexList[4 + i * 6] = 1 + i * 4;
+			m_IndexList[5 + i * 6] = 3 + i * 4;
 		}
+		SetBox(vCenter);
 	}
 	myBox()
 	{
-		m_vCenter = myVector3{ 0.0f,0.0f ,0.0f };
+		m_vCenter = myVector3(0.0f, 0.0f, 0.0f);
 		m_fRange = 1.0f;
+		m_VertexList.resize(24);
+		m_IndexList.resize(36);
 		for (int i = 0; i < 6; i++)
 		{
-			m_sSquare[i].m_fRange = m_fRange;
-			m_sSquare[i].SetSquareRot(m_vCenter, (mySquare::SquareRot)i);
+			m_IndexList[0 + i * 6] = 0 + i * 4;
+			m_IndexList[1 + i * 6] = 1 + i * 4;
+			m_IndexList[2 + i * 6] = 2 + i * 4;
+			m_IndexList[3 + i * 6] = 2 + i * 4;
+			m_IndexList[4 + i * 6] = 1 + i * 4;
+			m_IndexList[5 + i * 6] = 3 + i * 4;
 		}
+		SetBox(m_vCenter);
 	}
-	bool Init(ID3D11Device* pDevice);
-	bool Render(ID3D11DeviceContext* pDeviceContext);
-	bool Release();
+	bool SetBox(myVector3 & vCenter);
 };
 

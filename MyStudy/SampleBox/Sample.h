@@ -14,7 +14,7 @@ struct myDataCB
 class Sample : public myCore
 {
 public:
-	myBox			m_Box;
+	myBox			m_Box[3];
 public:
 	float			m_CameraAngleX = 0.0f;
 	float			m_CameraAngleY = 0.0f;

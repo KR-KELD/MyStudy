@@ -248,7 +248,15 @@ bool Sample::Init()
 		pVSObj->GetBufferSize(),
 		&m_pInputLayout
 	);
-	m_Box.Init(m_pd3dDevice);
+	myVector3 temp = { -3.0f, 0.0f, 0.0f };
+	m_Box[1].SetBox(temp);
+	temp = { 3.0f,0.0f,0.0f };
+	m_Box[2].SetBox(temp);
+	for (int i = 0; i < 3; i++)
+	{
+		m_Box[i].Init(m_pd3dDevice);
+	}
+
 	return true;
 }
 
@@ -348,13 +356,19 @@ bool Sample::Render()
 	m_pd3dContext->OMSetDepthStencilState(m_pDSS, 0);
 	//±×¸®±â
 	m_pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
-	m_Box.Render(m_pd3dContext);
+	for (int i = 0; i < 3; i++)
+	{
+		m_Box[i].Render(m_pd3dContext);
+	}
 	return true;
 }
 
 bool Sample::Release()
 {
-	m_Box.Release();
+	for (int i = 0; i < 3; i++)
+	{
+		m_Box[i].Release();
+	}
 	m_pDSV->Release();
 	m_pDSS->Release();
 	m_pWrapLinear->Release();
