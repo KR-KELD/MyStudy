@@ -61,6 +61,8 @@ public:
 	C_STR		  m_szVertexShader;
 	C_STR		  m_szPixelShader;
 public:
+	myVector3	m_vCenter;
+	float		m_fRange;
 	myMatrix    m_matWorld;
 	myMatrix    m_matView;
 	myMatrix    m_matProj;
@@ -85,6 +87,7 @@ public:
 	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Relase();
 	virtual bool    CreateVertexData();
+	virtual bool    CreateVertexData(myVector3& vCenter, float& fRange);
 	virtual bool    CreateIndexData();
 	virtual bool    CreateVertexBuffer();
 	virtual bool    CreateIndexBuffer();
@@ -104,7 +107,8 @@ public:
 class myShapeBox : public myShape
 {
 public:
-	virtual bool    CreateVertexData()override;
+	virtual bool    CreateVertexData(myVector3& vCenter, float& fRange)override;
+
 	virtual bool    CreateIndexData()override;
 public:
 	myShapeBox();
@@ -114,7 +118,7 @@ public:
 class myShapePlane : public myShape
 {
 public:
-	virtual bool    CreateVertexData()override;
+	virtual bool    CreateVertexData(myVector3& vCenter, float& fRange)override;
 	virtual bool    CreateIndexData()override;
 public:
 	myShapePlane();
