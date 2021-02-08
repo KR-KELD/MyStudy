@@ -236,5 +236,8 @@
     <ClInclude Include="dxtk\WICTextureLoader.h">
       <Filter>dxtk</Filter>
     </ClInclude>
+    <ClInclude Include="myBasicStd.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

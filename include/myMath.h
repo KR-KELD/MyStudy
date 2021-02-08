@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 
+
 static const float PI = 3.141592654f;
 static const float EPSILON = 0.00001f;
 static const float PI2M		= PI * 2;
@@ -14,6 +15,10 @@ static const float PI128D	= float(PI/128.0f);
 
 #define randf(x) (x * rand() / (float)RAND_MAX)
 #define randf2(x,off) 
+#define MAKECOLOR_ARGB(a, r, g, b) (((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)
+#define IS_IN_RANGE(value,r0,r1) (( ((r0) <= (value)) && ((value) <= (r1)) ) ? 1 : 0)
+
+
 
 static float RA_TO_DE(float f)
 {

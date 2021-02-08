@@ -221,6 +221,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="dxtk\pch.h" />
     <ClInclude Include="dxtk\PlatformHelpers.h" />
     <ClInclude Include="dxtk\WICTextureLoader.h" />
+    <ClInclude Include="myBasicStd.h" />
     <ClInclude Include="myBitmap.h" />
     <ClInclude Include="myBitmapManager.h" />
     <ClInclude Include="myButton.h" />

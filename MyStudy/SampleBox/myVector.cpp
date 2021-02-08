@@ -120,6 +120,24 @@ myVector4::myVector4(float fX, float fY, float fZ, float fW)
 	w = fW;
 }
 
+bool myVector4::operator==(myVector4 const & v0)
+{
+	if (fabs(x - v0.x) < EPSILON)
+	{
+		if (fabs(y - v0.y) < EPSILON)
+		{
+			if (fabs(z - v0.z) < EPSILON)
+			{
+				if (fabs(w - v0.w) < EPSILON)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 
 myVector2::myVector2()
 {
@@ -136,4 +154,16 @@ myVector2::myVector2(float fX, float fY)
 {
 	x = fX;
 	y = fY;
+}
+
+bool myVector2::operator==(myVector2 const & v0)
+{
+	if (fabs(x - v0.x) < EPSILON)
+	{
+		if (fabs(y - v0.y) < EPSILON)
+		{
+			return true;
+		}
+	}
+	return false;
 }

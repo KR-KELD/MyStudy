@@ -1,8 +1,6 @@
 #pragma once
 #include "myMatrix.h"
-#include <d3dcompiler.h>
 #include "WICTextureLoader.h"
-#pragma comment(lib, "d3dcompiler.lib")
 
 struct MY_VERTEX
 {

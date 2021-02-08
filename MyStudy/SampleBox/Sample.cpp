@@ -3,7 +3,8 @@ GAMERUN;
 bool Sample::Init()
 {
 	HRESULT hr = NULL;
-
+	m_vCameraPos = { 0,0,-5 };
+	m_vCameraTarget = { 0,0,0 };
 	//카메라
 	m_matWorld.Identity();
 	myVector3 p = m_vCameraPos;
@@ -13,7 +14,7 @@ bool Sample::Init()
 	float fN = 1;
 	float fF = 1000;
 	float fFov = PI / 2.0f;
-	float fAspect = g_rtClient.right / g_rtClient.bottom;
+	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	m_matProj.PerspectiveFovLH(fN, fF, fFov, fAspect);
 
 	//뎁스 텍스쳐 - 1개
@@ -30,24 +31,34 @@ bool Sample::Init()
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	m_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
-
+	hr = m_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
+	if (FAILED(hr))
+	{
+		return false;
+	}
 	//뎁스 스텐실 - 1개
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
 	ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-
-	m_pd3dDevice->CreateDepthStencilView(pTexture, &dsvDesc, &m_pDSV);
-
+	dsvDesc.Texture2D.MipSlice = 0;
+	hr = m_pd3dDevice->CreateDepthStencilView(pTexture, &dsvDesc, &m_pDSV);
+	//다 쓴 텍스쳐 릴리즈
+	if (pTexture)pTexture->Release();
+	if (FAILED(hr))
+	{
+		return false;
+	}
 	D3D11_DEPTH_STENCIL_DESC dssDesc;
 	ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 	dssDesc.DepthEnable = TRUE;
 	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-
-
-	m_pd3dDevice->CreateDepthStencilState(&dssDesc, &m_pDSS);
+	hr = m_pd3dDevice->CreateDepthStencilState(&dssDesc, &m_pDSS);
+	if (FAILED(hr))
+	{
+		return false;
+	}
 	// load texture
 	//ID3D11Resource* texture;
 	//텍스쳐 불러오기
@@ -57,16 +68,16 @@ bool Sample::Init()
 	//	&m_pTextureSRV);
 
 	//텍스쳐 - 공유가능
-	hr = DirectX::CreateWICTextureFromFile(
-		m_pd3dDevice, L"../../data/main_start_nor.png",
-		NULL,
-		&m_pTextureSRV);
+	//hr = DirectX::CreateWICTextureFromFile(
+	//	m_pd3dDevice, L"../../data/main_start_nor.png",
+	//	NULL,
+	//	&m_pTextureSRV);
+
 	//샘플러 옵션 세팅(보간법 세팅)
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
 	//축소 확대 밉맵에서 선형보간 사용
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -80,6 +91,10 @@ bool Sample::Init()
 	samplerDesc.MaxLOD = FLT_MAX;
 	//샘플러 세팅
 	hr = m_pd3dDevice->CreateSamplerState(&samplerDesc, &m_pWrapLinear);
+	if (FAILED(hr))
+	{
+		return false;
+	}
 
 
 	// Rasterizer State
@@ -111,151 +126,30 @@ bool Sample::Init()
 		return false;
 	}
 
-	//버텍스 버퍼 - 공유불가능
-	//MakeBox();
-	//버텍스 리스트 만들기
-	m_VertexList.resize(4);
-	m_VertexList[0] = {
-		myVector3(-1.0f, 1.0f, 0.5f),
-		myVector3(0,0,0),
-		myVector4(1,0,0,1),
-		myVector2(0,0) };
-	m_VertexList[1] = {
-		myVector3(1.0f, 1.0f, 0.5f),
-		myVector3(0,0,0),
-		myVector4(0,1,0,1),
-		myVector2(3,0) };
-	m_VertexList[2] = {
-		myVector3(-1.0f, -1.0f, 0.5f),
-		myVector3(0,0,0),
-		myVector4(0,0,1,1),
-		myVector2(0,3) };
-	m_VertexList[3] = {
-		myVector3(1.0f, -1.0f, 0.5f),
-		myVector3(0,0,0),
-		myVector4(1,1,1,1),
-		myVector2(3,3) };
 
-
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-	//GPU에 할당할 버텍스의 크기X갯수
-	bd.ByteWidth = sizeof(myDataCB);
-	//접근 방법
-	bd.Usage = D3D11_USAGE_DYNAMIC;
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//버텍스 버퍼 플래그 설정
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-
-
-	//
-	D3D11_SUBRESOURCE_DATA sd;
-	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
-	//시스템 메모리의 시작주소 넘겨주기
-	sd.pSysMem = &m_cbData;
-	//버텍스 버퍼 생성
-	hr = m_pd3dDevice->CreateBuffer(&bd, &sd, &m_pConstantBuffer);
-	if (FAILED(hr))
+	if (!m_Box.Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+		L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;
 	}
-	//버퍼 옵션 설정
-	//D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-	//GPU에 할당할 버텍스의 크기X갯수
-	bd.ByteWidth = sizeof(MY_VERTEX) * m_VertexList.size();
-	//
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	//버텍스 버퍼 플래그 설정
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-
-	//
-	//D3D11_SUBRESOURCE_DATA sd;
-	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
-	//시스템 메모리의 시작주소 넘겨주기
-	sd.pSysMem = &m_VertexList.at(0);
-	//버텍스 버퍼 생성
-	hr = m_pd3dDevice->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
-	if (FAILED(hr))
+	if (!m_Plane.Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+		L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;
 	}
-	//인덱스 버퍼 - 공유불가능
-	//인덱스 리스트 만들기
-	m_IndexList.resize(6);
-	m_IndexList[0] = 0;
-	m_IndexList[1] = 1;
-	m_IndexList[2] = 2;
-	m_IndexList[3] = 2;
-	m_IndexList[4] = 1;
-	m_IndexList[5] = 3;
-
-	//버퍼 옵션 초기화
-	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-	//인덱스 버퍼 사이즈 넘기기
-	bd.ByteWidth = sizeof(DWORD) * m_IndexList.size();
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	//인덱스 버퍼 플래그 설정
-	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
-	sd.pSysMem = &m_IndexList.at(0);
-	//인덱스 버퍼 생성
-	hr = m_pd3dDevice->CreateBuffer(&bd, &sd, &m_pIndexBuffer);
-	if (FAILED(hr))
+	if (!m_Line.Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+		L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;
 	}
-	//픽셀,버텍스 섀이더 - 공유가능
-	//섀이더,에러 블롭 생성
-	ID3DBlob* pVSObj;
-	ID3DBlob* pPSObj;
-	ID3DBlob* pErrorMsgs;
-	//파일로부터 버텍스 섀이더 함수를 가져온다
-	hr = D3DCompileFromFile(L"vs.txt", NULL, NULL, "VS", "vs_5_0", 0, 0, &pVSObj, &pErrorMsgs);
-	if (FAILED(hr))
-	{
-		CompilerCheck(pErrorMsgs);
-		return false;
-	}
-	//가져온 함수로 버텍스 섀이더를 생성
-	hr = m_pd3dDevice->CreateVertexShader(pVSObj->GetBufferPointer(), pVSObj->GetBufferSize(), NULL, &m_pVertexShader);
-	//파일로부터 픽셀 섀이더 함수를 가져온다
-	hr = D3DCompileFromFile(L"ps.txt", NULL, NULL, "PS", "ps_5_0", 0, 0, &pPSObj, &pErrorMsgs);
-	if (FAILED(hr))
-	{
-		CompilerCheck(pErrorMsgs);
-		return false;
-	}
-	//가져온 함수로 픽셀 섀이더 생성
-	hr = m_pd3dDevice->CreatePixelShader(pPSObj->GetBufferPointer(), pPSObj->GetBufferSize(), NULL, &m_pPixelShader);
-
-	//섀이더 함수에 전달할 변수의 옵션 설정
-	const D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXTURE",  0, DXGI_FORMAT_R32G32_FLOAT, 0, 40,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	UINT iNumElement = sizeof(layout) / sizeof(layout[0]);
-	//인풋 레이아웃 생성
-	hr = m_pd3dDevice->CreateInputLayout(
-		layout,
-		iNumElement,
-		pVSObj->GetBufferPointer(),
-		pVSObj->GetBufferSize(),
-		&m_pInputLayout
-	);
-	myVector3 temp = { -3.0f, 0.0f, 0.0f };
-	m_Box[1].SetBox(temp);
-	temp = { 3.0f,0.0f,0.0f };
-	m_Box[2].SetBox(temp);
-	for (int i = 0; i < 3; i++)
-	{
-		m_Box[i].Init(m_pd3dDevice);
-	}
+	//myVector3 temp = { -3.0f, 0.0f, 0.0f };
+	//m_Box[1].SetBox(temp);
+	//temp = { 3.0f,0.0f,0.0f };
+	//m_Box[2].SetBox(temp);
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	m_Box[i].Init(m_pd3dDevice);
+	//}
 
 	return true;
 }
@@ -300,174 +194,69 @@ bool Sample::Frame()
 	myVector3 u = { 0,1,0 };
 	m_matView.CreateViewLook(CameraPos, m_vCameraTarget, u);
 
-	D3D11_MAPPED_SUBRESOURCE mr;
-
-	HRESULT hr = m_pd3dContext->
-		Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mr);
-	if (SUCCEEDED(hr))
-	{
-		myDataCB* pData = (myDataCB*)mr.pData;
-		pData->matWorld = m_matWorld.Transpose();
-		pData->matView = m_matView.Transpose();
-		pData->matProject = m_matProj.Transpose();
-
-		pData->vColor[0] = cosf(g_fGameTimer);
-		pData->vColor[1] = sinf(g_fGameTimer);
-		pData->vColor[2] = 1.0f - cosf(g_fGameTimer);
-		pData->vColor[3] = 1;
-		pData->vTime[0] = cosf(g_fGameTimer) * 0.5f + 0.5f;
-		pData->vTime[1] = g_fGameTimer;
-		m_pd3dContext->Unmap(m_pConstantBuffer, 0);
-	}
 	return true;
 }
 
 bool Sample::Render()
 {
-	//자를 단위
-	UINT iStride = sizeof(MY_VERTEX);
-	//시작 위치
-	UINT iOffset = 0;
-	//IA 버텍스 버퍼 설정
-	m_pd3dContext->IASetVertexBuffers(0, 1,
-		&m_pVertexBuffer, &iStride, &iOffset);
-	//IA 인덱스 버퍼 설정
-	m_pd3dContext->IASetIndexBuffer(m_pIndexBuffer,
-		DXGI_FORMAT_R32_UINT, 0);
-	//IA 세팅
-	m_pd3dContext->IASetInputLayout(m_pInputLayout);
-	//콘스턴트 버퍼 세팅
-	m_pd3dContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-	m_pd3dContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-	//버텍스 섀이더 세팅
-	m_pd3dContext->VSSetShader(m_pVertexShader, NULL, 0);
-	//픽셀 섀이더 세팅
-	m_pd3dContext->PSSetShader(m_pPixelShader, NULL, 0);
 	//IA에 그려줄 타입 설정
 	m_pd3dContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//m_pd3dContext->Draw(m_VertexList.size(), 0);
 	//레스터라이저 스테이트 세팅
 	m_pd3dContext->RSSetState(m_pRS);
-	//픽셀 섀이더에 텍스쳐 전달
-	m_pd3dContext->PSSetShaderResources(0, 1, &m_pTextureSRV);
 	//픽셀 섀이더에 샘플러 세팅(보간법)
 	m_pd3dContext->PSSetSamplers(0, 1, &m_pWrapLinear);
 	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
 	m_pd3dContext->OMSetDepthStencilState(m_pDSS, 0);
 	//그리기
-	m_pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
-	for (int i = 0; i < 3; i++)
-	{
-		m_Box[i].Render(m_pd3dContext);
-	}
+	m_Box.SetMatrix(&m_matBoxWorld, &m_matView, &m_matProj);
+	m_Box.Render(m_pd3dContext);
+
+	m_Plane.SetMatrix(&m_matPlaneWorld, &m_matView, &m_matProj);
+	m_Plane.Render(m_pd3dContext);
+
+	m_Line.SetMatrix(NULL, &m_matView, &m_matProj);
+	m_Line.Draw(m_pd3dContext,
+		myVector3(0, 0, 0), myVector3(100, 0, 0), myVector4(1, 0, 0, 1));
+	m_Line.Draw(m_pd3dContext,
+		myVector3(0, 0, 0), myVector3(0, 100, 0), myVector4(0, 1, 0, 1));
+	m_Line.Draw(m_pd3dContext,
+		myVector3(0, 0, 0), myVector3(0, 0, 100), myVector4(0, 0, 1, 1));
+
 	return true;
 }
 
 bool Sample::Release()
 {
-	for (int i = 0; i < 3; i++)
-	{
-		m_Box[i].Release();
-	}
 	m_pDSV->Release();
 	m_pDSS->Release();
 	m_pWrapLinear->Release();
-	m_pTextureSRV->Release();
 	m_pRS->Release();
 	m_pRSSolidBack->Release();
 	m_pRSWireBack->Release();
-	m_pConstantBuffer->Release();
-	m_pVertexBuffer->Release();
-	m_pIndexBuffer->Release();
-	m_pInputLayout->Release();
-	m_pVertexShader->Release();
-	m_pPixelShader->Release();
+	m_Box.Relase();
+	m_Plane.Relase();
+	m_Line.Relase();
 	return true;
 }
 
 bool Sample::PreRender()
 {
+	myCore::PreRender();
+	ID3D11RenderTargetView* pNullRTV = NULL;
 	if (m_pd3dContext)
 	{
 		//랜더링 파이프라인 아웃풋 병합에 랜더타겟을 설정해준다
-		m_pd3dContext->OMSetRenderTargets(1, &m_pRednerTargetView, m_pDSV);
-		/*float clearColor[] = { cosf(g_fGameTimer)*0.5f + 0.5f,
-								-cosf(g_fGameTimer)*0.5f + 0.5f,
-								sinf(g_fGameTimer)*0.5f + 0.5f,1 };*/
+		m_pd3dContext->OMSetRenderTargets(1, &pNullRTV, m_pDSV);
+		m_pd3dContext->OMSetRenderTargets(
+			1, &m_pRednerTargetView,
+			m_pDSV);
 		float clearColor[] = { 0,0,0,1 };
 		//랜더타겟을 초기화해준다
-		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView, clearColor);
 		m_pd3dContext->ClearDepthStencilView(
 			m_pDSV, D3D10_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
-		//화면 좌표로 변환해준다
-		m_pd3dContext->RSSetViewports(1, &m_Viewport);
-	}
-	return true;
-}
-
-bool Sample::MakeBox()
-{
-	m_VertexList.resize(24);
-	myMatrix Rot;
-	Rot._11 = cosf(PI2D);
-	Rot._13 = sinf(PI2D);
-	Rot._31 = -sinf(PI2D);
-	Rot._33 = cosf(PI2D);
-	m_VertexList[0] = {
-		myVector3(-1.0f, 1.0f, -1.0f),
-		myVector3(0,0,0),
-		myVector4(1,0,0,1),
-		myVector2(0,0) };
-	m_VertexList[1] = {
-		myVector3(1.0f, 1.0f, -1.0f),
-		myVector3(0,0,0),
-		myVector4(0,1,0,1),
-		myVector2(1,0) };
-	m_VertexList[2] = {
-		myVector3(-1.0f, -1.0f, 1.0f),
-		myVector3(0,0,0),
-		myVector4(0,0,1,1),
-		myVector2(0,1) };
-	m_VertexList[3] = {
-		myVector3(1.0f, -1.0f, 1.0f),
-		myVector3(0,0,0),
-		myVector4(1,1,1,1),
-		myVector2(1,1) };
-
-	for (int i = 1; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			m_VertexList[j + i * 4].p = Rot * m_VertexList[(i - 1) * 4 + j].p;
-		}
-	}
-	Rot.Identity();
-	Rot._22 = cosf(PI2D);
-	Rot._23 = -sinf(PI2D);
-	Rot._32 = sinf(PI2D);
-	Rot._33 = cosf(PI2D);
-	for (int j = 0; j < 4; j++)
-	{
-		m_VertexList[j + 16].p = Rot * m_VertexList[j].p;
-	}
-	Rot.Identity();
-	Rot._22 = cosf(PI2D);
-	Rot._23 = sinf(PI2D);
-	Rot._32 = -sinf(PI2D);
-	Rot._33 = cosf(PI2D);
-	for (int j = 0; j < 4; j++)
-	{
-		m_VertexList[j + 20].p = Rot * m_VertexList[j].p;
-	}
-	m_IndexList.resize(36);
-	for (int i = 0; i < 6; i++)
-	{
-		m_IndexList[0 + i * 6] = 0 + i * 6;
-		m_IndexList[1 + i * 6] = 1 + i * 6;
-		m_IndexList[2 + i * 6] = 2 + i * 6;
-		m_IndexList[3 + i * 6] = 2 + i * 6;
-		m_IndexList[4 + i * 6] = 1 + i * 6;
-		m_IndexList[5 + i * 6] = 3 + i * 6;
+		////화면 좌표로 변환해준다
+		//m_pd3dContext->RSSetViewports(1, &m_Viewport);
 	}
 	return true;
 }
