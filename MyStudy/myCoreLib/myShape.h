@@ -9,7 +9,8 @@ struct P_VERTEX
 	myVector4 c;
 	myVector2 t;
 	P_VERTEX() {}
-	P_VERTEX(myVector3 p,
+	P_VERTEX(
+		myVector3 p,
 		myVector3 n,
 		myVector4 c,
 		myVector2 t)
@@ -22,10 +23,10 @@ struct P_VERTEX
 };
 struct PNCT_VERTEX
 {
-	myVector3		p;
-	myVector3		n;
-	myVector4		c;
-	myVector2     t;
+	myVector3 p;
+	myVector3 n;
+	myVector4 c;
+	myVector2 t;
 	bool operator == (const PNCT_VERTEX & Vertex)
 	{
 		if (p == Vertex.p  && n == Vertex.n && 	c == Vertex.c  &&	t == Vertex.t)
@@ -35,10 +36,11 @@ struct PNCT_VERTEX
 		return  false;
 	}
 	PNCT_VERTEX() {}
-	PNCT_VERTEX(myVector3		vp,
-		myVector3		vn,
-		myVector4		vc,
-		myVector2     vt)
+	PNCT_VERTEX(
+		myVector3 vp,
+		myVector3 vn,
+		myVector4 vc,
+		myVector2 vt)
 	{
 		p = vp, n = vn, c = vc, t = vt;
 	}
@@ -56,34 +58,32 @@ struct myDataCB
 class myShape
 {
 public:
-	ID3D11Device* m_pd3dDevice;
-	ID3DBlob*	  m_pVSObj;
-	UINT		  m_iTopology;
-	C_STR		  m_szVertexShader;
-	C_STR		  m_szPixelShader;
+	ID3D11Device*				m_pd3dDevice;
+	ID3DBlob*					m_pVSObj;
+	UINT						m_iTopology;
+	C_STR						m_szVertexShader;
+	C_STR						m_szPixelShader;
 public:
-	myVector3	m_vCenter;
-	float		m_fRange;
-	myMatrix    m_matWorld;
-	myMatrix    m_matView;
-	myMatrix    m_matProj;
+	myVector3					m_vCenter;
+	float						m_fRange;
+	myMatrix					m_matWorld;
+	myMatrix					m_matView;
+	myMatrix					m_matProj;
 public:
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;
-	std::vector<DWORD>		m_IndexList;
-	ID3D11Buffer*			m_pVertexBuffer;
-	ID3D11Buffer*			m_pIndexBuffer;
-	ID3D11Buffer*			m_pConstantBuffer;
-	ID3D11InputLayout*		m_pInputLayout;
-	ID3D11VertexShader*		m_pVertexShader;
-	ID3D11PixelShader*		m_pPixelShader;
-	ID3D11ShaderResourceView* m_pTextureSRV;
+	std::vector<DWORD>			m_IndexList;
+	ID3D11Buffer*				m_pVertexBuffer;
+	ID3D11Buffer*				m_pIndexBuffer;
+	ID3D11Buffer*				m_pConstantBuffer;
+	ID3D11InputLayout*			m_pInputLayout;
+	ID3D11VertexShader*			m_pVertexShader;
+	ID3D11PixelShader*			m_pPixelShader;
+	ID3D11ShaderResourceView*	m_pTextureSRV;
 public:
 	virtual bool	Init();
 	virtual bool	Frame();
-	virtual bool	SetMatrix(myMatrix* pWorld,
-		myMatrix* pView,
-		myMatrix* pProj);
+	virtual bool	SetMatrix(myMatrix* pWorld, myMatrix* pView, myMatrix* pProj);
 	virtual bool    Update(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Relase();

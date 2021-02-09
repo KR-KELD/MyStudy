@@ -138,6 +138,22 @@ bool myVector4::operator==(myVector4 const & v0)
 	return false;
 }
 
+float myVector4::operator|(myVector4 const & v0)
+{
+	return x * v0.x + y * v0.y + z * v0.z + w * v0.w;
+}
+
+float myVector4::Length()
+{
+	return (float)sqrt((x*x + y * y + z * z + w * w));
+}
+
+myVector4 myVector4::Normal()
+{
+	float invertLength = 1.0f / Length();
+	return myVector4(x*invertLength, y*invertLength, z*invertLength, w*invertLength);
+}
+
 
 myVector2::myVector2()
 {

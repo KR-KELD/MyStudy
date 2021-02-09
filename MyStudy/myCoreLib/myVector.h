@@ -34,6 +34,9 @@ public:
 	myVector4(const myVector4& v0);
 	myVector4(float fX, float fY, float fZ, float fW);
 	bool	operator == (myVector4 const &v0);
+	float operator | (myVector4 const &v0);
+	float Length();
+	myVector4 Normal();
 };
 
 struct myVector2 : public float2
