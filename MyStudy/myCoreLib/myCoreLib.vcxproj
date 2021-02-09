@@ -195,9 +195,11 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myCore.cpp" />
     <ClCompile Include="myDevice.cpp" />
     <ClCompile Include="myDraw.cpp" />
+    <ClCompile Include="myDxState.cpp" />
     <ClCompile Include="myEffect.cpp" />
     <ClCompile Include="myGrapicsAPI.cpp" />
     <ClCompile Include="myInput.cpp" />
+    <ClCompile Include="myMatrix.cpp" />
     <ClCompile Include="myNetUser.cpp" />
     <ClCompile Include="myNetwork.cpp" />
     <ClCompile Include="myObject.cpp" />
@@ -207,10 +209,12 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myParsingScript.cpp" />
     <ClCompile Include="myProjectile.cpp" />
     <ClCompile Include="myScene.cpp" />
+    <ClCompile Include="myShape.cpp" />
     <ClCompile Include="mySound.cpp" />
     <ClCompile Include="mySoundManager.cpp" />
     <ClCompile Include="myTimer.cpp" />
     <ClCompile Include="myUI.cpp" />
+    <ClCompile Include="myVector.cpp" />
     <ClCompile Include="myWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -231,10 +235,12 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myCoreStd.h" />
     <ClInclude Include="myDevice.h" />
     <ClInclude Include="myDraw.h" />
+    <ClInclude Include="myDxState.h" />
     <ClInclude Include="myEffect.h" />
     <ClInclude Include="myGrapicsAPI.h" />
     <ClInclude Include="myInput.h" />
     <ClInclude Include="myMath.h" />
+    <ClInclude Include="myMatrix.h" />
     <ClInclude Include="myNetStd.h" />
     <ClInclude Include="myNetUser.h" />
     <ClInclude Include="myNetwork.h" />
@@ -246,12 +252,14 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myProjectile.h" />
     <ClInclude Include="myProtocol.h" />
     <ClInclude Include="myScene.h" />
+    <ClInclude Include="myShape.h" />
     <ClInclude Include="mySound.h" />
     <ClInclude Include="mySoundManager.h" />
     <ClInclude Include="myStd.h" />
     <ClInclude Include="myTimer.h" />
     <ClInclude Include="myUI.h" />
     <ClInclude Include="myUtil.h" />
+    <ClInclude Include="myVector.h" />
     <ClInclude Include="myWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

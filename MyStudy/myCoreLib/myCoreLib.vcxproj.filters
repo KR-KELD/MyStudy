@@ -37,6 +37,12 @@
     <Filter Include="dxtk">
       <UniqueIdentifier>{bcdd0f02-4749-4573-b59f-ce5cb24e66ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dx">
+      <UniqueIdentifier>{6377d72b-7c6f-4731-8c0e-d70365c2362c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{bb3c1faa-08c5-41de-9457-03ef1b4273a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -120,6 +126,18 @@
     <ClCompile Include="dxtk\WICTextureLoader.cpp">
       <Filter>dxtk</Filter>
     </ClCompile>
+    <ClCompile Include="myDxState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myMatrix.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myShape.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myVector.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myBitmapManager.h">
@@ -185,9 +203,6 @@
     <ClInclude Include="myCollision.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="myMath.h">
-      <Filter>Util</Filter>
-    </ClInclude>
     <ClInclude Include="myParsingScript.h">
       <Filter>Util</Filter>
     </ClInclude>
@@ -238,6 +253,21 @@
     </ClInclude>
     <ClInclude Include="myBasicStd.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="myMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="myDxState.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myMatrix.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myShape.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myVector.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

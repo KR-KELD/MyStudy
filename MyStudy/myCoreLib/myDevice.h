@@ -1,5 +1,6 @@
 #pragma once
 #include "myWindow.h"
+#include "myDxState.h"
 class myDevice : public myWindow
 {
 public:
@@ -8,12 +9,14 @@ public:
 	ID3D11DeviceContext*	m_pd3dContext;
 	IDXGISwapChain*			m_pSwapChain;
 	ID3D11RenderTargetView* m_pRednerTargetView;
+	ID3D11DepthStencilView* m_pDSV;
 	D3D11_VIEWPORT			m_Viewport;
 public:
 	HRESULT					CreateGIFactory();
 	HRESULT					CreateDevice();
 	HRESULT					CreateSwapChain();
 	HRESULT					SetRenderTargetView();
+	HRESULT					SetDepthStencilView();
 	bool					SetViewport();
 public:
 	bool					Init();
