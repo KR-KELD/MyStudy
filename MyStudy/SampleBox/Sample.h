@@ -1,28 +1,24 @@
 #pragma once
 #include "myCore.h"
 #include "myShape.h"
+#include "myCamera.h"
 
 class Sample : public myCore
 {
 public:
+	myVector4		m_vDirValue;
 	myShapeBox		m_Box;
 	myShapePlane	m_Plane;
 	myShapeLine		m_Line;
 public:
-	myMatrix			m_matBoxWorld;
-	myMatrix			m_matPlaneWorld;
-public:
-	float			m_CameraAngleX = 0.0f;
-	float			m_CameraAngleY = 0.0f;
-	myMatrix		m_matWorld;
-	myMatrix		m_matView;
-	myMatrix		m_matProj;
-	myVector3		m_vCameraPos;
-	myVector3		m_vCameraTarget;
+	myMatrix		m_matBoxWorld;
+	myMatrix		m_matPlaneWorld;
+	myCamera		m_Camera;
 public:
 	bool Init() override;
 	bool Frame() override;
 	bool Render() override;
 	bool Release() override;
+	myMatrix CreateMatrixShadow(myVector4* pPlane, myVector4* pLight);
 };
 

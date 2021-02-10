@@ -11,6 +11,7 @@ public:
 	// 연산자 재정의 
 	myVector3 operator + (myVector3 const &v0);
 	myVector3 operator - (myVector3 const &v0);
+	myVector3 operator += (myVector3 const &v0);
 	myVector3 operator * (float const &fScala);
 	myVector3 operator + (float const &fScala);
 	myVector3 operator / (float const &fScala);

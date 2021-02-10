@@ -31,6 +31,14 @@ myVector3 myVector3::operator - (myVector3 const &v0)
 	return myVector3(x - v0.x, y - v0.y, z - v0.z);
 }
 
+myVector3 myVector3::operator+=(myVector3 const & v0)
+{
+	x += v0.x;
+	y += v0.y;
+	z += v0.z;
+	return *this;
+}
+
 myVector3 myVector3::operator + (float const &fScala)
 {
 	return myVector3(fScala + x, fScala + y, fScala + z);
