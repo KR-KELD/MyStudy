@@ -22,6 +22,7 @@ public:
 public:
 	//virtual	void	MsgEvent(MSG msg);
 	virtual void ResizeDevice(UINT w, UINT h);
+	virtual LRESULT	 MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 public:
 	myWindow();
 	virtual ~myWindow();

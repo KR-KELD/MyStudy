@@ -8,9 +8,9 @@ bool Sample::Init()
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	m_Camera.CreateProjMatrix(1, 1000, PI2D, fAspect);
 
-	myMatrix matScale, matRotation;
-	matScale.Scale(100, 100, 100);
-	matRotation.XRotate(PI2D);
+	Matrix matScale, matRotation;
+	matScale = Matrix::CreateScale(100, 100, 100);
+	matRotation = Matrix::CreateRotationX(PI2D);
 	m_matPlaneWorld = matScale * matRotation;
 
 	if (!m_Box.Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
@@ -34,11 +34,11 @@ bool Sample::Init()
 
 bool Sample::Frame()
 {
-	myMatrix matScale;
-	myMatrix matRotation;
+	Matrix matScale;
+	Matrix matRotation;
 
-	matScale.Scale(1, 1, 1);
-	matRotation.YRotate(g_fGameTimer);
+	matScale = Matrix::CreateScale(1, 1, 1);
+	matRotation = Matrix::CreateRotationY(g_fGameTimer);
 	m_matBoxWorld = matScale * matRotation;
 	m_matBoxWorld._42 = 3.0f;
 
@@ -87,11 +87,6 @@ bool Sample::Frame()
 	{
 		m_Camera.UpMovement(-1.0f);
 	}
-	if (g_Input.GetKey(VK_LEFT) == KEY_HOLD)
-	{
-		m_vDirValue.y += g_fSecondPerFrame;
-		m_Camera.Update(m_vDirValue);
-	}
 	//m_Camera.SetPos(m_Camera.m_vCameraPos);	
 	m_Camera.Frame();
 
@@ -114,9 +109,9 @@ bool Sample::Render()
 		&m_Camera.m_matView,
 		&m_Camera.m_matProj);
 	m_Box.Render(m_pd3dContext);
-	myMatrix matShadow;
-	myVector4 PLANE = myVector4(0, 1, 0, -0.1f);
-	myVector4 LIGHT = myVector4(-10, 10, 0, 1);
+	Matrix matShadow;
+	Vector4 PLANE = Vector4(0, 1, 0, -0.1f);
+	Vector4 LIGHT = Vector4(-10, 10, 0, 1);
 	matShadow = CreateMatrixShadow(&PLANE, &LIGHT);
 	matShadow = m_matBoxWorld * matShadow;
 	m_Box.SetMatrix(&matShadow, &m_Camera.m_matView,
@@ -130,11 +125,11 @@ bool Sample::Render()
 	m_Line.SetMatrix(NULL, &m_Camera.m_matView,
 		&m_Camera.m_matProj);
 	m_Line.Draw(m_pd3dContext,
-		myVector3(0, 0, 0), myVector3(100, 0, 0), myVector4(1, 0, 0, 1));
+		Vector3(0, 0, 0), Vector3(100, 0, 0), Vector4(1, 0, 0, 1));
 	m_Line.Draw(m_pd3dContext,
-		myVector3(0, 0, 0), myVector3(0, 100, 0), myVector4(0, 1, 0, 1));
+		Vector3(0, 0, 0), Vector3(0, 100, 0), Vector4(0, 1, 0, 1));
 	m_Line.Draw(m_pd3dContext,
-		myVector3(0, 0, 0), myVector3(0, 0, 100), myVector4(0, 0, 1, 1));
+		Vector3(0, 0, 0), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 
 	return true;
 }
@@ -147,21 +142,31 @@ bool Sample::Release()
 	return true;
 }
 
-myMatrix Sample::CreateMatrixShadow(myVector4 * pPlane, myVector4 * pLight)
+Matrix Sample::CreateMatrixShadow(Vector4 * pPlane, Vector4 * pLight)
 {
-	myMatrix mat;
-	myVector4 plane, light;
-	pPlane->Normal();
+	Matrix mat;
+	Vector4 plane, light;
+	pPlane->Normalize();
 	plane.x = pPlane->x * -1.0f;
 	plane.y = pPlane->y * -1.0f;
 	plane.z = pPlane->z * -1.0f;
 	plane.w = pPlane->w * -1.0f;
 	light = *pLight;// * -1.0f;
-	float D = -(plane | light);
+	float D = -(plane.Dot(light));
 	mat._11 = plane.x * light.x + D;	mat._12 = plane.x * light.y;	mat._13 = plane.x * light.z;	mat._14 = plane.x * light.w;
 	mat._21 = plane.y * light.x;	mat._22 = plane.y * light.y + D;	mat._23 = plane.y * light.z;	mat._24 = plane.y * light.w;
 	mat._31 = plane.z * light.x;	mat._32 = plane.z * light.y;	mat._33 = plane.z * light.z + D;	mat._34 = plane.z * light.w;
 	mat._41 = plane.w * light.x;	mat._42 = plane.w * light.y;	mat._43 = plane.w * light.z;	mat._44 = plane.w * light.w + D;
 	return mat;
+}
+
+LRESULT Sample::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	int iRet = m_Camera.WndProc(hWnd, message, wParam, lParam);
+	if (iRet >= 0)
+	{
+		return iRet;
+	}
+	return -1;
 }
 

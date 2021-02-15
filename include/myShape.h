@@ -1,19 +1,24 @@
 #pragma once
-#include "myMatrix.h"
+//#include "Matrix.h"
+#include "myStd.h"
 #include "dxtk/WICTextureLoader.h"
+#include "SimpleMath.h"
 #include "myDxState.h"
+using namespace DirectX;
+using namespace SimpleMath;
+
 struct P_VERTEX
 {
-	myVector3 p;
-	myVector3 n;
-	myVector4 c;
-	myVector2 t;
+	Vector3 p;
+	Vector3 n;
+	Vector4 c;
+	Vector2 t;
 	P_VERTEX() {}
 	P_VERTEX(
-		myVector3 p,
-		myVector3 n,
-		myVector4 c,
-		myVector2 t)
+		Vector3 p,
+		Vector3 n,
+		Vector4 c,
+		Vector2 t)
 	{
 		this->p = p;
 		this->n = n;
@@ -23,10 +28,10 @@ struct P_VERTEX
 };
 struct PNCT_VERTEX
 {
-	myVector3 p;
-	myVector3 n;
-	myVector4 c;
-	myVector2 t;
+	Vector3 p;
+	Vector3 n;
+	Vector4 c;
+	Vector2 t;
 	bool operator == (const PNCT_VERTEX & Vertex)
 	{
 		if (p == Vertex.p  && n == Vertex.n && 	c == Vertex.c  &&	t == Vertex.t)
@@ -37,10 +42,10 @@ struct PNCT_VERTEX
 	}
 	PNCT_VERTEX() {}
 	PNCT_VERTEX(
-		myVector3 vp,
-		myVector3 vn,
-		myVector4 vc,
-		myVector2 vt)
+		Vector3 vp,
+		Vector3 vn,
+		Vector4 vc,
+		Vector2 vt)
 	{
 		p = vp, n = vn, c = vc, t = vt;
 	}
@@ -48,9 +53,9 @@ struct PNCT_VERTEX
 
 struct myDataCB
 {
-	myMatrix  matWorld;
-	myMatrix  matView;
-	myMatrix  matProject;
+	Matrix  matWorld;
+	Matrix  matView;
+	Matrix  matProject;
 	float vColor[4];
 	float vTime[4];
 };
@@ -64,11 +69,11 @@ public:
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
 public:
-	myVector3					m_vCenter;
+	Vector3					m_vCenter;
 	float						m_fRange;
-	myMatrix					m_matWorld;
-	myMatrix					m_matView;
-	myMatrix					m_matProj;
+	Matrix					m_matWorld;
+	Matrix					m_matView;
+	Matrix					m_matProj;
 public:
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;
@@ -83,12 +88,12 @@ public:
 public:
 	virtual bool	Init();
 	virtual bool	Frame();
-	virtual bool	SetMatrix(myMatrix* pWorld, myMatrix* pView, myMatrix* pProj);
+	virtual bool	SetMatrix(Matrix* pWorld, Matrix* pView, Matrix* pProj);
 	virtual bool    Update(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Relase();
 	virtual bool    CreateVertexData();
-	virtual bool    CreateVertexData(myVector3& vCenter, float& fRange);
+	virtual bool    CreateVertexData(Vector3& vCenter, float& fRange);
 	virtual bool    CreateIndexData();
 	virtual bool    CreateVertexBuffer();
 	virtual bool    CreateIndexBuffer();
@@ -108,7 +113,7 @@ public:
 class myShapeBox : public myShape
 {
 public:
-	virtual bool    CreateVertexData(myVector3& vCenter, float& fRange)override;
+	virtual bool    CreateVertexData(Vector3& vCenter, float& fRange)override;
 
 	virtual bool    CreateIndexData()override;
 public:
@@ -119,7 +124,7 @@ public:
 class myShapePlane : public myShape
 {
 public:
-	virtual bool    CreateVertexData(myVector3& vCenter, float& fRange)override;
+	virtual bool    CreateVertexData(Vector3& vCenter, float& fRange)override;
 	virtual bool    CreateIndexData()override;
 public:
 	myShapePlane();
@@ -130,7 +135,7 @@ class myShapeLine : public myShape
 {
 public:
 	bool Draw(ID3D11DeviceContext* pd3dContext,
-		myVector3 p, myVector3 e, myVector4 c = myVector4(1, 0, 0, 1));
+		Vector3 p, Vector3 e, Vector4 c = Vector4(1, 0, 0, 1));
 public:
 	virtual bool    CreateVertexData()override;
 	virtual bool    CreateIndexData()override;
