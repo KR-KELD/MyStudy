@@ -17,7 +17,11 @@ LRESULT CALLBACK WndProc(
 	WPARAM wParam,
 	LPARAM lParam)
 {
-
+	int iRet = g_pWindow->MsgProc(hWnd, message, wParam, lParam);
+	if (iRet > -1)
+	{
+		return iRet;
+	}
 	switch (message)
 	{
 	case WM_SIZE:
@@ -150,6 +154,11 @@ bool myWindow::MsgProcess()
 
 void myWindow::ResizeDevice(UINT w, UINT h)
 {
+}
+
+LRESULT myWindow::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	return -1;
 }
 
 myWindow::myWindow()
