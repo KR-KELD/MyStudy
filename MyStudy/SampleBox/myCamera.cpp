@@ -109,26 +109,33 @@ int myCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 	{
 		m_bDrag = true;
-		m_ptClick.x = LOWORD(lParam);
-		m_ptClick.y = HIWORD(lParam);
-		m_rtOffset.x = 0;
-		m_rtOffset.y = 0;
+		//m_ptClick.x = LOWORD(lParam);
+		//m_ptClick.y = HIWORD(lParam);
+		//m_rtOffset.x = 0;
+		//m_rtOffset.y = 0;
 	}return 0;
 	case WM_MOUSEMOVE:
 	{
+		m_ptPrePos = m_ptCurrentPos;
+		m_ptCurrentPos.x = LOWORD(lParam);
+		m_ptCurrentPos.y = HIWORD(lParam);
 		if (m_bDrag)
 		{
-			m_rtOffset.x = m_ptClick.x - LOWORD(lParam);
-			m_rtOffset.y = m_ptClick.y - HIWORD(lParam);
-			m_ptClick.x = LOWORD(lParam);
-			m_ptClick.y = HIWORD(lParam);
+			m_ptOffset.x += m_ptCurrentPos.x - m_ptPrePos.x;
+			m_ptOffset.y += m_ptCurrentPos.y - m_ptPrePos.y;
+			//m_ptOffset.x += m_ptClick.x - LOWORD(lParam);
+			//m_ptOffset.y += m_ptClick.y - HIWORD(lParam);
+			//m_ptClick.x = LOWORD(lParam);
+			//m_ptClick.y = HIWORD(lParam);
+			//m_ptClick.x = 0;
+			//m_ptClick.y = 0;
 		}
 	}return 0;
 	case WM_LBUTTONUP:
 	{
 		m_bDrag = false;
-		m_rtOffset.x = 0;
-		m_rtOffset.y = 0;
+		//m_rtOffset.x = 0;
+		//m_rtOffset.y = 0;
 	}return 0;
 	}
 	return -1;
@@ -137,6 +144,8 @@ myCamera::myCamera()
 {
 	m_pSpeed = 30.0f;
 	m_bDrag = false;
+	m_ptOffset.x = 0;
+	m_ptOffset.y = 0;
 }
 myCamera::~myCamera()
 {

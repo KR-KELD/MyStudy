@@ -17,8 +17,8 @@ void myDebugCamera::Update(Vector4 data)
 
 bool myDebugCamera::Frame()
 {
-	m_vDirValue.y -= m_rtOffset.x * g_fSecondPerFrame * 0.1f;
-	m_vDirValue.x -= m_rtOffset.y * g_fSecondPerFrame* 0.1f;
+	m_vDirValue.y = m_ptOffset.x * 0.01f;
+	m_vDirValue.x = m_ptOffset.y * 0.01f;
 	Update(m_vDirValue);
 	UpdateVector();
 	return true;

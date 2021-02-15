@@ -1,4 +1,5 @@
 #pragma once
+#include "myStd.h"
 #include "myShape.h"
 class myCamera
 {
@@ -13,9 +14,9 @@ public:
 	Vector3		m_vRight;
 	float		m_fDistance;
 	bool		m_bDrag;
-	POINT		m_ptClick;
-	POINT		m_rtOffset;
-	POINT		m_rtPreOffset;
+	POINT		m_ptCurrentPos;
+	POINT		m_ptOffset;
+	POINT		m_ptPrePos;
 public:
 	virtual void SetPos(Vector3 p);
 	virtual void SetTarget(Vector3 p);

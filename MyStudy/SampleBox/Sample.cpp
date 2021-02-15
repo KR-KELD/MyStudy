@@ -73,11 +73,11 @@ bool Sample::Frame()
 	}
 	if (g_Input.GetKey('A') == KEY_HOLD)
 	{
-		m_Camera.RightMovement(1.0f);
+		m_Camera.RightMovement(-1.0f);
 	}
 	if (g_Input.GetKey('D') == KEY_HOLD)
 	{
-		m_Camera.RightMovement(-1.0f);
+		m_Camera.RightMovement(1.0f);
 	}
 	if (g_Input.GetKey('Q') == KEY_HOLD)
 	{
