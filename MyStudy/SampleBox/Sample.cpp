@@ -4,9 +4,6 @@ bool Sample::Init()
 {
 	HRESULT hr = NULL;
 	m_vDirValue = { 0,0,0,0 };
-	m_Camera.CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
-	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	m_Camera.CreateProjMatrix(1, 1000, PI2D, fAspect);
 
 	Matrix matScale, matRotation;
 	matScale = Matrix::CreateScale(100, 100, 100);
@@ -28,7 +25,11 @@ bool Sample::Init()
 	{
 		return false;
 	}
-
+	m_ModelCamera.CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
+	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
+	m_ModelCamera.CreateProjMatrix(1, 1000, PI2D, fAspect);
+	m_ModelCamera.Init();
+	m_pMainCamera = &m_ModelCamera;
 	return true;
 }
 
@@ -63,33 +64,6 @@ bool Sample::Frame()
 		myDxState::SetRasterizerState(m_pd3dDevice);
 	}
 
-	if (g_Input.GetKey('W') == KEY_HOLD)
-	{
-		m_Camera.FrontMovement(1.0f);
-	}
-	if (g_Input.GetKey('S') == KEY_HOLD)
-	{
-		m_Camera.FrontMovement(-1.0f);
-	}
-	if (g_Input.GetKey('A') == KEY_HOLD)
-	{
-		m_Camera.RightMovement(-1.0f);
-	}
-	if (g_Input.GetKey('D') == KEY_HOLD)
-	{
-		m_Camera.RightMovement(1.0f);
-	}
-	if (g_Input.GetKey('Q') == KEY_HOLD)
-	{
-		m_Camera.UpMovement(1.0f);
-	}
-	if (g_Input.GetKey('E') == KEY_HOLD)
-	{
-		m_Camera.UpMovement(-1.0f);
-	}
-	//m_Camera.SetPos(m_Camera.m_vCameraPos);	
-	m_Camera.Frame();
-
 	return true;
 }
 
@@ -106,24 +80,24 @@ bool Sample::Render()
 	m_pd3dContext->OMSetDepthStencilState(myDxState::m_pDSS, 0);
 	//±×¸®±â
 	m_Box.SetMatrix(&m_matBoxWorld,
-		&m_Camera.m_matView,
-		&m_Camera.m_matProj);
+		&m_pMainCamera->m_matView,
+		&m_pMainCamera->m_matProj);
 	m_Box.Render(m_pd3dContext);
 	Matrix matShadow;
 	Vector4 PLANE = Vector4(0, 1, 0, -0.1f);
 	Vector4 LIGHT = Vector4(-10, 10, 0, 1);
 	matShadow = CreateMatrixShadow(&PLANE, &LIGHT);
 	matShadow = m_matBoxWorld * matShadow;
-	m_Box.SetMatrix(&matShadow, &m_Camera.m_matView,
-		&m_Camera.m_matProj);
+	m_Box.SetMatrix(&matShadow, &m_pMainCamera->m_matView,
+		&m_pMainCamera->m_matProj);
 	m_Box.Render(m_pd3dContext);
 
 	m_Plane.SetMatrix(&m_matPlaneWorld,
-		&m_Camera.m_matView,
-		&m_Camera.m_matProj);
+		&m_pMainCamera->m_matView,
+		&m_pMainCamera->m_matProj);
 	m_Plane.Render(m_pd3dContext);
-	m_Line.SetMatrix(NULL, &m_Camera.m_matView,
-		&m_Camera.m_matProj);
+	m_Line.SetMatrix(NULL, &m_pMainCamera->m_matView,
+		&m_pMainCamera->m_matProj);
 	m_Line.Draw(m_pd3dContext,
 		Vector3(0, 0, 0), Vector3(100, 0, 0), Vector4(1, 0, 0, 1));
 	m_Line.Draw(m_pd3dContext,
@@ -162,11 +136,8 @@ Matrix Sample::CreateMatrixShadow(Vector4 * pPlane, Vector4 * pLight)
 
 LRESULT Sample::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	int iRet = m_Camera.WndProc(hWnd, message, wParam, lParam);
-	if (iRet >= 0)
-	{
-		return iRet;
-	}
+	if (m_pMainCamera == nullptr) return -1;
+	int iRet = m_pMainCamera->WndProc(hWnd, message, wParam, lParam);
 	return -1;
 }
 

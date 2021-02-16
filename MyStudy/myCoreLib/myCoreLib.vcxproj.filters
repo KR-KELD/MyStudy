@@ -43,6 +43,9 @@
     <Filter Include="Math">
       <UniqueIdentifier>{bb3c1faa-08c5-41de-9457-03ef1b4273a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{c0503c65-caa6-4894-aabd-d2b4343cd80d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -141,11 +144,11 @@
     <ClCompile Include="SimpleMath.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="myCamera.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="myDebugCamera.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="myCamera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -281,11 +284,11 @@
     <ClInclude Include="SimpleMath.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="myCamera.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="myDebugCamera.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="myCamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

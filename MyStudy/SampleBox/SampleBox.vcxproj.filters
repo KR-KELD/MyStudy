@@ -18,10 +18,13 @@
     <ClCompile Include="Sample.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="myCamera.cpp">
+    <ClCompile Include="myModelViewCamera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="myDebugCamera.cpp">
+    <ClCompile Include="myTexture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myTextureManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +32,13 @@
     <ClInclude Include="Sample.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="myCamera.h">
+    <ClInclude Include="myModelViewCamera.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="myDebugCamera.h">
+    <ClInclude Include="myTexture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myTextureManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

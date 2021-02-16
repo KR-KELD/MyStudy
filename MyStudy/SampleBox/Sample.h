@@ -1,7 +1,7 @@
 #pragma once
 #include "myCore.h"
 #include "myShape.h"
-#include "myDebugCamera.h"
+#include "myModelViewCamera.h"
 
 class Sample : public myCore
 {
@@ -11,9 +11,9 @@ public:
 	myShapePlane	m_Plane;
 	myShapeLine		m_Line;
 public:
-	Matrix			m_matBoxWorld;
-	Matrix			m_matPlaneWorld;
-	myDebugCamera	m_Camera;
+	Matrix				m_matBoxWorld;
+	Matrix				m_matPlaneWorld;
+	myModelViewCamera	m_ModelCamera;
 public:
 	bool Init() override;
 	bool Frame() override;
