@@ -141,6 +141,12 @@
     <ClCompile Include="SimpleMath.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="myCamera.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myDebugCamera.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myBitmapManager.h">
@@ -274,6 +280,12 @@
     </ClInclude>
     <ClInclude Include="SimpleMath.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="myCamera.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myDebugCamera.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

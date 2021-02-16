@@ -15,14 +15,19 @@ class myInput : public SingleTon<myInput>
 private:
 	DWORD		m_dwKeyState[256];
 	POINT		m_MousePos;
+	bool		m_bEnable;
 public:
 	bool		Init();
 	bool		Frame();
 	bool		Render();
 	bool		Release();
+	bool		Reset();
 public:
+
 	DWORD		GetKey(DWORD dwKey);
 	POINT&		GetMouse();
+	void		SetEnable(bool bEnable = true);
+	bool		GetEnable();
 private:
 	myInput();
 public:

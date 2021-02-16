@@ -12,7 +12,8 @@ myInput::~myInput()
 
 bool myInput::Init()
 {
-	ZeroMemory(&m_dwKeyState, sizeof(DWORD) * 256);
+	Reset();
+	m_bEnable = true;
 	return true;
 }
 
@@ -23,6 +24,10 @@ bool myInput::Frame()
 	GetCursorPos(&m_MousePos);
 	//화면 좌표를 클라이언트 좌표로 변환해주는 함수
 	ScreenToClient(g_hWnd, &m_MousePos);
+	HWND hWnd = WindowFromPoint(m_MousePos);
+	if (hWnd != g_hWnd) return true;
+
+	if (m_bEnable == false) return true;
 	for (int iKey = 0; iKey < 256; iKey++)
 	{
 		//키의 입력을 비동기로 받아오는 함수(입력한 시점을 감지)
@@ -70,6 +75,13 @@ bool myInput::Release()
 	return true;
 }
 
+bool myInput::Reset()
+{
+	ZeroMemory(&m_dwKeyState, sizeof(DWORD) * 256);
+	ZeroMemory(&g_KeyMap, sizeof(myKeyMap));
+	return true;
+}
+
 DWORD myInput::GetKey(DWORD dwKey)
 {
 	return m_dwKeyState[dwKey];
@@ -78,5 +90,20 @@ DWORD myInput::GetKey(DWORD dwKey)
 POINT& myInput::GetMouse()
 {
 	return m_MousePos;
+}
+
+void myInput::SetEnable(bool bEnable)
+{
+	m_bEnable = bEnable;
+	if (m_bEnable == false)
+	{
+		ZeroMemory(&m_dwKeyState, sizeof(DWORD) * 256);
+		ZeroMemory(&g_KeyMap, sizeof(myKeyMap));
+	}
+}
+
+bool myInput::GetEnable()
+{
+	return m_bEnable;
 }
 

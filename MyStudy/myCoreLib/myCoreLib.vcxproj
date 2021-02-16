@@ -191,9 +191,11 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myBitmap.cpp" />
     <ClCompile Include="myBitmapManager.cpp" />
     <ClCompile Include="myButton.cpp" />
+    <ClCompile Include="myCamera.cpp" />
     <ClCompile Include="myCameraManager.cpp" />
     <ClCompile Include="myCollision.cpp" />
     <ClCompile Include="myCore.cpp" />
+    <ClCompile Include="myDebugCamera.cpp" />
     <ClCompile Include="myDevice.cpp" />
     <ClCompile Include="myDraw.cpp" />
     <ClCompile Include="myDxState.cpp" />
@@ -231,10 +233,12 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myBitmap.h" />
     <ClInclude Include="myBitmapManager.h" />
     <ClInclude Include="myButton.h" />
+    <ClInclude Include="myCamera.h" />
     <ClInclude Include="myCameraManager.h" />
     <ClInclude Include="myCollision.h" />
     <ClInclude Include="myCore.h" />
     <ClInclude Include="myCoreStd.h" />
+    <ClInclude Include="myDebugCamera.h" />
     <ClInclude Include="myDevice.h" />
     <ClInclude Include="myDraw.h" />
     <ClInclude Include="myDxState.h" />
