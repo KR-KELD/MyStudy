@@ -9,7 +9,6 @@ bool myEffect::Init()
 bool myEffect::Frame()
 {
 	myObject::Frame();
-	SetPos(m_pObjInfo->ptPos);
 	return true;
 }
 

@@ -46,6 +46,9 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{c0503c65-caa6-4894-aabd-d2b4343cd80d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{7f50455e-1470-483c-9cc0-cb7af469b071}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -72,15 +75,6 @@
     <ClCompile Include="myCollision.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="myCameraManager.cpp">
-      <Filter>Mgr</Filter>
-    </ClCompile>
-    <ClCompile Include="myBitmapManager.cpp">
-      <Filter>Mgr</Filter>
-    </ClCompile>
-    <ClCompile Include="myObjectPoolManager.cpp">
-      <Filter>Mgr</Filter>
-    </ClCompile>
     <ClCompile Include="myObjectInfo.cpp">
       <Filter>Obj</Filter>
     </ClCompile>
@@ -97,9 +91,6 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="mySound.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="myBitmap.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="mySoundManager.cpp">
@@ -120,25 +111,13 @@
     <ClCompile Include="myNetUser.cpp">
       <Filter>Net</Filter>
     </ClCompile>
-    <ClCompile Include="myDevice.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="dxtk\DDSTextureLoader.cpp">
       <Filter>dxtk</Filter>
     </ClCompile>
     <ClCompile Include="dxtk\WICTextureLoader.cpp">
       <Filter>dxtk</Filter>
     </ClCompile>
-    <ClCompile Include="myDxState.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="myMatrix.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="myShape.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="myVector.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SimpleMath.cpp">
@@ -150,25 +129,34 @@
     <ClCompile Include="myCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="myComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="myDevice.cpp">
+      <Filter>dx</Filter>
+    </ClCompile>
+    <ClCompile Include="myDxState.cpp">
+      <Filter>dx</Filter>
+    </ClCompile>
+    <ClCompile Include="myTransform.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="myTexture.cpp">
+      <Filter>dx</Filter>
+    </ClCompile>
+    <ClCompile Include="myTextureManager.cpp">
+      <Filter>Mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="myGraphics.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="myBitmapManager.h">
-      <Filter>Mgr</Filter>
-    </ClInclude>
-    <ClInclude Include="myCameraManager.h">
-      <Filter>Mgr</Filter>
-    </ClInclude>
-    <ClInclude Include="myObjectPoolManager.h">
-      <Filter>Mgr</Filter>
-    </ClInclude>
     <ClInclude Include="mySoundManager.h">
       <Filter>Mgr</Filter>
     </ClInclude>
     <ClInclude Include="myObjManager.h">
       <Filter>Mgr</Filter>
-    </ClInclude>
-    <ClInclude Include="myBitmap.h">
-      <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="mySound.h">
       <Filter>Resource</Filter>
@@ -239,9 +227,6 @@
     <ClInclude Include="myNetStd.h">
       <Filter>Net</Filter>
     </ClInclude>
-    <ClInclude Include="myDevice.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="dxtk\DDS.h">
       <Filter>dxtk</Filter>
     </ClInclude>
@@ -269,16 +254,7 @@
     <ClInclude Include="myMath.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="myDxState.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="myMatrix.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="myShape.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="myVector.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SimpleMath.h">
@@ -289,6 +265,27 @@
     </ClInclude>
     <ClInclude Include="myCamera.h">
       <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="myComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="myDxState.h">
+      <Filter>dx</Filter>
+    </ClInclude>
+    <ClInclude Include="myDevice.h">
+      <Filter>dx</Filter>
+    </ClInclude>
+    <ClInclude Include="myTransform.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="myTexture.h">
+      <Filter>dx</Filter>
+    </ClInclude>
+    <ClInclude Include="myTextureManager.h">
+      <Filter>Mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="myGraphics.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

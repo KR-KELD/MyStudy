@@ -9,7 +9,6 @@ private:
 public:
 	bool			Add(wstring strName, myObject* pObj);
 	myObject*		GetPtr(wstring strName);
-	myObject*		GetPtrToLink(wstring strName, myObjectInfo* pInfo);
 public:
 	bool			Init();
 	bool			Frame();

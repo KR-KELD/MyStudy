@@ -1,5 +1,5 @@
 #include "myCamera.h"
-#include "myInput.h"
+//#include "myInput.h"
 bool		myCamera::CreateViewMatrix(
 	Vector3 p,
 	Vector3 t,

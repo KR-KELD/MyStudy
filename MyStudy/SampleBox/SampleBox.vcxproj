@@ -147,15 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="myFrustum.cpp" />
     <ClCompile Include="myModelViewCamera.cpp" />
-    <ClCompile Include="myTexture.cpp" />
-    <ClCompile Include="myTextureManager.cpp" />
     <ClCompile Include="Sample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="myFrustum.h" />
     <ClInclude Include="myModelViewCamera.h" />
-    <ClInclude Include="myTexture.h" />
-    <ClInclude Include="myTextureManager.h" />
     <ClInclude Include="Sample.h" />
   </ItemGroup>
   <ItemGroup>

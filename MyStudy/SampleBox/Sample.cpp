@@ -25,7 +25,7 @@ bool Sample::Init()
 	{
 		return false;
 	}
-	m_ModelCamera.CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
+	m_ModelCamera.CreateViewMatrix({ 0,5,-5 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	m_ModelCamera.CreateProjMatrix(1, 1000, PI2D, fAspect);
 	m_ModelCamera.Init();
@@ -71,7 +71,6 @@ bool Sample::Render()
 {
 	//IA에 그려줄 타입 설정
 	m_pd3dContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//m_pd3dContext->Draw(m_VertexList.size(), 0);
 	//레스터라이저 스테이트 세팅
 	m_pd3dContext->RSSetState(myDxState::m_pRS);
 	//픽셀 섀이더에 샘플러 세팅(보간법)
@@ -79,14 +78,16 @@ bool Sample::Render()
 	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
 	m_pd3dContext->OMSetDepthStencilState(myDxState::m_pDSS, 0);
 	//그리기
-	m_Box.SetMatrix(&m_matBoxWorld,
-		&m_pMainCamera->m_matView,
-		&m_pMainCamera->m_matProj);
+	//m_Box.SetMatrix(&m_matBoxWorld,
+	//	&m_pMainCamera->m_matView,
+	//	&m_pMainCamera->m_matProj);
+	m_Box.SetMatrix(&m_pMainCamera->m_matWorld,
+		&m_pMainCamera->m_matView, &m_pMainCamera->m_matProj);
 	m_Box.Render(m_pd3dContext);
 	Matrix matShadow;
-	Vector4 PLANE = Vector4(0, 1, 0, -0.1f);
-	Vector4 LIGHT = Vector4(-10, 10, 0, 1);
-	matShadow = CreateMatrixShadow(&PLANE, &LIGHT);
+	Vector4 vPlane = Vector4(0, 1, 0, -0.1f);
+	Vector3 vLightDir = Vector3(-10, 10, 0);
+	matShadow = Matrix::CreateShadow(vLightDir, vPlane);
 	matShadow = m_matBoxWorld * matShadow;
 	m_Box.SetMatrix(&matShadow, &m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);

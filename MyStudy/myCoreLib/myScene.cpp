@@ -1,24 +1,19 @@
 #include "myScene.h"
 #include "myObjManager.h"
 
-bool myScene::Load(myParsingScript* Parser, const TCHAR* szFileName)
-{
-	Parser->ObjInfoParsing(Parser->LoadFile(szFileName), &m_vecObjInfo);
-	return true;
-}
+//bool myScene::Load(myParsingScript* Parser, const TCHAR* szFileName)
+//{
+//	Parser->ObjInfoParsing(Parser->LoadFile(szFileName), &m_vecObjInfo);
+//	return true;
+//}
 
 void myScene::DistributeInfo(int iPoolCount)
 {
 }
 
-myPoint myScene::GetPlayerPos()
+void myScene::Reset()
 {
-	return myPoint();
-}
 
-bool myScene::Reset()
-{
-	return true;
 }
 
 bool myScene::Init()
@@ -50,11 +45,11 @@ bool myScene::Render()
 
 bool myScene::Release()
 {
-	for (myObjectInfo* info : m_vecObjInfo)
-	{
-		delete info;
-	}
-	m_vecObjInfo.clear();
+	//for (myObjectInfo* info : m_vecObjInfo)
+	//{
+	//	delete info;
+	//}
+	//m_vecObjInfo.clear();
 	return true;
 }
 

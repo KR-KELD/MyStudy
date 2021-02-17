@@ -21,10 +21,7 @@
     <ClCompile Include="myModelViewCamera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="myTexture.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="myTextureManager.cpp">
+    <ClCompile Include="myFrustum.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,10 +32,7 @@
     <ClInclude Include="myModelViewCamera.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="myTexture.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="myTextureManager.h">
+    <ClInclude Include="myFrustum.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

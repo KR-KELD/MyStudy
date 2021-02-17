@@ -25,17 +25,6 @@ myObject * myObjManager::GetPtr(wstring strName)
 	return (*m_iter).second;
 }
 
-myObject * myObjManager::GetPtrToLink(wstring strName, myObjectInfo* pInfo)
-{
-	m_iter = m_List.find(strName);
-	if (m_iter == m_List.end())
-	{
-		return nullptr;
-	}
-	(*m_iter).second->LinkInfo(pInfo);
-	return (*m_iter).second;
-}
-
 bool myObjManager::Init()
 {
 	return true;

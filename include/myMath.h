@@ -1,5 +1,8 @@
 #pragma once
 #include <cmath>
+#include "SimpleMath.h"
+using namespace DirectX;
+using namespace SimpleMath;
 
 
 static const float PI = 3.141592654f;

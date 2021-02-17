@@ -14,7 +14,7 @@ public:
 	};
 	ButtonState		m_iState;
 public:
-	virtual bool	MoveRect(myPoint& p)override;
+	//virtual bool	MoveRect(myPoint& p)override;
 	virtual bool	Action()override;
 public:
 	virtual bool	Reset() override;

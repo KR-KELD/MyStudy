@@ -188,26 +188,23 @@ copy "*.h" "..\\..\\include"</Command>
   <ItemGroup>
     <ClCompile Include="dxtk\DDSTextureLoader.cpp" />
     <ClCompile Include="dxtk\WICTextureLoader.cpp" />
-    <ClCompile Include="myBitmap.cpp" />
-    <ClCompile Include="myBitmapManager.cpp" />
     <ClCompile Include="myButton.cpp" />
     <ClCompile Include="myCamera.cpp" />
-    <ClCompile Include="myCameraManager.cpp" />
     <ClCompile Include="myCollision.cpp" />
+    <ClCompile Include="myComponent.cpp" />
     <ClCompile Include="myCore.cpp" />
     <ClCompile Include="myDebugCamera.cpp" />
     <ClCompile Include="myDevice.cpp" />
     <ClCompile Include="myDraw.cpp" />
     <ClCompile Include="myDxState.cpp" />
     <ClCompile Include="myEffect.cpp" />
+    <ClCompile Include="myGraphics.cpp" />
     <ClCompile Include="myGrapicsAPI.cpp" />
     <ClCompile Include="myInput.cpp" />
-    <ClCompile Include="myMatrix.cpp" />
     <ClCompile Include="myNetUser.cpp" />
     <ClCompile Include="myNetwork.cpp" />
     <ClCompile Include="myObject.cpp" />
     <ClCompile Include="myObjectInfo.cpp" />
-    <ClCompile Include="myObjectPoolManager.cpp" />
     <ClCompile Include="myObjManager.cpp" />
     <ClCompile Include="myParsingScript.cpp" />
     <ClCompile Include="myProjectile.cpp" />
@@ -215,9 +212,11 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myShape.cpp" />
     <ClCompile Include="mySound.cpp" />
     <ClCompile Include="mySoundManager.cpp" />
+    <ClCompile Include="myTexture.cpp" />
+    <ClCompile Include="myTextureManager.cpp" />
     <ClCompile Include="myTimer.cpp" />
+    <ClCompile Include="myTransform.cpp" />
     <ClCompile Include="myUI.cpp" />
-    <ClCompile Include="myVector.cpp" />
     <ClCompile Include="myWindow.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
   </ItemGroup>
@@ -230,12 +229,10 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="dxtk\PlatformHelpers.h" />
     <ClInclude Include="dxtk\WICTextureLoader.h" />
     <ClInclude Include="myBasicStd.h" />
-    <ClInclude Include="myBitmap.h" />
-    <ClInclude Include="myBitmapManager.h" />
     <ClInclude Include="myButton.h" />
     <ClInclude Include="myCamera.h" />
-    <ClInclude Include="myCameraManager.h" />
     <ClInclude Include="myCollision.h" />
+    <ClInclude Include="myComponent.h" />
     <ClInclude Include="myCore.h" />
     <ClInclude Include="myCoreStd.h" />
     <ClInclude Include="myDebugCamera.h" />
@@ -243,16 +240,15 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myDraw.h" />
     <ClInclude Include="myDxState.h" />
     <ClInclude Include="myEffect.h" />
+    <ClInclude Include="myGraphics.h" />
     <ClInclude Include="myGrapicsAPI.h" />
     <ClInclude Include="myInput.h" />
     <ClInclude Include="myMath.h" />
-    <ClInclude Include="myMatrix.h" />
     <ClInclude Include="myNetStd.h" />
     <ClInclude Include="myNetUser.h" />
     <ClInclude Include="myNetwork.h" />
     <ClInclude Include="myObject.h" />
     <ClInclude Include="myObjectInfo.h" />
-    <ClInclude Include="myObjectPoolManager.h" />
     <ClInclude Include="myObjManager.h" />
     <ClInclude Include="myParsingScript.h" />
     <ClInclude Include="myProjectile.h" />
@@ -262,10 +258,12 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="mySound.h" />
     <ClInclude Include="mySoundManager.h" />
     <ClInclude Include="myStd.h" />
+    <ClInclude Include="myTexture.h" />
+    <ClInclude Include="myTextureManager.h" />
     <ClInclude Include="myTimer.h" />
+    <ClInclude Include="myTransform.h" />
     <ClInclude Include="myUI.h" />
     <ClInclude Include="myUtil.h" />
-    <ClInclude Include="myVector.h" />
     <ClInclude Include="myWindow.h" />
     <ClInclude Include="SimpleMath.h" />
   </ItemGroup>

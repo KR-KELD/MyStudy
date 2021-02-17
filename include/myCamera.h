@@ -1,12 +1,12 @@
 #pragma once
 #include "myStd.h"
-#include "myShape.h"
 class myCamera
 {
 public:
 	float		m_pSpeed;
 	Vector3		m_vCameraPos = { 10,0,-10 };
 	Vector3		m_vCameraTarget = { 0,0,0 };
+	Matrix      m_matWorld;
 	Matrix		m_matView;
 	Matrix		m_matProj;
 	Vector3		m_vLook;
