@@ -148,11 +148,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="myFrustum.cpp" />
+    <ClCompile Include="myMap.cpp" />
     <ClCompile Include="myModelViewCamera.cpp" />
     <ClCompile Include="Sample.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myFrustum.h" />
+    <ClInclude Include="myMap.h" />
     <ClInclude Include="myModelViewCamera.h" />
     <ClInclude Include="Sample.h" />
   </ItemGroup>

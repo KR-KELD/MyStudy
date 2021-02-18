@@ -9,6 +9,15 @@ bool		myCamera::CreateViewMatrix(
 	m_vCameraTarget = t;
 	m_fDistance = (m_vCameraPos - m_vCameraTarget).Length();
 	m_matView = Matrix::CreateLookAt(p, t, u);
+
+	Matrix mInvView;
+	mInvView = m_matView.Invert();
+	Vector3* pZBasis = (Vector3*)&mInvView._31;
+
+	m_vDirValue.y = atan2f(pZBasis->x, pZBasis->z);
+	float fLen = sqrtf(pZBasis->z * pZBasis->z + pZBasis->x * pZBasis->x);
+	m_vDirValue.x = -atan2f(pZBasis->y, fLen);
+
 	UpdateVector();
 	return true;
 }
@@ -91,6 +100,13 @@ void myCamera::UpdateVector()
 	m_vRight.x = m_matView._11;
 	m_vRight.y = m_matView._21;
 	m_vRight.z = m_matView._31;
+
+	m_vLook.Normalize();
+	m_vUp.Normalize();
+	m_vRight.Normalize();
+
+
+
 }
 bool myCamera::Init()
 {
@@ -113,33 +129,26 @@ int myCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 	{
 		m_bDrag = true;
-		//m_ptClick.x = LOWORD(lParam);
-		//m_ptClick.y = HIWORD(lParam);
-		//m_rtOffset.x = 0;
-		//m_rtOffset.y = 0;
+		m_ptClick.x = LOWORD(lParam);
+		m_ptClick.y = HIWORD(lParam);
+		m_rtOffset.left = 0;
+		m_rtOffset.bottom = 0;
 	}return 0;
 	case WM_MOUSEMOVE:
 	{
-		m_ptPrePos = m_ptCurrentPos;
-		m_ptCurrentPos.x = LOWORD(lParam);
-		m_ptCurrentPos.y = HIWORD(lParam);
 		if (m_bDrag)
 		{
-			m_ptOffset.x += m_ptCurrentPos.x - m_ptPrePos.x;
-			m_ptOffset.y += m_ptCurrentPos.y - m_ptPrePos.y;
-			//m_ptOffset.x += m_ptClick.x - LOWORD(lParam);
-			//m_ptOffset.y += m_ptClick.y - HIWORD(lParam);
-			//m_ptClick.x = LOWORD(lParam);
-			//m_ptClick.y = HIWORD(lParam);
-			//m_ptClick.x = 0;
-			//m_ptClick.y = 0;
+			m_rtOffset.left = m_ptClick.x - LOWORD(lParam);
+			m_rtOffset.bottom = m_ptClick.y - HIWORD(lParam);
+			m_ptClick.x = LOWORD(lParam);
+			m_ptClick.y = HIWORD(lParam);
 		}
 	}return 0;
 	case WM_LBUTTONUP:
 	{
 		m_bDrag = false;
-		//m_rtOffset.x = 0;
-		//m_rtOffset.y = 0;
+		m_rtOffset.left = 0;
+		m_rtOffset.bottom = 0;
 	}return 0;
 	case WM_MOUSEWHEEL:
 	{
@@ -152,8 +161,7 @@ myCamera::myCamera()
 {
 	m_pSpeed = 30.0f;
 	m_bDrag = false;
-	m_ptOffset.x = 0;
-	m_ptOffset.y = 0;
+	m_fWheelDelta = 0;
 }
 myCamera::~myCamera()
 {

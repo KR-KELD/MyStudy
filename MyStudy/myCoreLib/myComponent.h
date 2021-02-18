@@ -1,9 +1,15 @@
 #pragma once
 #include "myStd.h"
+//template <class T>
 class myComponent
 {
 public:
 	T_STR			m_strName;
+public:
+	//virtual T		GetComponent(Type type)
+	//{
+	//	return this;
+	//}
 public:
 	virtual bool	Init();
 	virtual bool	PreFrame();

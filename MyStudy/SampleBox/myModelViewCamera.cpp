@@ -11,20 +11,24 @@ int myModelViewCamera::WndProc(
 	{
 	case WM_LBUTTONDOWN:
 	{
-		m_bDrag = true;
-		OnBegin(iMouseX, iMouseY);
+		m_WorldArcball.OnBegin(iMouseX, iMouseY);
+	}break;
+	case WM_RBUTTONDOWN:
+	{
+		m_ViewArcball.OnBegin(iMouseX, iMouseY);
 	}break;
 	case WM_MOUSEMOVE:
 	{
-		if (m_bDrag)
-		{
-			OnMove(iMouseX, iMouseY);
-		}
+		m_WorldArcball.OnMove(iMouseX, iMouseY);
+		m_ViewArcball.OnMove(iMouseX, iMouseY);
 	}break;
 	case WM_LBUTTONUP:
 	{
-		m_bDrag = false;
-		OnEnd();
+		m_WorldArcball.OnEnd();
+	}break;
+	case WM_RBUTTONUP:
+	{
+		m_ViewArcball.OnEnd();
 	}break;
 	case WM_MOUSEWHEEL:
 	{
@@ -33,14 +37,14 @@ int myModelViewCamera::WndProc(
 	}
 	return -1;
 }
-Quaternion myModelViewCamera::QuatFromPoints(Vector3 v0, Vector3 v1)
+Quaternion myArcball::QuatFromPoints(Vector3 v0, Vector3 v1)
 {
 	Vector3 vCross;
 	float fDot = v0.Dot(v1);
 	vCross = v0.Cross(v1);
 	return Quaternion(vCross.x, vCross.y, vCross.z, fDot);;
 }
-Vector3 myModelViewCamera::ScreenToVector(float px, float py)
+Vector3 myArcball::ScreenToVector(float px, float py)
 {
 	float x = -((px / (float)g_rtClient.right) * 2.0f - 1.0f);
 	float y = (py / (float)g_rtClient.bottom) * 2.0f - 1.0f;
@@ -58,51 +62,59 @@ Vector3 myModelViewCamera::ScreenToVector(float px, float py)
 	}
 	return Vector3(x, y, z);
 }
-void myModelViewCamera::OnBegin(int x, int y)
+void myArcball::OnBegin(int x, int y)
 {
+	m_bDrag = true;
 	m_vDownPt = ScreenToVector(x, y);
 	m_qDown = m_qNow;
 }
-void myModelViewCamera::OnMove(int x, int y)
+void myArcball::OnMove(int x, int y)
 {
-	m_vCurrentPt = ScreenToVector(x, y);
-	m_qDown = m_qNow * QuatFromPoints(m_vDownPt, m_vCurrentPt);
+	if (m_bDrag)
+	{
+		m_vCurrentPt = ScreenToVector(x, y);
+		m_qNow = m_qDown * QuatFromPoints(m_vDownPt, m_vCurrentPt);
+	}
 }
-void myModelViewCamera::OnEnd()
+void myArcball::OnEnd()
+{
+	m_bDrag = false;
+}
+myArcball::myArcball()
+{
+	m_qNow = Quaternion::Identity;
+	m_qDown = Quaternion::Identity;
+	m_bDrag = false;
+}
+myArcball::~myArcball()
 {
 }
-Matrix myModelViewCamera::GetRotationMatrix()
+Matrix myArcball::GetRotationMatrix()
 {
-	return Matrix::CreateFromQuaternion(m_qDown);
+	return Matrix::CreateFromQuaternion(m_qNow);
 }
 void myModelViewCamera::Update(Vector4 data)
 {
-	Matrix mInvView = m_matView.Invert();
-	mInvView._41 = 0.0f;
-	mInvView._42 = 0.0f;
-	mInvView._43 = 0.0f;
 
-	Matrix mModelRotInv = m_mModelLastRot.Invert();
-
-	Matrix mModelRot = GetRotationMatrix();
-	m_matWorld = m_matWorld * m_matView * mModelRotInv * mModelRot * mInvView;
-
-	m_mModelLastRot = mModelRot;
-	//Matrix matRotation;
-	//matRotation = Matrix::CreateRotationY(data.y);
-	//Vector3 vLocalUp = { 0,1,0 };
-	//Vector3 vLocalLook = { 0,0,1 };
-	//// TODO V*M
-	//vLocalUp = Vector3::Transform(vLocalUp, matRotation);
-	//vLocalLook = Vector3::Transform(vLocalLook, matRotation);
-	//vLocalLook.Normalize();
-	//vLocalUp.Normalize();
-	//float fHeight = m_vCameraPos.y;
-	//m_vCameraPos = m_vCameraTarget - vLocalLook * m_fDistance;
-	//m_vCameraPos.y = fHeight;
 }
 bool myModelViewCamera::Frame()
 {
+	//VIEW
+	m_fDistance += m_fWheelDelta;
+	Matrix matCameraRotation;
+	matCameraRotation = m_ViewArcball.GetRotationMatrix();
+	Vector3 vLocalUp = { 0,1,0 };
+	Vector3 vLocalLook = { 0,0,1 };
+	// TODO V*M
+	vLocalUp = Vector3::Transform(vLocalUp, matCameraRotation);
+	vLocalLook = Vector3::Transform(vLocalLook, matCameraRotation);
+	vLocalLook.Normalize();
+	vLocalUp.Normalize();
+
+	m_vCameraPos = m_vCameraTarget - vLocalLook * m_fDistance;
+	CreateViewMatrix(m_vCameraPos, m_vCameraTarget);
+
+	//WORLD
 	Matrix mInvView = m_matView.Invert();
 	mInvView._41 = 0.0f;
 	mInvView._42 = 0.0f;
@@ -110,7 +122,7 @@ bool myModelViewCamera::Frame()
 
 	Matrix mModelRotInv = m_mModelLastRot.Invert();
 
-	Matrix mModelRot = GetRotationMatrix();
+	Matrix mModelRot = m_WorldArcball.GetRotationMatrix();
 	m_matWorld = m_matWorld * m_matView * mModelRotInv * mModelRot * mInvView;
 
 	m_matWorld._41 = 0;
@@ -119,12 +131,13 @@ bool myModelViewCamera::Frame()
 	m_mModelLastRot = mModelRot;
 
 	UpdateVector();
+
+	m_fWheelDelta = 0;
 	return true;
 }
 myModelViewCamera::myModelViewCamera()
 {
-	m_qNow = Quaternion::Identity;
-	m_qDown = Quaternion::Identity;
+
 }
 myModelViewCamera::~myModelViewCamera()
 {

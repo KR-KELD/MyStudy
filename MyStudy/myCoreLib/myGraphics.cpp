@@ -79,7 +79,7 @@ bool	myGraphics::Render(ID3D11DeviceContext*	pd3dContext)
 	pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
 	return true;
 }
-bool	myGraphics::Relase()
+bool	myGraphics::Release()
 {
 	m_pConstantBuffer->Release();
 	m_pVertexBuffer->Release();

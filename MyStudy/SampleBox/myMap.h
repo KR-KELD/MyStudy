@@ -1,0 +1,32 @@
+#pragma once
+#include "myGraphics.h"
+
+struct myMapDesc
+{
+	int	iNumCols;
+	int iNumRows;
+	float fCellDistance;
+	T_STR szTexFile;
+	T_STR szVS;
+	T_STR szPS;
+};
+
+class myMap : public myGraphics
+{
+public:
+	myMapDesc  m_MapDesc;
+	UINT m_iNumRows;
+	UINT m_iNumCols;
+	UINT m_iNumCellCols;
+	UINT m_iNumCellRows;
+	UINT m_iNumVertices;
+	UINT m_iNumFaces;
+	float m_fCellDistance;
+public:
+	bool	  CreateMap(ID3D11Device* pDevice, myMapDesc  desc);
+	virtual bool    CreateVertexData() override;
+	virtual bool    CreateIndexData()override;
+public:
+	myMap();
+	virtual ~myMap();
+};

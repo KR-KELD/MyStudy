@@ -2,10 +2,12 @@
 #include "myCore.h"
 #include "myShape.h"
 #include "myModelViewCamera.h"
+#include "myMap.h"
 
 class Sample : public myCore
 {
 public:
+	myMap			m_Map;
 	Vector4			m_vDirValue;
 	myShapeBox		m_Box;
 	myShapePlane	m_Plane;

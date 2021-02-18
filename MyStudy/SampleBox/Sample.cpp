@@ -29,7 +29,16 @@ bool Sample::Init()
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	m_ModelCamera.CreateProjMatrix(1, 1000, PI2D, fAspect);
 	m_ModelCamera.Init();
-	m_pMainCamera = &m_ModelCamera;
+	//m_pMainCamera = &m_ModelCamera;
+
+	myMapDesc desc;
+	desc.iNumCols = 513;
+	desc.iNumRows = 513;
+	desc.fCellDistance = 1;
+	desc.szTexFile = L"../../data/tileA.jpg";
+	desc.szVS = L"VS.txt";
+	desc.szPS = L"PS.txt";
+	m_Map.CreateMap(m_pd3dDevice, desc);
 	return true;
 }
 
@@ -96,7 +105,13 @@ bool Sample::Render()
 	m_Plane.SetMatrix(&m_matPlaneWorld,
 		&m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
-	m_Plane.Render(m_pd3dContext);
+	//m_Plane.Render(m_pd3dContext);
+
+	m_Map.SetMatrix(NULL,
+		&m_pMainCamera->m_matView,
+		&m_pMainCamera->m_matProj);
+	m_Map.Render(m_pd3dContext);
+
 	m_Line.SetMatrix(NULL, &m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
 	m_Line.Draw(m_pd3dContext,
@@ -111,9 +126,10 @@ bool Sample::Render()
 
 bool Sample::Release()
 {
-	m_Box.Relase();
-	m_Plane.Relase();
-	m_Line.Relase();
+	m_Map.Release();
+	m_Box.Release();
+	m_Plane.Release();
+	m_Line.Release();
 	return true;
 }
 
