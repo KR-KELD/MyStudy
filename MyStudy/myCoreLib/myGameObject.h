@@ -44,7 +44,8 @@ public:
 	}
 
 private:
-	std::unordered_map<size_t, myComponent*> components;
+	unordered_map<size_t, myComponent*> components;
+	unordered_map<size_t, myComponent*>::iterator m_iter;
 public:
 	virtual bool	Init();
 	virtual bool	PreFrame();

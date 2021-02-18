@@ -50,6 +50,15 @@ bool myGameObject::Action()
 
 bool myGameObject::Release()
 {
+
+	for (m_iter = components.begin();
+		m_iter != components.end();
+		m_iter++)
+	{
+		(*m_iter).second->Release();
+		delete (*m_iter).second;
+	}
+	components.clear();
 	return true;
 }
 

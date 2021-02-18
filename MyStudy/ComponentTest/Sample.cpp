@@ -44,7 +44,7 @@ int main()
 	cout << object->getComponent<CPositionComponent>()->getComponentName_() << endl;
 	cout << object->getComponent<CRenderComponent>()->getComponentId() << endl;
 	cout << object->getComponent<CImageRenderComponent>()->getComponentId() << endl;
-
+	object->Release();
 	delete object;
 	return 0;
 }

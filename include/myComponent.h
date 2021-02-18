@@ -122,5 +122,5 @@ public:
 	myComponent();
 	virtual ~myComponent();
 };
-
-
+//여기 있으면 오류
+//DECLARE_COMPONENT(myComponent);
