@@ -4,7 +4,9 @@
 #include <tchar.h>
 #include <list>
 #include <map>
+#include <unordered_map>
 #include <algorithm>
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <assert.h>

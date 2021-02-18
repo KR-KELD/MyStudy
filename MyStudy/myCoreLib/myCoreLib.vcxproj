@@ -198,6 +198,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myDraw.cpp" />
     <ClCompile Include="myDxState.cpp" />
     <ClCompile Include="myEffect.cpp" />
+    <ClCompile Include="myGameObject.cpp" />
     <ClCompile Include="myGraphics.cpp" />
     <ClCompile Include="myGrapicsAPI.cpp" />
     <ClCompile Include="myInput.cpp" />
@@ -240,6 +241,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myDraw.h" />
     <ClInclude Include="myDxState.h" />
     <ClInclude Include="myEffect.h" />
+    <ClInclude Include="myGameObject.h" />
     <ClInclude Include="myGraphics.h" />
     <ClInclude Include="myGrapicsAPI.h" />
     <ClInclude Include="myInput.h" />

@@ -117,9 +117,6 @@
     <ClCompile Include="dxtk\WICTextureLoader.cpp">
       <Filter>dxtk</Filter>
     </ClCompile>
-    <ClCompile Include="myShape.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleMath.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -148,6 +145,12 @@
       <Filter>Mgr</Filter>
     </ClCompile>
     <ClCompile Include="myGraphics.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="myShape.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="myGameObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -254,9 +257,6 @@
     <ClInclude Include="myMath.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="myShape.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="SimpleMath.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -285,6 +285,12 @@
       <Filter>Mgr</Filter>
     </ClInclude>
     <ClInclude Include="myGraphics.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="myShape.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="myGameObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

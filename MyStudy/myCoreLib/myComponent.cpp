@@ -1,5 +1,5 @@
 #include "myComponent.h"
-
+DECLARE_COMPONENT(myComponent);
 bool myComponent::Init()
 {
 	return true;
@@ -52,4 +52,12 @@ bool myComponent::Action()
 bool myComponent::Release()
 {
 	return true;
+}
+
+myComponent::myComponent()
+{
+}
+
+myComponent::~myComponent()
+{
 }
