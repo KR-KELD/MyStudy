@@ -7,81 +7,81 @@ struct null_t {};
 //struct true_type { enum _value_ { value = true }; };
 //struct false_type { enum _value_ { value = false }; };
 
-template <bool Test, class _true_type, class _false_type>
+template <bool Test, class True_Meta_Func, class False_Meta_Func>
 struct _If
 {
 
 };
 
-template <class _true_type, class _false_type>
-struct _If<true, _true_type, _false_type>
+template <class True_Meta_Func, class False_Meta_Func>
+struct _If<true, True_Meta_Func,False_Meta_Func>
 {
-	typedef typename _true_type type;
+	typedef typename True_Meta_Func type;
 };
 
-template <class _true_type, class _false_type>
-struct _If<false, _true_type, _false_type>
+template <class True_Meta_Func, class False_Meta_Func>
+struct _If<false, True_Meta_Func, False_Meta_Func>
 {
-	typedef typename _false_type type;
+	typedef typename False_Meta_Func type;
 };
 
 //템플릿 메타함수 유니크 컴포넌트인지 판별
-template <class _component_t>
-struct is_unique_component
+template <class Component_T>
+struct Is_Unique_Component
 {
 	//컴포넌트의 고유 아이디(주소값)
-	typedef typename _component_t::component_identifier_t	identifier_t;
+	typedef typename Component_T::Component_Identifier_T			Identifier_T;
 	//템플릿 타입으로 들어온 컴포넌트의 부모 컴포넌트
-	typedef typename identifier_t::parent_component_t		parent_t;
+	typedef typename Identifier_T::Parent_Component_T				Parent_T;
 
 	enum
 	{
 		//이부분 질문
 		//추측 <1 조건, 2 true일경우, 3 false일경우>
 		//유니크 컴포넌트인지 부모를 타고 가며 재귀적으로 확인
-		value = _If<identifier_t::is_unique, std::true_type, is_unique_component<parent_t>>::type::value
+		value = _If<Identifier_T::is_unique, std::true_type, Is_Unique_Component<Parent_T>>::type::value
 	};
 };
 //유니크 컴포넌트 판별에 null_t 타입이 들어오면 value에 false를 넣는다
 template <>
-struct is_unique_component<null_t>
+struct Is_Unique_Component<null_t>
 {
 	enum { value = false };
 };
 //유니크 컴포넌트를 가져오는 메타함수
-template <class _component_t>
-struct get_unique_component
+template <class Component_T>
+struct Get_Unique_Component
 {
-	typedef typename _component_t::component_identifier_t	identifier_t;
-	typedef typename identifier_t::parent_component_t		parent_t;
+	typedef typename Component_T::Component_Identifier_T	Identifier_T;
+	typedef typename Identifier_T::Parent_Component_T		Parent_T;
 	//현재 컴포넌트가 유니크 타입인지 검사
 	//맞으면 현재 컴포넌트의 타입을 반환
 	//아니면 부모를 타며 재귀호출
-	typedef typename _If<identifier_t::is_unique, _component_t, typename get_unique_component<parent_t>::type>::type type;
+	typedef typename _If<Identifier_T::is_unique, Component_T, typename Get_Unique_Component<Parent_T>::type>::type type;
 };
 template <>
-struct get_unique_component<null_t>
+struct Get_Unique_Component<null_t>
 {
 	typedef null_t type;
 };
 
 //컴포넌트를 불로오는 메타함수
-template <class _component_t>
-struct get_component
+template <class Component_T>
+struct Get_Component
 {
 	//유니크 컴포넌트면 가장 상위 유니크 컴포넌트를 반환하고
 	//아니면 현재 컴포넌트를 반환
 	typedef typename _If<
-		is_unique_component<_component_t>::value,
-		typename get_unique_component<_component_t>::type,
-		_component_t>::type type;
+		Is_Unique_Component<Component_T>::value,
+		typename Get_Unique_Component<Component_T>::type,
+		Component_T>::type type;
 };
 //컴포넌트 식별자 생성 메타함수
-template <class _component_t, class _parent_component_t, bool _is_unique>
-struct _component_identifier
+template <class Component_T, class Parent_Component_T, bool _is_unique>
+struct Component_Identifier
 {
-	typedef _component_t current_component_t;
-	typedef _parent_component_t parent_component_t;
+	typedef Component_T Current_Component_T;
+	typedef Parent_Component_T Parent_Component_T;
 
 	enum { is_unique = _is_unique };
 };
@@ -92,16 +92,16 @@ struct _component_identifier
 #define DEFINE_COMPONENT(component_name, parent_component_name, unique_component) \
 	public: \
 		myGameObject* m_pGameObject; \
-		typedef _component_identifier<component_name, parent_component_name, unique_component> component_identifier_t; \
+		typedef Component_Identifier<component_name, parent_component_name, unique_component> Component_Identifier_T; \
 		static size_t GetComponentId(void) { return reinterpret_cast<size_t>(&identifier); } \
 		virtual const char* GetComponentName_(void) { return #component_name; } \
 		static const char* GetComponentName(void) { return #component_name; } \
 	private: \
-		static component_identifier_t identifier; \
+		static Component_Identifier_T identifier; \
 //질문
 //추정 외부에서 해당 클래스의 식별자를 전역으로 선언?
 #define DECLARE_COMPONENT(component_name) \
-	component_name::component_identifier_t component_name::identifier;
+	component_name::Component_Identifier_T component_name::identifier;
 class myGameObject;
 
 class myComponent
@@ -120,7 +120,7 @@ public:
 	virtual void	Reset();
 	virtual bool	Action();
 	virtual bool	Release();
-	virtual void	Link(myGameObject* pGameObject)
+	virtual void	Set(myGameObject* pGameObject)
 	{
 		m_pGameObject = pGameObject;
 	}
@@ -139,7 +139,6 @@ public:
 	Vector3		m_vPos;
 	Quaternion	m_qRot;
 	Vector3		m_vScale;
-
 public:
 	Vector3		m_vLook;
 	Vector3		m_vUp;
@@ -158,6 +157,16 @@ public:
 	virtual void	Reset() override;
 	virtual bool	Action() override;
 	virtual bool	Release() override;
+	myTransform()
+	{
+		m_vPos = Vector3(0.0f, 0.0f, 0.0f);
+		m_qRot = Quaternion::Identity;
+		m_vScale = Vector3(1.0f, 1.0f, 1.0f);
+		m_vLook = Vector3(0.0f, 0.0f, -1.0f);
+		m_vUp = Vector3(0.0f, 1.0f, 0.0f);
+		m_vRight = Vector3(1.0f, 0.0f, 0.0f);
+	}
+	~myTransform() {}
 };
 
 class myGameObject : myComponent
@@ -166,53 +175,22 @@ public:
 	DEFINE_COMPONENT(myGameObject, null_t, true);
 public:
 	myTransform*			m_pTransform;
-	T_STR					m_strName;
+	T_STR					m_strName = L"myGameObject";
+	T_STR					m_strTag;
 	myGameObject*			m_Parent;
 	vector<myGameObject*>	m_Childs;
 private:
 	unordered_map<size_t, myComponent*> m_ComponentList;
 	unordered_map<size_t, myComponent*>::iterator m_iter;
 public:
-	static myGameObject* CreateGameObject() { return new myGameObject; }
-public:
-
-	template <class component_t>
-	void InsertComponent(component_t* component)
+	static myGameObject* CreateGameObject()
 	{
-		//--------------------------------------------------------
-		// 컴포넌트 식별자 ID 취득
-		//--------------------------------------------------------
-		size_t componentId = get_component<component_t>::type::GetComponentId();
-
-		//--------------------------------------------------------
-		// 컴포넌트를 컨테이너에 삽입
-		//--------------------------------------------------------
-		component->m_pGameObject = this;
-		this->m_ComponentList[componentId] = component;
-
+		return new myGameObject;
 	}
-
-	template <class component_t>
-	component_t* GetComponent(void)
+	void SetObjectName(const TCHAR* szName)
 	{
-		//--------------------------------------------------------
-		// 컴포넌트 식별자 ID 취득
-		//--------------------------------------------------------
-		size_t componentId = get_component<component_t>::type::GetComponentId();
-
-		//--------------------------------------------------------
-		// 컴포넌트가 컨테이너에 존재하지 않다면 nullptr 리턴
-		//--------------------------------------------------------
-		if (this->m_ComponentList.find(componentId) == this->m_ComponentList.end())
-			return nullptr;
-
-		//--------------------------------------------------------
-		// 컴포넌트가 존재한다면 컴포넌트 리턴
-		//--------------------------------------------------------
-		return reinterpret_cast<component_t*>(this->m_ComponentList[componentId]);
+		m_strName = szName;
 	}
-
-
 public:
 	virtual bool	Init();
 	virtual bool	PreFrame();
@@ -226,9 +204,50 @@ public:
 	virtual bool	Action();
 	virtual bool	Release();
 public:
+	template <class Component_T>
+	void InsertComponent(Component_T* component)
+	{
+		//--------------------------------------------------------
+		// 컴포넌트 식별자 ID 취득
+		//--------------------------------------------------------
+		size_t componentId = Get_Component<Component_T>::type::GetComponentId();
+
+		//--------------------------------------------------------
+		// 컴포넌트를 컨테이너에 삽입
+		//--------------------------------------------------------
+		Set(this);
+		this->m_ComponentList[componentId] = component;
+
+	}
+	template <class Component_T>
+	Component_T* GetComponent(void)
+	{
+		//--------------------------------------------------------
+		// 컴포넌트 식별자 ID 취득
+		//--------------------------------------------------------
+		size_t componentId = Get_Component<Component_T>::type::GetComponentId();
+
+		//--------------------------------------------------------
+		// 컴포넌트가 컨테이너에 존재하지 않다면 nullptr 리턴
+		//--------------------------------------------------------
+		if (this->m_ComponentList.find(componentId) == this->m_ComponentList.end())
+			return nullptr;
+
+		//--------------------------------------------------------
+		// 컴포넌트가 존재한다면 컴포넌트 리턴
+		//--------------------------------------------------------
+		return reinterpret_cast<Component_T*>(this->m_ComponentList[componentId]);
+	}
+public:
 	myGameObject() 
 	{ 
 		InsertComponent<myGameObject>(this); 
+		InsertComponent<myTransform>(new myTransform);
+	}
+	myGameObject(const TCHAR* szName)
+	{
+		m_strName = szName;
+		InsertComponent<myGameObject>(this);
 		InsertComponent<myTransform>(new myTransform);
 	}
 	~myGameObject() {}
