@@ -103,7 +103,6 @@ struct _component_identifier
 #define DECLARE_COMPONENT(component_name) \
 	component_name::component_identifier_t component_name::identifier;
 class myGameObject;
-class myTransform;
 
 class myComponent
 {
@@ -131,6 +130,35 @@ public:
 };
 //여기 있으면 오류
 //DECLARE_COMPONENT(myComponent);
+
+class myTransform : public myComponent
+{
+public:
+	DEFINE_COMPONENT(myComponent, null_t, true);
+public:
+	Vector3		m_vPos;
+	Quaternion	m_qRot;
+	Vector3		m_vScale;
+
+public:
+	Vector3		m_vLook;
+	Vector3		m_vUp;
+	Vector3		m_vRight;
+public:
+	void ComputeMatWorld();
+public:
+	virtual bool	Init() override;
+	virtual bool	PreFrame() override;
+	virtual bool	Frame() override;
+	virtual bool	PostFrame() override;
+	virtual bool	PreRender() override;
+	virtual bool	Render() override;
+	virtual bool	PostRender() override;
+	virtual void	Update() override;
+	virtual void	Reset() override;
+	virtual bool	Action() override;
+	virtual bool	Release() override;
+};
 
 class myGameObject : myComponent
 {
@@ -198,7 +226,11 @@ public:
 	virtual bool	Action();
 	virtual bool	Release();
 public:
-	myGameObject() { InsertComponent<myGameObject>(this); }
+	myGameObject() 
+	{ 
+		InsertComponent<myGameObject>(this); 
+		InsertComponent<myTransform>(new myTransform);
+	}
 	~myGameObject() {}
 };
 

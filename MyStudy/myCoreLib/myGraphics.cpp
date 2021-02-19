@@ -58,9 +58,14 @@ bool    myGraphics::Update(ID3D11DeviceContext*	pd3dContext)
 	}
 	return false;
 }
+bool myGraphics::PreRender(ID3D11DeviceContext * pd3dContext)
+{
+	return true;
+}
 bool	myGraphics::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	Update(pd3dContext);
+	PreRender(pd3dContext);
 	UINT iStride = sizeof(PNCT_VERTEX);
 	UINT iOffset = 0;
 	pd3dContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &iStride, &iOffset);
@@ -77,6 +82,11 @@ bool	myGraphics::Render(ID3D11DeviceContext*	pd3dContext)
 			&m_pTexture->m_pTextureSRV);
 	}
 	//pd3dContext->Draw(m_VertexList.size(), 0);
+	PostRender(pd3dContext);
+	return true;
+}
+bool myGraphics::PostRender(ID3D11DeviceContext * pd3dContext)
+{
 	pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
 	return true;
 }

@@ -129,9 +129,6 @@
     <ClCompile Include="myDxState.cpp">
       <Filter>dx</Filter>
     </ClCompile>
-    <ClCompile Include="myTransform.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
     <ClCompile Include="myTexture.cpp">
       <Filter>dx</Filter>
     </ClCompile>
@@ -265,9 +262,6 @@
     </ClInclude>
     <ClInclude Include="myDevice.h">
       <Filter>dx</Filter>
-    </ClInclude>
-    <ClInclude Include="myTransform.h">
-      <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="myTexture.h">
       <Filter>dx</Filter>

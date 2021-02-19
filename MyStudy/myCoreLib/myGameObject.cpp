@@ -1,6 +1,7 @@
 #include "myGameObject.h"
 
 DECLARE_COMPONENT(myComponent);
+DECLARE_COMPONENT(myTransform);
 DECLARE_COMPONENT(myGameObject);
 bool myComponent::Init()
 {
@@ -55,6 +56,67 @@ bool myComponent::Release()
 {
 	return true;
 }
+
+void myTransform::ComputeMatWorld()
+{
+
+}
+
+bool myTransform::Init()
+{
+	return true;
+}
+
+bool myTransform::PreFrame()
+{
+	return true;
+}
+
+bool myTransform::Frame()
+{
+	return true;
+}
+
+bool myTransform::PostFrame()
+{
+	return true;
+}
+
+bool myTransform::PreRender()
+{
+	return true;
+}
+
+bool myTransform::Render()
+{
+	return true;
+}
+
+bool myTransform::PostRender()
+{
+	return true;
+}
+
+void myTransform::Update()
+{
+
+}
+
+void myTransform::Reset()
+{
+
+}
+
+bool myTransform::Action()
+{
+	return true;
+}
+
+bool myTransform::Release()
+{
+	return true;
+}
+
 
 bool myGameObject::Init()
 {

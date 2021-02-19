@@ -215,7 +215,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myTexture.cpp" />
     <ClCompile Include="myTextureManager.cpp" />
     <ClCompile Include="myTimer.cpp" />
-    <ClCompile Include="myTransform.cpp" />
     <ClCompile Include="myUI.cpp" />
     <ClCompile Include="myWindow.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
@@ -261,7 +260,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myTexture.h" />
     <ClInclude Include="myTextureManager.h" />
     <ClInclude Include="myTimer.h" />
-    <ClInclude Include="myTransform.h" />
     <ClInclude Include="myUI.h" />
     <ClInclude Include="myUtil.h" />
     <ClInclude Include="myWindow.h" />
