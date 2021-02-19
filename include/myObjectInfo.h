@@ -1,8 +1,10 @@
 #pragma once
-#include "myComponent.h"
+#include "myGameObject.h"
 
 class myObjectInfo : public myComponent
 {
+public:
+	DEFINE_COMPONENT(myObjectInfo, null_t, true);
 public:
 	myObjectInfo*		pTarget;
 	int					iCurrentHP;

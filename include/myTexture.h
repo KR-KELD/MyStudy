@@ -1,5 +1,5 @@
 #pragma once
-#include "myComponent.h"
+#include "myGameObject.h"
 #include "dxtk/WICTextureLoader.h"
 class myTexture : myComponent
 {

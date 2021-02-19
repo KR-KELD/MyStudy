@@ -75,9 +75,6 @@
     <ClCompile Include="myCollision.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="myObjectInfo.cpp">
-      <Filter>Obj</Filter>
-    </ClCompile>
     <ClCompile Include="myObjManager.cpp">
       <Filter>Mgr</Filter>
     </ClCompile>
@@ -126,9 +123,6 @@
     <ClCompile Include="myCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="myComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
     <ClCompile Include="myDevice.cpp">
       <Filter>dx</Filter>
     </ClCompile>
@@ -151,7 +145,10 @@
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="myGameObject.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="myObjectInfo.cpp">
+      <Filter>Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,9 +195,6 @@
       <Filter>Obj</Filter>
     </ClInclude>
     <ClInclude Include="myProjectile.h">
-      <Filter>Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="myObjectInfo.h">
       <Filter>Obj</Filter>
     </ClInclude>
     <ClInclude Include="myCollision.h">
@@ -266,9 +260,6 @@
     <ClInclude Include="myCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="myComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
     <ClInclude Include="myDxState.h">
       <Filter>dx</Filter>
     </ClInclude>
@@ -291,7 +282,10 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="myGameObject.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="myObjectInfo.h">
+      <Filter>Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

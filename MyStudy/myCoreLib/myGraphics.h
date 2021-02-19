@@ -1,6 +1,6 @@
 #pragma once
 #include "myDxState.h"
-#include "myComponent.h"
+#include "myGameObject.h"
 #include "myTextureManager.h"
 
 struct P_VERTEX
@@ -58,6 +58,8 @@ struct myDataCB
 
 class myGraphics : myComponent
 {
+public:
+	DEFINE_COMPONENT(myGraphics, null_t, true);
 public:
 	ID3D11Device* m_pd3dDevice;
 	ID3DBlob*	  m_pVSObj;

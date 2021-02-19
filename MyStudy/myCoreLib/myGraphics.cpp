@@ -1,4 +1,5 @@
 #include "myGraphics.h"
+DECLARE_COMPONENT(myGraphics);
 void myGraphics::CompilerCheck(ID3DBlob* pErrorMsgs)
 {
 	C_STR szMsg = (char*)pErrorMsgs->GetBufferPointer();

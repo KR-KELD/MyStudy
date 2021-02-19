@@ -1,5 +1,8 @@
 #include "myShape.h"
-
+DECLARE_COMPONENT(myShape);
+DECLARE_COMPONENT(myShapeBox);
+DECLARE_COMPONENT(myShapePlane);
+DECLARE_COMPONENT(myShapeLine);
 myShape::myShape()
 {
 

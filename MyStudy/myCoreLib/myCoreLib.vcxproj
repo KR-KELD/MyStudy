@@ -191,7 +191,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myButton.cpp" />
     <ClCompile Include="myCamera.cpp" />
     <ClCompile Include="myCollision.cpp" />
-    <ClCompile Include="myComponent.cpp" />
     <ClCompile Include="myCore.cpp" />
     <ClCompile Include="myDebugCamera.cpp" />
     <ClCompile Include="myDevice.cpp" />
@@ -233,7 +232,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myButton.h" />
     <ClInclude Include="myCamera.h" />
     <ClInclude Include="myCollision.h" />
-    <ClInclude Include="myComponent.h" />
     <ClInclude Include="myCore.h" />
     <ClInclude Include="myCoreStd.h" />
     <ClInclude Include="myDebugCamera.h" />

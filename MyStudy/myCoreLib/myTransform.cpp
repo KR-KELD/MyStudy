@@ -1,5 +1,5 @@
 #include "myTransform.h"
-
+DECLARE_COMPONENT(myTransform);
 void myTransform::ComputeMatWorld()
 {
 

@@ -1,7 +1,9 @@
 #pragma once
-#include "myComponent.h"
+#include "myGameObject.h"
 class myTransform : public myComponent
 {
+public:
+	DEFINE_COMPONENT(myComponent, null_t, true);
 public:
 	Vector3		m_vPos;
 	Quaternion	m_qRot;
@@ -11,8 +13,6 @@ public:
 	Vector3		m_vLook;
 	Vector3		m_vUp;
 	Vector3		m_vRight;
-public:
-	T_STR		m_strTag;
 public:
 	void ComputeMatWorld();
 public:

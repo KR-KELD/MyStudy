@@ -1,5 +1,61 @@
 #include "myGameObject.h"
 
+DECLARE_COMPONENT(myComponent);
+DECLARE_COMPONENT(myGameObject);
+bool myComponent::Init()
+{
+	return true;
+}
+
+bool myComponent::PreFrame()
+{
+	return true;
+}
+
+bool myComponent::Frame()
+{
+	return true;
+}
+
+bool myComponent::PostFrame()
+{
+	return true;
+}
+
+bool myComponent::PreRender()
+{
+	return true;
+}
+
+bool myComponent::Render()
+{
+	return true;
+}
+
+bool myComponent::PostRender()
+{
+	return true;
+}
+
+void myComponent::Update()
+{
+}
+
+void myComponent::Reset()
+{
+
+}
+
+bool myComponent::Action()
+{
+	return true;
+}
+
+bool myComponent::Release()
+{
+	return true;
+}
+
 bool myGameObject::Init()
 {
 	return true;
@@ -50,22 +106,18 @@ bool myGameObject::Action()
 
 bool myGameObject::Release()
 {
-
-	for (m_iter = components.begin();
-		m_iter != components.end();
+	for (m_iter = m_ComponentList.begin();
+		m_iter != m_ComponentList.end();
 		m_iter++)
 	{
+		if ((*m_iter).second == this)
+		{
+			continue;
+		}
 		(*m_iter).second->Release();
 		delete (*m_iter).second;
 	}
-	components.clear();
+	m_ComponentList.clear();
 	return true;
 }
 
-myGameObject::myGameObject()
-{
-}
-
-myGameObject::~myGameObject()
-{
-}
