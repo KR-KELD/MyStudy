@@ -111,8 +111,8 @@ bool myModelViewCamera::Frame()
 	vLocalLook.Normalize();
 	vLocalUp.Normalize();
 
-	m_vCameraPos = m_vCameraTarget - vLocalLook * m_fDistance;
-	CreateViewMatrix(m_vCameraPos, m_vCameraTarget);
+	m_pTransform->m_vPos = m_pTransform->m_vTarget - vLocalLook * m_fDistance;
+	CreateViewMatrix(m_pTransform->m_vPos, m_pTransform->m_vTarget);
 
 	//WORLD
 	Matrix mInvView = m_matView.Invert();

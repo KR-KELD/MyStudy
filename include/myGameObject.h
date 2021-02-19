@@ -1,6 +1,10 @@
 #pragma once
 #include "myStd.h"
 
+#pragma region ComponentMetaFunc
+
+
+
 //템플릿 타입에서 null타입을 대체
 struct null_t {};
 
@@ -95,6 +99,7 @@ struct Component_Identifier
 		typedef Component_Identifier<component_name, parent_component_name, unique_component> Component_Identifier_T; \
 		static size_t GetComponentId(void) { return reinterpret_cast<size_t>(&identifier); } \
 		virtual const char* GetComponentName_(void) { return #component_name; } \
+		void Set(myGameObject* pGameObject) {m_pGameObject = pGameObject;} \
 		static const char* GetComponentName(void) { return #component_name; } \
 	private: \
 		static Component_Identifier_T identifier; \
@@ -102,6 +107,8 @@ struct Component_Identifier
 //추정 외부에서 해당 클래스의 식별자를 전역으로 선언?
 #define DECLARE_COMPONENT(component_name) \
 	component_name::Component_Identifier_T component_name::identifier;
+
+#pragma endregion
 class myGameObject;
 
 class myComponent
@@ -120,10 +127,11 @@ public:
 	virtual void	Reset();
 	virtual bool	Action();
 	virtual bool	Release();
-	virtual void	Set(myGameObject* pGameObject)
-	{
-		m_pGameObject = pGameObject;
-	}
+	//상속받은 애들한테 적용이 안됨
+	//virtual void	Set(myGameObject* pGameObject)
+	//{
+	//	m_pGameObject = pGameObject;
+	//}
 public:
 	myComponent() {};
 	virtual ~myComponent() {}
@@ -134,12 +142,14 @@ public:
 class myTransform : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myComponent, null_t, true);
+	DEFINE_COMPONENT(myComponent, myComponent, true);
 public:
 	Vector3		m_vPos;
 	Quaternion	m_qRot;
+	Vector4		m_vRot;
 	Vector3		m_vScale;
 public:
+	Vector3		m_vTarget;
 	Vector3		m_vLook;
 	Vector3		m_vUp;
 	Vector3		m_vRight;
@@ -161,31 +171,38 @@ public:
 	{
 		m_vPos = Vector3(0.0f, 0.0f, 0.0f);
 		m_qRot = Quaternion::Identity;
+		m_vRot = Vector4::Zero;
 		m_vScale = Vector3(1.0f, 1.0f, 1.0f);
 		m_vLook = Vector3(0.0f, 0.0f, -1.0f);
+		m_vTarget = m_vLook;
 		m_vUp = Vector3(0.0f, 1.0f, 0.0f);
 		m_vRight = Vector3(1.0f, 0.0f, 0.0f);
 	}
 	~myTransform() {}
 };
 
-class myGameObject : myComponent
+class myGameObject : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myGameObject, null_t, true);
+	DEFINE_COMPONENT(myGameObject, myComponent, true);
 public:
-	myTransform*			m_pTransform;
-	T_STR					m_strName = L"myGameObject";
-	T_STR					m_strTag;
-	myGameObject*			m_Parent;
-	vector<myGameObject*>	m_Childs;
+	myTransform*	m_pTransform;
+	T_STR			m_strName;
+	T_STR			m_strTag;
 private:
-	unordered_map<size_t, myComponent*> m_ComponentList;
-	unordered_map<size_t, myComponent*>::iterator m_iter;
+	myGameObject*									m_Parent;
+	multimap<wstring, myGameObject*>				m_Childs;
+	multimap<wstring, myGameObject*>::iterator		m_ObjIter;
+	unordered_map<size_t, myComponent*>				m_ComponentList;
+	unordered_map<size_t, myComponent*>::iterator	m_ComIter;
 public:
 	static myGameObject* CreateGameObject()
 	{
 		return new myGameObject;
+	}
+	static myGameObject* CreateGameObject(const TCHAR* szName)
+	{
+		return new myGameObject(szName);
 	}
 	void SetObjectName(const TCHAR* szName)
 	{
@@ -204,9 +221,15 @@ public:
 	virtual bool	Action();
 	virtual bool	Release();
 public:
+	myGameObject*			Add(wstring strName = L"");
+	myGameObject*			GetGameObject(wstring strName);
+	list<myGameObject*>*	GetGameObjects(wstring strName);
+public:
+
 	template <class Component_T>
 	void InsertComponent(Component_T* component)
 	{
+		//component->Set(this);
 		//--------------------------------------------------------
 		// 컴포넌트 식별자 ID 취득
 		//--------------------------------------------------------
@@ -215,12 +238,10 @@ public:
 		//--------------------------------------------------------
 		// 컴포넌트를 컨테이너에 삽입
 		//--------------------------------------------------------
-		Set(this);
 		this->m_ComponentList[componentId] = component;
-
-	}
+ 	}
 	template <class Component_T>
-	Component_T* GetComponent(void)
+	Component_T* GetComponent()
 	{
 		//--------------------------------------------------------
 		// 컴포넌트 식별자 ID 취득
@@ -241,14 +262,14 @@ public:
 public:
 	myGameObject() 
 	{ 
-		InsertComponent<myGameObject>(this); 
-		InsertComponent<myTransform>(new myTransform);
+		InsertComponent(this); 
+		InsertComponent(new myTransform);
 	}
 	myGameObject(const TCHAR* szName)
 	{
 		m_strName = szName;
-		InsertComponent<myGameObject>(this);
-		InsertComponent<myTransform>(new myTransform);
+		InsertComponent(this);
+		InsertComponent(new myTransform);
 	}
 	~myGameObject() {}
 };

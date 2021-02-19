@@ -14,6 +14,8 @@ struct myMapDesc
 class myMap : public myGraphics
 {
 public:
+	DEFINE_COMPONENT(myMap, myGraphics, false);
+public:
 	myMapDesc  m_MapDesc;
 	UINT m_iNumRows;
 	UINT m_iNumCols;
@@ -23,7 +25,7 @@ public:
 	UINT m_iNumFaces;
 	float m_fCellDistance;
 public:
-	bool	  CreateMap(ID3D11Device* pDevice, myMapDesc  desc);
+	bool			CreateMap(ID3D11Device* pDevice, myMapDesc  desc);
 	virtual bool    CreateVertexData() override;
 	virtual bool    CreateIndexData()override;
 public:

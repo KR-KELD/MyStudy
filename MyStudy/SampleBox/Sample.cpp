@@ -1,5 +1,6 @@
 #include "Sample.h"
 GAMERUN;
+
 bool Sample::Init()
 {
 	HRESULT hr = NULL;
@@ -10,26 +11,39 @@ bool Sample::Init()
 	matRotation = Matrix::CreateRotationX(PI2D);
 	m_matPlaneWorld = matScale * matRotation;
 
-	if (!m_Box.Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+	m_Box = new myShapeBox;
+	g_ObjMgr.CreateComponentInObj(L"Box", m_Box);
+
+	m_Plane = new myShapePlane;
+	g_ObjMgr.CreateComponentInObj(L"Plane", m_Plane);
+
+	m_Line = new myShapeLine;
+	g_ObjMgr.CreateComponentInObj(L"Line", m_Line);
+
+
+	if (!m_Box->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;
 	}
-	if (!m_Plane.Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+	if (!m_Plane->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;
 	}
-	if (!m_Line.Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+	if (!m_Line->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;
 	}
-	m_ModelCamera.CreateViewMatrix({ 0,5,-5 }, { 0,0,0 });
-	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	m_ModelCamera.CreateProjMatrix(1, 1000, PI2D, fAspect);
-	m_ModelCamera.Init();
+	//m_ModelCamera.CreateViewMatrix({ 0,5,-5 }, { 0,0,0 });
+	//float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
+	//m_ModelCamera.CreateProjMatrix(1, 1000, PI2D, fAspect);
+	//m_ModelCamera.Init();
 	//m_pMainCamera = &m_ModelCamera;
+
+	m_Map = new myMap;
+	g_ObjMgr.CreateComponentInObj(L"Map", m_Map);
 
 	myMapDesc desc;
 	desc.iNumCols = 513;
@@ -38,7 +52,7 @@ bool Sample::Init()
 	desc.szTexFile = L"../../data/tileA.jpg";
 	desc.szVS = L"VS.txt";
 	desc.szPS = L"PS.txt";
-	m_Map.CreateMap(m_pd3dDevice, desc);
+	m_Map->CreateMap(m_pd3dDevice, desc);
 	return true;
 }
 
@@ -90,35 +104,35 @@ bool Sample::Render()
 	//m_Box.SetMatrix(&m_matBoxWorld,
 	//	&m_pMainCamera->m_matView,
 	//	&m_pMainCamera->m_matProj);
-	m_Box.SetMatrix(&m_pMainCamera->m_matWorld,
+	m_Box->SetMatrix(&m_pMainCamera->m_matWorld,
 		&m_pMainCamera->m_matView, &m_pMainCamera->m_matProj);
-	m_Box.Render(m_pd3dContext);
+	m_Box->Render(m_pd3dContext);
 	Matrix matShadow;
 	Vector4 vPlane = Vector4(0, 1, 0, -0.1f);
 	Vector3 vLightDir = Vector3(-10, 10, 0);
 	matShadow = Matrix::CreateShadow(vLightDir, vPlane);
 	matShadow = m_matBoxWorld * matShadow;
-	m_Box.SetMatrix(&matShadow, &m_pMainCamera->m_matView,
+	m_Box->SetMatrix(&matShadow, &m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
-	m_Box.Render(m_pd3dContext);
+	m_Box->Render(m_pd3dContext);
 
-	m_Plane.SetMatrix(&m_matPlaneWorld,
+	m_Plane->SetMatrix(&m_matPlaneWorld,
 		&m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
-	//m_Plane.Render(m_pd3dContext);
+	//m_Plane->Render(m_pd3dContext);
 
-	m_Map.SetMatrix(NULL,
+	m_Map->SetMatrix(NULL,
 		&m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
-	m_Map.Render(m_pd3dContext);
+	m_Map->Render(m_pd3dContext);
 
-	m_Line.SetMatrix(NULL, &m_pMainCamera->m_matView,
+	m_Line->SetMatrix(NULL, &m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
-	m_Line.Draw(m_pd3dContext,
+	m_Line->Draw(m_pd3dContext,
 		Vector3(0, 0, 0), Vector3(100, 0, 0), Vector4(1, 0, 0, 1));
-	m_Line.Draw(m_pd3dContext,
+	m_Line->Draw(m_pd3dContext,
 		Vector3(0, 0, 0), Vector3(0, 100, 0), Vector4(0, 1, 0, 1));
-	m_Line.Draw(m_pd3dContext,
+	m_Line->Draw(m_pd3dContext,
 		Vector3(0, 0, 0), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 
 	return true;
@@ -126,10 +140,7 @@ bool Sample::Render()
 
 bool Sample::Release()
 {
-	m_Map.Release();
-	m_Box.Release();
-	m_Plane.Release();
-	m_Line.Release();
+	//myCore::Release();
 	return true;
 }
 

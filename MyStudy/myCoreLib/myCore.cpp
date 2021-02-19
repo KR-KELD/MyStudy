@@ -35,7 +35,7 @@ bool myCore::GameInit()
 	//g_Draw.Init();
 	//m_Graphics.Init();
 	g_SoundMgr.Init();
-
+	g_ObjMgr.Init();
 	IDXGISurface1* pBackBuffer = nullptr;
 	m_pSwapChain->GetBuffer(0, __uuidof(IDXGISurface),
 		(LPVOID*)&pBackBuffer);
@@ -45,11 +45,15 @@ bool myCore::GameInit()
 		g_rtClient.bottom, pBackBuffer);
 	if (pBackBuffer) pBackBuffer->Release();
 
-	m_Camera.CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
+	m_pDebugCamera = new myDebugCamera;
+	g_ObjMgr.CreateComponentInObj(L"DebugCamera", m_pDebugCamera);
+
+	m_pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	m_Camera.CreateProjMatrix(1, 1000, PI2D, fAspect);
-	m_Camera.Init();
-	m_pMainCamera = &m_Camera;
+	m_pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
+	m_pDebugCamera->Init();
+
+	m_pMainCamera = m_pDebugCamera;
 
 	Init();
 	PostInit();
@@ -63,6 +67,7 @@ bool myCore::GameFrame()
 	g_Timer.Frame();
 	g_Input.Frame();
 	//m_Graphics.Frame();
+	g_ObjMgr.Frame();
 	g_SoundMgr.Frame();
 	Frame();
 	g_Draw.Frame();
@@ -119,6 +124,7 @@ bool myCore::PostRender()
 {
 	g_Timer.Render();
 	g_Input.Render();
+	g_ObjMgr.Render();
 	g_SoundMgr.Render();
 	g_Draw.Render();
 	g_Draw.Draw(0, 0, g_Timer.m_szBuffer);
@@ -175,6 +181,7 @@ bool myCore::GameRelease()
 	g_Draw.Release();
 	g_Timer.Release();
 	g_Input.Release();
+	g_ObjMgr.Release();
 	g_SoundMgr.Release();
 	myDevice::Release();
 	//m_Graphics.Release();

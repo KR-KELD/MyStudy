@@ -1,4 +1,5 @@
 #include "myMap.h"
+DECLARE_COMPONENT(myMap);
 bool    myMap::CreateVertexData()
 {
 	// 정점 가로 및 세수 = 2N승+1
@@ -56,6 +57,7 @@ myMap::~myMap()
 
 bool myMap::CreateMap(ID3D11Device* pDevice, myMapDesc  desc)
 {
+	if (m_pGameObject) m_pTransform = m_pGameObject->m_pTransform;
 	m_MapDesc = desc;
 	m_iNumRows = desc.iNumRows;
 	m_iNumCols = desc.iNumCols;

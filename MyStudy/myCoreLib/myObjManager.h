@@ -1,14 +1,21 @@
 #pragma once
-#include "myObject.h"
+#include "myGameObject.h"
+
 class myObjManager : public SingleTon<myObjManager>
 {
 	friend class SingleTon<myObjManager>;
-private:
-	std::map<wstring, myObject*>				m_List;
-	std::map<wstring, myObject*>::iterator		m_iter;
 public:
-	bool			Add(wstring strName, myObject* pObj);
-	myObject*		GetPtr(wstring strName);
+	myGameObject	m_ObjectContainer;
+public:
+	////존재이유 고민해보기
+	template <class Component_T>
+	myGameObject*	CreateComponentInObj(wstring strObjName, Component_T* component)
+	{
+		myGameObject* obj = m_ObjectContainer.Add(strObjName);
+		obj->InsertComponent(component);
+		//component->Set(obj);
+		return obj;
+	}
 public:
 	bool			Init();
 	bool			Frame();
@@ -20,3 +27,4 @@ public:
 	~myObjManager();
 };
 #define g_ObjMgr myObjManager::GetInstance()
+#define g_GameObject myObjManager::GetInstance().m_ObjectContainer

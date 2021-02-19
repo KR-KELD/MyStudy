@@ -1,22 +1,25 @@
 #include "myCamera.h"
 //#include "myInput.h"
+DECLARE_COMPONENT(myCamera);
 bool		myCamera::CreateViewMatrix(
 	Vector3 p,
 	Vector3 t,
 	Vector3 u)
 {
-	m_vCameraPos = p;
-	m_vCameraTarget = t;
-	m_fDistance = (m_vCameraPos - m_vCameraTarget).Length();
+	int a = 1;
+	m_pTransform = m_pGameObject->m_pTransform;
+	m_pTransform->m_vPos = p;
+	m_pTransform->m_vTarget = t;
+	m_fDistance = (m_pTransform->m_vPos - m_pTransform->m_vTarget).Length();
 	m_matView = Matrix::CreateLookAt(p, t, u);
 
 	Matrix mInvView;
 	mInvView = m_matView.Invert();
 	Vector3* pZBasis = (Vector3*)&mInvView._31;
 
-	m_vDirValue.y = atan2f(pZBasis->x, pZBasis->z);
+	m_pTransform->m_vRot.y = atan2f(pZBasis->x, pZBasis->z);
 	float fLen = sqrtf(pZBasis->z * pZBasis->z + pZBasis->x * pZBasis->x);
-	m_vDirValue.x = -atan2f(pZBasis->y, fLen);
+	m_pTransform->m_vRot.x = -atan2f(pZBasis->y, fLen);
 
 	UpdateVector();
 	return true;
@@ -33,11 +36,11 @@ bool		myCamera::CreateProjMatrix(
 }
 void myCamera::SetPos(Vector3 p)
 {
-	m_vCameraPos = p;
+	m_pTransform->m_vPos = p;
 }
 void myCamera::SetTarget(Vector3 p)
 {
-	m_vCameraTarget = p;
+	m_pTransform->m_vTarget = p;
 }
 void myCamera::Update(Vector4 data)
 {
@@ -49,61 +52,61 @@ void myCamera::Update(Vector4 data)
 	vLocalLook = Vector3::Transform(vLocalLook, matRotation);
 	vLocalLook.Normalize();
 	vLocalUp.Normalize();
-	float fHeight = m_vCameraPos.y;
-	m_vCameraPos = m_vCameraTarget - vLocalLook * m_fDistance;
-	m_vCameraPos.y = fHeight;
+	float fHeight = m_pTransform->m_vPos.y;
+	m_pTransform->m_vPos = m_pTransform->m_vTarget - vLocalLook * m_fDistance;
+	m_pTransform->m_vPos.y = fHeight;
 }
 void myCamera::FrontMovement(float fDir)
 {
-	Vector3 vOffset = m_vLook * g_fSecondPerFrame * m_pSpeed * fDir;
-	m_vCameraPos += vOffset;
+	Vector3 vOffset = m_pTransform->m_vLook * g_fSecondPerFrame * m_pSpeed * fDir;
+	m_pTransform->m_vPos += vOffset;
 }
 void myCamera::RightMovement(float fDir)
 {
-	Vector3 vMove = m_vRight * g_fSecondPerFrame * m_pSpeed * fDir;
-	m_vCameraPos += vMove;
+	Vector3 vMove = m_pTransform->m_vRight * g_fSecondPerFrame * m_pSpeed * fDir;
+	m_pTransform->m_vPos += vMove;
 }
 void myCamera::UpMovement(float fDir)
 {
-	Vector3 vMove = m_vUp * g_fSecondPerFrame * m_pSpeed * fDir;
-	m_vCameraPos += vMove;
+	Vector3 vMove = m_pTransform->m_vUp * g_fSecondPerFrame * m_pSpeed * fDir;
+	m_pTransform->m_vPos += vMove;
 }
 void myCamera::FrontBase(float fDir)
 {
 	Vector3 vSide = { 0,0,1 };
 	Vector3 vMove = vSide * g_fSecondPerFrame * m_pSpeed * fDir;
-	m_vCameraPos += vMove;
-	m_vCameraTarget += m_vLook * m_pSpeed;
+	m_pTransform->m_vPos += vMove;
+	m_pTransform->m_vTarget += m_pTransform->m_vLook * m_pSpeed;
 }
 void myCamera::RightBase(float fDir)
 {
 	Vector3 vSide = { 1,0,0 };
 	Vector3 vMove = vSide * g_fSecondPerFrame * m_pSpeed * fDir;
-	m_vCameraPos += vMove;
-	m_vCameraTarget += m_vLook * m_pSpeed;
+	m_pTransform->m_vPos += vMove;
+	m_pTransform->m_vTarget += m_pTransform->m_vLook * m_pSpeed;
 }
 void myCamera::UpBase(float fDir)
 {
 	Vector3 vUp = { 0,1,0 };
 	Vector3 vMove = vUp * g_fSecondPerFrame * m_pSpeed * fDir;
-	m_vCameraPos += vMove;
-	m_vCameraTarget += m_vLook * m_pSpeed;
+	m_pTransform->m_vPos += vMove;
+	m_pTransform->m_vTarget += m_pTransform->m_vLook * m_pSpeed;
 }
 void myCamera::UpdateVector()
 {
-	m_vLook.x = m_matView._13;
-	m_vLook.y = m_matView._23;
-	m_vLook.z = m_matView._33;
-	m_vUp.x = m_matView._12;
-	m_vUp.y = m_matView._22;
-	m_vUp.z = m_matView._32;
-	m_vRight.x = m_matView._11;
-	m_vRight.y = m_matView._21;
-	m_vRight.z = m_matView._31;
+	m_pTransform->m_vLook.x = m_matView._13;
+	m_pTransform->m_vLook.y = m_matView._23;
+	m_pTransform->m_vLook.z = m_matView._33;
+	m_pTransform->m_vUp.x = m_matView._12;
+	m_pTransform->m_vUp.y = m_matView._22;
+	m_pTransform->m_vUp.z = m_matView._32;
+	m_pTransform->m_vRight.x = m_matView._11;
+	m_pTransform->m_vRight.y = m_matView._21;
+	m_pTransform->m_vRight.z = m_matView._31;
 
-	m_vLook.Normalize();
-	m_vUp.Normalize();
-	m_vRight.Normalize();
+	m_pTransform->m_vLook.Normalize();
+	m_pTransform->m_vUp.Normalize();
+	m_pTransform->m_vRight.Normalize();
 
 
 
@@ -116,8 +119,8 @@ bool myCamera::Frame()
 {
 	Vector3 vUp = { 0,1,0 };
 	m_matView = Matrix::CreateLookAt(
-		m_vCameraPos,
-		m_vCameraTarget,
+		m_pTransform->m_vPos,
+		m_pTransform->m_vTarget,
 		vUp);
 	UpdateVector();
 	return true;

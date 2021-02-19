@@ -11,7 +11,11 @@ myShape::~myShape()
 {
 
 }
-bool    myShape::CreateVertexData() 
+bool myShape::Init()
+{
+	return myGraphics::Init();
+}
+bool    myShape::CreateVertexData()
 {
 	Vector3 vCenter = { 0.0f, 0.0f ,0.0f };
 	float fRange = 1.0f;
@@ -31,7 +35,7 @@ bool    myShape::CreateIndexData()
 
 bool myShapeBox::CreateVertexData(Vector3& vCenter, float& fRange)
 {
-	m_vCenter = vCenter;
+	m_pTransform->m_vPos = vCenter;
 	m_fRange = fRange;
 	m_VertexList.resize(24);
 	m_VertexList[0] = { Vector3(-m_fRange + vCenter.x, m_fRange + vCenter.y, -m_fRange + vCenter.z),
@@ -116,7 +120,7 @@ myShapeBox::~myShapeBox()
 
 bool myShapePlane::CreateVertexData(Vector3& vCenter, float& fRange)
 {
-	m_vCenter = vCenter;
+	m_pTransform->m_vPos = vCenter;
 	m_fRange = fRange;
 	m_VertexList.resize(4);
 	m_VertexList[0] =

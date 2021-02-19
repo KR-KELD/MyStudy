@@ -56,31 +56,32 @@ struct myDataCB
 	float vTime[4];
 };
 
-class myGraphics : myComponent
+class myGraphics : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myGraphics, null_t, true);
+	DEFINE_COMPONENT(myGraphics, myComponent, true);
 public:
-	ID3D11Device* m_pd3dDevice;
-	ID3DBlob*	  m_pVSObj;
-	UINT		  m_iTopology;
-	C_STR		  m_szVertexShader;
-	C_STR		  m_szPixelShader;
+	ID3D11Device*				m_pd3dDevice;
+	ID3DBlob*					m_pVSObj;
+	UINT						m_iTopology;
+	C_STR						m_szVertexShader;
+	C_STR						m_szPixelShader;
 public:
-	Matrix    m_matWorld;
-	Matrix    m_matView;
-	Matrix    m_matProj;
+	myTransform*				m_pTransform;
+	Matrix						m_matWorld;
+	Matrix						m_matView;
+	Matrix						m_matProj;
 public:
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;
-	std::vector<DWORD>		m_IndexList;
-	ID3D11Buffer*			m_pVertexBuffer;
-	ID3D11Buffer*			m_pIndexBuffer;
-	ID3D11Buffer*			m_pConstantBuffer;
-	ID3D11InputLayout*		m_pInputLayout;
-	ID3D11VertexShader*		m_pVertexShader;
-	ID3D11PixelShader*		m_pPixelShader;
-	myTexture*				m_pTexture;
+	std::vector<DWORD>			m_IndexList;
+	ID3D11Buffer*				m_pVertexBuffer;
+	ID3D11Buffer*				m_pIndexBuffer;
+	ID3D11Buffer*				m_pConstantBuffer;
+	ID3D11InputLayout*			m_pInputLayout;
+	ID3D11VertexShader*			m_pVertexShader;
+	ID3D11PixelShader*			m_pPixelShader;
+	myTexture*					m_pTexture;
 public:
 	virtual bool	Init();
 	virtual bool	Frame();

@@ -1,28 +1,31 @@
 #pragma once
-#include "myStd.h"
-class myCamera
+#include "myGameObject.h"
+class myCamera : public myComponent
 {
 public:
-	float		m_pSpeed;
-	Vector3		m_vCameraPos = { 10,0,-10 };
-	Vector3		m_vCameraTarget = { 0,0,0 };
-	Matrix      m_matWorld;
-	Matrix		m_matView;
-	Matrix		m_matProj;
-	Vector3		m_vLook;
-	Vector3		m_vUp;
-	Vector3		m_vRight;
-	float		m_fDistance;
-	bool		m_bDrag;
-	//POINT		m_ptCurrentPos;
-	//POINT		m_ptOffset;
-	//POINT		m_ptPrePos;
-	POINT		m_ptClick;
-	RECT		m_rtOffset;
-	RECT		m_rtPreOffset;
-	int			m_fWheelDelta;
-	Vector4		m_vDirValue;
-	POINT		m_ptPrePosition;
+	DEFINE_COMPONENT(myCamera, myComponent, true);
+public:
+	myTransform*	m_pTransform;
+	float			m_pSpeed;
+	//Vector3		m_vCameraPos = { 10,0,-10 };
+	//Vector3		m_vCameraTarget = { 0,0,0 };
+	Matrix			m_matWorld;
+	Matrix			m_matView;
+	Matrix			m_matProj;
+	//Vector3			m_vLook;
+	//Vector3			m_vUp;
+	//Vector3			m_vRight;
+	float			m_fDistance;
+	bool			m_bDrag;
+	//POINT			m_ptCurrentPos;
+	//POINT			m_ptOffset;
+	//POINT			m_ptPrePos;
+	POINT			m_ptClick;
+	RECT			m_rtOffset;
+	RECT			m_rtPreOffset;
+	int				m_fWheelDelta;
+	//Vector4			m_vDirValue;
+	POINT			m_ptPrePosition;
 public:
 	virtual void SetPos(Vector3 p);
 	virtual void SetTarget(Vector3 p);
