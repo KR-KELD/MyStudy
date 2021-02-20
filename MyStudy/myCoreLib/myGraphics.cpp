@@ -8,7 +8,6 @@ void myGraphics::CompilerCheck(ID3DBlob* pErrorMsgs)
 }
 bool	myGraphics::Init()
 {
-	if (m_pGameObject) m_pTransform = m_pGameObject->m_pTransform;
 	m_matWorld = Matrix::Identity;
 	m_matView = Matrix::Identity;
 	m_matProj = Matrix::Identity;
@@ -102,7 +101,7 @@ bool	myGraphics::Release()
 	return true;
 }
 
-bool myGraphics::CreateVertexData(Vector3 & vCenter, float & fRange)
+bool myGraphics::CreateVertexData(Vector3 vCenter, float fRange)
 {
 	return true;
 }

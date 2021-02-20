@@ -3,10 +3,13 @@
 #include "myShape.h"
 #include "myModelViewCamera.h"
 #include "myMap.h"
+#include "myMiniMap.h"
 
 class Sample : public myCore
 {
 public:
+	myMiniMap*		m_MiniMap;
+	myCamera*		m_TopCamera;
 	myMap*			m_Map;
 	Vector4			m_vDirValue;
 	myShapeBox*		m_Box;

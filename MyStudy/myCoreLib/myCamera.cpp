@@ -6,8 +6,6 @@ bool		myCamera::CreateViewMatrix(
 	Vector3 t,
 	Vector3 u)
 {
-	int a = 1;
-	m_pTransform = m_pGameObject->m_pTransform;
 	m_pTransform->m_vPos = p;
 	m_pTransform->m_vTarget = t;
 	m_fDistance = (m_pTransform->m_vPos - m_pTransform->m_vTarget).Length();
@@ -32,6 +30,13 @@ bool		myCamera::CreateProjMatrix(
 {
 	m_matProj = Matrix::CreatePerspectiveFieldOfView(
 		fFov, fAspect, fN, fF);
+	return true;
+}
+bool myCamera::CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane)
+{
+	m_matProj = Matrix::CreateOrthographic(
+		width, height,
+		zNearPlane, zFarPlane);
 	return true;
 }
 void myCamera::SetPos(Vector3 p)

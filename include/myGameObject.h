@@ -93,13 +93,12 @@ struct Component_Identifier
 //생성할 컴포넌트,부모컴포넌트,유니크여부 를 넘겨줘서 컴포넌트 클래스를 생성
 //식별자의 주소를 고유 클래스 아이디로 사용
 //아래 두줄 질문
+
 #define DEFINE_COMPONENT(component_name, parent_component_name, unique_component) \
 	public: \
-		myGameObject* m_pGameObject; \
 		typedef Component_Identifier<component_name, parent_component_name, unique_component> Component_Identifier_T; \
 		static size_t GetComponentId(void) { return reinterpret_cast<size_t>(&identifier); } \
 		virtual const char* GetComponentName_(void) { return #component_name; } \
-		void Set(myGameObject* pGameObject) {m_pGameObject = pGameObject;} \
 		static const char* GetComponentName(void) { return #component_name; } \
 	private: \
 		static Component_Identifier_T identifier; \
@@ -107,13 +106,17 @@ struct Component_Identifier
 //추정 외부에서 해당 클래스의 식별자를 전역으로 선언?
 #define DECLARE_COMPONENT(component_name) \
 	component_name::Component_Identifier_T component_name::identifier;
-
+	
 #pragma endregion
+
 class myGameObject;
+class myTransform;
 
 class myComponent
 {
 public:
+	myGameObject*	m_pGameObject;
+	myTransform*	m_pTransform;
 	DEFINE_COMPONENT(myComponent, null_t, false);
 public:
 	virtual bool	Init();
@@ -127,11 +130,10 @@ public:
 	virtual void	Reset();
 	virtual bool	Action();
 	virtual bool	Release();
-	//상속받은 애들한테 적용이 안됨
-	//virtual void	Set(myGameObject* pGameObject)
-	//{
-	//	m_pGameObject = pGameObject;
-	//}
+	virtual void	Set(myGameObject* pGameObject)
+	{
+		m_pGameObject = pGameObject;
+	}
 public:
 	myComponent() {};
 	virtual ~myComponent() {}
@@ -148,11 +150,22 @@ public:
 	Quaternion	m_qRot;
 	Vector4		m_vRot;
 	Vector3		m_vScale;
-public:
 	Vector3		m_vTarget;
 	Vector3		m_vLook;
 	Vector3		m_vUp;
 	Vector3		m_vRight;
+public:
+	Vector3		m_vLocalPos;
+	Quaternion	m_qLocalRot;
+	Vector4		m_vLocalRot;
+	Vector3		m_vLocalScale;
+	Vector3		m_vLocalTarget;
+	Vector3		m_vLocalLook;
+	Vector3		m_vLocalUp;
+	Vector3		m_vLocalRight;
+public:
+	Matrix		m_mLocal;
+	Matrix		m_mWorld;
 public:
 	void ComputeMatWorld();
 public:
@@ -177,6 +190,16 @@ public:
 		m_vTarget = m_vLook;
 		m_vUp = Vector3(0.0f, 1.0f, 0.0f);
 		m_vRight = Vector3(1.0f, 0.0f, 0.0f);
+		m_vLocalPos = Vector3(0.0f, 0.0f, 0.0f);
+		m_qLocalRot = Quaternion::Identity;
+		m_vLocalRot = Vector4::Zero;
+		m_vLocalScale = Vector3(1.0f, 1.0f, 1.0f);
+		m_vLocalLook = Vector3(0.0f, 0.0f, -1.0f);
+		m_vLocalTarget = m_vLook;
+		m_vLocalUp = Vector3(0.0f, 1.0f, 0.0f);
+		m_vLocalRight = Vector3(1.0f, 0.0f, 0.0f);
+		m_mLocal = Matrix::Identity;
+		m_mWorld = Matrix::Identity;
 	}
 	~myTransform() {}
 };
@@ -186,7 +209,6 @@ class myGameObject : public myComponent
 public:
 	DEFINE_COMPONENT(myGameObject, myComponent, true);
 public:
-	myTransform*	m_pTransform;
 	T_STR			m_strName;
 	T_STR			m_strTag;
 private:
@@ -229,7 +251,6 @@ public:
 	template <class Component_T>
 	void InsertComponent(Component_T* component)
 	{
-		//component->Set(this);
 		//--------------------------------------------------------
 		// 컴포넌트 식별자 ID 취득
 		//--------------------------------------------------------
@@ -238,6 +259,8 @@ public:
 		//--------------------------------------------------------
 		// 컴포넌트를 컨테이너에 삽입
 		//--------------------------------------------------------
+		component->Set(this);
+		component->m_pTransform = this->m_pTransform;
 		this->m_ComponentList[componentId] = component;
  	}
 	template <class Component_T>
@@ -262,14 +285,14 @@ public:
 public:
 	myGameObject() 
 	{ 
-		InsertComponent(this); 
-		InsertComponent(new myTransform);
+		m_pTransform = new myTransform;
+		InsertComponent(m_pTransform);
 	}
 	myGameObject(const TCHAR* szName)
 	{
 		m_strName = szName;
-		InsertComponent(this);
-		InsertComponent(new myTransform);
+		m_pTransform = new myTransform;
+		InsertComponent(m_pTransform);
 	}
 	~myGameObject() {}
 };

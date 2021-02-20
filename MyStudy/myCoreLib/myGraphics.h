@@ -67,7 +67,6 @@ public:
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
 public:
-	myTransform*				m_pTransform;
 	Matrix						m_matWorld;
 	Matrix						m_matView;
 	Matrix						m_matProj;
@@ -91,7 +90,7 @@ public:
 	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	PostRender(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Release();
-	virtual bool    CreateVertexData(Vector3& vCenter, float& fRange);
+	virtual bool    CreateVertexData(Vector3 vCenter, float fRange);
 	virtual bool    CreateVertexData();
 	virtual bool    CreateIndexData();
 	virtual bool    CreateVertexBuffer();

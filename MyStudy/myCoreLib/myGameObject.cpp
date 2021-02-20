@@ -287,16 +287,12 @@ bool myGameObject::Release()
 		(*m_ObjIter).second->Release();
 		delete (*m_ObjIter).second;
 	}
-	m_ComponentList.clear();
+	m_Childs.clear();
 
 	for (m_ComIter = m_ComponentList.begin();
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
-		if ((*m_ComIter).second == this)
-		{
-			continue;
-		}
 		(*m_ComIter).second->Release();
 		delete (*m_ComIter).second;
 	}

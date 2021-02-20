@@ -51,7 +51,6 @@ bool myCore::GameInit()
 	m_pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	m_pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
-	m_pDebugCamera->Init();
 
 	m_pMainCamera = m_pDebugCamera;
 
@@ -102,7 +101,7 @@ void myCore::CameraFrame()
 	{
 		m_pMainCamera->UpMovement(-1.0f);
 	}
-	m_pMainCamera->Frame();
+	//m_pMainCamera->Frame();
 }
 
 bool myCore::PreRender()

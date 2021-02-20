@@ -10,7 +10,7 @@ public:
 public:
 	virtual bool	Init();
 	virtual bool    CreateVertexData()override;
-	virtual bool    CreateVertexData(Vector3& vCenter, float& fRange)override;
+	virtual bool    CreateVertexData(Vector3 vCenter, float fRange)override;
 	virtual bool    CreateIndexData()override;
 public:
 	myShape();
@@ -22,7 +22,7 @@ class myShapeBox : public myShape
 public:
 	DEFINE_COMPONENT(myShapeBox, myShape, false);
 public:
-	virtual bool    CreateVertexData(Vector3& vCenter, float& fRange)override;
+	virtual bool    CreateVertexData(Vector3 vCenter, float fRange)override;
 	virtual bool    CreateIndexData()override;
 public:
 	myShapeBox();
@@ -34,7 +34,7 @@ class myShapePlane : public myShape
 public:
 	DEFINE_COMPONENT(myShapePlane, myShape, false);
 public:
-	virtual bool    CreateVertexData(Vector3& vCenter, float& fRange)override;
+	virtual bool    CreateVertexData(Vector3 vCenter, float fRange)override;
 	virtual bool    CreateIndexData()override;
 public:
 	myShapePlane();

@@ -22,12 +22,12 @@ bool Sample::Init()
 
 
 	if (!m_Box->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
-		L"../../data/bitmap/flametank.bmp"))
+		L"../../data/bitmap/intro.bmp"))
 	{
 		return false;
 	}
 	if (!m_Plane->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
-		L"../../data/bitmap/flametank.bmp"))
+		L"../../data/bitmap/map.bmp"))
 	{
 		return false;
 	}
@@ -42,14 +42,27 @@ bool Sample::Init()
 	//m_ModelCamera.Init();
 	//m_pMainCamera = &m_ModelCamera;
 
+	m_TopCamera = new myCamera;
+	g_ObjMgr.CreateComponentInObj(L"TopCamera", m_TopCamera);
+
+	m_TopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
+	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
+	m_TopCamera->CreateOrthographic(500, 500, 1.0f, 1000);
+
 	m_Map = new myMap;
 	g_ObjMgr.CreateComponentInObj(L"Map", m_Map);
+
+	m_MiniMap = new myMiniMap;
+	g_ObjMgr.CreateComponentInObj(L"MiniMap", m_MiniMap);
+
+	m_MiniMap->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+		L"../../data/map.jpg");
 
 	myMapDesc desc;
 	desc.iNumCols = 513;
 	desc.iNumRows = 513;
 	desc.fCellDistance = 1;
-	desc.szTexFile = L"../../data/tileA.jpg";
+	desc.szTexFile = L"../../data/map.bmp";
 	desc.szVS = L"VS.txt";
 	desc.szPS = L"PS.txt";
 	m_Map->CreateMap(m_pd3dDevice, desc);
@@ -92,6 +105,9 @@ bool Sample::Frame()
 
 bool Sample::Render()
 {
+	//최종적으로는 모든 함수는 각자의 Render에서 돌아가게끔 해야함
+	//그걸 호출하는건 obj매니저에 있는 메인gameobject
+
 	//IA에 그려줄 타입 설정
 	m_pd3dContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//레스터라이저 스테이트 세팅
@@ -100,6 +116,24 @@ bool Sample::Render()
 	m_pd3dContext->PSSetSamplers(0, 1, &myDxState::m_pWrapLinear);
 	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
 	m_pd3dContext->OMSetDepthStencilState(myDxState::m_pDSS, 0);
+
+
+
+	if (m_MiniMap->Begin(m_pd3dContext))
+	{
+		m_Map->SetMatrix(NULL,
+			&m_TopCamera->m_matView,
+			&m_TopCamera->m_matProj);
+		m_Map->Render(m_pd3dContext);
+		m_Box->SetMatrix(NULL,
+			&m_TopCamera->m_matView,
+			&m_TopCamera->m_matProj);
+		m_Box->Render(m_pd3dContext);
+		m_MiniMap->End(m_pd3dContext);
+	}
+
+
+
 	//그리기
 	//m_Box.SetMatrix(&m_matBoxWorld,
 	//	&m_pMainCamera->m_matView,
@@ -125,6 +159,11 @@ bool Sample::Render()
 		&m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
 	m_Map->Render(m_pd3dContext);
+
+	m_MiniMap->SetMatrix(NULL,
+		NULL, //&m_pMainCamera->m_matView,
+		NULL); //&m_pMainCamera->m_matProj);
+	m_MiniMap->Render(m_pd3dContext);
 
 	m_Line->SetMatrix(NULL, &m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);

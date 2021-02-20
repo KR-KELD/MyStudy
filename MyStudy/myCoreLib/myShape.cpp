@@ -23,7 +23,7 @@ bool    myShape::CreateVertexData()
 	return true;
 }
 
-bool myShape::CreateVertexData(Vector3 & vCenter, float & fRange)
+bool myShape::CreateVertexData(Vector3 vCenter, float fRange)
 {
 	return true;
 }
@@ -33,7 +33,7 @@ bool    myShape::CreateIndexData()
 	return true;
 }
 
-bool myShapeBox::CreateVertexData(Vector3& vCenter, float& fRange)
+bool myShapeBox::CreateVertexData(Vector3 vCenter, float fRange)
 {
 	m_pTransform->m_vPos = vCenter;
 	m_fRange = fRange;
@@ -118,7 +118,7 @@ myShapeBox::~myShapeBox()
 
 }
 
-bool myShapePlane::CreateVertexData(Vector3& vCenter, float& fRange)
+bool myShapePlane::CreateVertexData(Vector3 vCenter, float fRange)
 {
 	m_pTransform->m_vPos = vCenter;
 	m_fRange = fRange;
