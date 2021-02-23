@@ -8,12 +8,22 @@ public:
 	myGameObject	m_ObjectContainer;
 public:
 	template <class Component_T>
-	myGameObject*	CreateComponentInObj(wstring strObjName, Component_T* component)
+	myGameObject*	CreateObjComponent(wstring strObjName, Component_T* component)
 	{
 		myGameObject* obj = m_ObjectContainer.Add(strObjName);
 		obj->InsertComponent(component);
 		component->Init();
 		return obj;
+	}
+	template <class Component_T>
+	myGameObject*	InsertComponentInObj(wstring strObjName, Component_T* component)
+	{
+		myGameObject* obj = m_ObjectContainer.GetGameObject(strObjName);
+		if (obj == nullptr)
+		{
+			return nullptr;
+		}
+		obj->InsertComponent(component);
 	}
 public:
 	bool			Init();

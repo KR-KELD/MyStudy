@@ -49,6 +49,7 @@ bool myModelViewCamera::PostInit()
 	Matrix matInvView = m_matView.Invert();
 	m_ViewArcball.m_qNow = Quaternion::CreateFromRotationMatrix(matInvView);
 	m_ViewArcball.m_qNow.Normalize();
+	return true;
 }
 Quaternion myArcball::QuatFromPoints(Vector3 v0, Vector3 v1)
 {

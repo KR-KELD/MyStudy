@@ -46,7 +46,7 @@ bool myCore::GameInit()
 	if (pBackBuffer) pBackBuffer->Release();
 
 	m_pDebugCamera = new myDebugCamera;
-	g_ObjMgr.CreateComponentInObj(L"DebugCamera", m_pDebugCamera);
+	g_ObjMgr.CreateObjComponent(L"DebugCamera", m_pDebugCamera);
 
 	m_pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;

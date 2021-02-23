@@ -12,13 +12,13 @@ bool Sample::Init()
 	m_matPlaneWorld = matScale * matRotation;
 
 	m_Box = new myShapeBox;
-	g_ObjMgr.CreateComponentInObj(L"Box", m_Box);
+	g_ObjMgr.CreateObjComponent(L"Box", m_Box);
 
 	m_Plane = new myShapePlane;
-	g_ObjMgr.CreateComponentInObj(L"Plane", m_Plane);
+	g_ObjMgr.CreateObjComponent(L"Plane", m_Plane);
 
 	m_Line = new myShapeLine;
-	g_ObjMgr.CreateComponentInObj(L"Line", m_Line);
+	g_ObjMgr.CreateObjComponent(L"Line", m_Line);
 
 
 	if (!m_Box->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
@@ -36,26 +36,29 @@ bool Sample::Init()
 	{
 		return false;
 	}
-	//m_ModelCamera.CreateViewMatrix({ 0,5,-5 }, { 0,0,0 });
-	//float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	//m_ModelCamera.CreateProjMatrix(1, 1000, PI2D, fAspect);
-	//m_ModelCamera.Init();
-	//m_ModelCamera.CreateFrustum(m_pd3dDevice, m_pd3dContext);
-	//m_pMainCamera = &m_ModelCamera;
+	m_ModelCamera = new myModelViewCamera;
+	g_ObjMgr.CreateObjComponent(L"ModelCamera", m_ModelCamera);
+	//프러스텀 달기
+
+	m_ModelCamera->CreateViewMatrix({ 0,5,-5 }, { 0,0,0 });
+	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
+	m_ModelCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
+	m_ModelCamera->CreateFrustum(m_pd3dDevice, m_pd3dContext);
+	m_pMainCamera = m_ModelCamera;
 
 	m_TopCamera = new myCamera;
-	g_ObjMgr.CreateComponentInObj(L"TopCamera", m_TopCamera);
+	g_ObjMgr.CreateObjComponent(L"TopCamera", m_TopCamera);
 
 	m_TopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
-	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
+	fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	m_TopCamera->CreateOrthographic(500, 500, 1.0f, 1000);
 
 
 	m_Map = new myMap;
-	g_ObjMgr.CreateComponentInObj(L"Map", m_Map);
+	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
 
 	m_MiniMap = new myMiniMap;
-	g_ObjMgr.CreateComponentInObj(L"MiniMap", m_MiniMap);
+	g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
 
 	m_MiniMap->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
 		L"../../data/map.jpg");
@@ -102,7 +105,7 @@ bool Sample::Frame()
 		myDxState::SetRasterizerState(m_pd3dDevice);
 	}
 	//	m_pMainCamera->m_vCameraTarget = m_BoxShape.m_vPos;
-	//m_pMainCamera->FrameFrustum(m_pd3dContext);
+	m_pMainCamera->FrameFrustum(m_pd3dContext);
 	return true;
 }
 
@@ -123,24 +126,24 @@ bool Sample::Render()
 
 	// CULLING
 	std::vector<DWORD> visibleIB;
-	for (int iFace = 0; iFace < m_Map.m_IndexList.size() / 3; iFace++)
+	for (int iFace = 0; iFace < m_Map->m_IndexList.size() / 3; iFace++)
 	{
 		//맵의 각 페이스별로 인덱스 버퍼를 가져온다
-		int a = m_Map.m_IndexList[iFace * 3 + 0];
-		int b = m_Map.m_IndexList[iFace * 3 + 1];
-		int c = m_Map.m_IndexList[iFace * 3 + 2];
+		int a = m_Map->m_IndexList[iFace * 3 + 0];
+		int b = m_Map->m_IndexList[iFace * 3 + 1];
+		int c = m_Map->m_IndexList[iFace * 3 + 2];
 		//visibleIB.push_back(a);
 		//visibleIB.push_back(b);
 		//visibleIB.push_back(c);
 		//continue;
 		//그 인덱스 정보로 버텍스 정보를 가져온다
 		Vector3 v[3];
-		v[0] = m_Map.m_VertexList[a].p;
-		v[1] = m_Map.m_VertexList[b].p;
-		v[2] = m_Map.m_VertexList[c].p;
+		v[0] = m_Map->m_VertexList[a].p;
+		v[1] = m_Map->m_VertexList[b].p;
+		v[2] = m_Map->m_VertexList[c].p;
 		
 		//프러스텀 컬링 판별을 해서 그려줄 페이스를 추려서 그려줄 버텍스의 인덱스 버퍼를 누적시킨다
-		TModelViewCamera* pCamera = (TModelViewCamera*)m_pMainCamera;
+		myModelViewCamera* pCamera = (myModelViewCamera*)m_pMainCamera;
 		for (int iV = 0; iV < 3; iV++)
 		{
 			BOOL bVisiable = pCamera->m_Frustum.ClassifyPoint(v[iV]);
@@ -156,13 +159,13 @@ bool Sample::Render()
 	if (visibleIB.size() != 0)
 	{
 		//맵의 컬링된 페이스 정보를 세팅한다
-		m_Map.m_iNumFaces = visibleIB.size() / 3;
+		m_Map->m_iNumFaces = visibleIB.size() / 3;
 		m_pd3dContext->UpdateSubresource(
-			m_Map.m_pIndexBuffer, 0, NULL, &visibleIB.at(0), 0, 0);
+			m_Map->m_pIndexBuffer, 0, NULL, &visibleIB.at(0), 0, 0);
 	}
 	else
 	{
-		m_Map.m_iNumFaces = 0;
+		m_Map->m_iNumFaces = 0;
 	}
 
 	if (m_MiniMap->Begin(m_pd3dContext))

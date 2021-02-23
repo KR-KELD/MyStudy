@@ -231,6 +231,7 @@ public:
 		m_strName = szName;
 	}
 public:
+	virtual myGameObject* Clone();
 	virtual bool	Init();
 	virtual bool	PreFrame();
 	virtual bool	Frame();

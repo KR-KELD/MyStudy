@@ -30,7 +30,7 @@ class myModelViewCamera : public myCamera
 {
 public:
 	//Matrix    m_matWorld;
-	myFrustum  m_Frustum;
+	myFrustum*  m_Frustum;
 public:
 	myArcball	m_WorldArcball;
 	myArcball	m_ViewArcball;
