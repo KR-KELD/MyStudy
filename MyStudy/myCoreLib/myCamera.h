@@ -50,9 +50,16 @@ public:
 	void RightBase(float fDir);
 	void UpBase(float fDir);
 	virtual void UpdateVector();
+	virtual bool PostInit() { return true; }
 	virtual bool Init();
 	virtual bool Frame();
 	virtual  int WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	virtual bool FrameFrustum(ID3D11DeviceContext*	pd3dContext)
+	{
+		return true;
+	};
+	virtual bool DrawFrustum(ID3D11DeviceContext*	pd3dContext,
+		Matrix* pmatView, Matrix* pmatProj);
 public:
 	myCamera();
 	virtual ~myCamera();

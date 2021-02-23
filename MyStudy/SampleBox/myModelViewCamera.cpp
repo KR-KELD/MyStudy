@@ -37,6 +37,19 @@ int myModelViewCamera::WndProc(
 	}
 	return -1;
 }
+bool myModelViewCamera::CreateFrustum(ID3D11Device * pd3dDevice, ID3D11DeviceContext * d3dContext)
+{
+	m_Frustum.Create(pd3dDevice);
+	return true;
+}
+bool myModelViewCamera::PostInit()
+{
+	//뷰행렬의 역행렬을 
+	//질문
+	Matrix matInvView = m_matView.Invert();
+	m_ViewArcball.m_qNow = Quaternion::CreateFromRotationMatrix(matInvView);
+	m_ViewArcball.m_qNow.Normalize();
+}
 Quaternion myArcball::QuatFromPoints(Vector3 v0, Vector3 v1)
 {
 	Vector3 vCross;
@@ -80,15 +93,7 @@ void myArcball::OnEnd()
 {
 	m_bDrag = false;
 }
-myArcball::myArcball()
-{
-	m_qNow = Quaternion::Identity;
-	m_qDown = Quaternion::Identity;
-	m_bDrag = false;
-}
-myArcball::~myArcball()
-{
-}
+
 Matrix myArcball::GetRotationMatrix()
 {
 	return Matrix::CreateFromQuaternion(m_qNow);
@@ -135,11 +140,45 @@ bool myModelViewCamera::Frame()
 	m_fWheelDelta = 0;
 	return true;
 }
+void myModelViewCamera::UpdateVector()
+{
+	//카메라 위치,방향 갱신
+	myCamera::UpdateVector();
+}
+bool myModelViewCamera::DrawFrustum(ID3D11DeviceContext * pd3dContext, Matrix * pmatView, Matrix * pmatProj)
+{
+	//매트릭스를 세팅하고 프러스텀 박스 랜더
+	m_Frustum.m_FrustumObj.SetMatrix(NULL,
+		pmatView,
+		pmatProj);
+	m_Frustum.m_FrustumObj.Render(pd3dContext);
+	return true;
+}
+bool myModelViewCamera::FrameFrustum(ID3D11DeviceContext * pd3dContext)
+{
+	//뷰행렬과 투영행렬의 역행렬을 만든다
+	Matrix matInvViewProj = m_matView * m_matProj;
+	matInvViewProj = matInvViewProj.Invert();
+
+	for (int iVertex = 0; iVertex < 24; iVertex++)
+	{
+		//ndc공간의 프러스텀 정점들에 뷰*투영행렬의 역행렬을 곱해서 월드 공간 프러스텀으로 만들어준다
+		Vector3& v = m_Frustum.m_VertexList[iVertex].p;
+		m_Frustum.m_FrustumObj.m_VertexList[iVertex].p = Vector3::Transform(v, matInvViewProj);// *matInvViewProj;
+	}
+	//변환된 프러스텀의 정점과 정점 버퍼를 세팅해준다
+	pd3dContext->UpdateSubresource(
+		m_Frustum.m_FrustumObj.m_pVertexBuffer, 0, NULL,
+		&m_Frustum.m_FrustumObj.m_VertexList.at(0), 0, 0);
+
+	m_Frustum.Frame();
+	return true;
+}
 myModelViewCamera::myModelViewCamera()
 {
 
 }
 myModelViewCamera::~myModelViewCamera()
 {
-
+	m_Frustum.m_FrustumObj.Release();
 }

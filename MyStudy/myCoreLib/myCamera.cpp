@@ -165,6 +165,10 @@ int myCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return -1;
 }
+bool myCamera::DrawFrustum(ID3D11DeviceContext * pd3dContext, Matrix * pmatView, Matrix * pmatProj)
+{
+	return true;
+}
 myCamera::myCamera()
 {
 	m_pSpeed = 30.0f;

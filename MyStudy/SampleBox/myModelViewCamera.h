@@ -18,8 +18,12 @@ public:
 	void		OnMove(int x, int y);
 	void		OnEnd();
 public:
-	myArcball();
-	virtual ~myArcball();
+	myArcball() 
+	{
+		m_qNow = Quaternion::Identity;
+		m_qDown = Quaternion::Identity;
+		m_bDrag = false;
+	}
 };
 
 class myModelViewCamera : public myCamera
@@ -39,8 +43,16 @@ public:
 		WPARAM wParam,
 		LPARAM lParam);
 public:
+	virtual bool CreateFrustum(ID3D11Device* pd3dDevice,
+		ID3D11DeviceContext*	d3dContext);
+	virtual bool PostInit() override;
 	virtual void Update(Vector4 data) override;
 	virtual bool Frame() override;
+	virtual void UpdateVector()override;
+	virtual bool DrawFrustum(
+		ID3D11DeviceContext*	pd3dContext,
+		Matrix* pmatView, Matrix* pmatProj);
+	virtual bool FrameFrustum(ID3D11DeviceContext*	pd3dContext);
 public:
 	myModelViewCamera();
 	virtual ~myModelViewCamera();

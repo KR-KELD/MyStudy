@@ -47,6 +47,17 @@ bool    myMap::CreateIndexData()
 	return true;
 }
 
+bool myMap::Frame()
+{
+	return true;
+}
+
+bool myMap::PostRender(ID3D11DeviceContext * pd3dContext)
+{
+	pd3dContext->DrawIndexed(m_iNumFaces * 3, 0, 0);
+	return true;
+}
+
 myMap::myMap()
 {
 }

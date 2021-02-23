@@ -28,6 +28,8 @@ public:
 	bool			CreateMap(ID3D11Device* pDevice, myMapDesc  desc);
 	virtual bool    CreateVertexData() override;
 	virtual bool    CreateIndexData()override;
+	virtual bool	Frame() override;
+	virtual bool	PostRender(ID3D11DeviceContext*	pd3dContext);
 public:
 	myMap();
 	virtual ~myMap();
