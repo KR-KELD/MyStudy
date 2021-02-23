@@ -118,6 +118,26 @@ bool myTransform::Release()
 }
 
 
+myGameObject * myGameObject::Clone()
+{
+	//Áú¹®
+	//for (m_ComIter = m_ComponentList.begin();
+	//	m_ComIter != m_ComponentList.end();
+	//	m_ComIter++)
+	//{
+
+	//}
+
+	//for (m_ObjIter = m_Childs.begin();
+	//	m_ObjIter != m_Childs.end();
+	//	m_ObjIter++)
+	//{
+
+	//}
+	//return new myGameObject(*this);
+	return nullptr;
+}
+
 bool myGameObject::Init()
 {
 	//for (m_ComIter = m_ComponentList.begin();
