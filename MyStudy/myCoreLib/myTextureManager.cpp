@@ -71,6 +71,7 @@ bool myTextureManager::Release()
 		m_iter != m_List.end();
 		m_iter++)
 	{
+		(*m_iter).second->Release();
 		delete (*m_iter).second;
 	}
 	m_List.clear();

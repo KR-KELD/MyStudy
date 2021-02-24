@@ -147,9 +147,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="myHeightMap.cpp" />
     <ClCompile Include="Sample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="myHeightMap.h" />
     <ClInclude Include="Sample.h" />
   </ItemGroup>
   <ItemGroup>

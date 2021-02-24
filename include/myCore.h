@@ -7,6 +7,7 @@
 #include "mySoundManager.h"
 #include "myDebugCamera.h"
 #include "myObjManager.h"
+#include "myShape.h"
 
 class myCore : public myDevice
 {
@@ -14,9 +15,9 @@ public:
 	//myGrapicsAPI		m_Graphics;
 	bool				m_isGameRun;
 	myGameObject*		m_pDebugCameraObj;
-	myDebugCamera*		m_pDebugCamera;
-	myCamera*		    m_pMainCamera;
 	myGameObject*		m_pMainCameraObj;
+	myCamera*			m_pMainCamera;
+	myShapeLine*		m_pBasisLine;
 public:
 	virtual bool		Init() { return true; }
 	virtual bool		PreInit() { return true; }

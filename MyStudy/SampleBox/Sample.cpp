@@ -4,7 +4,27 @@ GAMERUN;
 bool Sample::Init()
 {
 	HRESULT hr = NULL;
-	m_vDirValue = { 0,0,0,0 };
+
+
+	m_Map = new myHeightMap;
+	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
+	m_Map->CreateHeightMap(m_pd3dContext, L"../../data/map/Map512.png");
+
+
+	myMapDesc desc;
+	desc.iNumCols = m_Map->m_iNumCols;
+	desc.iNumRows = m_Map->m_iNumRows;
+	desc.fCellDistance = 1;
+	desc.szTexFile = L"../../data/map/Map512Color.png";
+	desc.szVS = L"VS.txt";
+	desc.szPS = L"PS.txt";
+	m_Map->CreateMap(m_pd3dContext, desc);
+
+	m_MiniMap = new myMiniMap;
+	g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
+
+	m_MiniMap->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
+		L"../../data/bitmap/map.bmp");
 
 	Matrix matScale, matRotation;
 	matScale = Matrix::CreateScale(100, 100, 100);
@@ -14,28 +34,12 @@ bool Sample::Init()
 	m_Box = new myShapeBox;
 	g_ObjMgr.CreateObjComponent(L"Box", m_Box);
 
-	//m_Plane = new myShapePlane;
-	//g_ObjMgr.CreateObjComponent(L"Plane", m_Plane);
-
-	m_Line = new myShapeLine;
-	g_ObjMgr.CreateObjComponent(L"Line", m_Line);
-
-
 	if (!m_Box->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/intro.bmp"))
 	{
 		return false;
 	}
-	//if (!m_Plane->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
-	//	L"../../data/bitmap/map.bmp"))
-	//{
-	//	return false;
-	//}
-	if (!m_Line->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
-		L"../../data/bitmap/flametank.bmp"))
-	{
-		return false;
-	}
+
 	myModelViewCamera* m_ModelCamera;
 	m_ModelCamera = new myModelViewCamera;
 	m_ModelCameraObj = myGameObject::CreateGameObject(L"ModelCamera");
@@ -48,45 +52,29 @@ bool Sample::Init()
 	m_ModelCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
 	//m_pMainCamera = m_ModelCamera;
 
-	//m_TopCamera = new myCamera;
-	//g_ObjMgr.CreateObjComponent(L"TopCamera", m_TopCamera);
-	//m_TopCamera->CreateFrustum(m_pd3dContext);
+	m_TopCamera = new myCamera;
+	g_ObjMgr.CreateObjComponent(L"TopCamera", m_TopCamera);
+	m_TopCamera->CreateFrustum(m_pd3dContext);
 
-	//m_TopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
-	//fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	//m_TopCamera->CreateOrthographic(500, 500, 1.0f, 1000);
-
-
-	//m_Map = new myMap;
-	//g_ObjMgr.CreateObjComponent(L"Map", m_Map);
+	m_TopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
+	fAspect = g_rtClient.right / (float)g_rtClient.bottom;
+	m_TopCamera->CreateOrthographic(500, 500, 1.0f, 1000);
 
 
-	//m_MiniMap = new myMiniMap;
-	//g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
 
-	//m_MiniMap->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
-	//	L"../../data/bitmap/map.bmp");
 
-	//myMapDesc desc;
-	//desc.iNumCols = 513;
-	//desc.iNumRows = 513;
-	//desc.fCellDistance = 1;
-	//desc.szTexFile = L"../../data/bitmap/map.bmp";
-	//desc.szVS = L"VS.txt";
-	//desc.szPS = L"PS.txt";
-	//m_Map->CreateMap(m_pd3dContext, desc);
 	return true;
 }
 
 bool Sample::Frame()
 {
-	Matrix matScale;
-	Matrix matRotation;
+	//Matrix matScale;
+	//Matrix matRotation;
 
-	matScale = Matrix::CreateScale(1, 1, 1);
-	matRotation = Matrix::CreateRotationY(g_fGameTimer);
-	m_matBoxWorld = matScale * matRotation;
-	m_matBoxWorld._42 = 3.0f;
+	//matScale = Matrix::CreateScale(1, 1, 1);
+	//matRotation = Matrix::CreateRotationY(g_fGameTimer);
+	//m_matBoxWorld = matScale * matRotation;
+	//m_matBoxWorld._42 = 3.0f;
 
 	if (g_Input.GetKey('0') == KEY_PUSH)
 	{
@@ -108,8 +96,6 @@ bool Sample::Frame()
 		myDxState::m_CullMode = D3D11_CULL_FRONT;
 		myDxState::SetRasterizerState(m_pd3dDevice);
 	}
-	//	m_pMainCamera->m_vCameraTarget = m_BoxShape.m_vPos;
-	//m_pMainCamera->FrameFrustum();
 	return true;
 }
 
@@ -130,6 +116,8 @@ bool Sample::Render()
 
 	//// CULLING
 	//std::vector<DWORD> visibleIB;
+	//visibleIB.resize(m_Map->m_IndexList.size());
+	//m_Map->m_iNumFaces = 0;
 	//for (int iFace = 0; iFace < m_Map->m_IndexList.size() / 3; iFace++)
 	//{
 	//	//맵의 각 페이스별로 인덱스 버퍼를 가져온다
@@ -147,15 +135,16 @@ bool Sample::Render()
 	//	v[2] = m_Map->m_VertexList[c].p;
 	//	
 	//	//프러스텀 컬링 판별을 해서 그려줄 페이스를 추려서 그려줄 버텍스의 인덱스 버퍼를 누적시킨다
-	//	myModelViewCamera* pCamera = (myModelViewCamera*)m_pMainCamera;
+	//	//myModelViewCamera* pCamera = (myModelViewCamera*)m_pMainCamera;
 	//	for (int iV = 0; iV < 3; iV++)
 	//	{
-	//		BOOL bVisiable = pCamera->m_Frustum.ClassifyPoint(v[iV]);
+	//		BOOL bVisiable = m_pMainCamera->m_Frustum.ClassifyPoint(v[iV]);
 	//		if (bVisiable)
 	//		{
-	//			visibleIB.push_back(a);
-	//			visibleIB.push_back(b);
-	//			visibleIB.push_back(c);
+	//			visibleIB[m_Map->m_iNumFaces * 3 + 0] = a;
+	//			visibleIB[m_Map->m_iNumFaces * 3 + 1] = b;
+	//			visibleIB[m_Map->m_iNumFaces * 3 + 2] = c;
+	//			m_Map->m_iNumFaces++;
 	//			break;
 	//		}
 	//	}
@@ -172,64 +161,45 @@ bool Sample::Render()
 	//	m_Map->m_iNumFaces = 0;
 	//}
 
-	//if (m_MiniMap->Begin())
-	//{
-	//	m_Map->SetMatrix(NULL,
-	//		&m_TopCamera->m_matView,
-	//		&m_TopCamera->m_matProj);
-	//	m_Map->Render();
+	if (m_MiniMap->Begin())
+	{
+		m_Map->SetMatrix(NULL,
+			&m_TopCamera->m_matView,
+			&m_TopCamera->m_matProj);
+		m_Map->Render();
 
-	//	//Matrix matWorld;
-	//	//matWorld._41 = m_TopCamera.m_vCameraPos.x;
-	//	//matWorld._42 = m_TopCamera.m_vCameraPos.y;
-	//	//matWorld._43 = m_TopCamera.m_vCameraPos.z;
+		Matrix matWorld;
+		matWorld._41 = m_TopCamera->m_pTransform->m_vPos.x;
+		matWorld._42 = m_TopCamera->m_pTransform->m_vPos.y;
+		matWorld._43 = m_TopCamera->m_pTransform->m_vPos.z;
 
-	//	m_Box->SetMatrix(NULL,/*m_BoxShape.m_matWorld,*/
-	//		&m_TopCamera->m_matView,
-	//		&m_TopCamera->m_matProj);
-	//	m_Box->Render();
-	//	m_MiniMap->End();
-	//}
+		m_Box->SetMatrix(&m_Box->m_matWorld,
+			&m_TopCamera->m_matView,
+			&m_TopCamera->m_matProj);
+		m_Box->Render();
+		m_MiniMap->End();
+	}
 
-	//m_Map->SetMatrix(NULL,
-	//	&m_pMainCamera->m_matView,
-	//	&m_pMainCamera->m_matProj);
-	//m_Map->Render();
+	m_Map->SetMatrix(NULL,
+		&m_pMainCamera->m_matView,
+		&m_pMainCamera->m_matProj);
+	m_Map->Render();
 
 	//그리기
 	//m_Box.SetMatrix(&m_matBoxWorld,
 	//	&m_pMainCamera->m_matView,
 	//	&m_pMainCamera->m_matProj);
-	m_Box->SetMatrix(&m_pMainCamera->m_matWorld,
+
+
+	m_Box->SetMatrix(&m_Box->m_matWorld,
 		&m_pMainCamera->m_matView, &m_pMainCamera->m_matProj);
 	m_Box->Render();
 
-	//Matrix matShadow;
-	//Vector4 vPlane = Vector4(0, 1, 0, -0.1f);
-	//Vector3 vLightDir = Vector3(-10, 10, 0);
-	//matShadow = Matrix::CreateShadow(vLightDir, vPlane);
-	//matShadow = m_matBoxWorld * matShadow;
-	//m_Box->SetMatrix(&matShadow, &m_pMainCamera->m_matView,
-	//	&m_pMainCamera->m_matProj);
-	//m_Box->Render();
 
-	//m_Plane->SetMatrix(&m_matPlaneWorld,
-	//	&m_pMainCamera->m_matView,
-	//	&m_pMainCamera->m_matProj);
-	//m_Plane->Render(m_pd3dContext);
-
-
-
-	//m_MiniMap->SetMatrix(NULL,
-	//	NULL, //&m_pMainCamera->m_matView,
-	//	NULL); //&m_pMainCamera->m_matProj);
-	//m_MiniMap->Render();
-
-	m_Line->SetMatrix(NULL, &m_pMainCamera->m_matView,
-		&m_pMainCamera->m_matProj);
-	m_Line->Draw(Vector3(0, 0, 0), Vector3(100, 0, 0), Vector4(1, 0, 0, 1));
-	m_Line->Draw(Vector3(0, 0, 0), Vector3(0, 100, 0), Vector4(0, 1, 0, 1));
-	m_Line->Draw(Vector3(0, 0, 0), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
+	m_MiniMap->SetMatrix(NULL,
+		NULL, //&m_pMainCamera->m_matView,
+		NULL); //&m_pMainCamera->m_matProj);
+	m_MiniMap->Render();
 
 	return true;
 }
@@ -238,7 +208,6 @@ bool Sample::Release()
 {
 	m_ModelCameraObj->Release();
 	delete m_ModelCameraObj;
-	//myCore::Release();
 	return true;
 }
 

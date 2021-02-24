@@ -1,5 +1,6 @@
 #pragma once
 #include "myBasicStd.h"
+//#include "myCamera.h"
 #define WINDOWSTARTX 300
 #define WINDOWSTARTY 300
 #define WINDOWSIZEX 720
@@ -15,6 +16,7 @@ extern myKeyMap			g_KeyMap;
 extern HWND				g_hWnd;
 extern HINSTANCE		g_hInstance;
 extern ID3D11Device*	g_pd3dDevice;
+//extern myCamera*		g_pMainCamera;
 extern HDC				g_hScreenDC;
 extern HDC				g_hOffScreenDC;
 extern RECT				g_rtClient;

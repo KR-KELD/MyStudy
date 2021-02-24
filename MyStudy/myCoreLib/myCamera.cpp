@@ -122,9 +122,6 @@ void myCamera::UpdateVector()
 	m_pTransform->m_vLook.Normalize();
 	m_pTransform->m_vUp.Normalize();
 	m_pTransform->m_vRight.Normalize();
-
-
-
 }
 bool myCamera::Init()
 {

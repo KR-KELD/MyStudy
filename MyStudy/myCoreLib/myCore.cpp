@@ -1,4 +1,5 @@
 #include "myCore.h"
+//myCamera*		g_pMainCamera = nullptr;
 
 HRESULT myCore::DeleteDXResource()
 {
@@ -60,16 +61,25 @@ bool myCore::GameInit()
 		g_rtClient.bottom, pBackBuffer);
 	if (pBackBuffer) pBackBuffer->Release();
 
-	m_pDebugCamera = new myDebugCamera;
+	m_pBasisLine = new myShapeLine;
+	g_GameObject.InsertComponent(m_pBasisLine);
+	m_pBasisLine->Init();
+	if (!m_pBasisLine->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
+	L"../../data/bitmap/flametank.bmp"))
+	{
+		return false;
+	}
+
+	myDebugCamera* pDebugCamera = new myDebugCamera;
 	m_pDebugCameraObj = myGameObject::CreateGameObject(L"DebugCamera");
-	m_pDebugCameraObj->InsertComponent(m_pDebugCamera);
-	m_pDebugCamera->Init();
-	m_pDebugCamera->CreateFrustum(m_pd3dContext);
+	m_pDebugCameraObj->InsertComponent(pDebugCamera);
+	pDebugCamera->Init();
+	pDebugCamera->CreateFrustum(m_pd3dContext);
 	//g_ObjMgr.CreateObjComponent(L"MainCamera", m_pDebugCamera);
 
-	m_pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
+	pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	m_pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
+	pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
 
 	ChangeMainCamera(m_pDebugCameraObj);
 
@@ -140,6 +150,11 @@ bool myCore::GameRender()
 
 bool myCore::PostRender()
 {
+	m_pBasisLine->SetMatrix(NULL, &m_pMainCamera->m_matView,
+		&m_pMainCamera->m_matProj);
+	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(50, 0, 0), Vector4(1, 0, 0, 1));
+	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 50, 0), Vector4(0, 1, 0, 1));
+	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
 	g_Timer.Render();
 	g_Input.Render();
 	g_ObjMgr.Render();

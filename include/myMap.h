@@ -24,8 +24,10 @@ public:
 	UINT m_iNumVertices;
 	UINT m_iNumFaces;
 	float m_fCellDistance;
+	std::vector<float> m_fHeightList;
 public:
 	bool			CreateMap(ID3D11DeviceContext*	pd3dContex, myMapDesc  desc);
+	virtual float   GetHeight(UINT index);
 	virtual bool    CreateVertexData() override;
 	virtual bool    CreateIndexData()override;
 	virtual bool	Frame() override;

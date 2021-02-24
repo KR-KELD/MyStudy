@@ -14,7 +14,7 @@ bool    myMap::CreateVertexData()
 		{
 			int iIndex = iRow * m_iNumCols + iCol;
 			m_VertexList[iIndex].p.x = (iCol - fHalfCols)*m_fCellDistance;
-			m_VertexList[iIndex].p.y = 0.0f;
+			m_VertexList[iIndex].p.y = GetHeight(iIndex);
 			m_VertexList[iIndex].p.z = (iRow - fHalfRows)*m_fCellDistance*-1.f;
 			m_VertexList[iIndex].t.x = iCol * fOffsetU;
 			m_VertexList[iIndex].t.y = iRow * fOffsetV;
@@ -44,6 +44,7 @@ bool    myMap::CreateIndexData()
 			iIndex += 6;
 		}
 	}
+	m_iNumFaces = m_IndexList.size() / 3;
 	return true;
 }
 
@@ -68,7 +69,6 @@ myMap::~myMap()
 
 bool myMap::CreateMap(ID3D11DeviceContext*	pd3dContext, myMapDesc  desc)
 {
-	if (m_pGameObject) m_pTransform = m_pGameObject->m_pTransform;
 	m_MapDesc = desc;
 	m_iNumRows = desc.iNumRows;
 	m_iNumCols = desc.iNumCols;
@@ -78,12 +78,14 @@ bool myMap::CreateMap(ID3D11DeviceContext*	pd3dContext, myMapDesc  desc)
 	m_iNumFaces = m_iNumCellCols * m_iNumCellRows * 2;
 	m_fCellDistance = desc.fCellDistance;
 
-	std::vector<float> m_fHeightList;
-	m_fHeightList.resize(m_iNumVertices);
-
 	Create(pd3dContext,
 		desc.szVS,
 		desc.szPS,
 		desc.szTexFile);
 	return true;
+}
+
+float myMap::GetHeight(UINT index)
+{
+	return 0.0f;
 }
