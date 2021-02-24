@@ -165,5 +165,5 @@ myModelViewCamera::myModelViewCamera()
 }
 myModelViewCamera::~myModelViewCamera()
 {
-	m_Frustum.m_FrustumObj.Release();
+
 }

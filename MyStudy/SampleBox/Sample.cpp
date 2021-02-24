@@ -48,32 +48,33 @@ bool Sample::Init()
 	m_ModelCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
 	//m_pMainCamera = m_ModelCamera;
 
-	m_TopCamera = new myCamera;
-	g_ObjMgr.CreateObjComponent(L"TopCamera", m_TopCamera);
+	//m_TopCamera = new myCamera;
+	//g_ObjMgr.CreateObjComponent(L"TopCamera", m_TopCamera);
+	//m_TopCamera->CreateFrustum(m_pd3dContext);
 
-	m_TopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
-	fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	m_TopCamera->CreateOrthographic(500, 500, 1.0f, 1000);
-
-
-	m_Map = new myMap;
-	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
+	//m_TopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
+	//fAspect = g_rtClient.right / (float)g_rtClient.bottom;
+	//m_TopCamera->CreateOrthographic(500, 500, 1.0f, 1000);
 
 
-	m_MiniMap = new myMiniMap;
-	g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
+	//m_Map = new myMap;
+	//g_ObjMgr.CreateObjComponent(L"Map", m_Map);
 
-	m_MiniMap->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
-		L"../../data/bitmap/map.bmp");
 
-	myMapDesc desc;
-	desc.iNumCols = 513;
-	desc.iNumRows = 513;
-	desc.fCellDistance = 1;
-	desc.szTexFile = L"../../data/bitmap/map.bmp";
-	desc.szVS = L"VS.txt";
-	desc.szPS = L"PS.txt";
-	m_Map->CreateMap(m_pd3dContext, desc);
+	//m_MiniMap = new myMiniMap;
+	//g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
+
+	//m_MiniMap->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
+	//	L"../../data/bitmap/map.bmp");
+
+	//myMapDesc desc;
+	//desc.iNumCols = 513;
+	//desc.iNumRows = 513;
+	//desc.fCellDistance = 1;
+	//desc.szTexFile = L"../../data/bitmap/map.bmp";
+	//desc.szVS = L"VS.txt";
+	//desc.szPS = L"PS.txt";
+	//m_Map->CreateMap(m_pd3dContext, desc);
 	return true;
 }
 
@@ -190,10 +191,10 @@ bool Sample::Render()
 	//	m_MiniMap->End();
 	//}
 
-	m_Map->SetMatrix(NULL,
-		&m_pMainCamera->m_matView,
-		&m_pMainCamera->m_matProj);
-	m_Map->Render();
+	//m_Map->SetMatrix(NULL,
+	//	&m_pMainCamera->m_matView,
+	//	&m_pMainCamera->m_matProj);
+	//m_Map->Render();
 
 	//±×¸®±â
 	//m_Box.SetMatrix(&m_matBoxWorld,
@@ -235,6 +236,8 @@ bool Sample::Render()
 
 bool Sample::Release()
 {
+	m_ModelCameraObj->Release();
+	delete m_ModelCameraObj;
 	//myCore::Release();
 	return true;
 }
