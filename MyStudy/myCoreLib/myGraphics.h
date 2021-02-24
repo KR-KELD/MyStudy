@@ -61,7 +61,7 @@ class myGraphics : public myComponent
 public:
 	DEFINE_COMPONENT(myGraphics, myComponent, true);
 public:
-	ID3D11Device*				m_pd3dDevice;
+	ID3D11DeviceContext*		m_pd3dContext;
 	ID3DBlob*					m_pVSObj;
 	UINT						m_iTopology;
 	C_STR						m_szVertexShader;
@@ -85,10 +85,10 @@ public:
 	virtual bool	Init();
 	virtual bool	Frame();
 	virtual bool	SetMatrix(Matrix* pWorld, Matrix* pView, Matrix* pProj);
-	virtual bool    Update(ID3D11DeviceContext*	pd3dContext);
-	virtual bool	PreRender(ID3D11DeviceContext*	pd3dContext);
-	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
-	virtual bool	PostRender(ID3D11DeviceContext*	pd3dContext);
+	virtual void    Update();
+	virtual bool	PreRender();
+	virtual bool	Render();
+	virtual bool	PostRender();
 	virtual bool	Release();
 	virtual bool    CreateVertexData(Vector3 vCenter, float fRange);
 	virtual bool    CreateVertexData();
@@ -99,7 +99,7 @@ public:
 	virtual bool	LoadShader(T_STR szVS, T_STR szPS);
 	virtual bool	CreateInputLayout();
 	virtual bool	LoadTexture(T_STR szTex);
-	virtual bool	Create(ID3D11Device* pDevice, T_STR szVS, T_STR szPS, T_STR	szTex);
+	virtual bool	Create(ID3D11DeviceContext* pDeviceContext, T_STR szVS, T_STR szPS, T_STR	szTex);
 	void	CompilerCheck(ID3DBlob* pErrorMsgs);
 public:
 	myGraphics();

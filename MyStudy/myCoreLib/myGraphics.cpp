@@ -35,10 +35,10 @@ bool	myGraphics::SetMatrix(Matrix* pWorld,
 	}
 	return true;
 }
-bool    myGraphics::Update(ID3D11DeviceContext*	pd3dContext)
+void    myGraphics::Update()
 {
 	D3D11_MAPPED_SUBRESOURCE mr;
-	HRESULT hr = pd3dContext->Map(m_pConstantBuffer, 0,
+	HRESULT hr = m_pd3dContext->Map(m_pConstantBuffer, 0,
 		D3D11_MAP_WRITE_DISCARD, 0, &mr);
 	if (SUCCEEDED(hr))
 	{
@@ -53,41 +53,39 @@ bool    myGraphics::Update(ID3D11DeviceContext*	pd3dContext)
 		pData->vColor[3] = 1;
 		pData->vTime[0] = cosf(g_fGameTimer)*0.5f + 0.5f;
 		pData->vTime[1] = g_fGameTimer;
-		pd3dContext->Unmap(m_pConstantBuffer, 0);
-		return true;
+		m_pd3dContext->Unmap(m_pConstantBuffer, 0);
 	}
-	return false;
 }
-bool myGraphics::PreRender(ID3D11DeviceContext * pd3dContext)
+bool myGraphics::PreRender()
 {
 	return true;
 }
-bool	myGraphics::Render(ID3D11DeviceContext*	pd3dContext)
+bool	myGraphics::Render()
 {
-	Update(pd3dContext);
-	PreRender(pd3dContext);
+	Update();
+	PreRender();
 	UINT iStride = sizeof(PNCT_VERTEX);
 	UINT iOffset = 0;
-	pd3dContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &iStride, &iOffset);
-	pd3dContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	pd3dContext->IASetInputLayout(m_pInputLayout);
-	pd3dContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-	pd3dContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-	pd3dContext->VSSetShader(m_pVertexShader, NULL, 0);
-	pd3dContext->PSSetShader(m_pPixelShader, NULL, 0);
-	pd3dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_iTopology);
+	m_pd3dContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &iStride, &iOffset);
+	m_pd3dContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	m_pd3dContext->IASetInputLayout(m_pInputLayout);
+	m_pd3dContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+	m_pd3dContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+	m_pd3dContext->VSSetShader(m_pVertexShader, NULL, 0);
+	m_pd3dContext->PSSetShader(m_pPixelShader, NULL, 0);
+	m_pd3dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_iTopology);
 	if (m_pTexture != nullptr)
 	{
-		pd3dContext->PSSetShaderResources(0, 1,
+		m_pd3dContext->PSSetShaderResources(0, 1,
 			&m_pTexture->m_pTextureSRV);
 	}
 	//pd3dContext->Draw(m_VertexList.size(), 0);
-	PostRender(pd3dContext);
+	PostRender();
 	return true;
 }
-bool myGraphics::PostRender(ID3D11DeviceContext * pd3dContext)
+bool myGraphics::PostRender()
 {
-	pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
+	m_pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
 	return true;
 }
 bool	myGraphics::Release()
@@ -138,7 +136,7 @@ bool    myGraphics::CreateConstantBuffer()
 	D3D11_SUBRESOURCE_DATA sd;
 	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
 	sd.pSysMem = &m_cbData;
-	HRESULT hr = m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pConstantBuffer);
+	HRESULT hr = g_pd3dDevice->CreateBuffer(&bd, NULL, &m_pConstantBuffer);
 	if (FAILED(hr))
 	{
 		return false;
@@ -156,7 +154,7 @@ bool	myGraphics::CreateVertexBuffer()
 	D3D11_SUBRESOURCE_DATA sd;
 	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
 	sd.pSysMem = &m_VertexList.at(0);
-	HRESULT hr = m_pd3dDevice->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
+	HRESULT hr = g_pd3dDevice->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
 	if (FAILED(hr))
 	{
 		return false;
@@ -174,7 +172,7 @@ bool	myGraphics::CreateIndexBuffer()
 	D3D11_SUBRESOURCE_DATA sd;
 	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
 	sd.pSysMem = &m_IndexList.at(0);
-	HRESULT hr = m_pd3dDevice->CreateBuffer(&bd, &sd, &m_pIndexBuffer);
+	HRESULT hr = g_pd3dDevice->CreateBuffer(&bd, &sd, &m_pIndexBuffer);
 	if (FAILED(hr))
 	{
 		return false;
@@ -192,7 +190,7 @@ bool myGraphics::LoadShader(T_STR szVS, T_STR szPS)
 		CompilerCheck(pErrorMsgs);
 		return false;
 	}
-	hr = m_pd3dDevice->CreateVertexShader(m_pVSObj->GetBufferPointer(), m_pVSObj->GetBufferSize(), NULL, &m_pVertexShader);
+	hr = g_pd3dDevice->CreateVertexShader(m_pVSObj->GetBufferPointer(), m_pVSObj->GetBufferSize(), NULL, &m_pVertexShader);
 	if (FAILED(hr)) return false;
 
 	hr = D3DCompileFromFile(szPS.c_str(), NULL, NULL,
@@ -202,7 +200,7 @@ bool myGraphics::LoadShader(T_STR szVS, T_STR szPS)
 		CompilerCheck(pErrorMsgs);
 		return false;
 	}
-	hr = m_pd3dDevice->CreatePixelShader(pPSObj->GetBufferPointer(), pPSObj->GetBufferSize(), NULL, &m_pPixelShader);
+	hr = g_pd3dDevice->CreatePixelShader(pPSObj->GetBufferPointer(), pPSObj->GetBufferSize(), NULL, &m_pPixelShader);
 	if (FAILED(hr)) return false;
 
 	if (pPSObj)	pPSObj->Release();
@@ -210,7 +208,7 @@ bool myGraphics::LoadShader(T_STR szVS, T_STR szPS)
 }
 bool	myGraphics::LoadTexture(T_STR szTex)
 {
-	m_pTexture = g_TextureMgr.Load(m_pd3dDevice, szTex.c_str());
+	m_pTexture = g_TextureMgr.Load(g_pd3dDevice, szTex.c_str());
 	if (m_pTexture == nullptr) return false;
 	return true;
 }
@@ -224,7 +222,7 @@ bool	myGraphics::CreateInputLayout()
 		{ "TEXTURE",  0, DXGI_FORMAT_R32G32_FLOAT, 0, 40,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT iNumElement = sizeof(layout) / sizeof(layout[0]);
-	HRESULT hr = m_pd3dDevice->CreateInputLayout(
+	HRESULT hr = g_pd3dDevice->CreateInputLayout(
 		layout,
 		iNumElement,
 		m_pVSObj->GetBufferPointer(),
@@ -234,9 +232,9 @@ bool	myGraphics::CreateInputLayout()
 	if (FAILED(hr)) return false;
 	return true;
 }
-bool	myGraphics::Create(ID3D11Device* pDevice, T_STR szVS, T_STR szPS, T_STR	szTex)
+bool	myGraphics::Create(ID3D11DeviceContext* pDeviceContext, T_STR szVS, T_STR szPS, T_STR	szTex)
 {
-	m_pd3dDevice = pDevice;
+	m_pd3dContext = pDeviceContext;
 
 	CreateVertexData();
 	CreateConstantBuffer();

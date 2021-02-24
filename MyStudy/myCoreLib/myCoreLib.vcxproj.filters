@@ -147,8 +147,20 @@
     <ClCompile Include="myObjectInfo.cpp">
       <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="myDxRT.cpp">
+    <ClCompile Include="myMap.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myMiniMap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myDxRT.cpp">
+      <Filter>dx</Filter>
+    </ClCompile>
+    <ClCompile Include="myFrustum.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="myModelViewCamera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -284,8 +296,20 @@
     <ClInclude Include="myObjectInfo.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="myDxRT.h">
+    <ClInclude Include="myMap.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myMiniMap.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myDxRT.h">
+      <Filter>dx</Filter>
+    </ClInclude>
+    <ClInclude Include="myFrustum.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="myModelViewCamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

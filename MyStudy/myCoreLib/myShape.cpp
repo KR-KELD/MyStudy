@@ -175,14 +175,13 @@ myShapePlane::~myShapePlane()
 {
 }
 
-bool myShapeLine::Draw(ID3D11DeviceContext* pd3dContext,
-	Vector3 p, Vector3 e, Vector4 c)
+bool myShapeLine::Draw(Vector3 p, Vector3 e, Vector4 c)
 {
 	m_VertexList[0] = PNCT_VERTEX(p, Vector3(0.0f, 0.0f, -1.0f), c, Vector2(0.0f, 0.0f));
 	m_VertexList[1] = PNCT_VERTEX(e, Vector3(0.0f, 0.0f, -1.0f), c, Vector2(1.0f, 0.0f));
-	pd3dContext->UpdateSubresource(
+	m_pd3dContext->UpdateSubresource(
 		m_pVertexBuffer, 0, NULL, &m_VertexList.at(0), 0, 0);
-	return myShape::Render(pd3dContext);
+	return myShape::Render();
 }
 bool myShapeLine::CreateVertexData()
 {

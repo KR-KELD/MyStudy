@@ -18,7 +18,7 @@ public:
 public:
 	Matrix				m_matBoxWorld;
 	Matrix				m_matPlaneWorld;
-	myModelViewCamera*	m_ModelCamera;
+	myGameObject*	m_ModelCameraObj;
 public:
 	bool Init() override;
 	bool Frame() override;

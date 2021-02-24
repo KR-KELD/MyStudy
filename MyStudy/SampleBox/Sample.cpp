@@ -14,37 +14,39 @@ bool Sample::Init()
 	m_Box = new myShapeBox;
 	g_ObjMgr.CreateObjComponent(L"Box", m_Box);
 
-	m_Plane = new myShapePlane;
-	g_ObjMgr.CreateObjComponent(L"Plane", m_Plane);
+	//m_Plane = new myShapePlane;
+	//g_ObjMgr.CreateObjComponent(L"Plane", m_Plane);
 
 	m_Line = new myShapeLine;
 	g_ObjMgr.CreateObjComponent(L"Line", m_Line);
 
 
-	if (!m_Box->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+	if (!m_Box->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/intro.bmp"))
 	{
 		return false;
 	}
-	if (!m_Plane->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
-		L"../../data/bitmap/map.bmp"))
-	{
-		return false;
-	}
-	if (!m_Line->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
+	//if (!m_Plane->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
+	//	L"../../data/bitmap/map.bmp"))
+	//{
+	//	return false;
+	//}
+	if (!m_Line->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;
 	}
+	myModelViewCamera* m_ModelCamera;
 	m_ModelCamera = new myModelViewCamera;
-	g_ObjMgr.CreateObjComponent(L"ModelCamera", m_ModelCamera);
+	m_ModelCameraObj = myGameObject::CreateGameObject(L"ModelCamera");
+	m_ModelCameraObj->InsertComponent(m_ModelCamera);
+	m_ModelCamera->Init();
+	m_ModelCamera->CreateFrustum(m_pd3dContext);
 	//프러스텀 달기
-
 	m_ModelCamera->CreateViewMatrix({ 0,5,-5 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	m_ModelCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
-	m_ModelCamera->CreateFrustum(m_pd3dDevice, m_pd3dContext);
-	m_pMainCamera = m_ModelCamera;
+	//m_pMainCamera = m_ModelCamera;
 
 	m_TopCamera = new myCamera;
 	g_ObjMgr.CreateObjComponent(L"TopCamera", m_TopCamera);
@@ -57,20 +59,21 @@ bool Sample::Init()
 	m_Map = new myMap;
 	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
 
+
 	m_MiniMap = new myMiniMap;
 	g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
 
-	m_MiniMap->Create(m_pd3dDevice, L"vs.txt", L"ps.txt",
-		L"../../data/map.jpg");
+	m_MiniMap->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
+		L"../../data/bitmap/map.bmp");
 
 	myMapDesc desc;
 	desc.iNumCols = 513;
 	desc.iNumRows = 513;
 	desc.fCellDistance = 1;
-	desc.szTexFile = L"../../data/map.bmp";
+	desc.szTexFile = L"../../data/bitmap/map.bmp";
 	desc.szVS = L"VS.txt";
 	desc.szPS = L"PS.txt";
-	m_Map->CreateMap(m_pd3dDevice, desc);
+	m_Map->CreateMap(m_pd3dContext, desc);
 	return true;
 }
 
@@ -105,7 +108,7 @@ bool Sample::Frame()
 		myDxState::SetRasterizerState(m_pd3dDevice);
 	}
 	//	m_pMainCamera->m_vCameraTarget = m_BoxShape.m_vPos;
-	m_pMainCamera->FrameFrustum(m_pd3dContext);
+	//m_pMainCamera->FrameFrustum();
 	return true;
 }
 
@@ -124,73 +127,73 @@ bool Sample::Render()
 	m_pd3dContext->OMSetDepthStencilState(myDxState::m_pDSS, 0);
 
 
-	// CULLING
-	std::vector<DWORD> visibleIB;
-	for (int iFace = 0; iFace < m_Map->m_IndexList.size() / 3; iFace++)
-	{
-		//맵의 각 페이스별로 인덱스 버퍼를 가져온다
-		int a = m_Map->m_IndexList[iFace * 3 + 0];
-		int b = m_Map->m_IndexList[iFace * 3 + 1];
-		int c = m_Map->m_IndexList[iFace * 3 + 2];
-		//visibleIB.push_back(a);
-		//visibleIB.push_back(b);
-		//visibleIB.push_back(c);
-		//continue;
-		//그 인덱스 정보로 버텍스 정보를 가져온다
-		Vector3 v[3];
-		v[0] = m_Map->m_VertexList[a].p;
-		v[1] = m_Map->m_VertexList[b].p;
-		v[2] = m_Map->m_VertexList[c].p;
-		
-		//프러스텀 컬링 판별을 해서 그려줄 페이스를 추려서 그려줄 버텍스의 인덱스 버퍼를 누적시킨다
-		myModelViewCamera* pCamera = (myModelViewCamera*)m_pMainCamera;
-		for (int iV = 0; iV < 3; iV++)
-		{
-			BOOL bVisiable = pCamera->m_Frustum.ClassifyPoint(v[iV]);
-			if (bVisiable)
-			{
-				visibleIB.push_back(a);
-				visibleIB.push_back(b);
-				visibleIB.push_back(c);
-				break;
-			}
-		}
-	}
-	if (visibleIB.size() != 0)
-	{
-		//맵의 컬링된 페이스 정보를 세팅한다
-		m_Map->m_iNumFaces = visibleIB.size() / 3;
-		m_pd3dContext->UpdateSubresource(
-			m_Map->m_pIndexBuffer, 0, NULL, &visibleIB.at(0), 0, 0);
-	}
-	else
-	{
-		m_Map->m_iNumFaces = 0;
-	}
+	//// CULLING
+	//std::vector<DWORD> visibleIB;
+	//for (int iFace = 0; iFace < m_Map->m_IndexList.size() / 3; iFace++)
+	//{
+	//	//맵의 각 페이스별로 인덱스 버퍼를 가져온다
+	//	int a = m_Map->m_IndexList[iFace * 3 + 0];
+	//	int b = m_Map->m_IndexList[iFace * 3 + 1];
+	//	int c = m_Map->m_IndexList[iFace * 3 + 2];
+	//	//visibleIB.push_back(a);
+	//	//visibleIB.push_back(b);
+	//	//visibleIB.push_back(c);
+	//	//continue;
+	//	//그 인덱스 정보로 버텍스 정보를 가져온다
+	//	Vector3 v[3];
+	//	v[0] = m_Map->m_VertexList[a].p;
+	//	v[1] = m_Map->m_VertexList[b].p;
+	//	v[2] = m_Map->m_VertexList[c].p;
+	//	
+	//	//프러스텀 컬링 판별을 해서 그려줄 페이스를 추려서 그려줄 버텍스의 인덱스 버퍼를 누적시킨다
+	//	myModelViewCamera* pCamera = (myModelViewCamera*)m_pMainCamera;
+	//	for (int iV = 0; iV < 3; iV++)
+	//	{
+	//		BOOL bVisiable = pCamera->m_Frustum.ClassifyPoint(v[iV]);
+	//		if (bVisiable)
+	//		{
+	//			visibleIB.push_back(a);
+	//			visibleIB.push_back(b);
+	//			visibleIB.push_back(c);
+	//			break;
+	//		}
+	//	}
+	//}
+	//if (visibleIB.size() != 0)
+	//{
+	//	//맵의 컬링된 페이스 정보를 세팅한다
+	//	m_Map->m_iNumFaces = visibleIB.size() / 3;
+	//	m_pd3dContext->UpdateSubresource(
+	//		m_Map->m_pIndexBuffer, 0, NULL, &visibleIB.at(0), 0, 0);
+	//}
+	//else
+	//{
+	//	m_Map->m_iNumFaces = 0;
+	//}
 
-	if (m_MiniMap->Begin(m_pd3dContext))
-	{
-		m_Map->SetMatrix(NULL,
-			&m_TopCamera->m_matView,
-			&m_TopCamera->m_matProj);
-		m_Map->Render(m_pd3dContext);
+	//if (m_MiniMap->Begin())
+	//{
+	//	m_Map->SetMatrix(NULL,
+	//		&m_TopCamera->m_matView,
+	//		&m_TopCamera->m_matProj);
+	//	m_Map->Render();
 
-		//Matrix matWorld;
-		//matWorld._41 = m_TopCamera.m_vCameraPos.x;
-		//matWorld._42 = m_TopCamera.m_vCameraPos.y;
-		//matWorld._43 = m_TopCamera.m_vCameraPos.z;
+	//	//Matrix matWorld;
+	//	//matWorld._41 = m_TopCamera.m_vCameraPos.x;
+	//	//matWorld._42 = m_TopCamera.m_vCameraPos.y;
+	//	//matWorld._43 = m_TopCamera.m_vCameraPos.z;
 
-		m_Box->SetMatrix(NULL,/*m_BoxShape.m_matWorld,*/
-			&m_TopCamera->m_matView,
-			&m_TopCamera->m_matProj);
-		m_Box->Render(m_pd3dContext);
-		m_MiniMap->End(m_pd3dContext);
-	}
+	//	m_Box->SetMatrix(NULL,/*m_BoxShape.m_matWorld,*/
+	//		&m_TopCamera->m_matView,
+	//		&m_TopCamera->m_matProj);
+	//	m_Box->Render();
+	//	m_MiniMap->End();
+	//}
 
 	m_Map->SetMatrix(NULL,
 		&m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
-	m_Map->Render(m_pd3dContext);
+	m_Map->Render();
 
 	//그리기
 	//m_Box.SetMatrix(&m_matBoxWorld,
@@ -198,16 +201,16 @@ bool Sample::Render()
 	//	&m_pMainCamera->m_matProj);
 	m_Box->SetMatrix(&m_pMainCamera->m_matWorld,
 		&m_pMainCamera->m_matView, &m_pMainCamera->m_matProj);
-	m_Box->Render(m_pd3dContext);
+	m_Box->Render();
 
-	Matrix matShadow;
-	Vector4 vPlane = Vector4(0, 1, 0, -0.1f);
-	Vector3 vLightDir = Vector3(-10, 10, 0);
-	matShadow = Matrix::CreateShadow(vLightDir, vPlane);
-	matShadow = m_matBoxWorld * matShadow;
-	m_Box->SetMatrix(&matShadow, &m_pMainCamera->m_matView,
-		&m_pMainCamera->m_matProj);
-	m_Box->Render(m_pd3dContext);
+	//Matrix matShadow;
+	//Vector4 vPlane = Vector4(0, 1, 0, -0.1f);
+	//Vector3 vLightDir = Vector3(-10, 10, 0);
+	//matShadow = Matrix::CreateShadow(vLightDir, vPlane);
+	//matShadow = m_matBoxWorld * matShadow;
+	//m_Box->SetMatrix(&matShadow, &m_pMainCamera->m_matView,
+	//	&m_pMainCamera->m_matProj);
+	//m_Box->Render();
 
 	//m_Plane->SetMatrix(&m_matPlaneWorld,
 	//	&m_pMainCamera->m_matView,
@@ -216,19 +219,16 @@ bool Sample::Render()
 
 
 
-	m_MiniMap->SetMatrix(NULL,
-		NULL, //&m_pMainCamera->m_matView,
-		NULL); //&m_pMainCamera->m_matProj);
-	m_MiniMap->Render(m_pd3dContext);
+	//m_MiniMap->SetMatrix(NULL,
+	//	NULL, //&m_pMainCamera->m_matView,
+	//	NULL); //&m_pMainCamera->m_matProj);
+	//m_MiniMap->Render();
 
 	m_Line->SetMatrix(NULL, &m_pMainCamera->m_matView,
 		&m_pMainCamera->m_matProj);
-	m_Line->Draw(m_pd3dContext,
-		Vector3(0, 0, 0), Vector3(100, 0, 0), Vector4(1, 0, 0, 1));
-	m_Line->Draw(m_pd3dContext,
-		Vector3(0, 0, 0), Vector3(0, 100, 0), Vector4(0, 1, 0, 1));
-	m_Line->Draw(m_pd3dContext,
-		Vector3(0, 0, 0), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
+	m_Line->Draw(Vector3(0, 0, 0), Vector3(100, 0, 0), Vector4(1, 0, 0, 1));
+	m_Line->Draw(Vector3(0, 0, 0), Vector3(0, 100, 0), Vector4(0, 1, 0, 1));
+	m_Line->Draw(Vector3(0, 0, 0), Vector3(0, 0, 100), Vector4(0, 0, 1, 1));
 
 	return true;
 }

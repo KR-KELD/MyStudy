@@ -1,30 +1,32 @@
 #pragma once
-#include "myGameObject.h"
+#include "myFrustum.h"
 class myCamera : public myComponent
 {
 public:
 	DEFINE_COMPONENT(myCamera, myComponent, true);
 public:
-	float			m_pSpeed;
-	//Vector3		m_vCameraPos = { 10,0,-10 };
-	//Vector3		m_vCameraTarget = { 0,0,0 };
-	Matrix			m_matWorld;
-	Matrix			m_matView;
-	Matrix			m_matProj;
-	//Vector3			m_vLook;
-	//Vector3			m_vUp;
-	//Vector3			m_vRight;
-	float			m_fDistance;
-	bool			m_bDrag;
-	//POINT			m_ptCurrentPos;
-	//POINT			m_ptOffset;
-	//POINT			m_ptPrePos;
-	POINT			m_ptClick;
-	RECT			m_rtOffset;
-	RECT			m_rtPreOffset;
-	int				m_fWheelDelta;
-	//Vector4			m_vDirValue;
-	POINT			m_ptPrePosition;
+	//ID3D11DeviceContext*	m_pd3dContext;
+	myFrustum				m_Frustum;
+	float					m_pSpeed;
+	//Vector3				m_vCameraPos = { 10,0,-10 };
+	//Vector3				m_vCameraTarget = { 0,0,0 };
+	Matrix					m_matWorld;
+	Matrix					m_matView;
+	Matrix					m_matProj;
+	//Vector3				m_vLook;
+	//Vector3				m_vUp;
+	//Vector3				m_vRight;
+	float					m_fDistance;
+	bool					m_bDrag;
+	//POINT					m_ptCurrentPos;
+	//POINT					m_ptOffset;
+	//POINT					m_ptPrePos;
+	POINT					m_ptClick;
+	RECT					m_rtOffset;
+	RECT					m_rtPreOffset;
+	int						m_fWheelDelta;
+	//Vector4				m_vDirValue;
+	POINT					m_ptPrePosition;
 public:
 	virtual void SetPos(Vector3 p);
 	virtual void SetTarget(Vector3 p);
@@ -42,7 +44,7 @@ public:
 	virtual bool		CreateOrthographic(
 		float width, float height,
 		float zNearPlane, float zFarPlane);
-
+	virtual bool CreateFrustum(ID3D11DeviceContext * pd3dContext);
 	void FrontMovement(float fDir = 1.0f);
 	void RightMovement(float fDir = 1.0f);
 	void UpMovement(float fDir = 1.0f);
@@ -53,13 +55,13 @@ public:
 	virtual bool PostInit() { return true; }
 	virtual bool Init();
 	virtual bool Frame();
+	virtual bool Release();
 	virtual  int WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-	virtual bool FrameFrustum(ID3D11DeviceContext*	pd3dContext)
+	virtual bool FrameFrustum()
 	{
 		return true;
 	};
-	virtual bool DrawFrustum(ID3D11DeviceContext*	pd3dContext,
-		Matrix* pmatView, Matrix* pmatProj);
+	virtual bool DrawFrustum(Matrix* pmatView, Matrix* pmatProj);
 public:
 	myCamera();
 	virtual ~myCamera();

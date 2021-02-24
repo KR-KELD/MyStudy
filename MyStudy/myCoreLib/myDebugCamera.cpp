@@ -54,4 +54,5 @@ myDebugCamera::myDebugCamera()
 
 myDebugCamera::~myDebugCamera()
 {
+
 }

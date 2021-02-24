@@ -1,5 +1,5 @@
 #include "myDevice.h"
-
+ID3D11Device*	g_pd3dDevice = nullptr;
 HRESULT myDevice::CreateGIFactory()
 {
 	//디바이스가 생성되어 있지 않으면 리턴
@@ -72,6 +72,7 @@ HRESULT myDevice::CreateDevice()
 			break;
 		}
 	}
+	g_pd3dDevice = m_pd3dDevice;
 	return hr;
 }
 

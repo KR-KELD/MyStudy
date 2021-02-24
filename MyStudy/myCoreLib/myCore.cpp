@@ -20,6 +20,21 @@ HRESULT myCore::CreateDXResource(UINT w, UINT h)
 	return S_OK;
 }
 
+bool myCore::ChangeMainCamera(myGameObject * pCameraObj)
+{
+	if (pCameraObj != nullptr)
+	{
+		myCamera* camera = pCameraObj->GetComponent<myCamera>();
+		if (camera != nullptr)
+		{
+			m_pMainCameraObj = pCameraObj;
+			m_pMainCamera = camera;
+			return true;
+		}
+	}
+	return false;
+}
+
 bool myCore::GameInit()
 {
 	PreInit();
@@ -46,13 +61,17 @@ bool myCore::GameInit()
 	if (pBackBuffer) pBackBuffer->Release();
 
 	m_pDebugCamera = new myDebugCamera;
-	g_ObjMgr.CreateObjComponent(L"DebugCamera", m_pDebugCamera);
+	m_pDebugCameraObj = myGameObject::CreateGameObject(L"DebugCamera");
+	m_pDebugCameraObj->InsertComponent(m_pDebugCamera);
+	m_pDebugCamera->Init();
+	m_pDebugCamera->CreateFrustum(m_pd3dContext);
+	//g_ObjMgr.CreateObjComponent(L"MainCamera", m_pDebugCamera);
 
 	m_pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	m_pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
 
-	m_pMainCamera = m_pDebugCamera;
+	ChangeMainCamera(m_pDebugCameraObj);
 
 	Init();
 	PostInit();
@@ -101,7 +120,7 @@ void myCore::CameraFrame()
 	{
 		m_pMainCamera->UpMovement(-1.0f);
 	}
-	//m_pMainCamera->Frame();
+	m_pMainCameraObj->Frame();
 }
 
 bool myCore::PreRender()
@@ -177,6 +196,8 @@ myCore::~myCore()
 bool myCore::GameRelease()
 {
 	Release();
+	m_pDebugCameraObj->Release();
+	delete m_pDebugCameraObj;
 	g_Draw.Release();
 	g_Timer.Release();
 	g_Input.Release();

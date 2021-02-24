@@ -2,7 +2,8 @@
 #include "myStd.h"
 class myDxRT
 {
-	ID3D11Device*			m_pd3dDevice;
+public:
+	ID3D11DeviceContext*	m_pd3dContext;
 public:
 	ID3D11RenderTargetView* m_pRTV;
 	ID3D11DepthStencilView* m_pDSV;
@@ -14,13 +15,13 @@ public:
 	D3D11_VIEWPORT vpSave;
 	UINT  iNumView = 1;
 public:
-	void				Set(ID3D11Device* pd3dDevice);
+	virtual void		Set(ID3D11DeviceContext* pd3dContext);
 	virtual bool		SetViewport();
 	virtual HRESULT		SetRenderTargetView();
 	virtual HRESULT		SetDepthStencilView();
-	virtual bool		Begin(ID3D11DeviceContext* pd3dContext);
-	virtual bool		End(ID3D11DeviceContext* pd3dContext);
-	virtual void		ClearShaderResources(ID3D11DeviceContext* pImmediateContext);
+	virtual bool		Begin();
+	virtual bool		End();
+	virtual void		ClearShaderResources();
 	virtual bool		Release();
 };
 

@@ -39,6 +39,16 @@ bool myCamera::CreateOrthographic(float width, float height, float zNearPlane, f
 		zNearPlane, zFarPlane);
 	return true;
 }
+bool myCamera::CreateFrustum(ID3D11DeviceContext * pd3dContext)
+{
+	m_Frustum.m_FrustumObj.m_pTransform = m_pTransform;
+	m_Frustum.Create(pd3dContext);
+	return true;
+}
+//void myCamera::Set(ID3D11DeviceContext * pd3dContext)
+//{
+//	m_pd3dContext = pd3dContext;
+//}
 void myCamera::SetPos(Vector3 p)
 {
 	m_pTransform->m_vPos = p;
@@ -130,6 +140,11 @@ bool myCamera::Frame()
 	UpdateVector();
 	return true;
 }
+bool myCamera::Release()
+{
+	m_Frustum.Release();
+	return false;
+}
 int myCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -165,7 +180,7 @@ int myCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return -1;
 }
-bool myCamera::DrawFrustum(ID3D11DeviceContext * pd3dContext, Matrix * pmatView, Matrix * pmatProj)
+bool myCamera::DrawFrustum(Matrix * pmatView, Matrix * pmatProj)
 {
 	return true;
 }
@@ -177,5 +192,4 @@ myCamera::myCamera()
 }
 myCamera::~myCamera()
 {
-
 }

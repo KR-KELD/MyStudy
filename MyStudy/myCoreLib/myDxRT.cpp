@@ -1,7 +1,7 @@
 #include "myDxRT.h"
-void		myDxRT::Set(ID3D11Device*	pd3dDevice)
+void		myDxRT::Set(ID3D11DeviceContext*	pd3dContext)
 {
-	m_pd3dDevice = pd3dDevice;
+	m_pd3dContext = pd3dContext;
 }
 HRESULT		myDxRT::SetRenderTargetView()
 {
@@ -19,17 +19,17 @@ HRESULT		myDxRT::SetRenderTargetView()
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET |
 		D3D11_BIND_SHADER_RESOURCE;
-	hr = m_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
+	hr = g_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = m_pd3dDevice->CreateRenderTargetView(
+	hr = g_pd3dDevice->CreateRenderTargetView(
 		pTexture, NULL,
 		&m_pRTV);
 
-	hr = m_pd3dDevice->CreateShaderResourceView(pTexture,
+	hr = g_pd3dDevice->CreateShaderResourceView(pTexture,
 		NULL,
 		&m_pSRV);
 
@@ -58,7 +58,7 @@ HRESULT myDxRT::SetDepthStencilView()
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	HRESULT hr = m_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
+	HRESULT hr = g_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
 	if (FAILED(hr))
 	{
 		return false;
@@ -68,7 +68,7 @@ HRESULT myDxRT::SetDepthStencilView()
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Texture2D.MipSlice = 0;
-	hr = m_pd3dDevice->CreateDepthStencilView(
+	hr = g_pd3dDevice->CreateDepthStencilView(
 		pTexture,
 		&dsvDesc,
 		&m_pDSV);
@@ -90,39 +90,39 @@ bool myDxRT::SetViewport()
 	m_ViewPort.MaxDepth = 1.0f;
 	return true;
 }
-void myDxRT::ClearShaderResources(ID3D11DeviceContext*  pImmediateContext)
+void myDxRT::ClearShaderResources()
 {
 	// unbind resources
 	ID3D11ShaderResourceView* pNULLViews[8] = { NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL };
-	pImmediateContext->VSSetShaderResources(0, 8, pNULLViews);
-	pImmediateContext->GSSetShaderResources(0, 8, pNULLViews);
-	pImmediateContext->PSSetShaderResources(0, 8, pNULLViews);
-	pImmediateContext->PSSetShaderResources(1, 8, pNULLViews);
-	pImmediateContext->PSSetShaderResources(2, 8, pNULLViews);
-	pImmediateContext->PSSetShaderResources(3, 8, pNULLViews);
+	m_pd3dContext->VSSetShaderResources(0, 8, pNULLViews);
+	m_pd3dContext->GSSetShaderResources(0, 8, pNULLViews);
+	m_pd3dContext->PSSetShaderResources(0, 8, pNULLViews);
+	m_pd3dContext->PSSetShaderResources(1, 8, pNULLViews);
+	m_pd3dContext->PSSetShaderResources(2, 8, pNULLViews);
+	m_pd3dContext->PSSetShaderResources(3, 8, pNULLViews);
 }
-bool myDxRT::Begin(ID3D11DeviceContext*	pd3dContext)
+bool myDxRT::Begin()
 {
 	UINT  iNumView = 1;
-	pd3dContext->RSGetViewports(&iNumView, &vpSave);
-	pd3dContext->OMGetRenderTargets(1, &pSaveRTV, &pSaveDSV);
+	m_pd3dContext->RSGetViewports(&iNumView, &vpSave);
+	m_pd3dContext->OMGetRenderTargets(1, &pSaveRTV, &pSaveDSV);
 
 	ID3D11RenderTargetView* pNull = NULL;
-	pd3dContext->OMSetRenderTargets(1, &pNull, NULL);
-	ClearShaderResources(pd3dContext);
+	m_pd3dContext->OMSetRenderTargets(1, &pNull, NULL);
+	ClearShaderResources();
 
 	// apply
-	pd3dContext->RSSetViewports(1, &m_ViewPort);
-	pd3dContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
+	m_pd3dContext->RSSetViewports(1, &m_ViewPort);
+	m_pd3dContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
 	float clearColor[] = { 0,0,0,1 };
-	pd3dContext->ClearRenderTargetView(m_pRTV, clearColor);
-	pd3dContext->ClearDepthStencilView(m_pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+	m_pd3dContext->ClearRenderTargetView(m_pRTV, clearColor);
+	m_pd3dContext->ClearDepthStencilView(m_pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 	return true;
 }
-bool myDxRT::End(ID3D11DeviceContext*	pd3dContext)
+bool myDxRT::End()
 {
-	pd3dContext->OMSetRenderTargets(1, &pSaveRTV, pSaveDSV);
-	pd3dContext->RSSetViewports(iNumView, &vpSave);
+	m_pd3dContext->OMSetRenderTargets(1, &pSaveRTV, pSaveDSV);
+	m_pd3dContext->RSSetViewports(iNumView, &vpSave);
 
 	pSaveRTV->Release();
 	pSaveDSV->Release();

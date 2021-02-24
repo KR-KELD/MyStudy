@@ -13,8 +13,10 @@ class myCore : public myDevice
 public:
 	//myGrapicsAPI		m_Graphics;
 	bool				m_isGameRun;
+	myGameObject*		m_pDebugCameraObj;
 	myDebugCamera*		m_pDebugCamera;
 	myCamera*		    m_pMainCamera;
+	myGameObject*		m_pMainCameraObj;
 public:
 	virtual bool		Init() { return true; }
 	virtual bool		PreInit() { return true; }
@@ -27,9 +29,9 @@ public:
 	virtual bool		PreRender();
 	virtual bool		PostRender();
 	virtual bool		Release() { return true; }
-	virtual HRESULT DeleteDXResource();
-	virtual HRESULT CreateDXResource(UINT w, UINT h);
-
+	virtual HRESULT		DeleteDXResource();
+	virtual HRESULT		CreateDXResource(UINT w, UINT h);
+	virtual bool		ChangeMainCamera(myGameObject* pCameraObj);
 private:
 	bool				GameInit();
 	bool				GameFrame();
