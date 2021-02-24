@@ -8,14 +8,14 @@ bool Sample::Init()
 
 	m_Map = new myHeightMap;
 	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
-	m_Map->CreateHeightMap(m_pd3dContext, L"../../data/map/Map512.png");
+	m_Map->CreateHeightMap(m_pd3dContext, L"../../data/castle_height.bmp");
 
 
 	myMapDesc desc;
 	desc.iNumCols = m_Map->m_iNumCols;
 	desc.iNumRows = m_Map->m_iNumRows;
 	desc.fCellDistance = 1;
-	desc.szTexFile = L"../../data/map/Map512Color.png";
+	desc.szTexFile = L"../../data/castle.jpg";
 	desc.szVS = L"VS.txt";
 	desc.szPS = L"PS.txt";
 	m_Map->CreateMap(m_pd3dContext, desc);
@@ -115,51 +115,51 @@ bool Sample::Render()
 
 
 	//// CULLING
-	//std::vector<DWORD> visibleIB;
-	//visibleIB.resize(m_Map->m_IndexList.size());
-	//m_Map->m_iNumFaces = 0;
-	//for (int iFace = 0; iFace < m_Map->m_IndexList.size() / 3; iFace++)
-	//{
-	//	//맵의 각 페이스별로 인덱스 버퍼를 가져온다
-	//	int a = m_Map->m_IndexList[iFace * 3 + 0];
-	//	int b = m_Map->m_IndexList[iFace * 3 + 1];
-	//	int c = m_Map->m_IndexList[iFace * 3 + 2];
-	//	//visibleIB.push_back(a);
-	//	//visibleIB.push_back(b);
-	//	//visibleIB.push_back(c);
-	//	//continue;
-	//	//그 인덱스 정보로 버텍스 정보를 가져온다
-	//	Vector3 v[3];
-	//	v[0] = m_Map->m_VertexList[a].p;
-	//	v[1] = m_Map->m_VertexList[b].p;
-	//	v[2] = m_Map->m_VertexList[c].p;
-	//	
-	//	//프러스텀 컬링 판별을 해서 그려줄 페이스를 추려서 그려줄 버텍스의 인덱스 버퍼를 누적시킨다
-	//	//myModelViewCamera* pCamera = (myModelViewCamera*)m_pMainCamera;
-	//	for (int iV = 0; iV < 3; iV++)
-	//	{
-	//		BOOL bVisiable = m_pMainCamera->m_Frustum.ClassifyPoint(v[iV]);
-	//		if (bVisiable)
-	//		{
-	//			visibleIB[m_Map->m_iNumFaces * 3 + 0] = a;
-	//			visibleIB[m_Map->m_iNumFaces * 3 + 1] = b;
-	//			visibleIB[m_Map->m_iNumFaces * 3 + 2] = c;
-	//			m_Map->m_iNumFaces++;
-	//			break;
-	//		}
-	//	}
-	//}
-	//if (visibleIB.size() != 0)
-	//{
-	//	//맵의 컬링된 페이스 정보를 세팅한다
-	//	m_Map->m_iNumFaces = visibleIB.size() / 3;
-	//	m_pd3dContext->UpdateSubresource(
-	//		m_Map->m_pIndexBuffer, 0, NULL, &visibleIB.at(0), 0, 0);
-	//}
-	//else
-	//{
-	//	m_Map->m_iNumFaces = 0;
-	//}
+	std::vector<DWORD> visibleIB;
+	visibleIB.resize(m_Map->m_IndexList.size());
+	m_Map->m_iNumFaces = 0;
+	for (int iFace = 0; iFace < m_Map->m_IndexList.size() / 3; iFace++)
+	{
+		//맵의 각 페이스별로 인덱스 버퍼를 가져온다
+		int a = m_Map->m_IndexList[iFace * 3 + 0];
+		int b = m_Map->m_IndexList[iFace * 3 + 1];
+		int c = m_Map->m_IndexList[iFace * 3 + 2];
+		//visibleIB.push_back(a);
+		//visibleIB.push_back(b);
+		//visibleIB.push_back(c);
+		//continue;
+		//그 인덱스 정보로 버텍스 정보를 가져온다
+		Vector3 v[3];
+		v[0] = m_Map->m_VertexList[a].p;
+		v[1] = m_Map->m_VertexList[b].p;
+		v[2] = m_Map->m_VertexList[c].p;
+		
+		//프러스텀 컬링 판별을 해서 그려줄 페이스를 추려서 그려줄 버텍스의 인덱스 버퍼를 누적시킨다
+		//myModelViewCamera* pCamera = (myModelViewCamera*)m_pMainCamera;
+		for (int iV = 0; iV < 3; iV++)
+		{
+			BOOL bVisiable = m_pMainCamera->m_Frustum.ClassifyPoint(v[iV]);
+			if (bVisiable)
+			{
+				visibleIB[m_Map->m_iNumFaces * 3 + 0] = a;
+				visibleIB[m_Map->m_iNumFaces * 3 + 1] = b;
+				visibleIB[m_Map->m_iNumFaces * 3 + 2] = c;
+				m_Map->m_iNumFaces++;
+				break;
+			}
+		}
+	}
+	if (visibleIB.size() != 0)
+	{
+		//맵의 컬링된 페이스 정보를 세팅한다
+		m_Map->m_iNumFaces = visibleIB.size() / 3;
+		m_pd3dContext->UpdateSubresource(
+			m_Map->m_pIndexBuffer, 0, NULL, &visibleIB.at(0), 0, 0);
+	}
+	else
+	{
+		m_Map->m_iNumFaces = 0;
+	}
 
 	if (m_MiniMap->Begin())
 	{

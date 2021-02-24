@@ -12,23 +12,22 @@ bool myFrustum::Create(ID3D11DeviceContext* pContext)
 		m_VertexList.push_back(v);
 	}
 	//???
-	//m_VertexList[0].p = Vector3(-1.0f, 1.0f, 0.0f);
-	//m_VertexList[1].p = Vector3(1.0f, 1.0f, 0.0f);
-	//m_VertexList[2].p = Vector3(1.0f, -1.0f, 0.0f);
-	//m_VertexList[3].p = Vector3(-1.0f, -1.0f, 0.0f);
+	m_VertexList[0].p.z = 0.0f;
+	m_VertexList[1].p.z =  0.0f;
+	m_VertexList[2].p.z =  0.0f;
+	m_VertexList[3].p.z =  0.0f;
 
-	//m_VertexList[8].p = Vector3(1.0f, 1.0f, 0.0f);
-	//m_VertexList[11].p = Vector3(1.0f, -1.0f, 0.0f);
+	m_VertexList[9].p.z =  0.0f;
+	m_VertexList[11].p.z =  0.0f;
 
-	//m_VertexList[13].p = Vector3(-1.0f, 1.0f, 0.0f);
-	//m_VertexList[14].p = Vector3(-1.0f, -1.0f, 0.0f);
+	m_VertexList[12].p.z =  0.0f;
+	m_VertexList[14].p.z =  0.0f;
 
-	//m_VertexList[18].p = Vector3(1.0f, 1.0f, 0.0f);
-	//m_VertexList[19].p = Vector3(-1.0f, 1.0f, 0.0f);
+	m_VertexList[18].p.z =  0.0f;
+	m_VertexList[19].p.z =  0.0f;
 
-
-	//m_VertexList[20].p = Vector3(-1.0f, -1.0f, 0.0f);
-	//m_VertexList[21].p = Vector3(1.0f, -1.0f, 0.0f);
+	m_VertexList[20].p.z =  0.0f;
+	m_VertexList[21].p.z =  0.0f;
 
 	m_Plane.resize(6);
 	return true;
