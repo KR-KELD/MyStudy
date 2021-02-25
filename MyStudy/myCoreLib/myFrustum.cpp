@@ -1,6 +1,7 @@
 #include "myFrustum.h"
 bool myFrustum::Create(ID3D11DeviceContext* pContext)
 {
+	m_pd3dContext = pContext;
 	//육면체 프러스텀 오브젝트 생성
 	if (!m_FrustumObj.Create(pContext, L"vs.txt", L"ps.txt",L""))
 	{
@@ -35,17 +36,17 @@ bool myFrustum::Create(ID3D11DeviceContext* pContext)
 
 bool myFrustum::Frame(Matrix& ViewProjInv)
 {
-	////뷰행렬과 투영행렬의 역행렬을 만든다
-	//for (int iVertex = 0; iVertex < 24; iVertex++)
-	//{
-	//	//ndc공간의 프러스텀 정점들에 뷰*투영행렬의 역행렬을 곱해서 월드 공간 프러스텀으로 만들어준다
-	//	Vector3& v = m_VertexList[iVertex].p;
-	//	m_FrustumObj.m_VertexList[iVertex].p = Vector3::Transform(v, ViewProjInv);// *matInvViewProj;
-	//}
-	////변환된 프러스텀의 정점과 정점 버퍼를 세팅해준다
-	//m_pd3dContext->UpdateSubresource(
-	//	m_FrustumObj.m_pVertexBuffer, 0, NULL,
-	//	&m_FrustumObj.m_VertexList.at(0), 0, 0);
+	//뷰행렬과 투영행렬의 역행렬을 만든다
+	for (int iVertex = 0; iVertex < 24; iVertex++)
+	{
+		//ndc공간의 프러스텀 정점들에 뷰*투영행렬의 역행렬을 곱해서 월드 공간 프러스텀으로 만들어준다
+		Vector3& v = m_VertexList[iVertex].p;
+		m_FrustumObj.m_VertexList[iVertex].p = Vector3::Transform(v, ViewProjInv);// *matInvViewProj;
+	}
+	//변환된 프러스텀의 정점과 정점 버퍼를 세팅해준다
+	m_pd3dContext->UpdateSubresource(
+		m_FrustumObj.m_pVertexBuffer, 0, NULL,
+		&m_FrustumObj.m_VertexList.at(0), 0, 0);
 
 	//프러스텀 평면 구성
 	if (m_Plane.size() <= 0) return true;

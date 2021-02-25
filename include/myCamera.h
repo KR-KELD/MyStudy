@@ -7,12 +7,12 @@ public:
 public:
 	//ID3D11DeviceContext*	m_pd3dContext;
 	myFrustum				m_Frustum;
-	float					m_pSpeed;
+	//float					m_pSpeed;
 	//Vector3				m_vCameraPos = { 10,0,-10 };
 	//Vector3				m_vCameraTarget = { 0,0,0 };
-	Matrix					m_matWorld;
-	Matrix					m_matView;
-	Matrix					m_matProj;
+	//Matrix				m_matWorld;
+	//Matrix					m_matView;
+	//Matrix					m_matProj;
 	//Vector3				m_vLook;
 	//Vector3				m_vUp;
 	//Vector3				m_vRight;
@@ -28,8 +28,6 @@ public:
 	//Vector4				m_vDirValue;
 	POINT					m_ptPrePosition;
 public:
-	virtual void SetPos(Vector3 p);
-	virtual void SetTarget(Vector3 p);
 	virtual void Update(Vector4 d);
 	virtual bool		CreateViewMatrix(
 		Vector3 p,
@@ -45,13 +43,7 @@ public:
 		float width, float height,
 		float zNearPlane, float zFarPlane);
 	virtual bool CreateFrustum(ID3D11DeviceContext * pd3dContext);
-	void FrontMovement(float fDir = 1.0f);
-	void RightMovement(float fDir = 1.0f);
-	void UpMovement(float fDir = 1.0f);
-	void FrontBase(float fDir);
-	void RightBase(float fDir);
-	void UpBase(float fDir);
-	virtual void UpdateVector();
+	//virtual void MoveCamera();
 	virtual bool PostInit() { return true; }
 	virtual bool Init();
 	virtual bool Frame();

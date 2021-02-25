@@ -42,7 +42,7 @@ bool myModelViewCamera::PostInit()
 {
 	//뷰행렬의 역행렬을 
 	//질문
-	Matrix matInvView = m_matView.Invert();
+	Matrix matInvView = m_pTransform->m_matView.Invert();
 	m_ViewArcball.m_qNow = Quaternion::CreateFromRotationMatrix(matInvView);
 	m_ViewArcball.m_qNow.Normalize();
 	return true;
@@ -117,7 +117,7 @@ bool myModelViewCamera::Frame()
 	CreateViewMatrix(m_pTransform->m_vPos, m_pTransform->m_vTarget);
 
 	//WORLD
-	Matrix mInvView = m_matView.Invert();
+	Matrix mInvView = m_pTransform->m_matView.Invert();
 	mInvView._41 = 0.0f;
 	mInvView._42 = 0.0f;
 	mInvView._43 = 0.0f;
@@ -125,27 +125,23 @@ bool myModelViewCamera::Frame()
 	Matrix mModelRotInv = m_mModelLastRot.Invert();
 
 	Matrix mModelRot = m_WorldArcball.GetRotationMatrix();
-	m_matWorld = m_matWorld * m_matView * mModelRotInv * mModelRot * mInvView;
+	m_pTransform->m_matWorld = m_pTransform->m_matWorld * m_pTransform->m_matView * mModelRotInv * mModelRot * mInvView;
 
-	m_matWorld._41 = 0;
-	m_matWorld._42 = 0;
-	m_matWorld._43 = 0;
+	m_pTransform->m_matWorld._41 = 0;
+	m_pTransform->m_matWorld._42 = 0;
+	m_pTransform->m_matWorld._43 = 0;
 	m_mModelLastRot = mModelRot;
 
-	UpdateVector();
+	m_pTransform->UpdateVector();
 
 	m_fWheelDelta = 0;
 	return true;
 }
-void myModelViewCamera::UpdateVector()
-{
-	//카메라 위치,방향 갱신
-	myCamera::UpdateVector();
-}
+
 bool myModelViewCamera::DrawFrustum(Matrix * pmatView, Matrix * pmatProj)
 {
 	//매트릭스를 세팅하고 프러스텀 박스 랜더
-	m_Frustum.m_FrustumObj.SetMatrix(NULL,
+	m_Frustum.m_FrustumObj.m_pTransform->SetMatrix(NULL,
 		pmatView,
 		pmatProj);
 	m_Frustum.m_FrustumObj.Render();
@@ -153,7 +149,7 @@ bool myModelViewCamera::DrawFrustum(Matrix * pmatView, Matrix * pmatProj)
 }
 bool myModelViewCamera::FrameFrustum()
 {
-	Matrix matInvViewProj = m_matView * m_matProj;
+	Matrix matInvViewProj = m_pTransform->m_matView * m_pTransform->m_matProj;
 	matInvViewProj = matInvViewProj.Invert();
 
 	m_Frustum.Frame(matInvViewProj);

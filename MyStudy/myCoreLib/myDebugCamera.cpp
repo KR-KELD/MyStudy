@@ -15,7 +15,7 @@ void myDebugCamera::Update(Vector4 data)
 	matRoation._42 = m_pTransform->m_vPos.y;
 	matRoation._43 = m_pTransform->m_vPos.z;
 
-	m_matView = matRoation.Invert();
+	m_pTransform->m_matView = matRoation.Invert();
 	m_fWheelDelta = 0;
 }
 
@@ -28,6 +28,7 @@ bool myDebugCamera::Init()
 
 bool myDebugCamera::Frame()
 {
+	//MoveCamera();
 	POINT point;
 	GetCursorPos(&point);
 	HWND hWnd = WindowFromPoint(point);
@@ -44,9 +45,37 @@ bool myDebugCamera::Frame()
 	m_ptPrePosition = point;
 
 	Update(m_pTransform->m_vRot);
-	UpdateVector();
+	m_pTransform->UpdateVector();
 	return true;
 }
+
+//void myDebugCamera::MoveCamera()
+//{
+//	if (g_Input.GetKey('W') == KEY_HOLD)
+//	{
+//		m_pTransform->FrontMovement(1.0f);
+//	}
+//	if (g_Input.GetKey('S') == KEY_HOLD)
+//	{
+//		m_pTransform->FrontMovement(-1.0f);
+//	}
+//	if (g_Input.GetKey('A') == KEY_HOLD)
+//	{
+//		m_pTransform->RightMovement(-1.0f);
+//	}
+//	if (g_Input.GetKey('D') == KEY_HOLD)
+//	{
+//		m_pTransform->RightMovement(1.0f);
+//	}
+//	if (g_Input.GetKey('Q') == KEY_HOLD)
+//	{
+//		m_pTransform->UpMovement(1.0f);
+//	}
+//	if (g_Input.GetKey('E') == KEY_HOLD)
+//	{
+//		m_pTransform->UpMovement(-1.0f);
+//	}
+//}
 
 myDebugCamera::myDebugCamera()
 {

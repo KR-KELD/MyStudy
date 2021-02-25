@@ -67,10 +67,6 @@ public:
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
 public:
-	Matrix						m_matWorld;
-	Matrix						m_matView;
-	Matrix						m_matProj;
-public:
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;
 	std::vector<DWORD>			m_IndexList;
@@ -84,7 +80,6 @@ public:
 public:
 	virtual bool	Init();
 	virtual bool	Frame();
-	virtual bool	SetMatrix(Matrix* pWorld, Matrix* pView, Matrix* pProj);
 	virtual void    Update();
 	virtual bool	PreRender();
 	virtual bool	Render();

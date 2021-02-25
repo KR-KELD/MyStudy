@@ -146,11 +146,13 @@ class myTransform : public myComponent
 public:
 	DEFINE_COMPONENT(myComponent, myComponent, true);
 public:
+	float		m_fSpeed;
+public:
 	Vector3		m_vPos;
 	Quaternion	m_qRot;
 	Vector4		m_vRot;
 	Vector3		m_vScale;
-	Vector3		m_vTarget;
+	Vector3 	m_vTarget;
 	Vector3		m_vLook;
 	Vector3		m_vUp;
 	Vector3		m_vRight;
@@ -164,10 +166,27 @@ public:
 	Vector3		m_vLocalUp;
 	Vector3		m_vLocalRight;
 public:
-	Matrix		m_mLocal;
-	Matrix		m_mWorld;
+	Matrix		m_matRot;
+	Matrix		m_matScale;
+	Matrix		m_matWorld;
+	Matrix		m_matLocal;
+	Matrix		m_matLocalRot;
+	Matrix		m_matLocalScale;
+	Matrix		m_matView;
+	Matrix		m_matProj;
 public:
-	void ComputeMatWorld();
+	virtual bool	SetMatrix(Matrix* pWorld, Matrix* pView, Matrix* pProj);
+	virtual void	UpdateVector();
+	virtual void	SetPos(Vector3 p);
+	virtual void	SetTarget(Vector3 p);
+public:
+	void FrontMovement(float fDir = 1.0f);
+	void RightMovement(float fDir = 1.0f);
+	void UpMovement(float fDir = 1.0f);
+	void FrontBase(float fDir);
+	void RightBase(float fDir);
+	void UpBase(float fDir);
+	void LookAt(Vector3 vTarget);
 public:
 	virtual bool	Init() override;
 	virtual bool	PreFrame() override;
@@ -182,6 +201,7 @@ public:
 	virtual bool	Release() override;
 	myTransform()
 	{
+		m_fSpeed = 30.0f;
 		m_vPos = Vector3(0.0f, 0.0f, 0.0f);
 		m_qRot = Quaternion::Identity;
 		m_vRot = Vector4::Zero;
@@ -198,8 +218,16 @@ public:
 		m_vLocalTarget = m_vLook;
 		m_vLocalUp = Vector3(0.0f, 1.0f, 0.0f);
 		m_vLocalRight = Vector3(1.0f, 0.0f, 0.0f);
-		m_mLocal = Matrix::Identity;
-		m_mWorld = Matrix::Identity;
+
+		m_matRot = Matrix::Identity;
+		m_matScale = Matrix::Identity;
+		m_matWorld = Matrix::Identity;
+		m_matLocal = Matrix::Identity;
+		m_matLocalRot = Matrix::Identity;
+		m_matLocalScale = Matrix::Identity;
+
+		m_matView = Matrix::Identity;
+		m_matProj = Matrix::Identity;
 	}
 	~myTransform() {}
 };

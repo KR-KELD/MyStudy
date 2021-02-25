@@ -1,3 +1,5 @@
+
+
 #include "myCore.h"
 //myCamera*		g_pMainCamera = nullptr;
 
@@ -21,21 +23,6 @@ HRESULT myCore::CreateDXResource(UINT w, UINT h)
 	return S_OK;
 }
 
-bool myCore::ChangeMainCamera(myGameObject * pCameraObj)
-{
-	if (pCameraObj != nullptr)
-	{
-		myCamera* camera = pCameraObj->GetComponent<myCamera>();
-		if (camera != nullptr)
-		{
-			m_pMainCameraObj = pCameraObj;
-			m_pMainCamera = camera;
-			return true;
-		}
-	}
-	return false;
-}
-
 bool myCore::GameInit()
 {
 	PreInit();
@@ -51,6 +38,7 @@ bool myCore::GameInit()
 	//g_Draw.Init();
 	//m_Graphics.Init();
 	g_SoundMgr.Init();
+	g_CamMgr.Init();
 	g_ObjMgr.Init();
 	IDXGISurface1* pBackBuffer = nullptr;
 	m_pSwapChain->GetBuffer(0, __uuidof(IDXGISurface),
@@ -71,17 +59,13 @@ bool myCore::GameInit()
 	}
 
 	myDebugCamera* pDebugCamera = new myDebugCamera;
-	m_pDebugCameraObj = myGameObject::CreateGameObject(L"DebugCamera");
-	m_pDebugCameraObj->InsertComponent(pDebugCamera);
-	pDebugCamera->Init();
-	pDebugCamera->CreateFrustum(m_pd3dContext);
-	//g_ObjMgr.CreateObjComponent(L"MainCamera", m_pDebugCamera);
-
+	myGameObject* obj = g_CamMgr.CreateCameraObj(m_pd3dContext, L"DebugCamera", pDebugCamera);
+	g_CamList.GetGameObject(L"DebugCamera")->InsertComponent(new myController);
 	pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
 
-	ChangeMainCamera(m_pDebugCameraObj);
+	g_CamMgr.SetMainCamera(obj);
 
 	Init();
 	PostInit();
@@ -99,38 +83,9 @@ bool myCore::GameFrame()
 	g_SoundMgr.Frame();
 	Frame();
 	g_Draw.Frame();
-	CameraFrame();
+	g_CamMgr.m_pMainCameraObj->Frame();
 	PostFrame();
 	return true;
-}
-
-void myCore::CameraFrame()
-{
-	if (g_Input.GetKey('W') == KEY_HOLD)
-	{
-		m_pMainCamera->FrontMovement(1.0f);
-	}
-	if (g_Input.GetKey('S') == KEY_HOLD)
-	{
-		m_pMainCamera->FrontMovement(-1.0f);
-	}
-	if (g_Input.GetKey('A') == KEY_HOLD)
-	{
-		m_pMainCamera->RightMovement(-1.0f);
-	}
-	if (g_Input.GetKey('D') == KEY_HOLD)
-	{
-		m_pMainCamera->RightMovement(1.0f);
-	}
-	if (g_Input.GetKey('Q') == KEY_HOLD)
-	{
-		m_pMainCamera->UpMovement(1.0f);
-	}
-	if (g_Input.GetKey('E') == KEY_HOLD)
-	{
-		m_pMainCamera->UpMovement(-1.0f);
-	}
-	m_pMainCameraObj->Frame();
 }
 
 bool myCore::PreRender()
@@ -150,8 +105,9 @@ bool myCore::GameRender()
 
 bool myCore::PostRender()
 {
-	m_pBasisLine->SetMatrix(NULL, &m_pMainCamera->m_matView,
-		&m_pMainCamera->m_matProj);
+	m_pBasisLine->m_pTransform->SetMatrix(NULL, 
+		&g_pMainCamTransform->m_matView,
+		&g_pMainCamTransform->m_matProj);
 	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(50, 0, 0), Vector4(1, 0, 0, 1));
 	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 50, 0), Vector4(0, 1, 0, 1));
 	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
@@ -201,7 +157,7 @@ bool myCore::Run()
 
 myCore::myCore()
 {
-	m_pMainCamera = nullptr;
+
 }
 
 myCore::~myCore()
@@ -211,8 +167,7 @@ myCore::~myCore()
 bool myCore::GameRelease()
 {
 	Release();
-	m_pDebugCameraObj->Release();
-	delete m_pDebugCameraObj;
+	g_CamMgr.Release();
 	g_Draw.Release();
 	g_Timer.Release();
 	g_Input.Release();

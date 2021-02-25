@@ -8,6 +8,7 @@ public:
 	void Update(Vector4 data);
 	bool Init();
 	bool Frame();
+	//void MoveCamera() override;
 public:
 	myDebugCamera();
 	virtual ~myDebugCamera();

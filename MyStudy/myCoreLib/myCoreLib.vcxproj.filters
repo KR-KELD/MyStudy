@@ -34,12 +34,6 @@
     <Filter Include="Net">
       <UniqueIdentifier>{917c8be2-0477-4bee-ae70-dee415daf456}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dxtk">
-      <UniqueIdentifier>{bcdd0f02-4749-4573-b59f-ce5cb24e66ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="dx">
-      <UniqueIdentifier>{6377d72b-7c6f-4731-8c0e-d70365c2362c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Math">
       <UniqueIdentifier>{bb3c1faa-08c5-41de-9457-03ef1b4273a1}</UniqueIdentifier>
     </Filter>
@@ -48,6 +42,15 @@
     </Filter>
     <Filter Include="Component">
       <UniqueIdentifier>{7f50455e-1470-483c-9cc0-cb7af469b071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map">
+      <UniqueIdentifier>{79aee1d9-1860-4d5c-8633-e58cd5412573}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX">
+      <UniqueIdentifier>{6377d72b-7c6f-4731-8c0e-d70365c2362c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DXTK">
+      <UniqueIdentifier>{bcdd0f02-4749-4573-b59f-ce5cb24e66ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -109,10 +112,10 @@
       <Filter>Net</Filter>
     </ClCompile>
     <ClCompile Include="dxtk\DDSTextureLoader.cpp">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClCompile>
     <ClCompile Include="dxtk\WICTextureLoader.cpp">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClCompile>
     <ClCompile Include="SimpleMath.cpp">
       <Filter>Math</Filter>
@@ -124,13 +127,13 @@
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="myDevice.cpp">
-      <Filter>dx</Filter>
+      <Filter>DX</Filter>
     </ClCompile>
     <ClCompile Include="myDxState.cpp">
-      <Filter>dx</Filter>
+      <Filter>DX</Filter>
     </ClCompile>
     <ClCompile Include="myTexture.cpp">
-      <Filter>dx</Filter>
+      <Filter>DX</Filter>
     </ClCompile>
     <ClCompile Include="myTextureManager.cpp">
       <Filter>Mgr</Filter>
@@ -147,20 +150,29 @@
     <ClCompile Include="myObjectInfo.cpp">
       <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="myMap.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="myMiniMap.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="myDxRT.cpp">
-      <Filter>dx</Filter>
+      <Filter>DX</Filter>
     </ClCompile>
     <ClCompile Include="myFrustum.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="myModelViewCamera.cpp">
       <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="myMiniMap.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="myMap.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="myFPSController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myCameraManager.cpp">
+      <Filter>Mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="myController.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -237,25 +249,25 @@
       <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="dxtk\DDS.h">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClInclude>
     <ClInclude Include="dxtk\DDSTextureLoader.h">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClInclude>
     <ClInclude Include="dxtk\DirectXHelpers.h">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClInclude>
     <ClInclude Include="dxtk\LoaderHelpers.h">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClInclude>
     <ClInclude Include="dxtk\pch.h">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClInclude>
     <ClInclude Include="dxtk\PlatformHelpers.h">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClInclude>
     <ClInclude Include="dxtk\WICTextureLoader.h">
-      <Filter>dxtk</Filter>
+      <Filter>DXTK</Filter>
     </ClInclude>
     <ClInclude Include="myBasicStd.h">
       <Filter>Core</Filter>
@@ -273,13 +285,13 @@
       <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="myDxState.h">
-      <Filter>dx</Filter>
+      <Filter>DX</Filter>
     </ClInclude>
     <ClInclude Include="myDevice.h">
-      <Filter>dx</Filter>
+      <Filter>DX</Filter>
     </ClInclude>
     <ClInclude Include="myTexture.h">
-      <Filter>dx</Filter>
+      <Filter>DX</Filter>
     </ClInclude>
     <ClInclude Include="myTextureManager.h">
       <Filter>Mgr</Filter>
@@ -296,20 +308,29 @@
     <ClInclude Include="myObjectInfo.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="myMap.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="myMiniMap.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="myDxRT.h">
-      <Filter>dx</Filter>
+      <Filter>DX</Filter>
     </ClInclude>
     <ClInclude Include="myFrustum.h">
       <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="myModelViewCamera.h">
       <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="myMiniMap.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="myMap.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="myFPSController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myCameraManager.h">
+      <Filter>Mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="myController.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

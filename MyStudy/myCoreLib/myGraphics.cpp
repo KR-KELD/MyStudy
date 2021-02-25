@@ -8,33 +8,13 @@ void myGraphics::CompilerCheck(ID3DBlob* pErrorMsgs)
 }
 bool	myGraphics::Init()
 {
-	m_matWorld = Matrix::Identity;
-	m_matView = Matrix::Identity;
-	m_matProj = Matrix::Identity;
 	return true;
 }
 bool	myGraphics::Frame() 
 {
 	return true;
 }
-bool	myGraphics::SetMatrix(Matrix* pWorld,
-	Matrix* pView,
-	Matrix* pProj)
-{
-	if (pWorld != nullptr)
-	{
-		m_matWorld = *pWorld;
-	}
-	if (pView != nullptr)
-	{
-		m_matView = *pView;
-	}
-	if (pProj != nullptr)
-	{
-		m_matProj = *pProj;
-	}
-	return true;
-}
+
 void    myGraphics::Update()
 {
 	D3D11_MAPPED_SUBRESOURCE mr;
@@ -43,9 +23,9 @@ void    myGraphics::Update()
 	if (SUCCEEDED(hr))
 	{
 		myDataCB* pData = (myDataCB*)mr.pData;
-		pData->matWorld = m_matWorld.Transpose();
-		pData->matView = m_matView.Transpose();
-		pData->matProject = m_matProj.Transpose();
+		pData->matWorld = m_pTransform->m_matWorld.Transpose();
+		pData->matView = m_pTransform->m_matView.Transpose();
+		pData->matProject = m_pTransform->m_matProj.Transpose();
 
 		pData->vColor[0] = cosf(g_fGameTimer);
 		pData->vColor[1] = sinf(g_fGameTimer);

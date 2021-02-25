@@ -57,9 +57,99 @@ bool myComponent::Release()
 	return true;
 }
 
-void myTransform::ComputeMatWorld()
+bool myTransform::SetMatrix(Matrix * pWorld, Matrix * pView, Matrix * pProj)
 {
+	if (pWorld != nullptr)
+	{
+		m_pTransform->m_matWorld = *pWorld;
+	}
+	else
+	{
+		m_matWorld = m_matScale * m_matRot;
+		m_matWorld._41 = m_vPos.x;
+		m_matWorld._42 = m_vPos.y;
+		m_matWorld._43 = m_vPos.z;
+	}
+	if (pView != nullptr)
+	{
+		m_matView = *pView;
+	}
+	if (pProj != nullptr)
+	{
+		m_matProj = *pProj;
+	}
+	return true;
+}
 
+void myTransform::UpdateVector()
+{
+	m_vLook.x = m_matView._13;
+	m_vLook.y = m_matView._23;
+	m_vLook.z = m_matView._33;
+	m_vUp.x = m_matView._12;
+	m_vUp.y = m_matView._22;
+	m_vUp.z = m_matView._32;
+	m_vRight.x = m_matView._11;
+	m_vRight.y = m_matView._21;
+	m_vRight.z = m_matView._31;
+
+	m_vLook.Normalize();
+	m_vUp.Normalize();
+	m_vRight.Normalize();
+}
+
+void myTransform::SetPos(Vector3 p)
+{
+	m_vPos = p;
+}
+
+void myTransform::SetTarget(Vector3 p)
+{
+	m_vTarget = p;
+}
+
+void myTransform::FrontMovement(float fDir)
+{
+	Vector3 vOffset = m_pTransform->m_vLook * g_fSecondPerFrame * m_fSpeed * fDir;
+	m_pTransform->m_vPos += vOffset;
+}
+void myTransform::RightMovement(float fDir)
+{
+	Vector3 vMove = m_pTransform->m_vRight * g_fSecondPerFrame * m_fSpeed * fDir;
+	m_pTransform->m_vPos += vMove;
+}
+void myTransform::UpMovement(float fDir)
+{
+	Vector3 vMove = m_pTransform->m_vUp * g_fSecondPerFrame * m_fSpeed * fDir;
+	m_pTransform->m_vPos += vMove;
+}
+void myTransform::FrontBase(float fDir)
+{
+	Vector3 vSide = { 0,0,1 };
+	Vector3 vMove = vSide * g_fSecondPerFrame * m_fSpeed * fDir;
+	m_pTransform->m_vPos += vMove;
+	m_pTransform->m_vTarget += m_pTransform->m_vLook * m_fSpeed;
+}
+void myTransform::RightBase(float fDir)
+{
+	Vector3 vSide = { 1,0,0 };
+	Vector3 vMove = vSide * g_fSecondPerFrame * m_fSpeed * fDir;
+	m_pTransform->m_vPos += vMove;
+	m_pTransform->m_vTarget += m_pTransform->m_vLook * m_fSpeed;
+}
+void myTransform::UpBase(float fDir)
+{
+	Vector3 vUp = { 0,1,0 };
+	Vector3 vMove = vUp * g_fSecondPerFrame * m_fSpeed * fDir;
+	m_pTransform->m_vPos += vMove;
+	m_pTransform->m_vTarget += m_pTransform->m_vLook * m_fSpeed;
+}
+
+void myTransform::LookAt(Vector3 vTarget)
+{
+	m_vTarget = vTarget;
+	Vector3 vUp = { 0,1,0 };
+	m_pTransform->m_matView = Matrix::CreateLookAt(m_pTransform->m_vPos, vTarget, vUp);
 }
 
 bool myTransform::Init()
@@ -74,6 +164,7 @@ bool myTransform::PreFrame()
 
 bool myTransform::Frame()
 {
+	UpdateVector();
 	return true;
 }
 

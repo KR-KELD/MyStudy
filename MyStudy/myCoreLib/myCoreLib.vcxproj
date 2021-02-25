@@ -190,7 +190,9 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="dxtk\WICTextureLoader.cpp" />
     <ClCompile Include="myButton.cpp" />
     <ClCompile Include="myCamera.cpp" />
+    <ClCompile Include="myCameraManager.cpp" />
     <ClCompile Include="myCollision.cpp" />
+    <ClCompile Include="myController.cpp" />
     <ClCompile Include="myCore.cpp" />
     <ClCompile Include="myDebugCamera.cpp" />
     <ClCompile Include="myDevice.cpp" />
@@ -198,6 +200,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myDxRT.cpp" />
     <ClCompile Include="myDxState.cpp" />
     <ClCompile Include="myEffect.cpp" />
+    <ClCompile Include="myFPSController.cpp" />
     <ClCompile Include="myFrustum.cpp" />
     <ClCompile Include="myGameObject.cpp" />
     <ClCompile Include="myGraphics.cpp" />
@@ -235,7 +238,9 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myBasicStd.h" />
     <ClInclude Include="myButton.h" />
     <ClInclude Include="myCamera.h" />
+    <ClInclude Include="myCameraManager.h" />
     <ClInclude Include="myCollision.h" />
+    <ClInclude Include="myController.h" />
     <ClInclude Include="myCore.h" />
     <ClInclude Include="myCoreStd.h" />
     <ClInclude Include="myDebugCamera.h" />
@@ -244,6 +249,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myDxRT.h" />
     <ClInclude Include="myDxState.h" />
     <ClInclude Include="myEffect.h" />
+    <ClInclude Include="myFPSController.h" />
     <ClInclude Include="myFrustum.h" />
     <ClInclude Include="myGameObject.h" />
     <ClInclude Include="myGraphics.h" />

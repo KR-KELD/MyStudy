@@ -46,7 +46,6 @@ public:
 	virtual bool PostInit() override;
 	virtual void Update(Vector4 data) override;
 	virtual bool Frame() override;
-	virtual void UpdateVector()override;
 	virtual bool DrawFrustum(Matrix* pmatView, Matrix* pmatProj);
 	virtual bool FrameFrustum();
 public:

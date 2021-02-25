@@ -5,6 +5,7 @@ struct myMapDesc
 {
 	int	iNumCols;
 	int iNumRows;
+	float fScaleHeight;
 	float fCellDistance;
 	T_STR szTexFile;
 	T_STR szVS;
