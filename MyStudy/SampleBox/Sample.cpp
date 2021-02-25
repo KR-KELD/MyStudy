@@ -20,7 +20,7 @@ bool Sample::Init()
 	desc.szVS = L"VS.txt";
 	desc.szPS = L"PS.txt";
 	m_Map->CreateMap(m_pd3dContext, desc);
-	m_Map->CalNormal();
+	//m_Map->CalNormal();
 
 	m_MiniMap = new myMiniMap;
 	g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);

@@ -30,9 +30,7 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	p = mul(p, g_matView);
 	vOut.p = mul(p, g_matProj);
 	// dot
-	float3 Light = float3(-1.0f,-1.0f,0.0f);
-	Light = normalize(Light);
-	vOut.n = dot(-Light,vIn.n);
+	vOut.n = vIn.n;
 	vOut.c = vIn.c;
 	vOut.t = vIn.t;	
 	return vOut;

@@ -26,9 +26,10 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
-	float4 vNormal = float4(vIn.n,0.0f);
-	vNormal = saturate(vTexture * vNormal);
-	vOut.c = vNormal;
+	float3 Light = float3(-1.0f,-1.0f,0.0f);
+	Light = normalize(Light);
+	float ratio = dot(-Light,vIn.n);
+	vOut.c = vTexture * ratio;
 	return vOut;
 }
 PS_OUTPUT PSLine( VS_OUTPUT vIn)
