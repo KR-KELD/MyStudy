@@ -15,24 +15,22 @@ bool Sample::Init()
 	desc.iNumCols = m_Map->m_iNumCols;
 	desc.iNumRows = m_Map->m_iNumRows;
 	desc.fCellDistance = 1;
+	desc.fScaleHeight = 10.0f;
 	desc.szTexFile = L"../../data/castle.jpg";
 	desc.szVS = L"VS.txt";
 	desc.szPS = L"PS.txt";
 	m_Map->CreateMap(m_pd3dContext, desc);
+	m_Map->CalNormal();
 
 	m_MiniMap = new myMiniMap;
 	g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
 
 	m_MiniMap->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
-		L"../../data/bitmap/map.bmp");
-
-	Matrix matScale, matRotation;
-	matScale = Matrix::CreateScale(100, 100, 100);
-	matRotation = Matrix::CreateRotationX(PI2D);
-	m_matPlaneWorld = matScale * matRotation;
+		L"../../data/castle.jpg");
 
 	m_Box = new myShapeBox;
 	g_ObjMgr.CreateObjComponent(L"Box", m_Box);
+	g_GameObject.GetGameObject(L"Box")->InsertComponent(new myController);
 
 	if (!m_Box->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/intro.bmp"))
@@ -40,20 +38,20 @@ bool Sample::Init()
 		return false;
 	}
 
-
 	myModelViewCamera* pModelCamera = new myModelViewCamera;
 	g_CamMgr.CreateCameraObj(m_pd3dContext, L"ModelCamera", pModelCamera);
 	//프러스텀 달기
 	pModelCamera->CreateViewMatrix({ 0,5,-5 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	pModelCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
+	g_CamMgr.SetMainCamera(L"ModelCamera");
 
 	m_TopCamera = new myCamera;
 	g_CamMgr.CreateCameraObj(m_pd3dContext, L"TopCamera", m_TopCamera);
 
 	m_TopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
 	fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	m_TopCamera->CreateOrthographic(500, 500, 1.0f, 1000);
+	m_TopCamera->CreateOrthographic(desc.iNumCols, desc.iNumRows, 1.0f, 1000);
 	return true;
 }
 
@@ -64,6 +62,9 @@ bool Sample::Frame()
 
 	//matScale = Matrix::CreateScale(1, 1, 1);
 	//matRotation = Matrix::CreateRotationY(g_fGameTimer);
+	//m_matBoxWorld._41 = m_Box->m_pTransform->m_vPos.x;
+	//m_matBoxWorld._42 = m_Box->m_pTransform->m_vPos.y;
+	//m_matBoxWorld._43 = m_Box->m_pTransform->m_vPos.z;
 	//m_matBoxWorld = matScale * matRotation;
 	//m_matBoxWorld._42 = 3.0f;
 
@@ -87,6 +88,16 @@ bool Sample::Frame()
 		myDxState::m_CullMode = D3D11_CULL_FRONT;
 		myDxState::SetRasterizerState(m_pd3dDevice);
 	}
+	if (g_Input.GetKey('6') == KEY_PUSH)
+	{
+		g_CamMgr.SetMainCamera(L"DebugCamera");
+	}
+	if (g_Input.GetKey('5') == KEY_PUSH)
+	{
+		g_CamMgr.SetMainCamera(L"ModelCamera");
+	}
+	m_Box->m_pTransform->m_vPos.y = m_Map->GetHeight(m_Box->m_pTransform->m_matWorld._41, m_Box->m_pTransform->m_matWorld._43);
+	g_pMainCamTransform->SetTarget(m_Box->m_pTransform->m_vPos);
 	return true;
 }
 
@@ -159,15 +170,11 @@ bool Sample::Render()
 			&m_TopCamera->m_pTransform->m_matProj);
 		m_Map->Render();
 
-		Matrix matWorld;
-		matWorld._41 = m_TopCamera->m_pTransform->m_vPos.x;
-		matWorld._42 = m_TopCamera->m_pTransform->m_vPos.y;
-		matWorld._43 = m_TopCamera->m_pTransform->m_vPos.z;
-
-		m_Box->m_pTransform->SetMatrix(&m_Box->m_pTransform->m_matWorld,
+		m_Box->m_pTransform->SetMatrix(NULL,
 			&m_TopCamera->m_pTransform->m_matView,
 			&m_TopCamera->m_pTransform->m_matProj);
 		m_Box->Render();
+
 		m_MiniMap->End();
 	}
 
@@ -177,13 +184,11 @@ bool Sample::Render()
 	m_Map->Render();
 
 	//그리기
-	//m_Box.SetMatrix(&m_matBoxWorld,
-	//	&m_pMainCamera->m_matView,
-	//	&m_pMainCamera->m_matProj);
 
 
-	m_Box->m_pTransform->SetMatrix(&m_Box->m_pTransform->m_matWorld,
-		&g_pMainCamTransform->m_matView, &g_pMainCamTransform->m_matProj);
+	m_Box->m_pTransform->SetMatrix(NULL,
+		&g_pMainCamTransform->m_matView, 
+		&g_pMainCamTransform->m_matProj);
 	m_Box->Render();
 
 

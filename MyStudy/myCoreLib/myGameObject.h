@@ -206,7 +206,7 @@ public:
 		m_qRot = Quaternion::Identity;
 		m_vRot = Vector4::Zero;
 		m_vScale = Vector3(1.0f, 1.0f, 1.0f);
-		m_vLook = Vector3(0.0f, 0.0f, -1.0f);
+		m_vLook = Vector3(0.0f, 0.0f, 1.0f);
 		m_vTarget = m_vLook;
 		m_vUp = Vector3(0.0f, 1.0f, 0.0f);
 		m_vRight = Vector3(1.0f, 0.0f, 0.0f);
@@ -214,7 +214,7 @@ public:
 		m_qLocalRot = Quaternion::Identity;
 		m_vLocalRot = Vector4::Zero;
 		m_vLocalScale = Vector3(1.0f, 1.0f, 1.0f);
-		m_vLocalLook = Vector3(0.0f, 0.0f, -1.0f);
+		m_vLocalLook = Vector3(0.0f, 0.0f, 1.0f);
 		m_vLocalTarget = m_vLook;
 		m_vLocalUp = Vector3(0.0f, 1.0f, 0.0f);
 		m_vLocalRight = Vector3(1.0f, 0.0f, 0.0f);

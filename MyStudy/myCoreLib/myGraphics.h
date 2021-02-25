@@ -54,6 +54,7 @@ struct myDataCB
 	Matrix  matProject;
 	float vColor[4];
 	float vTime[4];
+	//Vector3 vDirLight;
 };
 
 class myGraphics : public myComponent

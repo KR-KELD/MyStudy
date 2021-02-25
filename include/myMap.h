@@ -28,7 +28,11 @@ public:
 	std::vector<float> m_fHeightList;
 public:
 	bool			CreateMap(ID3D11DeviceContext*	pd3dContex, myMapDesc  desc);
-	virtual float   GetHeight(UINT index);
+	virtual bool	CalNormal();
+	virtual float   Lerp(float fStart, float fEnd, float fTangent);
+	virtual float	GetHeight(float fPosX, float fPosZ);
+	virtual float   GetFaceHeight(UINT index);
+	virtual float   GetHeightMap(int row, int col);
 	virtual bool    CreateVertexData() override;
 	virtual bool    CreateIndexData()override;
 	virtual bool	Frame() override;

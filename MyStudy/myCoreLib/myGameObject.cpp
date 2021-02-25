@@ -61,7 +61,7 @@ bool myTransform::SetMatrix(Matrix * pWorld, Matrix * pView, Matrix * pProj)
 {
 	if (pWorld != nullptr)
 	{
-		m_pTransform->m_matWorld = *pWorld;
+		m_matWorld = *pWorld;
 	}
 	else
 	{
@@ -164,7 +164,7 @@ bool myTransform::PreFrame()
 
 bool myTransform::Frame()
 {
-	UpdateVector();
+	//UpdateVector();
 	return true;
 }
 

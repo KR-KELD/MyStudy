@@ -58,8 +58,8 @@ bool myHeightMap::CreateHeightMap(ID3D11DeviceContext* pContext, const TCHAR* ps
 	pTexture->Release();
 	return true;
 }
-float   myHeightMap::GetHeight(UINT index)
+float   myHeightMap::GetFaceHeight(UINT index)
 {
 	//return 0;
-	return m_fHeightList[index] / 10.0f;
+	return m_fHeightList[index] / m_MapDesc.fScaleHeight;
 }

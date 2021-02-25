@@ -56,8 +56,8 @@ Quaternion myArcball::QuatFromPoints(Vector3 v0, Vector3 v1)
 }
 Vector3 myArcball::ScreenToVector(float px, float py)
 {
-	float x = -((px / (float)g_rtClient.right) * 2.0f - 1.0f);
-	float y = (py / (float)g_rtClient.bottom) * 2.0f - 1.0f;
+	float x = ((px / (float)g_rtClient.right) * 2.0f - 1.0f);
+	float y = -((py / (float)g_rtClient.bottom) * 2.0f - 1.0f);
 	float z = 0.0f;
 	float fDist = x * x + y * y;
 	if (fDist > 1.0f)

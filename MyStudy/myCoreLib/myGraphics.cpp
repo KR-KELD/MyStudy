@@ -33,6 +33,8 @@ void    myGraphics::Update()
 		pData->vColor[3] = 1;
 		pData->vTime[0] = cosf(g_fGameTimer)*0.5f + 0.5f;
 		pData->vTime[1] = g_fGameTimer;
+		//pData->vDirLight = Vector3(-1.0f, -1.0f, 0.0f);
+		//pData->vDirLight.Normalize();
 		m_pd3dContext->Unmap(m_pConstantBuffer, 0);
 	}
 }

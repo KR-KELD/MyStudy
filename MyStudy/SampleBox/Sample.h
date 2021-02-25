@@ -14,7 +14,6 @@ public:
 	myShapeBox*		m_Box;
 public:
 	Matrix			m_matBoxWorld;
-	Matrix			m_matPlaneWorld;
 public:
 	bool Init() override;
 	bool Frame() override;

@@ -42,11 +42,6 @@ bool myMiniMap::End()
 	m_DxRT.End();
 	return true;
 }
-bool myMiniMap::Render()
-{
-	myShapePlane::Render();
-	return true;
-}
 
 bool myMiniMap::PostRender()
 {

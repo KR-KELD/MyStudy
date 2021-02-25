@@ -15,7 +15,6 @@ public:
 	virtual bool	Begin();
 	virtual bool	End();
 	virtual bool	Release() override;
-	virtual bool	Render() override;
 	virtual bool	PostRender() override;
 
 };

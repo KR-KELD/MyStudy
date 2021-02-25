@@ -45,10 +45,6 @@ bool myCamera::CreateFrustum(ID3D11DeviceContext * pd3dContext)
 	m_Frustum.Create(pd3dContext);
 	return true;
 }
-//void myCamera::MoveCamera()
-//{
-//
-//}
 
 void myCamera::Update(Vector4 data)
 {
@@ -72,7 +68,6 @@ bool myCamera::Init()
 }
 bool myCamera::Frame()
 {
-	//MoveCamera();
 	m_pTransform->LookAt(m_pTransform->m_vTarget);
 	m_pTransform->UpdateVector();
 	return true;
