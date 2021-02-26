@@ -36,7 +36,6 @@ struct myPlane
 class myFrustum
 {
 public:
-	ID3D11DeviceContext*		m_pd3dContext;
 	//프러스텀 박스
 	myShapeBox					m_FrustumObj;
 	//프러스텀 박스의 버텍스 데이터
@@ -44,7 +43,7 @@ public:
 	//프러스텀 평면 6개
 	std::vector<myPlane>		m_Plane;
 public:
-	virtual bool Create(ID3D11DeviceContext* pContext);
+	virtual bool Create();
 	virtual bool Frame(Matrix& ViewProjInv);
 	virtual bool Release();
 	BOOL	ClassifyPoint(Vector3 v);

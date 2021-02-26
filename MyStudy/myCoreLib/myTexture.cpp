@@ -17,21 +17,21 @@ bool myTexture::Render()
 
 bool myTexture::Release()
 {
-	if (m_pTextureSRV)
-	{
-		m_pTextureSRV->Release();
-		m_pTextureSRV = nullptr;
-	}
+	//if (m_pTextureSRV)
+	//{
+	//	m_pTextureSRV->Release();
+	//	m_pTextureSRV = nullptr;
+	//}
 	return true;
 }
 
-bool myTexture::Load(ID3D11Device * pd3dDevice, T_STR strTex)
+bool myTexture::Load(T_STR strTex)
 {
 	//ID3D11Resource* texture;
 	HRESULT hr = CreateWICTextureFromFile(
-		pd3dDevice, strTex.c_str(),
+		g_pd3dDevice, strTex.c_str(),
 		NULL,
-		&m_pTextureSRV);
+		m_pTextureSRV.GetAddressOf());
 	if (FAILED(hr)) return false;
 	return true;
 }

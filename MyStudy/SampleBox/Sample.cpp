@@ -8,7 +8,7 @@ bool Sample::Init()
 
 	m_Map = new myHeightMap;
 	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
-	m_Map->CreateHeightMap(m_pd3dContext, L"../../data/castle_height.bmp");
+	m_Map->CreateHeightMap(L"../../data/castle_height.bmp");
 
 
 	myMapDesc desc;
@@ -19,27 +19,27 @@ bool Sample::Init()
 	desc.szTexFile = L"../../data/castle.jpg";
 	desc.szVS = L"VS.txt";
 	desc.szPS = L"PS.txt";
-	m_Map->CreateMap(m_pd3dContext, desc);
-	//m_Map->CalNormal();
+	m_Map->CreateMap(desc);
+	m_Map->CalNormal();
 
 	m_MiniMap = new myMiniMap;
 	g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
 
-	m_MiniMap->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
+	m_MiniMap->Create(L"vs.txt", L"ps.txt",
 		L"../../data/castle.jpg");
 
 	m_Box = new myShapeBox;
 	g_ObjMgr.CreateObjComponent(L"Box", m_Box);
 	g_GameObject.GetGameObject(L"Box")->InsertComponent(new myController);
 
-	if (!m_Box->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
+	if (!m_Box->Create(L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/intro.bmp"))
 	{
 		return false;
 	}
 
 	myModelViewCamera* pModelCamera = new myModelViewCamera;
-	g_CamMgr.CreateCameraObj(m_pd3dContext, L"ModelCamera", pModelCamera);
+	g_CamMgr.CreateCameraObj(L"ModelCamera", pModelCamera);
 	//프러스텀 달기
 	pModelCamera->CreateViewMatrix({ 0,5,-5 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
@@ -47,7 +47,7 @@ bool Sample::Init()
 	g_CamMgr.SetMainCamera(L"ModelCamera");
 
 	m_TopCamera = new myCamera;
-	g_CamMgr.CreateCameraObj(m_pd3dContext, L"TopCamera", m_TopCamera);
+	g_CamMgr.CreateCameraObj(L"TopCamera", m_TopCamera);
 
 	m_TopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
 	fAspect = g_rtClient.right / (float)g_rtClient.bottom;
@@ -71,22 +71,22 @@ bool Sample::Frame()
 	if (g_Input.GetKey('0') == KEY_PUSH)
 	{
 		myDxState::m_FillMode = D3D11_FILL_WIREFRAME;
-		myDxState::SetRasterizerState(m_pd3dDevice);
+		myDxState::SetRasterizerState();
 	}
 	if (g_Input.GetKey('9') == KEY_PUSH)
 	{
 		myDxState::m_FillMode = D3D11_FILL_SOLID;
-		myDxState::SetRasterizerState(m_pd3dDevice);
+		myDxState::SetRasterizerState();
 	}
 	if (g_Input.GetKey('8') == KEY_PUSH)
 	{
 		myDxState::m_CullMode = D3D11_CULL_BACK;
-		myDxState::SetRasterizerState(m_pd3dDevice);
+		myDxState::SetRasterizerState();
 	}
 	if (g_Input.GetKey('7') == KEY_PUSH)
 	{
 		myDxState::m_CullMode = D3D11_CULL_FRONT;
-		myDxState::SetRasterizerState(m_pd3dDevice);
+		myDxState::SetRasterizerState();
 	}
 	if (g_Input.GetKey('6') == KEY_PUSH)
 	{
@@ -107,13 +107,13 @@ bool Sample::Render()
 	//그걸 호출하는건 obj매니저에 있는 메인gameobject
 
 	//IA에 그려줄 타입 설정
-	m_pd3dContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	g_pImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//레스터라이저 스테이트 세팅
-	m_pd3dContext->RSSetState(myDxState::m_pRS);
+	g_pImmediateContext->RSSetState(myDxState::m_pRS.Get());
 	//픽셀 섀이더에 샘플러 세팅(보간법)
-	m_pd3dContext->PSSetSamplers(0, 1, &myDxState::m_pWrapLinear);
+	g_pImmediateContext->PSSetSamplers(0, 1, myDxState::m_pWrapLinear.GetAddressOf());
 	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
-	m_pd3dContext->OMSetDepthStencilState(myDxState::m_pDSS, 0);
+	g_pImmediateContext->OMSetDepthStencilState(myDxState::m_pDSS.Get(), 0);
 
 
 	////// CULLING
@@ -155,7 +155,7 @@ bool Sample::Render()
 	//{
 	//	//맵의 컬링된 페이스 정보를 세팅한다
 	//	m_Map->m_iNumFaces = visibleIB.size() / 3;
-	//	m_pd3dContext->UpdateSubresource(
+	//	g_pImmediateContext->UpdateSubresource(
 	//		m_Map->m_pIndexBuffer, 0, NULL, &visibleIB.at(0), 0, 0);
 	//}
 	//else

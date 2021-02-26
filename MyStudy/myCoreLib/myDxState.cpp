@@ -1,14 +1,14 @@
 #include "myDxState.h"
-ID3D11RasterizerState*		myDxState::m_pRSSolidBack = nullptr;
-ID3D11RasterizerState*		myDxState::m_pRSWireBack = nullptr;
-ID3D11RasterizerState*		myDxState::m_pRS = nullptr;
-ID3D11SamplerState*			myDxState::m_pWrapLinear = nullptr;
-ID3D11DepthStencilState*	myDxState::m_pDSS = nullptr;
+ComPtr<ID3D11RasterizerState>	myDxState::m_pRSSolidBack = nullptr;
+ComPtr<ID3D11RasterizerState>	myDxState::m_pRSWireBack = nullptr;
+ComPtr<ID3D11RasterizerState>	myDxState::m_pRS = nullptr;
+ComPtr<ID3D11SamplerState>		myDxState::m_pWrapLinear = nullptr;
+ComPtr<ID3D11DepthStencilState>	myDxState::m_pDSS = nullptr;
 
 D3D11_FILL_MODE			myDxState::m_FillMode = D3D11_FILL_SOLID;
 D3D11_CULL_MODE			myDxState::m_CullMode = D3D11_CULL_NONE;
 
-bool myDxState::Set(ID3D11Device* pd3dDevice)
+bool myDxState::Set()
 {
 	// DS STATE
 	D3D11_DEPTH_STENCIL_DESC DepthStencilDesc;
@@ -17,8 +17,8 @@ bool myDxState::Set(ID3D11Device* pd3dDevice)
 	DepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	DepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-	HRESULT hr = pd3dDevice->CreateDepthStencilState(
-		&DepthStencilDesc, &m_pDSS);
+	HRESULT hr = g_pd3dDevice->CreateDepthStencilState(
+		&DepthStencilDesc, m_pDSS.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -35,7 +35,7 @@ bool myDxState::Set(ID3D11Device* pd3dDevice)
 	samplerDesc.BorderColor[3] = 1;
 	samplerDesc.MinLOD = FLT_MIN;
 	samplerDesc.MaxLOD = FLT_MAX;
-	hr = pd3dDevice->CreateSamplerState(&samplerDesc, &m_pWrapLinear);
+	hr = g_pd3dDevice->CreateSamplerState(&samplerDesc, m_pWrapLinear.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -45,7 +45,7 @@ bool myDxState::Set(ID3D11Device* pd3dDevice)
 	ZeroMemory(&rdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rdesc.FillMode = D3D11_FILL_SOLID;
 	rdesc.CullMode = D3D11_CULL_BACK;
-	hr = pd3dDevice->CreateRasterizerState(&rdesc, &m_pRSSolidBack);
+	hr = g_pd3dDevice->CreateRasterizerState(&rdesc, m_pRSSolidBack.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -54,7 +54,7 @@ bool myDxState::Set(ID3D11Device* pd3dDevice)
 	ZeroMemory(&rdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rdesc.FillMode = D3D11_FILL_WIREFRAME;
 	rdesc.CullMode = D3D11_CULL_BACK;
-	hr = pd3dDevice->CreateRasterizerState(&rdesc, &m_pRSWireBack);
+	hr = g_pd3dDevice->CreateRasterizerState(&rdesc, m_pRSWireBack.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -63,19 +63,19 @@ bool myDxState::Set(ID3D11Device* pd3dDevice)
 	// update
 	m_FillMode = D3D11_FILL_SOLID;
 	m_CullMode = D3D11_CULL_NONE;
-	SetRasterizerState(pd3dDevice);
+	SetRasterizerState();
 	return true;
 }
-bool myDxState::SetRasterizerState(ID3D11Device* pd3dDevice)
+bool myDxState::SetRasterizerState()
 {
 	HRESULT hr;
-	if (m_pRS != nullptr) m_pRS->Release();
+	if (m_pRS.Get() != nullptr) m_pRS->Release();
 	D3D11_RASTERIZER_DESC rdesc;
 	ZeroMemory(&rdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rdesc.FillMode = m_FillMode;
 	rdesc.CullMode = m_CullMode;
 	rdesc.DepthClipEnable = TRUE;
-	hr = pd3dDevice->CreateRasterizerState(&rdesc, &m_pRS);
+	hr = g_pd3dDevice->CreateRasterizerState(&rdesc, m_pRS.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -84,10 +84,10 @@ bool myDxState::SetRasterizerState(ID3D11Device* pd3dDevice)
 }
 bool myDxState::Release()
 {
-	m_pDSS->Release();
-	m_pWrapLinear->Release();
-	m_pRS->Release();
-	m_pRSSolidBack->Release();
-	m_pRSWireBack->Release();
+	//m_pDSS->Release();
+	//m_pWrapLinear->Release();
+	//m_pRS->Release();
+	//m_pRSSolidBack->Release();
+	//m_pRSWireBack->Release();
 	return true;
 }

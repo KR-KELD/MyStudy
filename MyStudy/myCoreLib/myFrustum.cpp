@@ -1,9 +1,8 @@
 #include "myFrustum.h"
-bool myFrustum::Create(ID3D11DeviceContext* pContext)
+bool myFrustum::Create()
 {
-	m_pd3dContext = pContext;
 	//육면체 프러스텀 오브젝트 생성
-	if (!m_FrustumObj.Create(pContext, L"vs.txt", L"ps.txt",L""))
+	if (!m_FrustumObj.Create(L"vs.txt", L"ps.txt",L""))
 	{
 		return false;
 	}
@@ -44,8 +43,8 @@ bool myFrustum::Frame(Matrix& ViewProjInv)
 		m_FrustumObj.m_VertexList[iVertex].p = Vector3::Transform(v, ViewProjInv);// *matInvViewProj;
 	}
 	//변환된 프러스텀의 정점과 정점 버퍼를 세팅해준다
-	m_pd3dContext->UpdateSubresource(
-		m_FrustumObj.m_pVertexBuffer, 0, NULL,
+	g_pImmediateContext->UpdateSubresource(
+		m_FrustumObj.m_pVertexBuffer.Get(), 0, NULL,
 		&m_FrustumObj.m_VertexList.at(0), 0, 0);
 
 	//프러스텀 평면 구성

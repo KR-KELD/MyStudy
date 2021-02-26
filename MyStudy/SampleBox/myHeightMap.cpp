@@ -1,10 +1,10 @@
 #include "myHeightMap.h"
 DECLARE_COMPONENT(myHeightMap);
 
-bool myHeightMap::CreateHeightMap(ID3D11DeviceContext* pContext, const TCHAR* pszFileName)
+bool myHeightMap::CreateHeightMap(const TCHAR* pszFileName)
 {
 	HRESULT hr;
-	ID3D11Resource* pTexture;
+	ComPtr<ID3D11Resource> pTexture;
 	size_t maxsize = 0;
 
 	if (FAILED(hr = CreateWICTextureFromFileEx(g_pd3dDevice,
@@ -15,11 +15,11 @@ bool myHeightMap::CreateHeightMap(ID3D11DeviceContext* pContext, const TCHAR* ps
 		D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ,
 		0,
 		WIC_LOADER_DEFAULT,
-		&pTexture, nullptr)))
+		pTexture.GetAddressOf(), nullptr)))
 	{
 		return false;
 	}
-	ID3D11Texture2D *pTexture2D = NULL;
+	ComPtr<ID3D11Texture2D> pTexture2D = NULL;
 	if (FAILED(pTexture->QueryInterface(__uuidof(ID3D11Texture2D), (LPVOID*)&pTexture2D)))
 	{
 		return false;
@@ -31,10 +31,10 @@ bool myHeightMap::CreateHeightMap(ID3D11DeviceContext* pContext, const TCHAR* ps
 	m_fHeightList.resize(
 		desc.Height*desc.Width);
 
-	if (pTexture2D)
+	if (pTexture2D.Get())
 	{
 		D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
-		if (SUCCEEDED(pContext->Map((ID3D11Resource*)pTexture2D, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_READ, 0, &MappedFaceDest)))
+		if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)pTexture2D.Get(), D3D11CalcSubresource(0, 0, 1), D3D11_MAP_READ, 0, &MappedFaceDest)))
 		{
 			UCHAR* pTexels = (UCHAR*)MappedFaceDest.pData;
 			PNCT_VERTEX	v;
@@ -48,14 +48,12 @@ bool myHeightMap::CreateHeightMap(ID3D11DeviceContext* pContext, const TCHAR* ps
 					m_fHeightList[row * desc.Width + col] = uRed;	/// DWORDÀÌ¹Ç·Î pitch/4	
 				}
 			}
-			pContext->Unmap(pTexture2D, D3D11CalcSubresource(0, 0, 1));
+			g_pImmediateContext->Unmap(pTexture2D.Get(), D3D11CalcSubresource(0, 0, 1));
 		}
 	}
 
 	m_iNumRows = desc.Height;
 	m_iNumCols = desc.Width;
-	pTexture2D->Release();
-	pTexture->Release();
 	return true;
 }
 float   myHeightMap::GetFaceHeight(UINT index)

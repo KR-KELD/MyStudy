@@ -1,6 +1,6 @@
 #include "myTextureManager.h"
 
-myTexture * myTextureManager::Load(ID3D11Device* pd3dDevice, const TCHAR* filename)
+myTexture * myTextureManager::Load(const TCHAR* filename)
 {
 	TCHAR drive[MAX_PATH] = { 0, };
 	TCHAR dir[MAX_PATH] = { 0, };
@@ -31,7 +31,7 @@ myTexture * myTextureManager::Load(ID3D11Device* pd3dDevice, const TCHAR* filena
 
 	pData = new myTexture;
 	pData->Init();
-	if (pData->Load(pd3dDevice, loadfile))
+	if (pData->Load(loadfile))
 	{
 		m_List.insert(make_pair(key, pData));
 		return pData;

@@ -9,7 +9,7 @@ private:
 	std::map<wstring, myTexture*>::iterator		m_iter;
 	std::wstring								m_szDefaultPath;
 public:
-	myTexture*		Load(ID3D11Device* pd3dDevice, const TCHAR* filename);
+	myTexture*		Load(const TCHAR* filename);
 	myTexture*		GetPtr(wstring filename);
 	bool		Init();
 	bool		Frame();

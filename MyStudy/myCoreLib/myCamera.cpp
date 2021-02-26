@@ -39,10 +39,10 @@ bool myCamera::CreateOrthographic(float width, float height, float zNearPlane, f
 		zNearPlane, zFarPlane);
 	return true;
 }
-bool myCamera::CreateFrustum(ID3D11DeviceContext * pd3dContext)
+bool myCamera::CreateFrustum()
 {
 	m_Frustum.m_FrustumObj.m_pTransform = m_pTransform;
-	m_Frustum.Create(pd3dContext);
+	m_Frustum.Create();
 	return true;
 }
 

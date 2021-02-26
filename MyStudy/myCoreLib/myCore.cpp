@@ -52,14 +52,14 @@ bool myCore::GameInit()
 	m_pBasisLine = new myShapeLine;
 	g_GameObject.InsertComponent(m_pBasisLine);
 	m_pBasisLine->Init();
-	if (!m_pBasisLine->Create(m_pd3dContext, L"vs.txt", L"ps.txt",
+	if (!m_pBasisLine->Create(L"vs.txt", L"ps.txt",
 	L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;
 	}
 
 	myDebugCamera* pDebugCamera = new myDebugCamera;
-	myGameObject* obj = g_CamMgr.CreateCameraObj(m_pd3dContext, L"DebugCamera", pDebugCamera);
+	myGameObject* obj = g_CamMgr.CreateCameraObj(L"DebugCamera", pDebugCamera);
 	g_CamList.GetGameObject(L"DebugCamera")->InsertComponent(new myController);
 	pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;

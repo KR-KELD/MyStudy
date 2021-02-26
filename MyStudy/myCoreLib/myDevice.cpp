@@ -1,21 +1,20 @@
 #include "myDevice.h"
 ID3D11Device*	g_pd3dDevice = nullptr;
+ID3D11DeviceContext*	g_pImmediateContext = nullptr;
 HRESULT myDevice::CreateGIFactory()
 {
 	//디바이스가 생성되어 있지 않으면 리턴
-	if (m_pd3dDevice == NULL) return E_FAIL;
+	if (m_pd3dDevice.Get() == NULL) return E_FAIL;
 	HRESULT hr;
-	IDXGIDevice * pDXGIDevice;
+	ComPtr<IDXGIDevice> pDXGIDevice;
 	//GI디바이스의 정보를 uid번호로 불러온다
-	hr = m_pd3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void **)&pDXGIDevice);
+	hr = m_pd3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void **)pDXGIDevice.GetAddressOf());
 	//GI어뎁터(그래픽카드) 정보를 불러온다
-	IDXGIAdapter * pDXGIAdapter;
-	hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void **)&pDXGIAdapter);
+	ComPtr<IDXGIAdapter> pDXGIAdapter;
+	hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void **)pDXGIAdapter.GetAddressOf());
 	//이 프로세스의 상위 GIFactory를 불러온다
-	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void **)&m_pGIFactory);
+	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void **)m_pGIFactory.GetAddressOf());
 	//불러오는데 사용한 디바이스와 어뎁터를 릴리즈 해준다
-	pDXGIDevice->Release();
-	pDXGIAdapter->Release();
 	return S_OK;
 }
 
@@ -63,16 +62,17 @@ HRESULT myDevice::CreateDevice()
 			pFeatureLevels,
 			FeatureLevels,
 			SDKVersion,
-			&m_pd3dDevice,
+			m_pd3dDevice.GetAddressOf(),
 			&OutputFeatureLevel,
-			&m_pd3dContext);
+			m_pd3dContext.GetAddressOf());
 
 		if (SUCCEEDED(hr))
 		{
 			break;
 		}
 	}
-	g_pd3dDevice = m_pd3dDevice;
+	g_pd3dDevice = m_pd3dDevice.Get();
+	g_pImmediateContext = m_pd3dContext.Get();
 	return hr;
 }
 
@@ -103,31 +103,30 @@ HRESULT myDevice::CreateSwapChain()
 	pSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	//스왑체인 생성
 	HRESULT hr = m_pGIFactory->CreateSwapChain(
-		m_pd3dDevice,
+		m_pd3dDevice.Get(),
 		&pSwapChainDesc,
-		&m_pSwapChain);
+		m_pSwapChain.GetAddressOf());
 	return hr;
 }
 
 HRESULT myDevice::SetRenderTargetView()
 {
 	//백버퍼를 비워준다
-	ID3D11Texture2D* pBackBuffer = nullptr;
+	ComPtr<ID3D11Texture2D> pBackBuffer = nullptr;
 	//스왑체인에서 백버퍼를 가져온다
 	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D),
-		(LPVOID*)&pBackBuffer);
+		(LPVOID*)pBackBuffer.GetAddressOf());
 	//랜더 타겟을 백버퍼를 사용해서 만들어준다
-	HRESULT hr = m_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL,
-		&m_pRednerTargetView);
+	HRESULT hr = m_pd3dDevice->CreateRenderTargetView(pBackBuffer.Get(), NULL,
+		m_pRednerTargetView.GetAddressOf());
 	//백버퍼를 사용한 뒤 릴리즈 해준다
-	if (pBackBuffer) pBackBuffer->Release();
 	return hr;
 }
 
 HRESULT myDevice::SetDepthStencilView()
 {
 	// create depth texture
-	ID3D11Texture2D* pTexture = nullptr;
+	ComPtr<ID3D11Texture2D> pTexture = nullptr;
 	D3D11_TEXTURE2D_DESC texDesc;
 	ZeroMemory(&texDesc, sizeof(D3D11_TEXTURE2D_DESC));
 	texDesc.Width = g_rtClient.right;
@@ -139,7 +138,7 @@ HRESULT myDevice::SetDepthStencilView()
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	HRESULT hr = m_pd3dDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
+	HRESULT hr = m_pd3dDevice->CreateTexture2D(&texDesc, NULL, pTexture.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -150,11 +149,9 @@ HRESULT myDevice::SetDepthStencilView()
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Texture2D.MipSlice = 0;
 	hr = m_pd3dDevice->CreateDepthStencilView(
-		pTexture,
+		pTexture.Get(),
 		&dsvDesc,
-		&m_pDSV);
-
-	if (pTexture)pTexture->Release();
+		m_pDSV.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -200,7 +197,7 @@ bool myDevice::Init()
 	{
 		return false;
 	}
-	myDxState::Set(m_pd3dDevice);
+	myDxState::Set();
 	if (FAILED(m_pGIFactory->MakeWindowAssociation(m_hWnd,
 		DXGI_MWA_NO_WINDOW_CHANGES |
 		DXGI_MWA_NO_ALT_ENTER)))
@@ -212,31 +209,31 @@ bool myDevice::Init()
 
 bool myDevice::Frame()
 {
-	if (m_pd3dContext)
+	if (m_pd3dContext.Get())
 	{
 		m_pd3dContext->RSSetViewports(1, &m_Viewport);
-		m_pd3dContext->OMSetRenderTargets(1, &m_pRednerTargetView, m_pDSV);
+		m_pd3dContext->OMSetRenderTargets(1, m_pRednerTargetView.GetAddressOf(), m_pDSV.Get());
 		float clearColor[] = { 0,0,0,1 };
-		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView, clearColor);
-		m_pd3dContext->ClearDepthStencilView(m_pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView.Get(), clearColor);
+		m_pd3dContext->ClearDepthStencilView(m_pDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 	}
 	return true;
 }
 
 bool myDevice::PreRender()
 {
-	if (m_pd3dContext)
+	if (m_pd3dContext.Get())
 	{
 		m_pd3dContext->RSSetViewports(1, &m_Viewport);
 		//랜더링 파이프라인 아웃풋 병합에 랜더타겟을 설정해준다
-		m_pd3dContext->OMSetRenderTargets(1, &m_pRednerTargetView, m_pDSV);
+		m_pd3dContext->OMSetRenderTargets(1, m_pRednerTargetView.GetAddressOf(), m_pDSV.Get());
 		/*float clearColor[] = { cosf(g_fGameTimer)*0.5f + 0.5f,
 								-cosf(g_fGameTimer)*0.5f + 0.5f,
 								sinf(g_fGameTimer)*0.5f + 0.5f,1 };*/
 		float clearColor[] = { 0,0,0,1 };
 		//랜더타겟을 초기화해준다
-		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView, clearColor);
-		m_pd3dContext->ClearDepthStencilView(m_pDSV, D3D10_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView.Get(), clearColor);
+		m_pd3dContext->ClearDepthStencilView(m_pDSV.Get(), D3D10_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 		//화면 좌표로 변환해준다
 
 	}
@@ -251,7 +248,7 @@ bool myDevice::Render()
 bool myDevice::PostRender()
 {
 	//백버퍼와 프론트 버퍼를 스왑해준다
-	if (m_pSwapChain)
+	if (m_pSwapChain.Get())
 	{
 		m_pSwapChain->Present(0, 0);
 	}
@@ -262,12 +259,12 @@ bool myDevice::Release()
 {
 	myDxState::Release();
 
-	m_pDSV->Release();
-	m_pRednerTargetView->Release();
-	m_pSwapChain->Release();
-	m_pd3dContext->Release();
-	m_pd3dDevice->Release();
-	m_pGIFactory->Release();
+	//m_pDSV->Release();
+	//m_pRednerTargetView->Release();
+	//m_pSwapChain->Release();
+	//m_pd3dContext->Release();
+	//m_pd3dDevice.Get()->Release();
+	//m_pGIFactory->Release();
 	return true;
 }
 
@@ -287,7 +284,7 @@ void myDevice::SetMode(bool bFullScreen)
 void myDevice::ResizeDevice(UINT w, UINT h)
 {
 	//디바이스가 설정되어있지 않으면 리턴
-	if (m_pd3dDevice == NULL)  return;
+	if (m_pd3dDevice.Get() == NULL)  return;
 	//기존 리소스를 제거
 	DeleteDXResource();
 	//랜더타겟 초기화
@@ -326,11 +323,11 @@ HRESULT myDevice::CreateDXResource(UINT w, UINT h)
 
 myDevice::myDevice()
 {
-	m_pGIFactory = nullptr;
-	m_pd3dDevice = nullptr;
-	m_pd3dContext = nullptr;
-	m_pSwapChain = nullptr;
-	m_pRednerTargetView = nullptr;
+	//m_pGIFactory = nullptr;
+	//m_pd3dDevice.Get() = nullptr;
+	//m_pd3dContext = nullptr;
+	//m_pSwapChain = nullptr;
+	//m_pRednerTargetView = nullptr;
 }
 
 myDevice::~myDevice()

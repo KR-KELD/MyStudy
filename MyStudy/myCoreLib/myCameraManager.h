@@ -10,12 +10,12 @@ public:
 	myGameObject*	m_pMainCameraObj;
 	myCamera*		m_pMainCamera;
 public:
-	myGameObject*	CreateCameraObj(ID3D11DeviceContext* pContext, wstring strObjName, myCamera* pCamera)
+	myGameObject*	CreateCameraObj(wstring strObjName, myCamera* pCamera)
 	{
 		myGameObject* obj = m_CameraContainer.Add(strObjName);
 		obj->InsertComponent(pCamera);
 		pCamera->Init();
-		pCamera->CreateFrustum(pContext);
+		pCamera->CreateFrustum();
 		return obj;
 	}
 	bool			SetMainCamera(myGameObject* pCameraObj);

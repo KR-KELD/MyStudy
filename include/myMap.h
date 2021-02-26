@@ -27,7 +27,7 @@ public:
 	float m_fCellDistance;
 	std::vector<float> m_fHeightList;
 public:
-	bool			CreateMap(ID3D11DeviceContext*	pd3dContex, myMapDesc  desc);
+	bool			CreateMap(myMapDesc  desc);
 	virtual bool	CalNormal();
 	virtual float   Lerp(float fStart, float fEnd, float fTangent);
 	virtual float	GetHeight(float fPosX, float fPosZ);

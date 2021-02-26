@@ -1,5 +1,5 @@
 // HLSL
-cbuffer TDataCB
+cbuffer myDataCB
 {
 	float4x4  g_matWorld: packoffset(c0);
 	float4x4  g_matView: packoffset(c4);

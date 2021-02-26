@@ -323,23 +323,23 @@ bool myGameObject::PreRender()
 
 bool myGameObject::Render()
 {
-	PreRender();
+	//PreRender();
 
-	for (m_ComIter = m_ComponentList.begin();
-		m_ComIter != m_ComponentList.end();
-		m_ComIter++)
-	{
-		(*m_ComIter).second->Render();
-	}
+	//for (m_ComIter = m_ComponentList.begin();
+	//	m_ComIter != m_ComponentList.end();
+	//	m_ComIter++)
+	//{
+	//	(*m_ComIter).second->Render();
+	//}
 
-	for (m_ObjIter = m_Childs.begin();
-		m_ObjIter != m_Childs.end();
-		m_ObjIter++)
-	{
-		(*m_ObjIter).second->Render();
-	}
+	//for (m_ObjIter = m_Childs.begin();
+	//	m_ObjIter != m_Childs.end();
+	//	m_ObjIter++)
+	//{
+	//	(*m_ObjIter).second->Render();
+	//}
 
-	PostRender();
+	//PostRender();
 
 	return true;
 }

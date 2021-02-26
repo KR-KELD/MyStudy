@@ -28,7 +28,7 @@ public:
 	virtual bool		CreateOrthographic(
 		float width, float height,
 		float zNearPlane, float zFarPlane);
-	virtual bool CreateFrustum(ID3D11DeviceContext * pd3dContext);
+	virtual bool CreateFrustum();
 	virtual bool PostInit() { return true; }
 	virtual bool Init();
 	virtual bool Frame();

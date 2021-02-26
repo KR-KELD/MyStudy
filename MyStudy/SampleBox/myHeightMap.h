@@ -6,6 +6,6 @@ public:
 	DEFINE_COMPONENT(myHeightMap, myMap, false);
 public:
 	float   GetFaceHeight(UINT index) override;
-	bool	CreateHeightMap(ID3D11DeviceContext* pContext, const TCHAR* pszFileName);
+	bool	CreateHeightMap(const TCHAR* pszFileName);
 };
 

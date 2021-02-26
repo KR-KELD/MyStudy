@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <conio.h>
 #include <stdio.h>
+#include <memory>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 

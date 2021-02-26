@@ -1,14 +1,11 @@
 #include "myMiniMap.h"
 DECLARE_COMPONENT(myMiniMap);
-bool	myMiniMap::Create(ID3D11DeviceContext*	pd3dContext,
-	T_STR szVS, T_STR szPS,
-	T_STR	szTex)
+bool	myMiniMap::Create(T_STR szVS, T_STR szPS, T_STR	szTex)
 {
-	m_DxRT.Set(pd3dContext);
 	m_DxRT.SetRenderTargetView();
 	m_DxRT.SetDepthStencilView();
 	m_DxRT.SetViewport();
-	myGraphics::Create(pd3dContext, szVS, szPS, szTex);
+	myGraphics::Create(szVS, szPS, szTex);
 	return true;
 }
 bool    myMiniMap::CreateVertexData()
@@ -45,7 +42,7 @@ bool myMiniMap::End()
 
 bool myMiniMap::PostRender()
 {
-	m_pd3dContext->PSSetShaderResources(0, 1, &m_DxRT.m_pSRV);
+	g_pImmediateContext->PSSetShaderResources(0, 1, m_DxRT.m_pSRV.GetAddressOf());
 	myGraphics::PostRender();
 	m_DxRT.ClearShaderResources();
 	return true;

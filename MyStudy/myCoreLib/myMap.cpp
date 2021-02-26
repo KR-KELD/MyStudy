@@ -56,7 +56,7 @@ bool myMap::Frame()
 
 bool myMap::PostRender()
 {
-	m_pd3dContext->DrawIndexed(m_iNumFaces * 3, 0, 0);
+	g_pImmediateContext->DrawIndexed(m_iNumFaces * 3, 0, 0);
 	return true;
 }
 
@@ -68,7 +68,7 @@ myMap::~myMap()
 {
 }
 
-bool myMap::CreateMap(ID3D11DeviceContext*	pd3dContext, myMapDesc  desc)
+bool myMap::CreateMap(myMapDesc  desc)
 {
 	m_MapDesc = desc;
 	m_iNumRows = desc.iNumRows;
@@ -79,7 +79,7 @@ bool myMap::CreateMap(ID3D11DeviceContext*	pd3dContext, myMapDesc  desc)
 	m_iNumFaces = m_iNumCellCols * m_iNumCellRows * 2;
 	m_fCellDistance = desc.fCellDistance;
 
-	Create(pd3dContext,
+	Create(
 		desc.szVS,
 		desc.szPS,
 		desc.szTexFile);
@@ -88,17 +88,26 @@ bool myMap::CreateMap(ID3D11DeviceContext*	pd3dContext, myMapDesc  desc)
 
 bool myMap::CalNormal()
 {
-	for (int iFace = 0; iFace < m_iNumFaces; iFace++)
+	int iIndexSize = m_IndexList.size();
+	for (int iIndex = 0; iIndex < iIndexSize; iIndex += 6)
 	{
 		Vector3 n;
-		Vector3 e0 = m_VertexList[m_IndexList[iFace + 1]].p - m_VertexList[m_IndexList[iFace + 0]].p;
-		Vector3 e1 = m_VertexList[m_IndexList[iFace + 2]].p - m_VertexList[m_IndexList[iFace + 0]].p;
+		Vector3 e0 = m_VertexList[m_IndexList[iIndex + 1]].p - m_VertexList[m_IndexList[iIndex + 0]].p;
+		Vector3 e1 = m_VertexList[m_IndexList[iIndex + 2]].p - m_VertexList[m_IndexList[iIndex + 0]].p;
 		n = e0.Cross(e1);
 		n.Normalize();
-		m_VertexList[m_IndexList[iFace + 0]].n += n;
-		m_VertexList[m_IndexList[iFace + 1]].n += n;
-		m_VertexList[m_IndexList[iFace + 2]].n += n;
+		m_VertexList[m_IndexList[iIndex + 0]].n += n;
+		m_VertexList[m_IndexList[iIndex + 1]].n += n;
+		m_VertexList[m_IndexList[iIndex + 2]].n += n;
+		e0 = m_VertexList[m_IndexList[iIndex + 3]].p - m_VertexList[m_IndexList[iIndex + 5]].p;
+		e1 = m_VertexList[m_IndexList[iIndex + 4]].p - m_VertexList[m_IndexList[iIndex + 5]].p;
+		n = e0.Cross(e1);
+		n.Normalize();
+		m_VertexList[m_IndexList[iIndex + 3]].n += n;
+		m_VertexList[m_IndexList[iIndex + 4]].n += n;
+		m_VertexList[m_IndexList[iIndex + 5]].n += n;
 	}
+
 	for (int i = 0; i < m_VertexList.size(); i++)
 	{
 		m_VertexList[i].n.Normalize();

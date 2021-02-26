@@ -11,7 +11,7 @@ public:
 public:
 	virtual bool    CreateVertexData()override;
 	virtual bool    CreateIndexData()override;
-	virtual bool	Create(ID3D11DeviceContext*	pd3dContext, T_STR szVS, T_STR szPS, T_STR	szTex);
+	virtual bool	Create(T_STR szVS, T_STR szPS, T_STR	szTex);
 	virtual bool	Begin();
 	virtual bool	End();
 	virtual bool	Release() override;
