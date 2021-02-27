@@ -1,4 +1,5 @@
 #include "Sample.h"
+#define NUM_OBJECTS 10
 GAMERUN;
 
 bool Sample::Init()
@@ -20,10 +21,15 @@ bool Sample::Init()
 	desc.szVS = L"VS.txt";
 	desc.szPS = L"PS.txt";
 	m_Map->CreateMap(desc);
-	m_Map->CalNormal();
+	//m_Map->CalNormal();
+
+	//m_QuadTree.Build(129, 129);
+
 
 	m_MiniMap = new myMiniMap;
-	g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
+	m_MiniObj = myGameObject::CreateGameObject(L"MiniMap");
+	m_MiniObj->InsertComponent(m_MiniMap);
+	//g_ObjMgr.CreateObjComponent(L"MiniMap", m_MiniMap);
 
 	m_MiniMap->Create(L"vs.txt", L"ps.txt",
 		L"../../data/castle.jpg");
@@ -32,12 +38,22 @@ bool Sample::Init()
 	g_ObjMgr.CreateObjComponent(L"Box", m_Box);
 	g_GameObject.GetGameObject(L"Box")->InsertComponent(new myController);
 
+	//SAFE_NEW_ARRAY(m_pObject, MY_BoxObject, NUM_OBJECTS);
+
+	//for (int iBox = 0; iBox < NUM_OBJECTS; iBox++)
+	//{
+	//	m_QuadTree.AddObject(&m_pObject[iBox]);
+	//}
+
+
 	if (!m_Box->Create(L"vs.txt", L"ps.txt",
 		L"../../data/bitmap/intro.bmp"))
 	{
 		return false;
 	}
-
+	//m_Box->m_pTransform->m_matScale._11 = 2.0f;
+	//m_Box->m_pTransform->m_matScale._22 = 2.0f;
+	//m_Box->m_pTransform->m_matScale._33 = 2.0f;
 	myModelViewCamera* pModelCamera = new myModelViewCamera;
 	g_CamMgr.CreateCameraObj(L"ModelCamera", pModelCamera);
 	//프러스텀 달기
@@ -96,8 +112,19 @@ bool Sample::Frame()
 	{
 		g_CamMgr.SetMainCamera(L"ModelCamera");
 	}
+	if (g_Input.GetKey('4') == KEY_PUSH)
+	{
+		g_CamMgr.SetMainCamera(L"TopCamera");
+	}
 	m_Box->m_pTransform->m_vPos.y = m_Map->GetHeight(m_Box->m_pTransform->m_matWorld._41, m_Box->m_pTransform->m_matWorld._43);
 	g_pMainCamTransform->SetTarget(m_Box->m_pTransform->m_vPos);
+	g_CamMgr.m_pMainCamera->FrameFrustum();
+	return true;
+}
+
+bool Sample::PreRender()
+{
+
 	return true;
 }
 
@@ -115,8 +142,7 @@ bool Sample::Render()
 	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
 	g_pImmediateContext->OMSetDepthStencilState(myDxState::m_pDSS.Get(), 0);
 
-
-	////// CULLING
+	//// CULLING
 	//std::vector<DWORD> visibleIB;
 	//visibleIB.resize(m_Map->m_IndexList.size());
 	//m_Map->m_iNumFaces = 0;
@@ -156,7 +182,7 @@ bool Sample::Render()
 	//	//맵의 컬링된 페이스 정보를 세팅한다
 	//	m_Map->m_iNumFaces = visibleIB.size() / 3;
 	//	g_pImmediateContext->UpdateSubresource(
-	//		m_Map->m_pIndexBuffer, 0, NULL, &visibleIB.at(0), 0, 0);
+	//		m_Map->m_pIndexBuffer.Get(), 0, NULL, &visibleIB.at(0), 0, 0);
 	//}
 	//else
 	//{
@@ -175,33 +201,42 @@ bool Sample::Render()
 			&m_TopCamera->m_pTransform->m_matProj);
 		m_Box->Render();
 
+		//DrawObject(&m_TopCamera->m_pTransform->m_matView,
+		//	&m_TopCamera->m_pTransform->m_matProj);
+
+
 		m_MiniMap->End();
 	}
+	////그리기
+	m_Box->m_pTransform->SetMatrix(NULL,
+		&g_pMainCamTransform->m_matView, 
+		&g_pMainCamTransform->m_matProj);
+	//m_Box->Render();
 
 	m_Map->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
-	m_Map->Render();
+	//m_Map->Render();
 
-	//그리기
-
-
-	m_Box->m_pTransform->SetMatrix(NULL,
-		&g_pMainCamTransform->m_matView, 
-		&g_pMainCamTransform->m_matProj);
-	m_Box->Render();
-
-
+	
 	m_MiniMap->m_pTransform->SetMatrix(NULL,
 		NULL, //&m_pMainCamera->m_matView,
 		NULL); //&m_pMainCamera->m_matProj);
-	m_MiniMap->Render();
+	//m_MiniMap->Render();
+
+
+	//DrawQuadLine(m_QuadTree.m_pRootNode);
+	//DrawObject(&g_pMainCamTransform->m_matView,
+	//	&g_pMainCamTransform->m_matProj);
 
 	return true;
 }
 
 bool Sample::Release()
 {
+	m_MiniObj->Release();
+	//SAFE_DELETE_ARRAY(m_pObject);
+	//m_QuadTree.Release();
 	return true;
 }
 
@@ -229,4 +264,68 @@ LRESULT Sample::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	int iRet = g_CamMgr.m_pMainCamera->WndProc(hWnd, message, wParam, lParam);
 	return -1;
 }
+
+//bool Sample::DrawQuadLine(myNode * pNode)
+//{
+//	if (pNode == NULL) return true;
+//
+//	if (m_QuadTree.m_iRenderDepth >= pNode->m_dwDepth)
+//		//if (4 >= pNode->m_dwDepth)
+//	{
+//		m_pBasisLine->m_pTransform->SetMatrix(NULL,
+//			&g_pMainCamTransform->m_matView,
+//			&g_pMainCamTransform->m_matProj);
+//
+//		Vector4 vColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 0) vColor = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 1) vColor = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 2) vColor = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+//		if (pNode->m_dwDepth == 3) vColor = Vector4(1.0f, 0.0f, 1.0f, 1.0f);
+//		if (pNode->m_dwDepth == 4) vColor = Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 5) vColor = Vector4(0.0f, 0.5f, 1.0f, 1.0f);
+//		if (pNode->m_dwDepth == 6) vColor = Vector4(1.0f, 0.5f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 7) vColor = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+//		if (pNode->m_dwDepth == 8) vColor = Vector4(1.0f, 0.5f, 0.5f, 1.0f);
+//		if (pNode->m_dwDepth == 9) vColor = Vector4(1.0f, 0.5f, 1.0f, 1.0f);
+//
+//		Vector3 vPoint[4];
+//		vPoint[0] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
+//		vPoint[0].y -= 1.0f * pNode->m_dwDepth;
+//		vPoint[1] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
+//		vPoint[1].y -= 1.0f * pNode->m_dwDepth;
+//		vPoint[2] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
+//		vPoint[2].y -= 1.0f * pNode->m_dwDepth;
+//		vPoint[3] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
+//		vPoint[3].y -= 1.0f * pNode->m_dwDepth;
+//
+//		m_pBasisLine->Draw(vPoint[0], vPoint[1], vColor);
+//		m_pBasisLine->Draw(vPoint[1], vPoint[3], vColor);
+//		m_pBasisLine->Draw(vPoint[2], vPoint[3], vColor);
+//		m_pBasisLine->Draw(vPoint[0], vPoint[2], vColor);
+//	}
+//	for (int iNode = 0; iNode < pNode->m_ChildList.size(); iNode++)
+//	{
+//		DrawQuadLine(pNode->m_ChildList[iNode]);
+//	}
+//	return true;
+//}
+//
+//void Sample::DrawObject(Matrix * pView, Matrix * pProj)
+//{
+//	for (int iBox = 0; iBox < NUM_OBJECTS; iBox++)
+//	{
+//		m_pObject[iBox].m_matWorld._42 =
+//			m_Map->GetHeight(m_pObject[iBox].m_matWorld._41,
+//				m_pObject[iBox].m_matWorld._43);
+//
+//		m_Box->m_pTransform->SetMatrix(&m_pObject[iBox].m_matWorld,
+//			pView,
+//			pProj);
+//		// OBB와 프로스텀 박스의 제외처리( 걸쳐 있어도 TRUE가 됨. )
+//		if (g_CamMgr.m_pMainCamera->m_Frustum.CheckOBBInPlane(&m_pObject[iBox].m_myBox))
+//		{
+//			m_Box->Render();
+//		}
+//	}
+//}
 

@@ -20,7 +20,7 @@ bool    myMap::CreateVertexData()
 			m_VertexList[iIndex].t.y = iRow * fOffsetV;
 
 			//일단 0으로 초기화
-			m_VertexList[iIndex].n = { 0,0,0 };
+			m_VertexList[iIndex].n = { 0,1,0 };
 			m_VertexList[iIndex].c = { 1,1,1,1 };
 		}
 	}

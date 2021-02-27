@@ -209,14 +209,14 @@ bool myDevice::Init()
 
 bool myDevice::Frame()
 {
-	if (m_pd3dContext.Get())
-	{
-		m_pd3dContext->RSSetViewports(1, &m_Viewport);
-		m_pd3dContext->OMSetRenderTargets(1, m_pRednerTargetView.GetAddressOf(), m_pDSV.Get());
-		float clearColor[] = { 0,0,0,1 };
-		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView.Get(), clearColor);
-		m_pd3dContext->ClearDepthStencilView(m_pDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
-	}
+	//if (m_pd3dContext.Get())
+	//{
+	//	m_pd3dContext->RSSetViewports(1, &m_Viewport);
+	//	m_pd3dContext->OMSetRenderTargets(1, m_pRednerTargetView.GetAddressOf(), m_pDSV.Get());
+	//	float clearColor[] = { 0,0,0,1 };
+	//	m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView.Get(), clearColor);
+	//	m_pd3dContext->ClearDepthStencilView(m_pDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+	//}
 	return true;
 }
 
@@ -290,8 +290,8 @@ void myDevice::ResizeDevice(UINT w, UINT h)
 	//랜더타겟 초기화
 	m_pd3dContext->OMSetRenderTargets(0, NULL, NULL);
 	//랜더타겟 릴리즈
-	if (m_pRednerTargetView) m_pRednerTargetView->Release();
-	if (m_pDSV) m_pDSV->Release();
+	if (m_pRednerTargetView.Get()) m_pRednerTargetView->Release();
+	if (m_pDSV.Get()) m_pDSV->Release();
 	DXGI_SWAP_CHAIN_DESC pSwapChainDesc;
 	//스왑체인 설정 가져오기
 	m_pSwapChain->GetDesc(&pSwapChainDesc);
@@ -323,11 +323,11 @@ HRESULT myDevice::CreateDXResource(UINT w, UINT h)
 
 myDevice::myDevice()
 {
-	//m_pGIFactory = nullptr;
-	//m_pd3dDevice.Get() = nullptr;
-	//m_pd3dContext = nullptr;
-	//m_pSwapChain = nullptr;
-	//m_pRednerTargetView = nullptr;
+	m_pGIFactory = nullptr;
+	m_pd3dDevice = nullptr;
+	m_pd3dContext = nullptr;
+	m_pSwapChain = nullptr;
+	m_pRednerTargetView = nullptr;
 }
 
 myDevice::~myDevice()

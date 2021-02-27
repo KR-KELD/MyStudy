@@ -26,10 +26,14 @@ public:
 		obj->InsertComponent(pComponent);
 	}
 public:
-	bool			Init();
-	bool			Frame();
-	bool			Render();
-	bool			Release();
+	bool	Init();
+	bool	PreFrame();
+	bool	Frame();
+	bool	PostFrame();
+	bool	PreRender();
+	bool	Render();
+	bool	PostRender();
+	bool	Release();
 private:
 	myObjManager();
 public:

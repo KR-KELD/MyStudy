@@ -78,6 +78,7 @@ bool myTransform::SetMatrix(Matrix * pWorld, Matrix * pView, Matrix * pProj)
 	{
 		m_matProj = *pProj;
 	}
+	UpdateVector();
 	return true;
 }
 
@@ -255,7 +256,6 @@ bool myGameObject::PreFrame()
 	{
 		(*m_ComIter).second->PreFrame();
 	}
-
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
@@ -267,21 +267,20 @@ bool myGameObject::PreFrame()
 
 bool myGameObject::Frame()
 {
-	PreFrame();
+	//PreFrame();
 	for (m_ComIter = m_ComponentList.begin();
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
 		(*m_ComIter).second->Frame();
 	}
-
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
 		(*m_ObjIter).second->Frame();
 	}
-	PostFrame();
+	//PostFrame();
 	return true;
 }
 
@@ -293,7 +292,6 @@ bool myGameObject::PostFrame()
 	{
 		(*m_ComIter).second->PostFrame();
 	}
-
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
@@ -311,7 +309,6 @@ bool myGameObject::PreRender()
 	{
 		(*m_ComIter).second->PreRender();
 	}
-
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
@@ -324,23 +321,19 @@ bool myGameObject::PreRender()
 bool myGameObject::Render()
 {
 	//PreRender();
-
-	//for (m_ComIter = m_ComponentList.begin();
-	//	m_ComIter != m_ComponentList.end();
-	//	m_ComIter++)
-	//{
-	//	(*m_ComIter).second->Render();
-	//}
-
-	//for (m_ObjIter = m_Childs.begin();
-	//	m_ObjIter != m_Childs.end();
-	//	m_ObjIter++)
-	//{
-	//	(*m_ObjIter).second->Render();
-	//}
-
+	for (m_ComIter = m_ComponentList.begin();
+		m_ComIter != m_ComponentList.end();
+		m_ComIter++)
+	{
+		(*m_ComIter).second->Render();
+	}
+	for (m_ObjIter = m_Childs.begin();
+		m_ObjIter != m_Childs.end();
+		m_ObjIter++)
+	{
+		(*m_ObjIter).second->Render();
+	}
 	//PostRender();
-
 	return true;
 }
 
@@ -352,14 +345,12 @@ bool myGameObject::PostRender()
 	{
 		(*m_ComIter).second->PostRender();
 	}
-
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
 		(*m_ObjIter).second->PostRender();
 	}
-
 	return true;
 }
 

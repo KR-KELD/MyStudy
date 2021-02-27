@@ -44,9 +44,10 @@ public:
 	std::vector<myPlane>		m_Plane;
 public:
 	virtual bool Create();
-	virtual bool Frame(Matrix& ViewProjInv);
+	virtual bool Frame(Matrix& matInvViewProj);
 	virtual bool Release();
 	BOOL	ClassifyPoint(Vector3 v);
 	BOOL	ClassifyBox(myShapeBox box);
+	BOOL    CheckOBBInPlane(MY_BOX* pBox);
 };
 

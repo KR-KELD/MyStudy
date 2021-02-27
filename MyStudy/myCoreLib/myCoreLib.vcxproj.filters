@@ -66,9 +66,6 @@
     <ClCompile Include="myInput.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="myGrapicsAPI.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="myButton.cpp">
       <Filter>Obj</Filter>
     </ClCompile>
@@ -189,9 +186,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="myCoreStd.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="myGrapicsAPI.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="myDraw.h">

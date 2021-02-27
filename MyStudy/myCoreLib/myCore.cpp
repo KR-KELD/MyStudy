@@ -1,25 +1,21 @@
-
-
 #include "myCore.h"
-//myCamera*		g_pMainCamera = nullptr;
 
 HRESULT myCore::DeleteDXResource()
 {
 	//종속적인 리소스 제거
 	g_Draw.DeleteDependentResource();
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT myCore::CreateDXResource(UINT w, UINT h)
 {
 	//백버퍼 초기화
-	IDXGISurface1* pBackBuffer = nullptr;
+	ComPtr<IDXGISurface1> pBackBuffer = nullptr;
 	//백버퍼 가져오기
-	m_pSwapChain->GetBuffer(0, __uuidof(IDXGISurface), (LPVOID*)&pBackBuffer);
+	m_pSwapChain->GetBuffer(0, __uuidof(IDXGISurface), (LPVOID*)pBackBuffer.GetAddressOf());
 	//리소스들을 백버퍼에 리사이즈해서 단다
-	g_Draw.ResizeDevice(w, h, pBackBuffer);
+	g_Draw.ResizeDevice(w, h, pBackBuffer.Get());
 	//백버퍼 제거
-	if (pBackBuffer) pBackBuffer->Release();
 	return S_OK;
 }
 
@@ -35,28 +31,25 @@ bool myCore::GameInit()
 
 	g_Timer.Init();
 	g_Input.Init();
-	//g_Draw.Init();
-	//m_Graphics.Init();
 	g_SoundMgr.Init();
-	g_CamMgr.Init();
-	g_ObjMgr.Init();
-	IDXGISurface1* pBackBuffer = nullptr;
+	//g_CamMgr.Init();
+	//g_ObjMgr.Init();
+	ComPtr<IDXGISurface1> pBackBuffer = nullptr;
 	m_pSwapChain->GetBuffer(0, __uuidof(IDXGISurface),
-		(LPVOID*)&pBackBuffer);
+		(LPVOID*)pBackBuffer.GetAddressOf());
 	//dx2d 드로우 세팅
 	g_Draw.Set(m_hWnd,
 		g_rtClient.right,
-		g_rtClient.bottom, pBackBuffer);
-	if (pBackBuffer) pBackBuffer->Release();
+		g_rtClient.bottom, pBackBuffer.Get());
 
-	m_pBasisLine = new myShapeLine;
-	g_GameObject.InsertComponent(m_pBasisLine);
-	m_pBasisLine->Init();
-	if (!m_pBasisLine->Create(L"vs.txt", L"ps.txt",
-	L"../../data/bitmap/flametank.bmp"))
-	{
-		return false;
-	}
+	//m_pBasisLine = new myShapeLine;
+	//g_GameObject.InsertComponent(m_pBasisLine);
+	//m_pBasisLine->Init();
+	//if (!m_pBasisLine->Create(L"vs.txt", L"ps.txt",
+	//L"../../data/bitmap/flametank.bmp"))
+	//{
+	//	return false;
+	//}
 
 	myDebugCamera* pDebugCamera = new myDebugCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"DebugCamera", pDebugCamera);
@@ -78,12 +71,10 @@ bool myCore::GameFrame()
 	PreFrame();
 	g_Timer.Frame();
 	g_Input.Frame();
-	//m_Graphics.Frame();
-	g_ObjMgr.Frame();
 	g_SoundMgr.Frame();
 	Frame();
-	g_Draw.Frame();
-	g_CamMgr.m_pMainCameraObj->Frame();
+	g_ObjMgr.Frame();
+	g_CamMgr.Frame();
 	PostFrame();
 	return true;
 }
@@ -91,7 +82,6 @@ bool myCore::GameFrame()
 bool myCore::PreRender()
 {
 	myDevice::PreRender();
-	//m_Graphics.PreRender();
 	return true;
 }
 
@@ -105,12 +95,12 @@ bool myCore::GameRender()
 
 bool myCore::PostRender()
 {
-	m_pBasisLine->m_pTransform->SetMatrix(NULL, 
-		&g_pMainCamTransform->m_matView,
-		&g_pMainCamTransform->m_matProj);
-	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(50, 0, 0), Vector4(1, 0, 0, 1));
-	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 50, 0), Vector4(0, 1, 0, 1));
-	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
+	//m_pBasisLine->m_pTransform->SetMatrix(NULL, 
+	//	&g_pMainCamTransform->m_matView,
+	//	&g_pMainCamTransform->m_matProj);
+	//m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(50, 0, 0), Vector4(1, 0, 0, 1));
+	//m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 50, 0), Vector4(0, 1, 0, 1));
+	//m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
 	g_Timer.Render();
 	g_Input.Render();
 	g_ObjMgr.Render();

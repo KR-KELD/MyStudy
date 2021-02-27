@@ -2,7 +2,6 @@
 #include "myDevice.h"
 #include "myTimer.h"
 #include "myInput.h"
-//#include "myGrapicsAPI.h"
 #include "myDraw.h"
 #include "mySoundManager.h"
 #include "myDebugCamera.h"
@@ -14,7 +13,6 @@
 class myCore : public myDevice
 {
 public:
-	//myGrapicsAPI		m_Graphics;
 	bool				m_isGameRun;
 	myShapeLine*		m_pBasisLine;
 public:

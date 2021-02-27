@@ -34,10 +34,7 @@ public:
 	virtual bool Frame();
 	virtual bool Release();
 	virtual  int WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-	virtual bool FrameFrustum()
-	{
-		return true;
-	};
+	virtual bool FrameFrustum();
 	virtual bool DrawFrustum(Matrix* pmatView, Matrix* pmatProj);
 public:
 	myCamera();

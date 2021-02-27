@@ -29,7 +29,7 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	float3 Light = float3(-1.0f,-1.0f,-1.0f);
 	Light = normalize(Light);
 	float ratio = saturate(dot(-Light,vIn.n));
-	vOut.c = vTexture *vIn.c * ratio;
+	vOut.c = vTexture;// *vIn.c * ratio;
 	return vOut;
 }
 PS_OUTPUT PSLine( VS_OUTPUT vIn)

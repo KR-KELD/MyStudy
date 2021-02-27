@@ -48,17 +48,17 @@ bool myCamera::CreateFrustum()
 
 void myCamera::Update(Vector4 data)
 {
-	Matrix matRotation;
-	matRotation = Matrix::CreateRotationY(data.y);
-	Vector3 vLocalUp = { 0,1,0 };
-	Vector3 vLocalLook = { 0,0,1 };
-	vLocalUp = Vector3::Transform(vLocalUp, matRotation);
-	vLocalLook = Vector3::Transform(vLocalLook, matRotation);
-	vLocalLook.Normalize();
-	vLocalUp.Normalize();
-	float fHeight = m_pTransform->m_vPos.y;
-	m_pTransform->m_vPos = m_pTransform->m_vTarget - vLocalLook * m_fDistance;
-	m_pTransform->m_vPos.y = fHeight;
+	//Matrix matRotation;
+	//matRotation = Matrix::CreateRotationY(data.y);
+	//Vector3 vLocalUp = { 0,1,0 };
+	//Vector3 vLocalLook = { 0,0,1 };
+	//vLocalUp = Vector3::Transform(vLocalUp, matRotation);
+	//vLocalLook = Vector3::Transform(vLocalLook, matRotation);
+	//vLocalLook.Normalize();
+	//vLocalUp.Normalize();
+	//float fHeight = m_pTransform->m_vPos.y;
+	//m_pTransform->m_vPos = m_pTransform->m_vTarget - vLocalLook * m_fDistance;
+	//m_pTransform->m_vPos.y = fHeight;
 }
 
 
@@ -112,8 +112,24 @@ int myCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return -1;
 }
+
+bool myCamera::FrameFrustum()
+{
+	Matrix matInvViewProj = m_pTransform->m_matView * m_pTransform->m_matProj;
+	matInvViewProj = matInvViewProj.Invert();
+
+	//뷰행렬과 투영행렬의 역행렬을 만든다
+
+	m_Frustum.Frame(matInvViewProj);
+	return true;
+}
+
 bool myCamera::DrawFrustum(Matrix * pmatView, Matrix * pmatProj)
 {
+	m_Frustum.m_FrustumObj.m_pTransform->SetMatrix(NULL,
+		pmatView,
+		pmatProj);
+	m_Frustum.m_FrustumObj.Render();
 	return true;
 }
 myCamera::myCamera()

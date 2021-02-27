@@ -27,26 +27,58 @@ bool myCameraManager::SetMainCamera(wstring strCameraName)
 
 bool myCameraManager::Init()
 {
-	m_CameraContainer.Init();
+	return true;
+}
 
+bool myCameraManager::PreFrame()
+{
+	m_pMainCameraObj->PreFrame();
+	for (myGameObject* obj: m_SubCameraObjList)
+	{
+		obj->PreFrame();
+	}
 	return true;
 }
 
 bool myCameraManager::Frame()
 {
-	m_CameraContainer.Frame();
+	m_pMainCameraObj->Frame();
+	for (myGameObject* obj : m_SubCameraObjList)
+	{
+		obj->Frame();
+	}
+	return true;
+}
+
+bool myCameraManager::PostFrame()
+{
+	m_pMainCameraObj->PostFrame();
+	for (myGameObject* obj : m_SubCameraObjList)
+	{
+		obj->PostFrame();
+	}
+	return true;
+}
+
+bool myCameraManager::PreRender()
+{
 	return true;
 }
 
 bool myCameraManager::Render()
 {
-	//m_CameraContainer.Render();
+	return true;
+}
+
+bool myCameraManager::PostRender()
+{
 	return true;
 }
 
 bool myCameraManager::Release()
 {
 	m_CameraContainer.Release();
+	m_SubCameraObjList.clear();
 	return true;
 }
 

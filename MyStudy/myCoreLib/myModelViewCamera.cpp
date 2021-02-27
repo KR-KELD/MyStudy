@@ -138,23 +138,6 @@ bool myModelViewCamera::Frame()
 	return true;
 }
 
-bool myModelViewCamera::DrawFrustum(Matrix * pmatView, Matrix * pmatProj)
-{
-	//매트릭스를 세팅하고 프러스텀 박스 랜더
-	m_Frustum.m_FrustumObj.m_pTransform->SetMatrix(NULL,
-		pmatView,
-		pmatProj);
-	m_Frustum.m_FrustumObj.Render();
-	return true;
-}
-bool myModelViewCamera::FrameFrustum()
-{
-	Matrix matInvViewProj = m_pTransform->m_matView * m_pTransform->m_matProj;
-	matInvViewProj = matInvViewProj.Invert();
-
-	m_Frustum.Frame(matInvViewProj);
-	return true;
-}
 myModelViewCamera::myModelViewCamera()
 {
 

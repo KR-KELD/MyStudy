@@ -29,9 +29,6 @@ public:
 class myModelViewCamera : public myCamera
 {
 public:
-	//Matrix    m_matWorld;
-	//myFrustum*  m_Frustum;
-public:
 	myArcball	m_WorldArcball;
 	myArcball	m_ViewArcball;
 	Matrix		m_mModelLastRot;
@@ -46,8 +43,6 @@ public:
 	virtual bool PostInit() override;
 	virtual void Update(Vector4 data) override;
 	virtual bool Frame() override;
-	virtual bool DrawFrustum(Matrix* pmatView, Matrix* pmatProj);
-	virtual bool FrameFrustum();
 public:
 	myModelViewCamera();
 	virtual ~myModelViewCamera();

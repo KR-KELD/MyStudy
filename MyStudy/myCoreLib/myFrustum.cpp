@@ -1,4 +1,30 @@
 #include "myFrustum.h"
+
+BOOL myFrustum::CheckOBBInPlane(MY_BOX*  pBox)
+{
+	float		fPlaneToCenter = 0.0;
+	float		fDistance = 0.0f;
+	Vector3 vDir;
+	for (int iPlane = 0; iPlane < 6; iPlane++)
+	{
+		vDir = pBox->vAxis[0] * pBox->fExtent[0];
+		fDistance = fabs(m_Plane[iPlane].a * vDir.x + m_Plane[iPlane].b*vDir.y + m_Plane[iPlane].c * vDir.z);
+		vDir = pBox->vAxis[1] * pBox->fExtent[1];
+		fDistance += fabs(m_Plane[iPlane].a * vDir.x + m_Plane[iPlane].b*vDir.y + m_Plane[iPlane].c * vDir.z);
+		vDir = pBox->vAxis[2] * pBox->fExtent[2];
+		fDistance += fabs(m_Plane[iPlane].a * vDir.x + m_Plane[iPlane].b*vDir.y + m_Plane[iPlane].c * vDir.z);
+
+		fPlaneToCenter = m_Plane[iPlane].a * pBox->vCenter.x + m_Plane[iPlane].b*pBox->vCenter.y +
+			m_Plane[iPlane].c * pBox->vCenter.z + m_Plane[iPlane].d;
+
+		if (fPlaneToCenter <= -fDistance)
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 bool myFrustum::Create()
 {
 	//육면체 프러스텀 오브젝트 생성
@@ -33,14 +59,13 @@ bool myFrustum::Create()
 	return true;
 }
 
-bool myFrustum::Frame(Matrix& ViewProjInv)
+bool myFrustum::Frame(Matrix& matInvViewProj)
 {
-	//뷰행렬과 투영행렬의 역행렬을 만든다
 	for (int iVertex = 0; iVertex < 24; iVertex++)
 	{
 		//ndc공간의 프러스텀 정점들에 뷰*투영행렬의 역행렬을 곱해서 월드 공간 프러스텀으로 만들어준다
 		Vector3& v = m_VertexList[iVertex].p;
-		m_FrustumObj.m_VertexList[iVertex].p = Vector3::Transform(v, ViewProjInv);// *matInvViewProj;
+		m_FrustumObj.m_VertexList[iVertex].p = Vector3::Transform(v, matInvViewProj);// *matInvViewProj;
 	}
 	//변환된 프러스텀의 정점과 정점 버퍼를 세팅해준다
 	g_pImmediateContext->UpdateSubresource(

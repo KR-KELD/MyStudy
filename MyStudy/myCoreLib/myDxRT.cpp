@@ -113,7 +113,6 @@ bool myDxRT::End()
 {
 	g_pImmediateContext->OMSetRenderTargets(1, &pSaveRTV, pSaveDSV);
 	g_pImmediateContext->RSSetViewports(iNumView, &vpSave);
-
 	pSaveRTV->Release();
 	pSaveDSV->Release();
 	return true;
