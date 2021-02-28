@@ -4,14 +4,14 @@
 #include "myModelViewCamera.h"
 #include "myHeightMap.h"
 #include "myMiniMap.h"
-//#include "myQuadTree.h"
+#include "myQuadTree.h"
 
 class Sample : public myCore
 {
 public:
-	//myQuadTree		m_QuadTree;
-	//MY_BoxObject*	m_pObject;
-	//MY_BOX			m_myBoxBase;
+	myQuadTree		m_QuadTree;
+	MY_BoxObject*	m_pObject;
+	MY_BOX			m_myBoxBase;
 
 
 	myMiniMap*		m_MiniMap;
@@ -27,7 +27,7 @@ public:
 	Matrix CreateMatrixShadow(Vector4* pPlane, Vector4* pLight);
 	LRESULT	 MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-	//bool DrawQuadLine(myNode* pNode);
-	//void DrawObject(Matrix* pView, Matrix* pProj);
+	bool DrawQuadLine(myNode* pNode);
+	void DrawObject(Matrix* pView, Matrix* pProj);
 };
 
