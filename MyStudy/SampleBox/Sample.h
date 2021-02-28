@@ -22,7 +22,6 @@ public:
 public:
 	bool Init() override;
 	bool Frame() override;
-	bool PreRender() override;
 	bool Render() override;
 	bool Release() override;
 	Matrix CreateMatrixShadow(Vector4* pPlane, Vector4* pLight);

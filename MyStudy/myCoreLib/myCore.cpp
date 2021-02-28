@@ -42,14 +42,14 @@ bool myCore::GameInit()
 		g_rtClient.right,
 		g_rtClient.bottom, pBackBuffer.Get());
 
-	//m_pBasisLine = new myShapeLine;
-	//g_GameObject.InsertComponent(m_pBasisLine);
-	//m_pBasisLine->Init();
-	//if (!m_pBasisLine->Create(L"vs.txt", L"ps.txt",
-	//L"../../data/bitmap/flametank.bmp"))
-	//{
-	//	return false;
-	//}
+	m_pBasisLine = new myShapeLine;
+	g_GameObject.InsertComponent(m_pBasisLine);
+	m_pBasisLine->Init();
+	if (!m_pBasisLine->Create(L"vs.txt", L"ps.txt",
+	L"../../data/bitmap/flametank.bmp"))
+	{
+		return false;
+	}
 
 	myDebugCamera* pDebugCamera = new myDebugCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"DebugCamera", pDebugCamera);
@@ -95,12 +95,12 @@ bool myCore::GameRender()
 
 bool myCore::PostRender()
 {
-	//m_pBasisLine->m_pTransform->SetMatrix(NULL, 
-	//	&g_pMainCamTransform->m_matView,
-	//	&g_pMainCamTransform->m_matProj);
-	//m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(50, 0, 0), Vector4(1, 0, 0, 1));
-	//m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 50, 0), Vector4(0, 1, 0, 1));
-	//m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
+	m_pBasisLine->m_pTransform->SetMatrix(NULL, 
+		&g_pMainCamTransform->m_matView,
+		&g_pMainCamTransform->m_matProj);
+	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(50, 0, 0), Vector4(1, 0, 0, 1));
+	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 50, 0), Vector4(0, 1, 0, 1));
+	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
 	g_Timer.Render();
 	g_Input.Render();
 	g_ObjMgr.Render();
@@ -108,7 +108,6 @@ bool myCore::PostRender()
 	g_Draw.Render();
 	g_Draw.Draw(0, 0, g_Timer.m_szBuffer);
 	myDevice::PostRender();
-	//m_Graphics.PostRender();
 	return true;
 }
 
@@ -164,6 +163,5 @@ bool myCore::GameRelease()
 	g_ObjMgr.Release();
 	g_SoundMgr.Release();
 	myDevice::Release();
-	//m_Graphics.Release();
 	return true;
 }
