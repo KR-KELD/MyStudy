@@ -1,4 +1,5 @@
 #include "myNode.h"
+//박스 오브젝트 생성
 MY_BoxObject::MY_BoxObject()
 {
 	m_myBox.vCenter = Vector3(0.0f, 0.0f, 0.0f);
@@ -31,11 +32,12 @@ MY_BoxObject::MY_BoxObject()
 	matWorld._42 = m_vPosition.y;
 	matWorld._43 = m_vPosition.z;
 
-	// OBB 기저벡터의 크기 계산
+	// OBB 박스에서 회전을 준 만큼 큐브의 정점 min max를 다시 계산
 	m_myBox.vMax = Vector3::Transform(m_myBox.vMax, matWorld);
 	m_myBox.vMin = Vector3::Transform(m_myBox.vMin, matWorld);
 	vHalf = vMax - m_myBox.vCenter;
 
+	//육면체의 x,y,z 크기 설정
 	m_myBox.fExtent[0] = m_myBox.vAxis[0].Dot(vHalf);
 	m_myBox.fExtent[1] = m_myBox.vAxis[1].Dot(vHalf);
 	m_myBox.fExtent[2] = m_myBox.vAxis[2].Dot(vHalf);
@@ -54,6 +56,7 @@ MY_BoxObject::MY_BoxObject()
 
 	vMin = Vector3(100000.0f, 100000.0f, 100000.0f);
 	vMax = Vector3(-100000.0f, -100000.0f, -100000.0f);
+	//좌표계상 min max를 계산
 	for (int iVer = 0; iVer < 8; iVer++)
 	{
 		vMin = Vector3::Transform(vVertex[iVer], matWorld);

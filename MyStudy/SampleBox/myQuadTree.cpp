@@ -13,6 +13,7 @@ bool myQuadTree::Build(float fWidth, float fHeight)
 bool myQuadTree::BuildTree(myNode* pNode)
 {
 	// 분할 가능하냐
+	//분할
 	if (SubDivide(pNode))
 	{
 		for (int iNode = 0; iNode < pNode->m_ChildList.size(); iNode++)
@@ -86,9 +87,11 @@ myNode* myQuadTree::CreateNode(myNode* pParentNode, float fTopLeft, float fTopRi
 	SAFE_NEW(pNode, myNode);
 	assert(pNode);
 
+	//자식노드 4개 생성
 	pNode->m_ChildList.reserve(4);
+	//코너값 벡터 4개 생성
 	pNode->m_CornerList.reserve(4);
-
+	//노드의 값들 설정
 	pNode->m_myBox.vMin = Vector3(fTopLeft, 0.0f, fBottomLeft);
 	pNode->m_myBox.vMax = Vector3(fTopRight, 0.0f, fBottomRight);
 	pNode->m_myBox.vCenter = (pNode->m_myBox.vMax + pNode->m_myBox.vMin);
@@ -106,7 +109,9 @@ myNode* myQuadTree::CreateNode(myNode* pParentNode, float fTopLeft, float fTopRi
 
 	if (pParentNode)
 	{
+		//현재 노드의 깊이값 설정
 		pNode->m_dwDepth = pParentNode->m_dwDepth + 1;
+		//현재 깊이가 제일 깊다면 최대 깊이 갱신
 		if ((DWORD)m_iMaxDepth < pNode->m_dwDepth)
 		{
 			m_iMaxDepth = pNode->m_dwDepth;
@@ -114,7 +119,7 @@ myNode* myQuadTree::CreateNode(myNode* pParentNode, float fTopLeft, float fTopRi
 	}
 	return pNode;
 }
-
+//오브젝트 추가
 int myQuadTree::AddObject(myBaseObj* pObj)
 {
 	if (CheckRect(m_pRootNode, pObj))
@@ -128,6 +133,7 @@ int myQuadTree::AddObject(myBaseObj* pObj)
 	}
 	return 0;
 }
+//렉트 체크
 int myQuadTree::CheckRect(myNode* pNode, myBaseObj* pObj)
 {
 	if (pNode->m_myBox.vMin.x <= pObj->m_myBox.vMin.x && pNode->m_myBox.vMax.x >= pObj->m_myBox.vMax.x)
@@ -139,6 +145,7 @@ int myQuadTree::CheckRect(myNode* pNode, myBaseObj* pObj)
 	}
 	return 0;
 }
+//오브젝트 포함 찾기
 myNode*	myQuadTree::FindNode(myNode* pNode, myBaseObj* pObj)
 {
 	assert(pNode);
@@ -273,6 +280,8 @@ void myQuadTree::FindNeighborNode(myNode* pNode)
 	//	pNode->m_NeighborList[3] = m_LevelList[pNode->m_dwDepth][dwNeighborRow + dwNeighborCol];
 	//}
 }
+
+//인접노드 설정
 void myQuadTree::SetNeighborNode(myNode* pNode)
 {
 	FindNeighborNode(pNode);
