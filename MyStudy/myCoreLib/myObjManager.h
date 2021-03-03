@@ -25,6 +25,16 @@ public:
 		}
 		obj->InsertComponent(pComponent);
 	}
+	template <class Component_T>
+	myGameObject*	PushFrontComponentInObj(wstring strObjName, Component_T* pComponent)
+	{
+		myGameObject* obj = m_ObjectContainer.GetGameObject(strObjName);
+		if (obj == nullptr)
+		{
+			return nullptr;
+		}
+		obj->InsertComponent(pComponent);
+	}
 public:
 	bool	Init();
 	bool	PreFrame();

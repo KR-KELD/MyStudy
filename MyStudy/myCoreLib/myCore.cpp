@@ -45,7 +45,7 @@ bool myCore::GameInit()
 	m_pBasisLine = new myShapeLine;
 	g_GameObject.InsertComponent(m_pBasisLine);
 	m_pBasisLine->Init();
-	if (!m_pBasisLine->Create(L"vs.txt", L"ps.txt",
+	if (!m_pBasisLine->Create(L"../../data/shader/VS.txt", L"../../data/shader/PS.txt",
 	L"../../data/bitmap/flametank.bmp"))
 	{
 		return false;

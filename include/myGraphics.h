@@ -65,6 +65,36 @@ struct MY_BOX
 	float		fExtent[3];
 };
 
+struct MY_PLANE
+{
+	//평면의 방정식
+	//a,b,c는 평면의 노말벡터 x,y,z
+	//d는 원점과 평면 사이의 거리
+	float a, b, c, d;
+	//점 3개로 평면을 구성하는 방법
+	void Create(Vector3 v0, Vector3 v1, Vector3 v2)
+	{
+		Vector3 n;
+		Vector3 e0 = v1 - v0;
+		Vector3 e1 = v2 - v0;
+		n = e0.Cross(e1);
+		n.Normalize();
+		a = n.x;
+		b = n.y;
+		c = n.z;
+		d = -n.Dot(v0);
+	}
+	//노말벡터 1개와 평면의 점 1개
+	void Create(Vector3 n, Vector3 v)
+	{
+		n.Normalize();
+		a = n.x;
+		b = n.y;
+		c = n.z;
+		d = -n.Dot(v);
+	}
+};
+
 struct myDataCB
 {
 	Matrix  matWorld;
@@ -104,6 +134,9 @@ class myGraphics : public myComponent
 {
 public:
 	DEFINE_COMPONENT(myGraphics, myComponent, true);
+public:
+	//충돌체
+	MY_BOX						m_BindingBox;
 public:
 	ID3DBlob*					m_pVSObj;
 	UINT						m_iTopology;

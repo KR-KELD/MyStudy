@@ -10,9 +10,6 @@ class Sample : public myCore
 {
 public:
 	myQuadTree		m_QuadTree;
-	MY_BoxObject*	m_pObject;
-	MY_BOX			m_myBoxBase;
-
 
 	myMiniMap*		m_MiniMap;
 	myCamera*		m_TopCamera;

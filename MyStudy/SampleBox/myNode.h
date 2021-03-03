@@ -1,27 +1,6 @@
 #pragma once
 #include "myGraphics.h"
 
-
-//박스의 정보만 있는 오브젝트
-class myBaseObj
-{
-public:
-	MY_BOX				m_myBox;
-public:
-	myBaseObj() {}
-	virtual ~myBaseObj() {}
-};
-//박스의 월드 포지션 컬러가 있는 오브젝트
-class MY_BoxObject : public myBaseObj
-{
-public:
-	Matrix			m_matWorld;
-	Vector3			m_vPosition;
-	Vector4			m_vColor;
-public:
-	MY_BoxObject();
-};
-
 class myNode
 {
 public:
@@ -41,7 +20,7 @@ public:
 	//인접노드 리스트
 	vector<myNode*>		m_NeighborList;
 	//오브젝트 리스트(?)
-	vector<myBaseObj*>	m_ObjectList;
+	vector<myGameObject*>	m_ObjectList;
 	// 추가
 	DWORD				m_dwPositionIndex[2];// X,Y	
 	//버텍스버퍼 값

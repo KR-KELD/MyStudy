@@ -38,11 +38,9 @@ bool Sample::Init()
 	g_ObjMgr.CreateObjComponent(L"Box", m_Box);
 	g_GameObject.GetGameObject(L"Box")->InsertComponent(new myController);
 
-	SAFE_NEW_ARRAY(m_pObject, MY_BoxObject, NUM_OBJECTS);
-
 	for (int iBox = 0; iBox < NUM_OBJECTS; iBox++)
 	{
-		m_QuadTree.AddObject(&m_pObject[iBox]);
+		//m_QuadTree.AddObject(&m_pObject[iBox]);
 	}
 
 
@@ -306,22 +304,22 @@ bool Sample::DrawQuadLine(myNode * pNode)
 	return true;
 }
 
-void Sample::DrawObject(Matrix * pView, Matrix * pProj)
-{
-	for (int iBox = 0; iBox < NUM_OBJECTS; iBox++)
-	{
-		m_pObject[iBox].m_matWorld._42 =
-			m_Map->GetHeight(m_pObject[iBox].m_matWorld._41,
-				m_pObject[iBox].m_matWorld._43);
-
-		m_Box->m_pTransform->SetMatrix(&m_pObject[iBox].m_matWorld,
-			pView,
-			pProj);
-		// OBB와 프로스텀 박스의 제외처리( 걸쳐 있어도 TRUE가 됨. )
-		if (g_CamMgr.m_pMainCamera->m_Frustum.CheckOBBInPlane(&m_pObject[iBox].m_myBox))
-		{
-			m_Box->Render();
-		}
-	}
-}
+//void Sample::DrawObject(Matrix * pView, Matrix * pProj)
+//{
+//	for (int iBox = 0; iBox < NUM_OBJECTS; iBox++)
+//	{
+//		m_pObject[iBox].m_matWorld._42 =
+//			m_Map->GetHeight(m_pObject[iBox].m_matWorld._41,
+//				m_pObject[iBox].m_matWorld._43);
+//
+//		m_Box->m_pTransform->SetMatrix(&m_pObject[iBox].m_matWorld,
+//			pView,
+//			pProj);
+//		// OBB와 프로스텀 박스의 제외처리( 걸쳐 있어도 TRUE가 됨. )
+//		if (g_CamMgr.m_pMainCamera->m_Frustum.CheckOBBInPlane(&m_pObject[iBox].m_myBox))
+//		{
+//			m_Box->Render();
+//		}
+//	}
+//}
 
