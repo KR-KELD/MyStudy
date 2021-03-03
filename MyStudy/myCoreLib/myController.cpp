@@ -1,7 +1,7 @@
 #include "myController.h"
 #include "myInput.h"
 DECLARE_COMPONENT(myController);
-bool myController::Frame()
+bool myController::PreFrame()
 {
 	Controller();
 	return true;

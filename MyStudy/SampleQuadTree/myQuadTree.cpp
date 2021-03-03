@@ -6,6 +6,7 @@ bool myQuadTree::Build(float fWidth, float fHeight)
 	return true;
 }
 
+//0 31 4032 4095
 bool myQuadTree::BuildTree(myNode * pNode)
 {
 	return false;

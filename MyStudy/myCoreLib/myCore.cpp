@@ -73,6 +73,8 @@ bool myCore::GameFrame()
 	g_Input.Frame();
 	g_SoundMgr.Frame();
 	Frame();
+	g_CamMgr.PreFrame();
+	g_ObjMgr.PreFrame();
 	g_ObjMgr.Frame();
 	g_CamMgr.Frame();
 	PostFrame();
