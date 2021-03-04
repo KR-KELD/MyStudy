@@ -649,8 +649,34 @@ bool myGraphics::PreRender()
 }
 bool	myGraphics::Render()
 {
-	Update();
-	PreRender();
+	if (m_isRender)
+	{
+		Update();
+		PreRender();
+		SettingPipeLine();
+		//pd3dContext->Draw(m_VertexList.size(), 0);
+		Draw();
+		PostRender();
+	}
+	return true;
+}
+bool myGraphics::PostRender()
+{
+	return true;
+}
+bool	myGraphics::Release()
+{
+	//m_pConstantBuffer->Release();
+	//m_pVertexBuffer->Release();
+	//m_pIndexBuffer->Release();
+	//m_pInputLayout->Release();
+	//m_pVertexShader->Release();
+	//m_pPixelShader->Release();
+	return true;
+}
+
+bool myGraphics::SettingPipeLine()
+{
 	UINT iStride = sizeof(PNCT_VERTEX);
 	UINT iOffset = 0;
 	g_pImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &iStride, &iOffset);
@@ -666,23 +692,12 @@ bool	myGraphics::Render()
 		g_pImmediateContext->PSSetShaderResources(0, 1,
 			m_pTexture->m_pTextureSRV.GetAddressOf());
 	}
-	//pd3dContext->Draw(m_VertexList.size(), 0);
-	PostRender();
 	return true;
 }
-bool myGraphics::PostRender()
+
+bool myGraphics::Draw()
 {
 	g_pImmediateContext->DrawIndexed(m_IndexList.size(), 0, 0);
-	return true;
-}
-bool	myGraphics::Release()
-{
-	//m_pConstantBuffer->Release();
-	//m_pVertexBuffer->Release();
-	//m_pIndexBuffer->Release();
-	//m_pInputLayout->Release();
-	//m_pVertexShader->Release();
-	//m_pPixelShader->Release();
 	return true;
 }
 
@@ -696,6 +711,7 @@ myGraphics::myGraphics()
 	m_szVertexShader = "VS";
 	m_szPixelShader = "PS";
 	m_iTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_isRender = true;
 }
 myGraphics::~myGraphics()
 {

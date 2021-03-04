@@ -68,30 +68,14 @@ bool myQuadTree::Draw(myNode* pNode)
 	if (pNode == nullptr) return false;
 	if (pNode->m_isLeaf == true)
 	{
-		m_pMap->Update();
-		m_pMap->PreRender();
-		UINT iStride = sizeof(PNCT_VERTEX);
-		UINT iOffset = 0;
-		g_pImmediateContext->IASetVertexBuffers(0, 1, m_pMap->m_pVertexBuffer.GetAddressOf(), &iStride, &iOffset);
 		g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		g_pImmediateContext->IASetInputLayout(m_pMap->m_pInputLayout.Get());
-		g_pImmediateContext->VSSetConstantBuffers(0, 1, m_pMap->m_pConstantBuffer.GetAddressOf());
-		g_pImmediateContext->PSSetConstantBuffers(0, 1, m_pMap->m_pConstantBuffer.GetAddressOf());
-		g_pImmediateContext->VSSetShader(m_pMap->m_pVertexShader.Get(), NULL, 0);
-		g_pImmediateContext->PSSetShader(m_pMap->m_pPixelShader.Get(), NULL, 0);
-		g_pImmediateContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_pMap->m_iTopology);
-		if (m_pMap->m_pTexture != nullptr)
-		{
-			g_pImmediateContext->PSSetShaderResources(0, 1,
-				m_pMap->m_pTexture->m_pTextureSRV.GetAddressOf());
-		}
 		g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
 		return true;
 	}
 	Draw(pNode->m_ChildList[0]);
 	Draw(pNode->m_ChildList[1]);
 	Draw(pNode->m_ChildList[2]);
-	//Draw(pNode->m_ChildList[3]);
+	Draw(pNode->m_ChildList[3]);
 	return true;
 }
 

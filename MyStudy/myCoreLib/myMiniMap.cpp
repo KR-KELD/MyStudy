@@ -42,7 +42,7 @@ bool myMiniMap::End()
 	return true;
 }
 
-bool myMiniMap::PostRender()
+bool myMiniMap::Draw()
 {
 	g_pImmediateContext->PSSetShaderResources(0, 1, m_DxRT.m_pSRV.GetAddressOf());
 	myGraphics::PostRender();

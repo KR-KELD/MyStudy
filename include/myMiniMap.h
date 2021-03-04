@@ -15,5 +15,5 @@ public:
 	virtual bool	End();
 	virtual bool	Release() override;
 	virtual bool	PostRender() override;
-
+	virtual bool	Draw();
 };

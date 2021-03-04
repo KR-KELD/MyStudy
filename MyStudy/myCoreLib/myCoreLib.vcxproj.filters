@@ -171,6 +171,9 @@
     <ClCompile Include="myController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="myLog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mySoundManager.h">
@@ -324,6 +327,9 @@
       <Filter>Mgr</Filter>
     </ClInclude>
     <ClInclude Include="myController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myLog.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

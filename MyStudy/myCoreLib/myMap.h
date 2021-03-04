@@ -36,7 +36,7 @@ public:
 	virtual bool    CreateVertexData() override;
 	virtual bool    CreateIndexData()override;
 	virtual bool	Frame() override;
-	virtual bool	PostRender();
+	virtual bool	Draw() override;
 public:
 	myMap();
 	virtual ~myMap();

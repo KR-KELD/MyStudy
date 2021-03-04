@@ -143,6 +143,7 @@ public:
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
 public:
+	bool						m_isRender;
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;
 	std::vector<DWORD>			m_IndexList;
@@ -161,6 +162,8 @@ public:
 	virtual bool	Render();
 	virtual bool	PostRender();
 	virtual bool	Release();
+	virtual bool	SettingPipeLine();
+	virtual bool	Draw();
 	virtual bool    CreateVertexData(Vector3 vCenter, float fRange);
 	virtual bool    CreateVertexData();
 	virtual bool    CreateIndexData();

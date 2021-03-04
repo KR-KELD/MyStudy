@@ -54,7 +54,7 @@ bool myMap::Frame()
 	return true;
 }
 
-bool myMap::PostRender()
+bool myMap::Draw()
 {
 	g_pImmediateContext->DrawIndexed(m_iNumFaces * 3, 0, 0);
 	return true;
