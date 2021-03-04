@@ -2,7 +2,7 @@
 
 myNode::myNode()
 {
-	m_dwDepth = 0;
+	m_iDepth = 0;
 	m_isLeaf = FALSE;
 	m_myBox.vCenter = Vector3(0.0f, 0.0f, 0.0f);
 	m_myBox.vMax = Vector3(1.0f, 1.0f, 1.0f);
@@ -16,7 +16,7 @@ myNode::myNode()
 }
 myNode::~myNode()
 {
-	if (!m_vCornerList.empty()) m_vCornerList.clear();
+	if (!m_CornerList.empty()) m_CornerList.clear();
 
 	for (int i = 0; i < m_ChildList.size(); i++)
 	{

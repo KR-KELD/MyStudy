@@ -437,46 +437,46 @@ DECLARE_COMPONENT(myGraphics);
 //	return pBuffer;
 //}
 //
-//ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT iNumIndex,
-//	UINT iSize, bool bDynamic)
-//{
-//	HRESULT hr = S_OK;
-//	ID3D11Buffer* pBuffer = nullptr;
-//	D3D11_BUFFER_DESC bd;
-//	ZeroMemory(&bd, sizeof(bd));
-//	D3D11_SUBRESOURCE_DATA InitData;
-//	ZeroMemory(&InitData, sizeof(InitData));
-//	if (bDynamic)
-//	{
-//		bd.Usage = D3D11_USAGE_DYNAMIC;
-//		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-//	}
-//	else
-//	{
-//		bd.Usage = D3D11_USAGE_DEFAULT;
-//		bd.CPUAccessFlags = 0;
-//	}
-//	bd.ByteWidth = iSize * iNumIndex;
-//	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-//	InitData.pSysMem = indices;
-//	if (indices != NULL)
-//	{
-//		if (FAILED(hr = pd3dDevice->CreateBuffer(&bd, &InitData, &pBuffer)))
-//		{
-//			H(hr);
-//			return nullptr;
-//		}
-//	}
-//	else
-//	{
-//		if (FAILED(hr = pd3dDevice->CreateBuffer(&bd, NULL, &pBuffer)))
-//		{
-//			H(hr);
-//			return nullptr;
-//		}
-//	}
-//	return pBuffer;
-//}
+ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT iNumIndex,
+	UINT iSize, bool bDynamic)
+{
+	HRESULT hr = S_OK;
+	ID3D11Buffer* pBuffer = nullptr;
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	D3D11_SUBRESOURCE_DATA InitData;
+	ZeroMemory(&InitData, sizeof(InitData));
+	if (bDynamic)
+	{
+		bd.Usage = D3D11_USAGE_DYNAMIC;
+		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	}
+	else
+	{
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.CPUAccessFlags = 0;
+	}
+	bd.ByteWidth = iSize * iNumIndex;
+	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	InitData.pSysMem = indices;
+	if (indices != NULL)
+	{
+		if (FAILED(hr = pd3dDevice->CreateBuffer(&bd, &InitData, &pBuffer)))
+		{
+			H(hr);
+			return nullptr;
+		}
+	}
+	else
+	{
+		if (FAILED(hr = pd3dDevice->CreateBuffer(&bd, NULL, &pBuffer)))
+		{
+			H(hr);
+			return nullptr;
+		}
+	}
+	return pBuffer;
+}
 //ID3D11Buffer* CreateConstantBuffer(ID3D11Device*  pd3dDevice, void *data, UINT iNumIndex,
 //	UINT iSize, bool bDynamic)
 //{

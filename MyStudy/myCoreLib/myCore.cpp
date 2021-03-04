@@ -105,7 +105,7 @@ bool myCore::PostRender()
 	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
 	g_Timer.Render();
 	g_Input.Render();
-	g_ObjMgr.Render();
+	//g_ObjMgr.Render();
 	g_SoundMgr.Render();
 	g_Draw.Render();
 	g_Draw.Draw(0, 0, g_Timer.m_szBuffer);

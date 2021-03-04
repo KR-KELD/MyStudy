@@ -9,7 +9,7 @@ bool Sample::Init()
 
 	m_Map = new myHeightMap;
 	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
-	m_Map->CreateHeightMap(L"../../data/castle_height.bmp");
+	m_Map->CreateHeightMap(L"../../data/heightMap513.bmp");
 
 
 	myMapDesc desc;
@@ -22,13 +22,7 @@ bool Sample::Init()
 	desc.szPS = L"../../data/shader/PS.txt";
 	m_Map->CreateMap(desc);
 	//m_Map->CalNormal();
-
-	m_QuadTree.Build(129, 129);
-
-	for (int iBox = 0; iBox < NUM_OBJECTS; iBox++)
-	{
-		//m_QuadTree.AddObject(&m_pObject[iBox]);
-	}
+	m_QuadTree.CreateQuadTree(m_Map);
 
 	return true;
 }
@@ -73,17 +67,11 @@ bool Sample::Render()
 	//µª½º ½ºÅÄ½Ç ½ºÅ×ÀÌÆ® ¼¼ÆÃ(±íÀÌ°ª ¹öÆÛ)
 	g_pImmediateContext->OMSetDepthStencilState(myDxState::m_pDSS.Get(), 0);
 
-
-	//DrawQuadLine(m_QuadTree.m_pRootNode);
-	//DrawObject(&g_pMainCamTransform->m_matView,
-	//	&g_pMainCamTransform->m_matProj);
-
-
 	m_Map->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
 	//m_Map->Render();
-
+	m_QuadTree.Render();
 
 
 	return true;
@@ -120,50 +108,50 @@ LRESULT Sample::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return -1;
 }
 
-bool Sample::DrawQuadLine(myNode * pNode)
-{
-	if (pNode == NULL) return true;
-
-	if (m_QuadTree.m_iRenderDepth >= pNode->m_dwDepth)
-		//if (4 >= pNode->m_dwDepth)
-	{
-		m_pBasisLine->m_pTransform->SetMatrix(NULL,
-			&g_pMainCamTransform->m_matView,
-			&g_pMainCamTransform->m_matProj);
-
-		Vector4 vColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-		if (pNode->m_dwDepth == 0) vColor = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-		if (pNode->m_dwDepth == 1) vColor = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-		if (pNode->m_dwDepth == 2) vColor = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-		if (pNode->m_dwDepth == 3) vColor = Vector4(1.0f, 0.0f, 1.0f, 1.0f);
-		if (pNode->m_dwDepth == 4) vColor = Vector4(1.0f, 1.0f, 0.0f, 1.0f);
-		if (pNode->m_dwDepth == 5) vColor = Vector4(0.0f, 0.5f, 1.0f, 1.0f);
-		if (pNode->m_dwDepth == 6) vColor = Vector4(1.0f, 0.5f, 0.0f, 1.0f);
-		if (pNode->m_dwDepth == 7) vColor = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
-		if (pNode->m_dwDepth == 8) vColor = Vector4(1.0f, 0.5f, 0.5f, 1.0f);
-		if (pNode->m_dwDepth == 9) vColor = Vector4(1.0f, 0.5f, 1.0f, 1.0f);
-
-		Vector3 vPoint[4];
-		vPoint[0] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
-		vPoint[0].y -= 1.0f * pNode->m_dwDepth;
-		vPoint[1] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
-		vPoint[1].y -= 1.0f * pNode->m_dwDepth;
-		vPoint[2] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
-		vPoint[2].y -= 1.0f * pNode->m_dwDepth;
-		vPoint[3] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
-		vPoint[3].y -= 1.0f * pNode->m_dwDepth;
-
-		m_pBasisLine->Draw(vPoint[0], vPoint[1], vColor);
-		m_pBasisLine->Draw(vPoint[1], vPoint[3], vColor);
-		m_pBasisLine->Draw(vPoint[2], vPoint[3], vColor);
-		m_pBasisLine->Draw(vPoint[0], vPoint[2], vColor);
-	}
-	for (int iNode = 0; iNode < pNode->m_ChildList.size(); iNode++)
-	{
-		DrawQuadLine(pNode->m_ChildList[iNode]);
-	}
-	return true;
-}
+//bool Sample::DrawQuadLine(myNode * pNode)
+//{
+//	if (pNode == NULL) return true;
+//
+//	if (m_QuadTree.m_iRenderDepth >= pNode->m_dwDepth)
+//		//if (4 >= pNode->m_dwDepth)
+//	{
+//		m_pBasisLine->m_pTransform->SetMatrix(NULL,
+//			&g_pMainCamTransform->m_matView,
+//			&g_pMainCamTransform->m_matProj);
+//
+//		Vector4 vColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 0) vColor = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 1) vColor = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 2) vColor = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+//		if (pNode->m_dwDepth == 3) vColor = Vector4(1.0f, 0.0f, 1.0f, 1.0f);
+//		if (pNode->m_dwDepth == 4) vColor = Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 5) vColor = Vector4(0.0f, 0.5f, 1.0f, 1.0f);
+//		if (pNode->m_dwDepth == 6) vColor = Vector4(1.0f, 0.5f, 0.0f, 1.0f);
+//		if (pNode->m_dwDepth == 7) vColor = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+//		if (pNode->m_dwDepth == 8) vColor = Vector4(1.0f, 0.5f, 0.5f, 1.0f);
+//		if (pNode->m_dwDepth == 9) vColor = Vector4(1.0f, 0.5f, 1.0f, 1.0f);
+//
+//		Vector3 vPoint[4];
+//		vPoint[0] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
+//		vPoint[0].y -= 1.0f * pNode->m_dwDepth;
+//		vPoint[1] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
+//		vPoint[1].y -= 1.0f * pNode->m_dwDepth;
+//		vPoint[2] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
+//		vPoint[2].y -= 1.0f * pNode->m_dwDepth;
+//		vPoint[3] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
+//		vPoint[3].y -= 1.0f * pNode->m_dwDepth;
+//
+//		m_pBasisLine->Draw(vPoint[0], vPoint[1], vColor);
+//		m_pBasisLine->Draw(vPoint[1], vPoint[3], vColor);
+//		m_pBasisLine->Draw(vPoint[2], vPoint[3], vColor);
+//		m_pBasisLine->Draw(vPoint[0], vPoint[2], vColor);
+//	}
+//	for (int iNode = 0; iNode < pNode->m_ChildList.size(); iNode++)
+//	{
+//		DrawQuadLine(pNode->m_ChildList[iNode]);
+//	}
+//	return true;
+//}
 
 //void Sample::DrawObject(Matrix * pView, Matrix * pProj)
 //{

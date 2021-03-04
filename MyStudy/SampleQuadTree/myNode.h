@@ -4,15 +4,19 @@
 class myNode
 {
 public:
+	myNode*					m_pParent;
 	//깊이
-	DWORD					m_dwDepth;
+	int						m_iDepth;
 	//최하단 노드인가
-	BOOL					m_isLeaf;
+	bool					m_isLeaf;
 	// 바운딩 박스
 	MY_BOX					m_myBox;
 	vector<myNode*>			m_ChildList;
-	vector<Vector3>			m_vCornerList;
+	vector<Vector3>			m_CornerList;
 	vector<myGameObject*>	m_ObjectList;
+	vector<DWORD>			m_IndexNumList;
+	vector<DWORD>			m_IndexList;
+	ComPtr<ID3D11Buffer>	m_pIndexBuffer;
 public:
 
 public:
