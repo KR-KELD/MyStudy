@@ -649,15 +649,12 @@ bool myGraphics::PreRender()
 }
 bool	myGraphics::Render()
 {
-	if (m_isRender)
-	{
-		Update();
-		PreRender();
-		SettingPipeLine();
-		//pd3dContext->Draw(m_VertexList.size(), 0);
-		Draw();
-		PostRender();
-	}
+	Update();
+	PreRender();
+	SettingPipeLine();
+	//pd3dContext->Draw(m_VertexList.size(), 0);
+	Draw();
+	PostRender();
 	return true;
 }
 bool myGraphics::PostRender()
@@ -711,7 +708,6 @@ myGraphics::myGraphics()
 	m_szVertexShader = "VS";
 	m_szPixelShader = "PS";
 	m_iTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	m_isRender = true;
 }
 myGraphics::~myGraphics()
 {

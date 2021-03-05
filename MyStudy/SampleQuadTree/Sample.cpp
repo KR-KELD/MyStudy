@@ -16,7 +16,7 @@ bool Sample::Init()
 	desc.iNumCols = m_Map->m_iNumCols;
 	desc.iNumRows = m_Map->m_iNumRows;
 	desc.fCellDistance = 1;
-	desc.fScaleHeight = 5.0f;
+	desc.fScaleHeight = 10.0f;
 	desc.szTexFile = L"../../data/castle.jpg";
 	desc.szVS = L"../../data/shader/VS.txt";
 	desc.szPS = L"../../data/shader/PS.txt";

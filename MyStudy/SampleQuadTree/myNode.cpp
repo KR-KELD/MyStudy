@@ -17,7 +17,8 @@ myNode::myNode()
 myNode::~myNode()
 {
 	if (!m_CornerList.empty()) m_CornerList.clear();
-
+	if (!m_IndexNumList.empty()) m_IndexNumList.clear();
+	if (!m_IndexList.empty()) m_IndexList.clear();
 	for (int i = 0; i < m_ChildList.size(); i++)
 	{
 		SAFE_DEL(m_ChildList[i]);

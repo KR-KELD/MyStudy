@@ -117,6 +117,8 @@ class myComponent
 public:
 	myGameObject*	m_pGameObject;
 	myTransform*	m_pTransform;
+	bool			m_isActive;
+	bool			m_isRender;
 	DEFINE_COMPONENT(myComponent, null_t, false);
 public:
 	virtual bool	Init();
@@ -135,7 +137,11 @@ public:
 		m_pGameObject = pGameObject;
 	}
 public:
-	myComponent() {};
+	myComponent()
+	{
+		m_isActive = true;
+		m_isRender = true;
+	};
 	virtual ~myComponent() {}
 };
 //여기 있으면 오류

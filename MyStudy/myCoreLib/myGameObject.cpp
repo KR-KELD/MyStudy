@@ -257,13 +257,15 @@ bool myGameObject::PreFrame()
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
-		(*m_ComIter).second->PreFrame();
+		if ((*m_ComIter).second->m_isActive)
+			(*m_ComIter).second->PreFrame();
 	}
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
-		(*m_ObjIter).second->PreFrame();
+		if ((*m_ObjIter).second->m_isActive)
+			(*m_ObjIter).second->PreFrame();
 	}
 	return true;
 }
@@ -275,13 +277,15 @@ bool myGameObject::Frame()
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
-		(*m_ComIter).second->Frame();
+		if ((*m_ComIter).second->m_isActive)
+			(*m_ComIter).second->Frame();
 	}
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
-		(*m_ObjIter).second->Frame();
+		if ((*m_ObjIter).second->m_isActive)
+			(*m_ObjIter).second->Frame();
 	}
 	//PostFrame();
 	return true;
@@ -293,13 +297,15 @@ bool myGameObject::PostFrame()
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
-		(*m_ComIter).second->PostFrame();
+		if ((*m_ComIter).second->m_isActive)
+			(*m_ComIter).second->PostFrame();
 	}
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
-		(*m_ObjIter).second->PostFrame();
+		if ((*m_ObjIter).second->m_isActive)
+			(*m_ObjIter).second->PostFrame();
 	}
 	return true;
 }
@@ -310,13 +316,19 @@ bool myGameObject::PreRender()
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
-		(*m_ComIter).second->PreRender();
+		if ((*m_ComIter).second->m_isActive && (*m_ComIter).second->m_isRender)
+		{
+			(*m_ComIter).second->PreRender();
+		}
 	}
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
-		(*m_ObjIter).second->PreRender();
+		if ((*m_ObjIter).second->m_isActive && (*m_ObjIter).second->m_isRender)
+		{
+			(*m_ObjIter).second->PreRender();
+		}
 	}
 	return true;
 }
@@ -328,13 +340,19 @@ bool myGameObject::Render()
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
-		(*m_ComIter).second->Render();
+		if ((*m_ComIter).second->m_isActive && (*m_ComIter).second->m_isRender)
+		{
+			(*m_ComIter).second->Render();
+		}
 	}
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
-		(*m_ObjIter).second->Render();
+		if ((*m_ObjIter).second->m_isActive && (*m_ObjIter).second->m_isRender)
+		{
+			(*m_ObjIter).second->Render();
+		}
 	}
 	//PostRender();
 	return true;
@@ -346,13 +364,19 @@ bool myGameObject::PostRender()
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
-		(*m_ComIter).second->PostRender();
+		if ((*m_ComIter).second->m_isActive && (*m_ComIter).second->m_isRender)
+		{
+			(*m_ComIter).second->PostRender();
+		}
 	}
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
-		(*m_ObjIter).second->PostRender();
+		if ((*m_ObjIter).second->m_isActive && (*m_ObjIter).second->m_isRender)
+		{
+			(*m_ObjIter).second->PostRender();
+		}
 	}
 	return true;
 }
@@ -363,14 +387,16 @@ void myGameObject::Update()
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
-		(*m_ComIter).second->Update();
+		if ((*m_ComIter).second->m_isActive)
+			(*m_ComIter).second->Update();
 	}
 
 	for (m_ObjIter = m_Childs.begin();
 		m_ObjIter != m_Childs.end();
 		m_ObjIter++)
 	{
-		(*m_ObjIter).second->Update();
+		if ((*m_ObjIter).second->m_isActive)
+			(*m_ObjIter).second->Update();
 	}
 }
 

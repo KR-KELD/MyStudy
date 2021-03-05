@@ -143,7 +143,6 @@ public:
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
 public:
-	bool						m_isRender;
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;
 	std::vector<DWORD>			m_IndexList;

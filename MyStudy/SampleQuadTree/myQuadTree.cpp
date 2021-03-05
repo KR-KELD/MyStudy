@@ -5,7 +5,7 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 	m_pMap = pMap;
 	m_pRootNode = CreateNode(nullptr, 0,
 		m_pMap->m_iNumCols - 1,
-		m_pMap->m_iNumVertices - (m_pMap->m_iNumCols - 1),
+		m_pMap->m_iNumVertices - 1 - (m_pMap->m_iNumCols - 1),
 		m_pMap->m_iNumVertices - 1);
 
 	Partition(m_pRootNode);
@@ -59,7 +59,11 @@ bool myQuadTree::Frame()
 
 bool myQuadTree::Render()
 {
-	Draw(m_pRootNode);
+	m_pMap->Update();
+	m_pMap->SettingPipeLine();
+	g_pImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+	DrawCulling();
+	//Draw(m_pRootNode);
 	return true;
 }
 
@@ -72,15 +76,49 @@ bool myQuadTree::Draw(myNode* pNode)
 		g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
 		return true;
 	}
-	Draw(pNode->m_ChildList[0]);
-	Draw(pNode->m_ChildList[1]);
-	Draw(pNode->m_ChildList[2]);
-	Draw(pNode->m_ChildList[3]);
+	for (int i = 0; i < pNode->m_ChildList.size(); i++)
+	{
+		Draw(pNode->m_ChildList[i]);
+	}
+	return true;
+}
+
+bool myQuadTree::DrawCulling()
+{
+	m_DrawNodeList.clear();
+	FrustumCulling(m_pRootNode);
+	for (myNode* pNode : m_DrawNodeList)
+	{
+		g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
+	}
+	return true;
+}
+
+bool myQuadTree::FrustumCulling(myNode * pNode)
+{
+	if (pNode == nullptr) return false;
+	if (pNode->m_isLeaf == true)
+	{
+		for (int i = 0; i < pNode->m_CornerList.size(); i++)
+		{
+			if (g_CamMgr.m_pMainCamera->m_Frustum.ClassifyPoint(pNode->m_CornerList[i]))
+			{
+				m_DrawNodeList.push_back(pNode);
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < pNode->m_ChildList.size(); i++)
+	{
+		FrustumCulling(pNode->m_ChildList[i]);
+	}
 	return true;
 }
 
 myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD RightTop, DWORD LeftBottom, DWORD RightBottom)
 {
+	if (m_pMap == nullptr) return nullptr;
 	myNode* newNode = new myNode;
 	if (pParentNode != nullptr)
 	{
@@ -92,6 +130,21 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_IndexNumList[1] = RightTop;
 	newNode->m_IndexNumList[2] = LeftBottom;
 	newNode->m_IndexNumList[3] = RightBottom;
+
+	newNode->m_CornerList.resize(4);
+	newNode->m_CornerList[0] = m_pMap->m_VertexList[LeftTop].p;
+	newNode->m_CornerList[1] = m_pMap->m_VertexList[RightTop].p;
+	newNode->m_CornerList[2] = m_pMap->m_VertexList[LeftBottom].p;
+	newNode->m_CornerList[3] = m_pMap->m_VertexList[RightBottom].p;
+
+	newNode->m_myBox.vMax = newNode->m_CornerList[1];
+	newNode->m_myBox.vMin = newNode->m_CornerList[2];
+	newNode->m_myBox.vCenter = (newNode->m_myBox.vMax + newNode->m_myBox.vMin) / 2;
+
+	newNode->m_myBox.vPos[0] = newNode->m_myBox.vPos[4] = newNode->m_CornerList[0];
+	newNode->m_myBox.vPos[1] = newNode->m_myBox.vPos[5] = newNode->m_CornerList[1];
+	newNode->m_myBox.vPos[2] = newNode->m_myBox.vPos[6] = newNode->m_CornerList[2];
+	newNode->m_myBox.vPos[3] = newNode->m_myBox.vPos[7] = newNode->m_CornerList[3];
 
 	newNode->m_IndexList.resize(6);
 	newNode->m_IndexList[0] = newNode->m_IndexNumList[0];
@@ -112,7 +165,7 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 myQuadTree::myQuadTree(void)
 {
 	m_pRootNode = NULL;
-	m_iMaxdepth = 3;
+	m_iMaxdepth = 4;
 }
 
 myQuadTree::~myQuadTree(void)
