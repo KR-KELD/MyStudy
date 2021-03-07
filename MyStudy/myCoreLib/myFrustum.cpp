@@ -127,6 +127,22 @@ BOOL myFrustum::ClassifyPoint(Vector3 v)
 	return true;
 }
 
+//bool myFrustum::ClassifyLine(Vector3 v)
+//{
+//	for (int iPlane = 0; iPlane < m_Plane.size(); iPlane++)
+//	{
+//		float fDist = m_Plane[iPlane].a * v.x +
+//			m_Plane[iPlane].b * v.y +
+//			m_Plane[iPlane].c * v.z +
+//			m_Plane[iPlane].d;
+//		if (fDist < 0.0f)
+//		{
+//			return false;
+//		}
+//	}
+//	return true;
+//}
+
 BOOL myFrustum::ClassifyBox(myShapeBox box)
 {
 	return 0;

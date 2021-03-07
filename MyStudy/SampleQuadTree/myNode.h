@@ -12,10 +12,12 @@ public:
 	// 바운딩 박스
 	MY_BOX					m_myBox;
 	vector<myNode*>			m_ChildList;
-	vector<Vector3>			m_CornerList;
+	vector<PNCT_VERTEX>		m_CornerList;
+	vector<DWORD>			m_CornerIndexList;
 	vector<myGameObject*>	m_ObjectList;
-	vector<DWORD>			m_IndexNumList;
 	vector<DWORD>			m_IndexList;
+	vector<PNCT_VERTEX>		m_VertexList;
+	DWORD					m_dwFaceNum;
 	ComPtr<ID3D11Buffer>	m_pIndexBuffer;
 public:
 

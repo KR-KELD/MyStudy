@@ -148,12 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="myHeightMap.cpp" />
+    <ClCompile Include="myMouse.cpp" />
     <ClCompile Include="myNode.cpp" />
     <ClCompile Include="myQuadTree.cpp" />
     <ClCompile Include="Sample.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myHeightMap.h" />
+    <ClInclude Include="myMouse.h" />
     <ClInclude Include="myNode.h" />
     <ClInclude Include="myQuadTree.h" />
     <ClInclude Include="Sample.h" />

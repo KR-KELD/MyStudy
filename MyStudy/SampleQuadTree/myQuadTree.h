@@ -13,6 +13,7 @@ public:
 	//최소 크기
 
 	//뿌려줄 노드
+	vector<myNode*> m_LeafNodeList;
 	vector<myNode*>	m_DrawNodeList;
 public:
 	bool			CreateQuadTree(myMap* pMap);
@@ -24,7 +25,8 @@ public:
 	virtual bool	Render();
 	virtual bool	Draw(myNode* pNode);
 	virtual bool	DrawCulling();
-	virtual bool	FrustumCulling(myNode* pNode);
+	virtual bool	CullingNode();
+	virtual bool	CullingVertex(myNode* pNode);
 
 	myNode*			CreateNode(myNode* pParentNode, DWORD LeftTop, DWORD RightTop, DWORD LeftBottom, DWORD RightBottom);
 public:
