@@ -18,6 +18,7 @@ public:
 	virtual bool Frame(Matrix& matInvViewProj);
 	virtual bool Release();
 	BOOL	ClassifyPoint(Vector3 v);
+	//bool	ClassifyLine(Vector3 v);
 	BOOL	ClassifyBox(myShapeBox box);
 	BOOL    CheckOBBInPlane(MY_BOX* pBox);
 };

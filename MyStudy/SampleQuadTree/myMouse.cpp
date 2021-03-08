@@ -25,14 +25,15 @@ void myMouse::MousePicking(myMap* pMap)
 		v[1] = pMap->m_VertexList[pMap->m_IndexList[face * 3 + 1]].p;
 		v[2] = pMap->m_VertexList[pMap->m_IndexList[face * 3 + 2]].p;
 
-		Vector3 end = m_myRay.m_vOrigin + m_myRay.m_vDir * 1000.0f;
+		Vector3 end = m_myRay.m_vOrigin + m_myRay.m_vDir * m_fRange;
 		Vector3 faceNormal = (v[1] - v[0]).Cross(v[2] - v[0]);
 		faceNormal.Normalize();
 
 	}
 }
 
-bool myMouse::InterSection()
+bool myMouse::InterSection(Vector3 vSegStart, Vector3 vSegEnd, Vector3 vFaceNormal,
+	Vector3 vFaceV1, Vector3 vFaceV2, Vector3 vFaceV3)
 {
 }
 
@@ -42,6 +43,7 @@ bool myMouse::DiscribeFace()
 
 myMouse::myMouse()
 {
+	m_fRange = 1000.0f;
 }
 
 myMouse::~myMouse()

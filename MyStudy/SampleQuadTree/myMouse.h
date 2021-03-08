@@ -20,10 +20,12 @@ class myMouse
 public:
 	myRay		m_myRay;
 	Vector3		m_vIntersectionPos;
+	float		m_fRange;
 public:
 	void ScreenToRay();
 	void MousePicking(myMap* pMap);
-	bool InterSection();
+	bool InterSection(Vector3 vSegStart, Vector3 vSegEnd, Vector3 vFaceNormal,
+					Vector3 vFaceV1, Vector3 vFaceV2, Vector3 vFaceV3);
 	bool DiscribeFace();
 public:
 	myMouse();
