@@ -78,6 +78,11 @@ bool myMouse::DiscribeFace(Vector3 vPos, Vector3 vFaceNormal, Vector3 vFaceV1,
 	return true;
 }
 
+bool myMouse::InterSectDisc()
+{
+	return false;
+}
+
 myMouse::myMouse()
 {
 	m_fRange = 1000.0f;

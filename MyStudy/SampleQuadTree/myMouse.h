@@ -28,6 +28,7 @@ public:
 					Vector3 vFaceV1, Vector3 vFaceV2, Vector3 vFaceV3);
 	bool DiscribeFace(Vector3 vPos, Vector3 vFaceNormal, Vector3 vFaceV1,
 					Vector3 vFaceV2, Vector3 vFaceV3);
+	bool InterSectDisc();
 public:
 	myMouse();
 	virtual ~myMouse();
