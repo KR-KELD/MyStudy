@@ -9,8 +9,12 @@ bool Sample::Init()
 
 	m_Map = new myHeightMap;
 	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
-	m_Map->CreateHeightMap(L"../../data/heightMap513.bmp");
+	m_Map->CreateHeightMap(L"../../data/129.jpg");
 
+	m_pBox = new myShapeBox;
+	m_pBoxObj = g_ObjMgr.CreateObjComponent(L"Cube", m_pBox);
+	m_pBox->Create(L"../../data/shader/VS.txt", L"../../data/shader/PS.txt",
+		L"../../data/bitmap/intro.bmp");
 
 	myMapDesc desc;
 	desc.iNumCols = m_Map->m_iNumCols;
@@ -50,6 +54,16 @@ bool Sample::Frame()
 		myDxState::m_CullMode = D3D11_CULL_FRONT;
 		myDxState::SetRasterizerState();
 	}
+	if (g_Input.GetKey('2') == KEY_PUSH)
+	{
+		m_Mouse.MousePicking(m_Map);
+		m_pBox->m_pTransform->SetPos(m_Mouse.m_vIntersectionPos);
+	}
+	if (g_Input.GetKey(VK_RBUTTON) == KEY_PUSH)
+	{
+		m_Mouse.MousePicking(m_Map);
+		m_pBox->m_pTransform->SetPos(m_Mouse.m_vIntersectionPos);
+	}
 	g_CamMgr.m_pMainCamera->FrameFrustum();
 	return true;
 }
@@ -73,6 +87,10 @@ bool Sample::Render()
 		&g_pMainCamTransform->m_matProj);
 	//m_Map->Render();
 	m_QuadTree.Render();
+
+	m_pBox->m_pTransform->SetMatrix(NULL,
+		&g_pMainCamTransform->m_matView,
+		&g_pMainCamTransform->m_matProj);
 
 
 	return true;

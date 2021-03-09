@@ -5,14 +5,16 @@
 #include "myHeightMap.h"
 #include "myMiniMap.h"
 #include "myQuadTree.h"
-
+#include "myMouse.h"
 class Sample : public myCore
 {
 public:
 	myQuadTree		m_QuadTree;
-
+	myMouse			m_Mouse;
 	myHeightMap*	m_Map;
 
+	myShapeBox*		m_pBox;
+	myGameObject*	m_pBoxObj;
 public:
 	bool Init() override;
 	bool Frame() override;

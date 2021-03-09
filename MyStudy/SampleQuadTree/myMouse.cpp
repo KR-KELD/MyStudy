@@ -18,6 +18,7 @@ void myMouse::ScreenToRay()
 
 void myMouse::MousePicking(myMap* pMap)
 {
+	ScreenToRay();
 	Vector3 v[3];
 	for (int face = 0; face < pMap->m_IndexList.size() / 3; face++)
 	{
@@ -25,10 +26,13 @@ void myMouse::MousePicking(myMap* pMap)
 		v[1] = pMap->m_VertexList[pMap->m_IndexList[face * 3 + 1]].p;
 		v[2] = pMap->m_VertexList[pMap->m_IndexList[face * 3 + 2]].p;
 
-		Vector3 end = m_myRay.m_vOrigin + m_myRay.m_vDir * m_fRange;
-		Vector3 faceNormal = (v[1] - v[0]).Cross(v[2] - v[0]);
-		faceNormal.Normalize();
-
+		Vector3 vEnd = m_myRay.m_vOrigin + m_myRay.m_vDir * m_fRange;
+		Vector3 vFaceNormal = (v[1] - v[0]).Cross(v[2] - v[0]);
+		vFaceNormal.Normalize();
+		if (InterSection(m_myRay.m_vOrigin, vEnd, vFaceNormal, v[0], v[1], v[2]))
+		{
+			return;
+		}
 	}
 }
 
@@ -36,7 +40,7 @@ bool myMouse::InterSection(Vector3& vSegStart, Vector3& vSegEnd, Vector3& vFaceN
 	Vector3& v1, Vector3& v2, Vector3& v3)
 {
 	Vector3 vDir = vSegEnd - vSegStart;
-	float fDir = vFaceNormal.Dot(vSegEnd - vSegStart);
+	float fDir = vFaceNormal.Dot(vDir);
 	float fPlane = vFaceNormal.Dot(v1 - vSegStart);
 	float fRatio = fPlane / fDir;
 	//´Ù½Ã
@@ -47,6 +51,7 @@ bool myMouse::InterSection(Vector3& vSegStart, Vector3& vSegEnd, Vector3& vFaceN
 	m_vIntersectionPos = vSegStart + vDir * fRatio;
 	if (!DetermineFace(m_vIntersectionPos, vFaceNormal, v1, v2, v3))
 	{
+		m_vIntersectionPos = Vector3::Zero;
 		return false;
 	}
 	return true;
@@ -73,7 +78,7 @@ bool myMouse::DetermineFace(Vector3& vPos, Vector3& vFaceNormal,
 	vPos1 = vPos - v2;
 	vNormal1 = vEdge1.Cross(vPos1);
 	vNormal1.Normalize();
-	float fD = vFaceNormal.Dot(vNormal1);
+	fD = vFaceNormal.Dot(vNormal1);
 	if (fD < 0.0f) return false;
 
 	return true;

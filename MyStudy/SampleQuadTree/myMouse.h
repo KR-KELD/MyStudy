@@ -11,7 +11,7 @@ struct myRay
 	myRay()
 	{
 		m_vOrigin = Vector3::Zero;
-		m_vDir = Vector3::Forward;
+		m_vDir = Vector3(0.0f,0.0f,1.0f);
 	}
 };
 
