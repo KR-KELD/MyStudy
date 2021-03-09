@@ -10,6 +10,7 @@ void myMouse::ScreenToRay()
 	view.z = 1.0f;
 
 	Matrix invView = g_pMainCamTransform->m_matView.Invert();
+	m_myRay.m_vOrigin = Vector3::Zero;
 	m_myRay.m_vOrigin = Vector3::Transform(m_myRay.m_vOrigin, invView);
 	m_myRay.m_vDir = view;
 	m_myRay.m_vDir = Vector3::TransformNormal(m_myRay.m_vDir, invView);
@@ -51,7 +52,6 @@ bool myMouse::InterSection(Vector3& vSegStart, Vector3& vSegEnd, Vector3& vFaceN
 	m_vIntersectionPos = vSegStart + vDir * fRatio;
 	if (!DetermineFace(m_vIntersectionPos, vFaceNormal, v1, v2, v3))
 	{
-		m_vIntersectionPos = Vector3::Zero;
 		return false;
 	}
 	return true;
