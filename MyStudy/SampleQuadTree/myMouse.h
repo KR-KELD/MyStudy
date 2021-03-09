@@ -24,11 +24,13 @@ public:
 public:
 	void ScreenToRay();
 	void MousePicking(myMap* pMap);
-	bool InterSection(Vector3 vSegStart, Vector3 vSegEnd, Vector3 vFaceNormal,
-					Vector3 vFaceV1, Vector3 vFaceV2, Vector3 vFaceV3);
-	bool DiscribeFace(Vector3 vPos, Vector3 vFaceNormal, Vector3 vFaceV1,
-					Vector3 vFaceV2, Vector3 vFaceV3);
-	bool InterSectDisc();
+	bool InterSection(Vector3& vSegStart, Vector3& vSegEnd, Vector3& vFaceNormal,
+					Vector3& v1, Vector3& v2, Vector3& v3);
+	bool DetermineFace(Vector3& vPos, Vector3& vFaceNormal, 
+					Vector3& v1, Vector3& v2, Vector3& v3);
+	bool InterSectDetermine(Vector3& vRayStart, Vector3& vRayDir,
+					Vector3& v1, Vector3& v2, Vector3& v3,
+					float* t, float* u, float* v);
 public:
 	myMouse();
 	virtual ~myMouse();

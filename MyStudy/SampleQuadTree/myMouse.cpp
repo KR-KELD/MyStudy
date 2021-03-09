@@ -32,12 +32,12 @@ void myMouse::MousePicking(myMap* pMap)
 	}
 }
 
-bool myMouse::InterSection(Vector3 vSegStart, Vector3 vSegEnd, Vector3 vFaceNormal,
-	Vector3 vFaceV1, Vector3 vFaceV2, Vector3 vFaceV3)
+bool myMouse::InterSection(Vector3& vSegStart, Vector3& vSegEnd, Vector3& vFaceNormal,
+	Vector3& v1, Vector3& v2, Vector3& v3)
 {
 	Vector3 vDir = vSegEnd - vSegStart;
 	float fDir = vFaceNormal.Dot(vSegEnd - vSegStart);
-	float fPlane = vFaceNormal.Dot(vFaceV1 - vSegStart);
+	float fPlane = vFaceNormal.Dot(v1 - vSegStart);
 	float fRatio = fPlane / fDir;
 	//´Ù½Ã
 	if (fRatio < 0.0f || fRatio > 1.0f)
@@ -45,42 +45,74 @@ bool myMouse::InterSection(Vector3 vSegStart, Vector3 vSegEnd, Vector3 vFaceNorm
 		return false;
 	}
 	m_vIntersectionPos = vSegStart + vDir * fRatio;
+	if (!DetermineFace(m_vIntersectionPos, vFaceNormal, v1, v2, v3))
+	{
+		return false;
+	}
 	return true;
 }
 
-bool myMouse::DiscribeFace(Vector3 vPos, Vector3 vFaceNormal, Vector3 vFaceV1,
-	Vector3 vFaceV2, Vector3 vFaceV3)
+bool myMouse::DetermineFace(Vector3& vPos, Vector3& vFaceNormal, 
+	Vector3& v1, Vector3& v2, Vector3& v3)
 {
-	Vector3 vEdge1 = vFaceV2 - vFaceV1;
-	Vector3 vEdge2 = vFaceV3 - vFaceV1;
-	Vector3	vPos1 = vPos - vFaceV1;
+	Vector3 vEdge1 = v2 - v1;
+	Vector3 vEdge2 = v3 - v1;
+	Vector3	vPos1 = vPos - v1;
+
 	Vector3 vNormal1 = vEdge1.Cross(vPos1);
 	vNormal1.Normalize();
 	float fD = vFaceNormal.Dot(vNormal1);
 	if (fD < 0.0f) return false;
+
 	vNormal1 = vPos1.Cross(vEdge2);
 	vNormal1.Normalize();
 	fD = vFaceNormal.Dot(vNormal1);
 	if (fD < 0.0f) return false;
 
-	vEdge1 = vFaceV3 - vFaceV2;
-	vEdge2 = vFaceV1 - vFaceV2;
-	vPos1 = vPos - vFaceV2;
+	vEdge1 = v3 - v2;
+	vPos1 = vPos - v2;
 	vNormal1 = vEdge1.Cross(vPos1);
 	vNormal1.Normalize();
 	float fD = vFaceNormal.Dot(vNormal1);
-	if (fD < 0.0f) return false;
-	vNormal1 = vPos1.Cross(vEdge2);
-	vNormal1.Normalize();
-	fD = vFaceNormal.Dot(vNormal1);
 	if (fD < 0.0f) return false;
 
 	return true;
 }
 
-bool myMouse::InterSectDisc()
+bool myMouse::InterSectDetermine(Vector3 & vRayStart, Vector3 & vRayDir,
+	Vector3& v1, Vector3& v2, Vector3& v3,
+		float * t, float * u, float * v)
 {
-	return false;
+	Vector3 vEdge1 = v2 - v1;
+	Vector3 vEdge2 = v3 - v1;
+	Vector3 vP = vRayDir.Cross(vEdge2);
+	float fD = vEdge1.Dot(vP);
+	Vector3 vT;
+	if (fD > 0)
+	{
+		vT = vRayStart - v1;
+	}
+	else
+	{
+		vT = v1 - vRayStart;
+		fD = -fD;
+	}
+	if (fD < EPSILON) return false;
+
+	*u = vT.Dot(vP);
+	if (*u < 0.0f || *u > fD) return false;
+
+	Vector3 vQ = vT.Cross(vEdge1);
+	*v = vRayDir.Dot(vQ);
+	if (*v < 0.0f || *u + *v > fD) return false;
+
+	*t = vEdge2.Dot(vQ);
+	float fInvD = 1.0f / fD;
+
+	*t *= fInvD;
+	*u *= fInvD;
+	*v *= fInvD;
+	return true;
 }
 
 myMouse::myMouse()
