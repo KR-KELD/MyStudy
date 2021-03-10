@@ -20,7 +20,7 @@ public:
 	DWORD					m_dwFaceNum;
 	ComPtr<ID3D11Buffer>	m_pIndexBuffer;
 public:
-
+	
 public:
 	myNode();
 	virtual ~myNode();

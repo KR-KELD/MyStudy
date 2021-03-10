@@ -11,7 +11,7 @@ class Sample : public myCore
 public:
 	myQuadTree		m_QuadTree;
 	myMouse			m_Mouse;
-	myHeightMap*	m_Map;
+	myMap*	m_Map;
 
 	myShapeBox*		m_pBox;
 	myGameObject*	m_pBoxObj;

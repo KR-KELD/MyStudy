@@ -7,9 +7,9 @@ bool Sample::Init()
 	HRESULT hr = NULL;
 
 
-	m_Map = new myHeightMap;
+	m_Map = new myMap;
 	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
-	m_Map->CreateHeightMap(L"../../data/129.jpg");
+	//m_Map->CreateHeightMap(L"../../data/129.jpg");
 
 	m_pBox = new myShapeBox;
 	m_pBoxObj = g_ObjMgr.CreateObjComponent(L"Cube", m_pBox);
@@ -17,8 +17,8 @@ bool Sample::Init()
 		L"../../data/bitmap/intro.bmp");
 
 	myMapDesc desc;
-	desc.iNumCols = m_Map->m_iNumCols;
-	desc.iNumRows = m_Map->m_iNumRows;
+	desc.iNumCols = 513;//m_Map->m_iNumCols;
+	desc.iNumRows = 513;//m_Map->m_iNumRows;
 	desc.fCellDistance = 1;
 	desc.fScaleHeight = 10.0f;
 	desc.szTexFile = L"../../data/castle.jpg";
@@ -53,11 +53,6 @@ bool Sample::Frame()
 	{
 		myDxState::m_CullMode = D3D11_CULL_FRONT;
 		myDxState::SetRasterizerState();
-	}
-	if (g_Input.GetKey('2') == KEY_PUSH)
-	{
-		m_Mouse.MousePicking(m_Map);
-		m_pBox->m_pTransform->SetPos(m_Mouse.m_vIntersectionPos);
 	}
 	if (g_Input.GetKey(VK_RBUTTON) == KEY_PUSH)
 	{

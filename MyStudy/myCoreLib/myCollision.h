@@ -1,16 +1,17 @@
 #pragma once
-#include "myStd.h"
+#include "myBaseObject.h"
 class myCollision
 {
 public:
-	static bool		PtInRectWH(RECT rt, POINT pos);
-	static bool		InterSectRectWH(RECT rt1, RECT rt2);
-	static bool		PtInRect(RECT rt, POINT pos);
-	static bool		PtInRectWH(RECT rt, myPoint pos);
-	static bool		PtInRect(RECT rt, myPoint pos);
-	static bool		InterSectRect(RECT rt1, RECT rt2);
-	static bool		InterSectCircle(myPoint pt1, float r1, myPoint pt2, float r2);
-	static bool		CollisionCircle(myPoint& ptMove, myPoint& ptFix, float fDist);
+	static bool InterSectSegToFace(Vector3& vSegStart, Vector3& vSegEnd, Vector3& vFaceNormal,
+		Vector3& v1, Vector3& v2, Vector3& v3, Vector3* vRet);
+	static bool DetermineFace(Vector3& vPos, Vector3& vFaceNormal,
+		Vector3& v1, Vector3& v2, Vector3& v3);
+	static bool InterSectSegToFace(MY_RAY& myRay,
+		Vector3& v1, Vector3& v2, Vector3& v3,
+		float* t, float* u, float* v);
+	static bool InterSectRayToBox(MY_RAY& myRay, MY_BOX& myBox,Vector3* vRet);
+	static bool InterSectRayToSphere(MY_RAY& myRay, MY_SPHERE& mySphere);
 };
 
 

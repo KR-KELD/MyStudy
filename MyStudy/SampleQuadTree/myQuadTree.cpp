@@ -178,8 +178,53 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_CornerList[2] = m_pMap->m_VertexList[LeftBottom];
 	newNode->m_CornerList[3] = m_pMap->m_VertexList[RightBottom];
 
-	newNode->m_myBox.vMax = Vector3(newNode->m_CornerList[1].p.x, 500.0f, newNode->m_CornerList[1].p.z);
-	newNode->m_myBox.vMin = Vector3(newNode->m_CornerList[2].p.x, -500.0f, newNode->m_CornerList[2].p.z);
+	//newNode->m_myBox.vMax = Vector3(newNode->m_CornerList[1].p.x, 500.0f, newNode->m_CornerList[1].p.z);
+	//newNode->m_myBox.vMin = Vector3(newNode->m_CornerList[2].p.x, -500.0f, newNode->m_CornerList[2].p.z);
+	//newNode->m_myBox.vCenter = (newNode->m_myBox.vMax + newNode->m_myBox.vMin) / 2;
+	//Vector3 range = newNode->m_myBox.vMax - newNode->m_myBox.vCenter;
+	//newNode->m_myBox.fExtent[0] = range.x;
+	//newNode->m_myBox.fExtent[1] = range.y;
+	//newNode->m_myBox.fExtent[2] = range.z;
+	//newNode->m_myBox.vPos[0] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMin.z);
+	//newNode->m_myBox.vPos[1] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMin.z);
+	//newNode->m_myBox.vPos[2] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMin.z);
+	//newNode->m_myBox.vPos[3] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMin.z);
+	//newNode->m_myBox.vPos[4] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMax.z);
+	//newNode->m_myBox.vPos[5] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMax.z);
+	//newNode->m_myBox.vPos[6] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
+	//newNode->m_myBox.vPos[7] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
+	newNode->m_myBox.vMax = { -10000.0f,-10000.0f ,-10000.0f };
+	newNode->m_myBox.vMin = { 10000.0f,10000.0f ,10000.0f };
+	//임시
+	for (DWORD dwIndex = 0; dwIndex < newNode->m_IndexList.size(); dwIndex++)
+	{
+		Vector3 v = m_pMap->m_VertexList[newNode->m_IndexList[dwIndex]].p;
+		if (v.x > newNode->m_myBox.vMax.x)
+		{
+			newNode->m_myBox.vMax.x = v.x;
+		}
+		if (v.y > newNode->m_myBox.vMax.y)
+		{
+			newNode->m_myBox.vMax.y = v.y;
+		}
+		if (v.z > newNode->m_myBox.vMax.z)
+		{
+			newNode->m_myBox.vMax.z = v.z;
+		}
+
+		if (v.x < newNode->m_myBox.vMin.x)
+		{
+			newNode->m_myBox.vMin.x = v.x;
+		}
+		if (v.y < newNode->m_myBox.vMin.y)
+		{
+			newNode->m_myBox.vMin.y = v.y;
+		}
+		if (v.z < newNode->m_myBox.vMin.z)
+		{
+			newNode->m_myBox.vMin.z = v.z;
+		}
+	}
 	newNode->m_myBox.vCenter = (newNode->m_myBox.vMax + newNode->m_myBox.vMin) / 2;
 	Vector3 range = newNode->m_myBox.vMax - newNode->m_myBox.vCenter;
 	newNode->m_myBox.fExtent[0] = range.x;
@@ -195,6 +240,7 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_myBox.vPos[7] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
 
 	DWORD vertexSize = (RightTop - LeftTop) * (RightTop - LeftTop);
+
 	DWORD indexSize = vertexSize * 2 * 3;
 	newNode->m_VertexList.resize(vertexSize);
 	newNode->m_IndexList.resize(indexSize);
@@ -204,12 +250,17 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	DWORD indexEndRow = LeftBottom / indexWidth;
 	DWORD indexStartCol = LeftTop % indexWidth;
 	DWORD indexEndCol = RightTop % indexWidth;
-
+	int bb = (indexEndRow - indexStartRow) * (indexEndCol - indexStartCol);
 	int index = 0;
+	int vertex = 0;
 	for (DWORD Row = indexStartRow; Row < indexEndRow; Row++)
 	{
 		for (DWORD Col = indexStartCol; Col < indexEndCol; Col++)
 		{
+			//버텍스리스트를 0부터 담으면 문제
+			//중간부터 담아도 메모리상 문제 질문
+			//newNode->m_VertexList[vertex++] = 
+			//int a = Row * indexEndCol + Col;
 			//0 1 2 2 1 3
 			newNode->m_IndexList[index++] = Row * indexWidth + Col;
 			newNode->m_IndexList[index++] = Row * indexWidth + (Col + 1);

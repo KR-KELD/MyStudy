@@ -188,6 +188,7 @@ copy "*.h" "..\\..\\include"</Command>
   <ItemGroup>
     <ClCompile Include="dxtk\DDSTextureLoader.cpp" />
     <ClCompile Include="dxtk\WICTextureLoader.cpp" />
+    <ClCompile Include="myBaseObject.cpp" />
     <ClCompile Include="myButton.cpp" />
     <ClCompile Include="myCamera.cpp" />
     <ClCompile Include="myCameraManager.cpp" />
@@ -235,6 +236,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="dxtk\pch.h" />
     <ClInclude Include="dxtk\PlatformHelpers.h" />
     <ClInclude Include="dxtk\WICTextureLoader.h" />
+    <ClInclude Include="myBaseObject.h" />
     <ClInclude Include="myBasicStd.h" />
     <ClInclude Include="myButton.h" />
     <ClInclude Include="myCamera.h" />
