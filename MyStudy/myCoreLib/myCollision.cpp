@@ -140,7 +140,7 @@ bool myCollision::InterSectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
 	fAbsDir[1] = abs(fDirDot[1]);
 	fAbsDir[2] = abs(fDirDot[2]);
 	
-	//여기부터 의문
+	//레이디렉션과 obb큐브의 기저축과의 직교축을 분리축으로 하는 투영을 간략하게 정리 한 수식
 	float fAbsDirCrossDot[3];
 	float fRhs;
 	Vector3 fDirCross;
