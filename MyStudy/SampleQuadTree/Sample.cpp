@@ -17,8 +17,8 @@ bool Sample::Init()
 		L"../../data/bitmap/intro.bmp");
 
 	myMapDesc desc;
-	desc.iNumCols = 513;//m_Map->m_iNumCols;
-	desc.iNumRows = 513;//m_Map->m_iNumRows;
+	desc.iNumCols = 33;//m_Map->m_iNumCols;
+	desc.iNumRows = 33;//m_Map->m_iNumRows;
 	desc.fCellDistance = 1;
 	desc.fScaleHeight = 10.0f;
 	desc.szTexFile = L"../../data/castle.jpg";
@@ -56,8 +56,14 @@ bool Sample::Frame()
 	}
 	if (g_Input.GetKey(VK_RBUTTON) == KEY_PUSH)
 	{
-		m_Mouse.MousePicking(m_Map);
-		m_pBox->m_pTransform->SetPos(m_Mouse.m_vIntersectionPos);
+		for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
+		{
+			if (m_Mouse.PickingAABBBox(m_QuadTree.m_LeafNodeList[i]))
+			{
+				m_pBox->m_pTransform->SetPos(m_Mouse.m_vIntersectionPos);
+				break;
+			}
+		}
 	}
 	g_CamMgr.m_pMainCamera->FrameFrustum();
 	return true;

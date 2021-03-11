@@ -17,16 +17,16 @@ void myMouse::ScreenToRay()
 	m_myRay.vDir.Normalize();
 }
 
-void myMouse::MousePicking(myMap* pMap)
+bool myMouse::PickingFace(myMap* pMap, myNode* pNode)
 {
 	ScreenToRay();
 	Vector3 v[3];
 	float fT, fU, fV;
-	for (int face = 0; face < pMap->m_IndexList.size() / 3; face++)
+	for (int face = 0; face < pNode->m_IndexList.size() / 3; face++)
 	{
-		v[0] = pMap->m_VertexList[pMap->m_IndexList[face * 3 + 0]].p;
-		v[1] = pMap->m_VertexList[pMap->m_IndexList[face * 3 + 1]].p;
-		v[2] = pMap->m_VertexList[pMap->m_IndexList[face * 3 + 2]].p;
+		v[0] = pMap->m_VertexList[pNode->m_IndexList[face * 3 + 0]].p;
+		v[1] = pMap->m_VertexList[pNode->m_IndexList[face * 3 + 1]].p;
+		v[2] = pMap->m_VertexList[pNode->m_IndexList[face * 3 + 2]].p;
 
 		Vector3 vEnd = m_myRay.vOrigin + m_myRay.vDir * m_fRange;
 		Vector3 vFaceNormal = (v[1] - v[0]).Cross(v[2] - v[0]);
@@ -34,9 +34,20 @@ void myMouse::MousePicking(myMap* pMap)
 		if (myCollision::InterSectSegToFace(m_myRay, v[0], v[1], v[2],&fT,&fU,&fV))
 		{
 			m_vIntersectionPos = m_myRay.vOrigin + m_myRay.vDir * fT;
-			return;
+			return true;
 		}
 	}
+	return false;
+}
+
+bool myMouse::PickingAABBBox(myNode * pNode)
+{
+	ScreenToRay();
+	if (myCollision::InterSectRayToBox(m_myRay, pNode->m_myBox, &m_vIntersectionPos))
+	{
+		return true;
+	}
+	return false;
 }
 
 myMouse::myMouse()

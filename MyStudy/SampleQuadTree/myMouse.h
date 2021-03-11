@@ -14,7 +14,8 @@ public:
 	float		m_fRange;
 public:
 	void ScreenToRay();
-	void MousePicking(myMap* pMap);
+	bool PickingFace(myMap* pMap, myNode* pNode);
+	bool PickingAABBBox(myNode* pNode);
 
 public:
 	myMouse();

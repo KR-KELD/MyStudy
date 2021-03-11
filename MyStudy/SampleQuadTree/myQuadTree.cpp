@@ -111,9 +111,9 @@ bool myQuadTree::CullingNode()
 	m_DrawNodeList.clear();
 	for (myNode* pNode : m_LeafNodeList)
 	{
-		for (int i = 0; i < pNode->m_CornerList.size(); i++)
+		for (int i = 0; i < 6; i++)
 		{
-			if (g_CamMgr.m_pMainCamera->m_Frustum.ClassifyPoint(pNode->m_CornerList[i].p))
+			if (g_CamMgr.m_pMainCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[i]))
 			{
 				m_DrawNodeList.push_back(pNode);
 				break;
@@ -178,21 +178,59 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_CornerList[2] = m_pMap->m_VertexList[LeftBottom];
 	newNode->m_CornerList[3] = m_pMap->m_VertexList[RightBottom];
 
-	//newNode->m_myBox.vMax = Vector3(newNode->m_CornerList[1].p.x, 500.0f, newNode->m_CornerList[1].p.z);
-	//newNode->m_myBox.vMin = Vector3(newNode->m_CornerList[2].p.x, -500.0f, newNode->m_CornerList[2].p.z);
-	//newNode->m_myBox.vCenter = (newNode->m_myBox.vMax + newNode->m_myBox.vMin) / 2;
-	//Vector3 range = newNode->m_myBox.vMax - newNode->m_myBox.vCenter;
-	//newNode->m_myBox.fExtent[0] = range.x;
-	//newNode->m_myBox.fExtent[1] = range.y;
-	//newNode->m_myBox.fExtent[2] = range.z;
-	//newNode->m_myBox.vPos[0] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMin.z);
-	//newNode->m_myBox.vPos[1] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMin.z);
-	//newNode->m_myBox.vPos[2] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMin.z);
-	//newNode->m_myBox.vPos[3] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMin.z);
-	//newNode->m_myBox.vPos[4] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMax.z);
-	//newNode->m_myBox.vPos[5] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMax.z);
-	//newNode->m_myBox.vPos[6] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
-	//newNode->m_myBox.vPos[7] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
+	DWORD dwNodeWidth = RightTop - LeftTop;
+	DWORD indexSize = dwNodeWidth * dwNodeWidth * 2 * 3;
+	DWORD vertexSize = (dwNodeWidth + 1) * (dwNodeWidth + 1);
+	newNode->m_VertexList.resize(vertexSize);
+	newNode->m_IndexList.resize(indexSize);
+
+	DWORD indexWidth = m_pMap->m_iNumCols;
+	DWORD indexStartRow = LeftTop / indexWidth;
+	DWORD indexEndRow = LeftBottom / indexWidth;
+	DWORD indexStartCol = LeftTop % indexWidth;
+	DWORD indexEndCol = RightTop % indexWidth;
+	int bb = (indexEndRow - indexStartRow) * (indexEndCol - indexStartCol);
+	int index = 0;
+	int vertex = 0;
+	for (DWORD Row = indexStartRow; Row < indexEndRow + 1; Row++)
+	{
+		for (DWORD Col = indexStartCol; Col < indexEndCol + 1; Col++)
+		{
+			newNode->m_VertexList[vertex++] = m_pMap->m_VertexList[Row * indexEndCol + Col];
+		}
+	}
+	//각각 가지고있는 버텍스 기준 인덱스 저장
+	//for (DWORD Row = 0; Row < dwNodeWidth; Row++)
+	//{
+	//	for (DWORD Col = 0; Col < dwNodeWidth; Col++)
+	//	{
+	//		newNode->m_IndexList[index++] = Row * dwNodeWidth + Col;
+	//		newNode->m_IndexList[index++] = Row * dwNodeWidth + (Col + 1);
+	//		newNode->m_IndexList[index++] = (Row + 1) * dwNodeWidth + Col;
+	//		newNode->m_IndexList[index++] = (Row + 1) * dwNodeWidth + Col;
+	//		newNode->m_IndexList[index++] = Row * dwNodeWidth + (Col + 1);
+	//		newNode->m_IndexList[index++] = (Row + 1) * dwNodeWidth + (Col + 1);
+	//	}
+	//}
+	//맵 버텍스 기준 인덱스 저장
+	for (DWORD Row = indexStartRow; Row < indexEndRow; Row++)
+	{
+		for (DWORD Col = indexStartCol; Col < indexEndCol; Col++)
+		{
+			//버텍스리스트를 0부터 담으면 문제
+			//중간부터 담아도 메모리상 문제 질문
+
+			//int a = Row * indexEndCol + Col;
+			//0 1 2 2 1 3
+			newNode->m_IndexList[index++] = Row * indexWidth + Col;
+			newNode->m_IndexList[index++] = Row * indexWidth + (Col + 1);
+			newNode->m_IndexList[index++] = (Row + 1) * indexWidth + Col;
+			newNode->m_IndexList[index++] = (Row + 1) * indexWidth + Col;
+			newNode->m_IndexList[index++] = Row * indexWidth + (Col + 1);
+			newNode->m_IndexList[index++] = (Row + 1) * indexWidth + (Col + 1);
+		}
+	}
+
 	newNode->m_myBox.vMax = { -10000.0f,-10000.0f ,-10000.0f };
 	newNode->m_myBox.vMin = { 10000.0f,10000.0f ,10000.0f };
 	//임시
@@ -239,46 +277,6 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_myBox.vPos[6] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
 	newNode->m_myBox.vPos[7] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
 
-	DWORD vertexSize = (RightTop - LeftTop) * (RightTop - LeftTop);
-
-	DWORD indexSize = vertexSize * 2 * 3;
-	newNode->m_VertexList.resize(vertexSize);
-	newNode->m_IndexList.resize(indexSize);
-
-	DWORD indexWidth = m_pMap->m_iNumCols;
-	DWORD indexStartRow = LeftTop / indexWidth;
-	DWORD indexEndRow = LeftBottom / indexWidth;
-	DWORD indexStartCol = LeftTop % indexWidth;
-	DWORD indexEndCol = RightTop % indexWidth;
-	int bb = (indexEndRow - indexStartRow) * (indexEndCol - indexStartCol);
-	int index = 0;
-	int vertex = 0;
-	for (DWORD Row = indexStartRow; Row < indexEndRow; Row++)
-	{
-		for (DWORD Col = indexStartCol; Col < indexEndCol; Col++)
-		{
-			//버텍스리스트를 0부터 담으면 문제
-			//중간부터 담아도 메모리상 문제 질문
-			//newNode->m_VertexList[vertex++] = 
-			//int a = Row * indexEndCol + Col;
-			//0 1 2 2 1 3
-			newNode->m_IndexList[index++] = Row * indexWidth + Col;
-			newNode->m_IndexList[index++] = Row * indexWidth + (Col + 1);
-			newNode->m_IndexList[index++] = (Row + 1) * indexWidth + Col;
-			newNode->m_IndexList[index++] = (Row + 1) * indexWidth + Col;
-			newNode->m_IndexList[index++] = Row * indexWidth + (Col + 1);
-			newNode->m_IndexList[index++] = (Row + 1) * indexWidth + (Col + 1);
-		}
-	}
-
-	//newNode->m_IndexList.resize(6);
-	//newNode->m_IndexList[0] = newNode->m_CornerIndexList[0];
-	//newNode->m_IndexList[1] = newNode->m_CornerIndexList[1];
-	//newNode->m_IndexList[2] = newNode->m_CornerIndexList[2];
-	//newNode->m_IndexList[3] = newNode->m_CornerIndexList[2];
-	//newNode->m_IndexList[4] = newNode->m_CornerIndexList[1];
-	//newNode->m_IndexList[5] = newNode->m_CornerIndexList[3];
-
 	newNode->m_pIndexBuffer.Attach(CreateIndexBuffer(
 		g_pd3dDevice, &newNode->m_IndexList.at(0),
 		newNode->m_IndexList.size(),
@@ -290,7 +288,7 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 myQuadTree::myQuadTree(void)
 {
 	m_pRootNode = NULL;
-	m_iMaxdepth = 4;
+	m_iMaxdepth = 3;
 }
 
 myQuadTree::~myQuadTree(void)
