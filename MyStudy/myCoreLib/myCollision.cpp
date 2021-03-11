@@ -109,6 +109,56 @@ bool myCollision::InterSectRayToBox(MY_RAY& myRay, MY_BOX& myBox, Vector3* vRet)
 	return false;
 }
 
+bool myCollision::InterSectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
+{
+	float fDirDot[3];
+	float fAbsDir[3];
+	float fInner[3];
+	float fAbsInner[3];
+	Vector3 vOC = myRay.vOrigin - myBox.vCenter;
+	fDirDot[0] = myRay.vDir.Dot(myBox.vAxis[0]);
+
+	fInner[0] = vOC.Dot(myBox.vAxis[0]);
+	fAbsInner[0] = abs(fInner[0]);
+	//박스 범위 안쪽 체크와 레이 방향체크를 동시에 한다
+	if (fAbsInner[1] > myBox.fExtent[1] && fDirDot[1] * fInner[1] >= 0.0f)
+		return false;
+	fDirDot[1] = myRay.vDir.Dot(myBox.vAxis[1]);
+
+	fInner[1] = vOC.Dot(myBox.vAxis[1]);
+	fAbsInner[1] = abs(fInner[1]);
+	if (fAbsInner[1] > myBox.fExtent[1] && fDirDot[1] * fInner[1] >= 0.0f)
+		return false;
+	fDirDot[2] = myRay.vDir.Dot(myBox.vAxis[2]);
+
+	fInner[2] = vOC.Dot(myBox.vAxis[2]);
+	fAbsInner[2] = abs(fInner[2]);
+	if (fAbsInner[2] > myBox.fExtent[2] && fDirDot[2] * fInner[2] >= 0.0f)
+		return false;
+
+	fAbsDir[0] = abs(fDirDot[0]);
+	fAbsDir[1] = abs(fDirDot[1]);
+	fAbsDir[2] = abs(fDirDot[2]);
+	
+	//여기부터 의문
+	float fAbsDirCrossDot[3];
+	float fRhs;
+	Vector3 fDirCross;
+	fDirCross = myRay.vDir.Cross(vOC);
+	fAbsDirCrossDot[0] = abs(fDirCross.Dot(myBox.vAxis[0]));
+	fRhs = myBox.fExtent[1] * fAbsDir[2] + myBox.fExtent[2] * fAbsDir[1];
+	if (fAbsDirCrossDot[0] > fRhs) return false;
+
+	fAbsDirCrossDot[1] = abs(fDirCross.Dot(myBox.vAxis[0]));
+	fRhs = myBox.fExtent[0] * fAbsDir[2] + myBox.fExtent[2] * fAbsDir[0];
+	if (fAbsDirCrossDot[1] > fRhs) return false;
+
+	fAbsDirCrossDot[2] = abs(fDirCross.Dot(myBox.vAxis[0]));
+	fRhs = myBox.fExtent[0] * fAbsDir[1] + myBox.fExtent[1] * fAbsDir[0];
+	if (fAbsDirCrossDot[2] > fRhs) return false;
+	return true;
+}
+
 bool myCollision::InterSectRayToSphere(MY_RAY & myRay, MY_SPHERE & mySphere)
 {
 	Vector3 vDir = myRay.vOrigin- mySphere.vCenter;

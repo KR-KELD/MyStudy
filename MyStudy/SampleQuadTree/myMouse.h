@@ -14,7 +14,7 @@ public:
 	float		m_fRange;
 public:
 	void ScreenToRay();
-	bool PickingFace(myMap* pMap, myNode* pNode);
+	bool PickingFace(myNode* pNode);
 	bool PickingAABBBox(myNode* pNode);
 
 public:

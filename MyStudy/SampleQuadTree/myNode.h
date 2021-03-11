@@ -15,10 +15,12 @@ public:
 	vector<PNCT_VERTEX>		m_CornerList;
 	vector<DWORD>			m_CornerIndexList;
 	vector<myGameObject*>	m_ObjectList;
-	//독자적인 인덱스 리스트
+	//인덱스 리스트
 	vector<DWORD>			m_IndexList;
 	//독자적인 버덱스 리스트
 	vector<PNCT_VERTEX>		m_VertexList;
+	//독자적인 버텍스 리스트
+	vector<DWORD>			m_NodeIndexList;
 	DWORD					m_dwFaceNum;
 	ComPtr<ID3D11Buffer>	m_pIndexBuffer;
 public:

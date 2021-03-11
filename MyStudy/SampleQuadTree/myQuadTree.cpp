@@ -179,39 +179,43 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_CornerList[3] = m_pMap->m_VertexList[RightBottom];
 
 	DWORD dwNodeWidth = RightTop - LeftTop;
+	DWORD dwNumCols = RightTop - LeftTop + 1;
 	DWORD indexSize = dwNodeWidth * dwNodeWidth * 2 * 3;
-	DWORD vertexSize = (dwNodeWidth + 1) * (dwNodeWidth + 1);
+	DWORD vertexSize = dwNumCols * dwNumCols;
 	newNode->m_VertexList.resize(vertexSize);
 	newNode->m_IndexList.resize(indexSize);
-
+	newNode->m_NodeIndexList.resize(indexSize);
+	//셀기준
 	DWORD indexWidth = m_pMap->m_iNumCols;
 	DWORD indexStartRow = LeftTop / indexWidth;
 	DWORD indexEndRow = LeftBottom / indexWidth;
 	DWORD indexStartCol = LeftTop % indexWidth;
 	DWORD indexEndCol = RightTop % indexWidth;
-	int bb = (indexEndRow - indexStartRow) * (indexEndCol - indexStartCol);
+
 	int index = 0;
+	int nodeIndex = 0;
 	int vertex = 0;
+	//+1 인 이유는 점기준이라
 	for (DWORD Row = indexStartRow; Row < indexEndRow + 1; Row++)
 	{
 		for (DWORD Col = indexStartCol; Col < indexEndCol + 1; Col++)
 		{
-			newNode->m_VertexList[vertex++] = m_pMap->m_VertexList[Row * indexEndCol + Col];
+			newNode->m_VertexList[vertex++] = m_pMap->m_VertexList[Row * indexWidth + Col];
 		}
 	}
 	//각각 가지고있는 버텍스 기준 인덱스 저장
-	//for (DWORD Row = 0; Row < dwNodeWidth; Row++)
-	//{
-	//	for (DWORD Col = 0; Col < dwNodeWidth; Col++)
-	//	{
-	//		newNode->m_IndexList[index++] = Row * dwNodeWidth + Col;
-	//		newNode->m_IndexList[index++] = Row * dwNodeWidth + (Col + 1);
-	//		newNode->m_IndexList[index++] = (Row + 1) * dwNodeWidth + Col;
-	//		newNode->m_IndexList[index++] = (Row + 1) * dwNodeWidth + Col;
-	//		newNode->m_IndexList[index++] = Row * dwNodeWidth + (Col + 1);
-	//		newNode->m_IndexList[index++] = (Row + 1) * dwNodeWidth + (Col + 1);
-	//	}
-	//}
+	for (DWORD Row = 0; Row < dwNodeWidth; Row++)
+	{
+		for (DWORD Col = 0; Col < dwNodeWidth; Col++)
+		{
+			newNode->m_NodeIndexList[nodeIndex++] = Row * dwNumCols + Col;
+			newNode->m_NodeIndexList[nodeIndex++] = Row * dwNumCols + (Col + 1);
+			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * dwNumCols + Col;
+			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * dwNumCols + Col;
+			newNode->m_NodeIndexList[nodeIndex++] = Row * dwNumCols + (Col + 1);
+			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * dwNumCols + (Col + 1);
+		}
+	}
 	//맵 버텍스 기준 인덱스 저장
 	for (DWORD Row = indexStartRow; Row < indexEndRow; Row++)
 	{

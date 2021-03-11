@@ -56,9 +56,17 @@ bool Sample::Frame()
 	}
 	if (g_Input.GetKey(VK_RBUTTON) == KEY_PUSH)
 	{
+		//for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
+		//{
+		//	if (m_Mouse.PickingAABBBox(m_QuadTree.m_LeafNodeList[i]))
+		//	{
+		//		m_pBox->m_pTransform->SetPos(m_Mouse.m_vIntersectionPos);
+		//		break;
+		//	}
+		//}
 		for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
 		{
-			if (m_Mouse.PickingAABBBox(m_QuadTree.m_LeafNodeList[i]))
+			if (m_Mouse.PickingFace(m_QuadTree.m_LeafNodeList[i]))
 			{
 				m_pBox->m_pTransform->SetPos(m_Mouse.m_vIntersectionPos);
 				break;
@@ -93,6 +101,10 @@ bool Sample::Render()
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
 
+	m_pBasisLine->m_pTransform->SetMatrix(NULL,
+		&g_pMainCamTransform->m_matView,
+		&g_pMainCamTransform->m_matProj);
+	m_pBasisLine->Draw(m_Mouse.m_myRay.vOrigin, m_Mouse.m_vIntersectionPos, Vector4(1, 1, 1, 1));
 
 	return true;
 }
