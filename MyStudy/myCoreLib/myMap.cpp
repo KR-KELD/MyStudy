@@ -88,8 +88,8 @@ bool myMap::CreateMap(myMapDesc  desc)
 
 bool myMap::CalNormal()
 {
-	int iIndexSize = m_IndexList.size();
-	for (int iIndex = 0; iIndex < iIndexSize; iIndex += 6)
+	int iIndex = 0;
+	for (int iFace = 0; iFace < m_IndexList.size() / 3; iFace++)
 	{
 		Vector3 n;
 		Vector3 e0 = m_VertexList[m_IndexList[iIndex + 1]].p - m_VertexList[m_IndexList[iIndex + 0]].p;
@@ -106,13 +106,13 @@ bool myMap::CalNormal()
 		m_VertexList[m_IndexList[iIndex + 3]].n += n;
 		m_VertexList[m_IndexList[iIndex + 4]].n += n;
 		m_VertexList[m_IndexList[iIndex + 5]].n += n;
+		iIndex += 6;
 	}
 
 	for (int i = 0; i < m_VertexList.size(); i++)
 	{
 		m_VertexList[i].n.Normalize();
 	}
-
 	return true;
 }
 

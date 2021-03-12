@@ -111,6 +111,7 @@ bool myCollision::InterSectRayToBox(MY_RAY& myRay, MY_BOX& myBox, Vector3* vRet)
 
 bool myCollision::InterSectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
 {
+
 	float fDirDot[3];
 	float fAbsDir[3];
 	float fInner[3];
@@ -119,41 +120,41 @@ bool myCollision::InterSectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
 	fDirDot[0] = myRay.vDir.Dot(myBox.vAxis[0]);
 
 	fInner[0] = vOC.Dot(myBox.vAxis[0]);
-	fAbsInner[0] = abs(fInner[0]);
+	fAbsInner[0] = fabs(fInner[0]);
 	//박스 범위 안쪽 체크와 레이 방향체크를 동시에 한다
 	if (fAbsInner[1] > myBox.fExtent[1] && fDirDot[1] * fInner[1] >= 0.0f)
 		return false;
 	fDirDot[1] = myRay.vDir.Dot(myBox.vAxis[1]);
 
 	fInner[1] = vOC.Dot(myBox.vAxis[1]);
-	fAbsInner[1] = abs(fInner[1]);
+	fAbsInner[1] = fabs(fInner[1]);
 	if (fAbsInner[1] > myBox.fExtent[1] && fDirDot[1] * fInner[1] >= 0.0f)
 		return false;
 	fDirDot[2] = myRay.vDir.Dot(myBox.vAxis[2]);
 
 	fInner[2] = vOC.Dot(myBox.vAxis[2]);
-	fAbsInner[2] = abs(fInner[2]);
+	fAbsInner[2] = fabs(fInner[2]);
 	if (fAbsInner[2] > myBox.fExtent[2] && fDirDot[2] * fInner[2] >= 0.0f)
 		return false;
 
-	fAbsDir[0] = abs(fDirDot[0]);
-	fAbsDir[1] = abs(fDirDot[1]);
-	fAbsDir[2] = abs(fDirDot[2]);
-	
+	fAbsDir[0] = fabs(fDirDot[0]);
+	fAbsDir[1] = fabs(fDirDot[1]);
+	fAbsDir[2] = fabs(fDirDot[2]);
+
 	//레이디렉션과 obb큐브의 기저축과의 직교축을 분리축으로 하는 투영을 간략하게 정리 한 수식
 	float fAbsDirCrossDot[3];
 	float fRhs;
 	Vector3 fDirCross;
 	fDirCross = myRay.vDir.Cross(vOC);
-	fAbsDirCrossDot[0] = abs(fDirCross.Dot(myBox.vAxis[0]));
+	fAbsDirCrossDot[0] = fabs(fDirCross.Dot(myBox.vAxis[0]));
 	fRhs = myBox.fExtent[1] * fAbsDir[2] + myBox.fExtent[2] * fAbsDir[1];
 	if (fAbsDirCrossDot[0] > fRhs) return false;
 
-	fAbsDirCrossDot[1] = abs(fDirCross.Dot(myBox.vAxis[0]));
+	fAbsDirCrossDot[1] = fabs(fDirCross.Dot(myBox.vAxis[0]));
 	fRhs = myBox.fExtent[0] * fAbsDir[2] + myBox.fExtent[2] * fAbsDir[0];
 	if (fAbsDirCrossDot[1] > fRhs) return false;
 
-	fAbsDirCrossDot[2] = abs(fDirCross.Dot(myBox.vAxis[0]));
+	fAbsDirCrossDot[2] = fabs(fDirCross.Dot(myBox.vAxis[0]));
 	fRhs = myBox.fExtent[0] * fAbsDir[1] + myBox.fExtent[1] * fAbsDir[0];
 	if (fAbsDirCrossDot[2] > fRhs) return false;
 	return true;
