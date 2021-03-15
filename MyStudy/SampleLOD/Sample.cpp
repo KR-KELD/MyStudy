@@ -7,9 +7,9 @@ bool Sample::Init()
 	HRESULT hr = NULL;
 
 
-	m_Map = new myMap;
+	m_Map = new myHeightMap;
 	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
-	//m_Map->CreateHeightMap(L"../../data/129.jpg");
+	m_Map->CreateHeightMap(L"../../data/ch65.bmp");
 
 	m_pBox = new myShapeBox;
 	m_pBoxObj = g_ObjMgr.CreateObjComponent(L"Cube", m_pBox);
@@ -17,8 +17,8 @@ bool Sample::Init()
 		L"../../data/bitmap/intro.bmp");
 
 	myMapDesc desc;
-	desc.iNumCols = 33;//m_Map->m_iNumCols;
-	desc.iNumRows = 33;//m_Map->m_iNumRows;
+	desc.iNumCols = m_Map->m_iNumCols;
+	desc.iNumRows = m_Map->m_iNumRows;
 	desc.fCellDistance = 1;
 	desc.fScaleHeight = 10.0f;
 	desc.szTexFile = L"../../data/castle.jpg";
@@ -26,7 +26,7 @@ bool Sample::Init()
 	desc.szPS = L"../../data/shader/PS.txt";
 	m_Map->CreateMap(desc);
 	m_Map->m_isRender = false;
-	//m_Map->CalNormal();
+	m_Map->CalNormal();
 	m_QuadTree.CreateQuadTree(m_Map);
 
 	return true;

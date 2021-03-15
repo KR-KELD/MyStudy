@@ -292,7 +292,7 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 myQuadTree::myQuadTree(void)
 {
 	m_pRootNode = NULL;
-	m_iMaxdepth = 3;
+	m_iMaxdepth = 4;
 }
 
 myQuadTree::~myQuadTree(void)

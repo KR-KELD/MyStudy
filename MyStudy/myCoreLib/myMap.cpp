@@ -99,14 +99,7 @@ bool myMap::CalNormal()
 		m_VertexList[m_IndexList[iIndex + 0]].n += n;
 		m_VertexList[m_IndexList[iIndex + 1]].n += n;
 		m_VertexList[m_IndexList[iIndex + 2]].n += n;
-		e0 = m_VertexList[m_IndexList[iIndex + 3]].p - m_VertexList[m_IndexList[iIndex + 5]].p;
-		e1 = m_VertexList[m_IndexList[iIndex + 4]].p - m_VertexList[m_IndexList[iIndex + 5]].p;
-		n = e0.Cross(e1);
-		n.Normalize();
-		m_VertexList[m_IndexList[iIndex + 3]].n += n;
-		m_VertexList[m_IndexList[iIndex + 4]].n += n;
-		m_VertexList[m_IndexList[iIndex + 5]].n += n;
-		iIndex += 6;
+		iIndex += 3;
 	}
 
 	for (int i = 0; i < m_VertexList.size(); i++)
