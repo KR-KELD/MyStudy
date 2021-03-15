@@ -246,7 +246,7 @@ public:
 	T_STR			m_strName;
 	T_STR			m_strTag;
 private:
-	myGameObject*									m_Parent;
+	myGameObject*									m_pParent;
 	multimap<wstring, myGameObject*>				m_Childs;
 	multimap<wstring, myGameObject*>::iterator		m_ObjIter;
 	unordered_map<size_t, myComponent*>				m_ComponentList;
@@ -281,6 +281,8 @@ public:
 	myGameObject*			Add(wstring strName = L"");
 	myGameObject*			GetGameObject(wstring strName);
 	list<myGameObject*>*	GetGameObjects(wstring strName);
+private:
+	void					SetParent(myGameObject* pParent);
 public:
 
 	template <class Component_T>
@@ -320,6 +322,7 @@ public:
 public:
 	myGameObject() 
 	{ 
+		m_pParent = nullptr;
 		m_pTransform = new myTransform;
 		InsertComponent(m_pTransform);
 	}
