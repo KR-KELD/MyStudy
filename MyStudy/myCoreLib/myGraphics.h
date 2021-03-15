@@ -46,7 +46,13 @@ struct PNCT_VERTEX
 	}
 };
 
+struct myTriangle
+{
+	PNCT_VERTEX vVertex[3];
+	Vector3		vNormal;
+	int			iSubIndex;
 
+};
 
 struct myDataCB
 {
@@ -99,6 +105,7 @@ public:
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;
 	std::vector<DWORD>			m_IndexList;
+	std::vector<myTriangle>		m_TriangleList;
 	ComPtr<ID3D11Buffer>		m_pVertexBuffer;
 	ComPtr<ID3D11Buffer>		m_pIndexBuffer;
 	ComPtr<ID3D11Buffer>		m_pConstantBuffer;
