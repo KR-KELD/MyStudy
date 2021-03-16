@@ -285,6 +285,7 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 		g_pd3dDevice, &newNode->m_IndexList.at(0),
 		newNode->m_IndexList.size(),
 		sizeof(DWORD)));
+	m_DepthNodeList[newNode->m_iDepth].push_back(newNode);
 	return newNode;
 }
 
@@ -293,6 +294,7 @@ myQuadTree::myQuadTree(void)
 {
 	m_pRootNode = NULL;
 	m_iMaxdepth = 4;
+	m_DepthNodeList.resize(m_iMaxdepth + 1);
 }
 
 myQuadTree::~myQuadTree(void)

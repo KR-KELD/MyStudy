@@ -21,6 +21,7 @@ myNode::~myNode()
 	if (!m_CornerIndexList.empty()) m_CornerIndexList.clear();
 	if (!m_IndexList.empty()) m_IndexList.clear();
 	if (!m_NodeIndexList.empty()) m_NodeIndexList.clear();
+	if (!m_NeighborList.empty()) m_NeighborList.clear();
 	for (int i = 0; i < m_ChildList.size(); i++)
 	{
 		SAFE_DEL(m_ChildList[i]);

@@ -4,17 +4,22 @@
 #include "myCameraManager.h"
 class myQuadTree
 {
+	typedef vector<myNode*> NodeList;
+
 public:
-	myMap*			m_pMap;
+	myMap*				m_pMap;
 	//최상위 노드
-	myNode*			m_pRootNode;
+	myNode*				m_pRootNode;
 	//최대 분할 한계
-	int				m_iMaxdepth;
+	int					m_iMaxdepth;
 	//최소 크기
 
-	//뿌려줄 노드
-	vector<myNode*> m_LeafNodeList;
-	vector<myNode*>	m_DrawNodeList;
+	//최하단 노드 리스트
+	vector<myNode*>		m_LeafNodeList;
+	//그려줄 노드 리스트
+	vector<myNode*>		m_DrawNodeList;
+	//깊이별로 나눠둔 노드 리스트
+	vector<NodeList>	m_DepthNodeList;
 public:
 	bool			CreateQuadTree(myMap* pMap);
 	//분할

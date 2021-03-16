@@ -11,9 +11,15 @@ public:
 	bool					m_isLeaf;
 	// 바운딩 박스
 	MY_BOX					m_myBox;
+	//인접 노드 리스트
+	vector<myNode*>			m_NeighborList;
+	//자식 노드 리스트
 	vector<myNode*>			m_ChildList;
+	//꼭지점 정점 리스트
 	vector<PNCT_VERTEX>		m_CornerList;
+	//꼭지점 정점 인덱스 리스트
 	vector<DWORD>			m_CornerIndexList;
+	//영역 안 오브젝트 리스트
 	vector<myGameObject*>	m_ObjectList;
 	//맵 인덱스 리스트
 	vector<DWORD>			m_IndexList;
