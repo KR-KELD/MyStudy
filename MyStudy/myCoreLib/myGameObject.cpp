@@ -252,19 +252,6 @@ bool myGameObject::Init()
 
 bool myGameObject::PreFrame()
 {
-	if (m_pParent)
-	{
-		//m_pTransform->m_vPos = m_pParent->m_pTransform->m_vPos + m_pTransform->m_vPos;
-		//m_pTransform->m_vRot = m_pParent->m_pTransform->m_vRot + m_pTransform->m_vRot;
-		//m_pTransform->m_vScale = m_pParent->m_pTransform->m_vPos + m_pTransform->m_vPos;
-
-		//m_pTransform->m_vLocalPos = m_pParent->m_pTransform->m_vLocalPos + m_pTransform->m_vLocalPos;
-		//m_pTransform->m_vLocalRot = m_pParent->m_pTransform->m_vLocalRot + m_pTransform->m_vLocalRot;
-		//m_pTransform->m_vLocalScale = m_pParent->m_pTransform->m_vLocalScale + m_pTransform->m_vLocalScale;
-
-		m_pTransform->m_matWorld = m_pParent->m_pTransform->m_matWorld + m_pTransform->m_matWorld;
-	}
-
 	for (m_ComIter = m_ComponentList.begin();
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
@@ -278,6 +265,19 @@ bool myGameObject::PreFrame()
 	{
 		if ((*m_ObjIter).second->m_isActive)
 			(*m_ObjIter).second->PreFrame();
+	}
+
+	if (m_pParent)
+	{
+		//m_pTransform->m_vPos = m_pParent->m_pTransform->m_vPos + m_pTransform->m_vPos;
+		//m_pTransform->m_vRot = m_pParent->m_pTransform->m_vRot + m_pTransform->m_vRot;
+		//m_pTransform->m_vScale = m_pParent->m_pTransform->m_vPos + m_pTransform->m_vPos;
+
+		//m_pTransform->m_vLocalPos = m_pParent->m_pTransform->m_vLocalPos + m_pTransform->m_vLocalPos;
+		//m_pTransform->m_vLocalRot = m_pParent->m_pTransform->m_vLocalRot + m_pTransform->m_vLocalRot;
+		//m_pTransform->m_vLocalScale = m_pParent->m_pTransform->m_vLocalScale + m_pTransform->m_vLocalScale;
+
+		//m_pTransform->m_matWorld = m_pParent->m_pTransform->m_matWorld + m_pTransform->m_matWorld;
 	}
 	return true;
 }
