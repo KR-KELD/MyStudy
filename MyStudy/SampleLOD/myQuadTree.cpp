@@ -6,6 +6,7 @@ void myQuadTree::FindNeighborNode(myNode* pNode)
 	pNode->m_NeighborList.resize(4);
 	for (int i = 0; i < m_DepthNodeList[iDepth].size(); i++)
 	{
+		//인접노드 판별법
 		//if (pNode->m_CornerIndexList[0] )
 	}
 }

@@ -2,6 +2,9 @@
 #include "myGameObject.h"
 #include "myTextureManager.h"
 #include "myBaseObject.h"
+
+#pragma region structArea
+
 struct P_VERTEX
 {
 	Vector3 p;
@@ -21,6 +24,7 @@ struct P_VERTEX
 		this->t = t;
 	}
 };
+
 struct PNCT_VERTEX
 {
 	Vector3 p;
@@ -51,7 +55,8 @@ struct myTriangle
 	PNCT_VERTEX vVertex[3];
 	Vector3		vNormal;
 	int			iSubIndex;
-
+	myTriangle(int iIndex) : iSubIndex(iIndex) {}
+	myTriangle() : iSubIndex(-1) {}
 };
 
 struct myDataCB
@@ -62,6 +67,11 @@ struct myDataCB
 	float vColor[4];
 	float vTime[4];
 };
+
+#pragma endregion
+
+#pragma region staticFuncArea
+
 //
 //////////////////////////// 아래의 경고가 있을 경우 사용한다.
 //// 이와 같은 경고는 이미 쉐이더 파이프라인에 할당(리소스 및 상태값들이)되어 사용 중일 경우에 발생한다.
@@ -88,6 +98,8 @@ ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT i
 //ID3D11ShaderResourceView*	CreateShaderResourceView(ID3D11Device* pDevice, const TCHAR* strFilePath);
 //ID3D11ShaderResourceView*	CreateShaderResourceView(ID3D11Device* pDevice, ID3D11DeviceContext*    pContext, const TCHAR* strFilePath);
 //ID3D11DepthStencilView* CreateDepthStencilView(ID3D11Device* pDevice, DWORD dwWidth, DWORD dwHeight);
+
+#pragma endregion
 
 class myGraphics : public myComponent
 {

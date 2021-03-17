@@ -1,7 +1,7 @@
 #include "myGraphics.h"
 DECLARE_COMPONENT(myGraphics);
 
-//#pragma region Func
+#pragma region staticFunc
 //
 //void ClearD3D11DeviceContext(ID3D11DeviceContext* pd3dDeviceContext)
 //{
@@ -437,6 +437,7 @@ DECLARE_COMPONENT(myGraphics);
 //	return pBuffer;
 //}
 //
+
 ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT iNumIndex,
 	UINT iSize, bool bDynamic)
 {
@@ -605,7 +606,7 @@ ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT i
 //	}
 //	return pDSV;
 //}
-//#pragma endregion
+#pragma endregion
 
 void myGraphics::CompilerCheck(ID3DBlob* pErrorMsgs)
 {
