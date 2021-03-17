@@ -21,6 +21,7 @@ public:
 	//깊이별로 나눠둔 노드 리스트
 	vector<NodeList>	m_DepthNodeList;
 public:
+	void			FindNeighborNode(myNode* pNode);
 	bool			CreateQuadTree(myMap* pMap);
 	//분할
 	bool			Partition(myNode* pParentNode);

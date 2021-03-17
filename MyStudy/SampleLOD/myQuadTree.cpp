@@ -1,5 +1,15 @@
 #include "myQuadTree.h"
 
+void myQuadTree::FindNeighborNode(myNode* pNode)
+{
+	int iDepth = pNode->m_iDepth;
+	pNode->m_NeighborList.resize(4);
+	for (int i = 0; i < m_DepthNodeList[iDepth].size(); i++)
+	{
+		//if (pNode->m_CornerIndexList[0] )
+	}
+}
+
 bool myQuadTree::CreateQuadTree(myMap* pMap)
 {
 	m_pMap = pMap;
@@ -178,19 +188,26 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_CornerList[2] = m_pMap->m_VertexList[LeftBottom];
 	newNode->m_CornerList[3] = m_pMap->m_VertexList[RightBottom];
 
-	DWORD dwNodeWidth = RightTop - LeftTop;
-	DWORD dwNumCols = RightTop - LeftTop + 1;
-	DWORD indexSize = dwNodeWidth * dwNodeWidth * 2 * 3;
-	DWORD vertexSize = dwNumCols * dwNumCols;
+	//맵의 가로 정점 갯수
+	DWORD indexWidth = m_pMap->m_iNumCols;
+	//시작 행 값
+	DWORD indexStartRow = LeftTop / indexWidth;
+	//끝 행 값
+	DWORD indexEndRow = LeftBottom / indexWidth;
+	//시작 열 값
+	DWORD indexStartCol = LeftTop % indexWidth;
+	//끝 열 값
+	DWORD indexEndCol = RightTop % indexWidth;
+
+	newNode->m_iIndexWidth = indexEndCol - indexStartCol;
+	newNode->m_iIndexHeight = indexEndRow - indexStartRow;
+
+	DWORD indexSize = newNode->m_iIndexWidth * newNode->m_iIndexHeight * 2 * 3;
+	DWORD vertexSize = (newNode->m_iIndexWidth + 1) * (newNode->m_iIndexHeight + 1);
+
 	newNode->m_VertexList.resize(vertexSize);
 	newNode->m_IndexList.resize(indexSize);
 	newNode->m_NodeIndexList.resize(indexSize);
-	//셀기준
-	DWORD indexWidth = m_pMap->m_iNumCols;
-	DWORD indexStartRow = LeftTop / indexWidth;
-	DWORD indexEndRow = LeftBottom / indexWidth;
-	DWORD indexStartCol = LeftTop % indexWidth;
-	DWORD indexEndCol = RightTop % indexWidth;
 
 	int index = 0;
 	int nodeIndex = 0;
@@ -204,16 +221,16 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 		}
 	}
 	//각각 가지고있는 버텍스 기준 인덱스 저장
-	for (DWORD Row = 0; Row < dwNodeWidth; Row++)
+	for (DWORD Row = 0; Row < newNode->m_iIndexHeight; Row++)
 	{
-		for (DWORD Col = 0; Col < dwNodeWidth; Col++)
+		for (DWORD Col = 0; Col < newNode->m_iIndexWidth; Col++)
 		{
-			newNode->m_NodeIndexList[nodeIndex++] = Row * dwNumCols + Col;
-			newNode->m_NodeIndexList[nodeIndex++] = Row * dwNumCols + (Col + 1);
-			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * dwNumCols + Col;
-			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * dwNumCols + Col;
-			newNode->m_NodeIndexList[nodeIndex++] = Row * dwNumCols + (Col + 1);
-			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * dwNumCols + (Col + 1);
+			newNode->m_NodeIndexList[nodeIndex++] = Row * newNode->m_iIndexWidth + Col;
+			newNode->m_NodeIndexList[nodeIndex++] = Row * newNode->m_iIndexWidth + (Col + 1);
+			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * newNode->m_iIndexWidth + Col;
+			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * newNode->m_iIndexWidth + Col;
+			newNode->m_NodeIndexList[nodeIndex++] = Row * newNode->m_iIndexWidth + (Col + 1);
+			newNode->m_NodeIndexList[nodeIndex++] = (Row + 1) * newNode->m_iIndexWidth + (Col + 1);
 		}
 	}
 	//맵 버텍스 기준 인덱스 저장

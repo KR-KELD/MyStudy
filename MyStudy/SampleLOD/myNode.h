@@ -9,6 +9,10 @@ public:
 	int						m_iDepth;
 	//최하단 노드인가
 	bool					m_isLeaf;
+	//노드의 인덱스 가로 값
+	int						m_iIndexWidth;
+	//노드의 인덱스 세로 값
+	int						m_iIndexHeight;
 	// 바운딩 박스
 	MY_BOX					m_myBox;
 	//인접 노드 리스트
