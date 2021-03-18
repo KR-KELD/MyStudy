@@ -391,52 +391,52 @@ DECLARE_COMPONENT(myGraphics);
 //	}
 //	return pInutLayout;
 //}
-//ID3D11Buffer* CreateVertexBuffer(
-//	ID3D11Device*  pd3dDevice,
-//	void *vertices,
-//	UINT iNumVertex,
-//	UINT iVertexSize,
-//	bool bDynamic)
-//{
-//	HRESULT hr = S_OK;
-//	ID3D11Buffer* pBuffer = nullptr;
-//	D3D11_BUFFER_DESC bd;
-//	ZeroMemory(&bd, sizeof(bd));
-//	if (bDynamic)
-//	{
-//		bd.Usage = D3D11_USAGE_DYNAMIC;
-//		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-//	}
-//	else
-//	{
-//		bd.Usage = D3D11_USAGE_DEFAULT;
-//		bd.CPUAccessFlags = 0;
-//	}
-//	bd.ByteWidth = iVertexSize * iNumVertex;
-//	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//
-//	D3D11_SUBRESOURCE_DATA InitData;
-//	ZeroMemory(&InitData, sizeof(InitData));
-//	InitData.pSysMem = vertices;
-//	if (vertices != NULL)
-//	{
-//		if (FAILED(hr = pd3dDevice->CreateBuffer(&bd, &InitData, &pBuffer)))
-//		{
-//			H(hr);
-//			return nullptr;
-//		}
-//	}
-//	else
-//	{
-//		if (FAILED(hr = pd3dDevice->CreateBuffer(&bd, NULL, &pBuffer)))
-//		{
-//			H(hr);
-//			return nullptr;
-//		}
-//	}
-//	return pBuffer;
-//}
-//
+ID3D11Buffer* CreateVertexBuffer(
+	ID3D11Device*  pd3dDevice,
+	void *vertices,
+	UINT iNumVertex,
+	UINT iVertexSize,
+	bool bDynamic)
+{
+	HRESULT hr = S_OK;
+	ID3D11Buffer* pBuffer = nullptr;
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	if (bDynamic)
+	{
+		bd.Usage = D3D11_USAGE_DYNAMIC;
+		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	}
+	else
+	{
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.CPUAccessFlags = 0;
+	}
+	bd.ByteWidth = iVertexSize * iNumVertex;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	ZeroMemory(&InitData, sizeof(InitData));
+	InitData.pSysMem = vertices;
+	if (vertices != NULL)
+	{
+		if (FAILED(hr = pd3dDevice->CreateBuffer(&bd, &InitData, &pBuffer)))
+		{
+			H(hr);
+			return nullptr;
+		}
+	}
+	else
+	{
+		if (FAILED(hr = pd3dDevice->CreateBuffer(&bd, NULL, &pBuffer)))
+		{
+			H(hr);
+			return nullptr;
+		}
+	}
+	return pBuffer;
+}
+
 
 ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT iNumIndex,
 	UINT iSize, bool bDynamic)

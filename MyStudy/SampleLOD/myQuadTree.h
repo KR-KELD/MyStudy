@@ -21,7 +21,7 @@ public:
 	//±íÀÌº°·Î ³ª´²µÐ ³ëµå ¸®½ºÆ®
 	vector<NodeList>	m_DepthNodeList;
 public:
-	void			FindNeighborNode(myNode* pNode);
+	void			SetNeighborNode(myNode* pNode);
 	bool			CreateQuadTree(myMap* pMap);
 	//ºÐÇÒ
 	bool			Partition(myNode* pParentNode);

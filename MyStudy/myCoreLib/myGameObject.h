@@ -246,6 +246,7 @@ public:
 	T_STR			m_strName;
 	T_STR			m_strTag;
 private:
+	//게임오브젝트 언오더맵으로 바꿔보기
 	myGameObject*									m_pParent;
 	multimap<wstring, myGameObject*>				m_Childs;
 	multimap<wstring, myGameObject*>::iterator		m_ObjIter;

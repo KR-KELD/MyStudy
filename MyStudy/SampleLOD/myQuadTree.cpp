@@ -1,14 +1,45 @@
 #include "myQuadTree.h"
 
-void myQuadTree::FindNeighborNode(myNode* pNode)
+void myQuadTree::SetNeighborNode(myNode* pNode)
 {
 	int iDepth = pNode->m_iDepth;
 	pNode->m_NeighborList.resize(4);
 	for (int i = 0; i < m_DepthNodeList[iDepth].size(); i++)
 	{
 		//인접노드 판별법
-		//if (pNode->m_CornerIndexList[0] )
+		//위쪽
+		if (pNode->m_CornerIndexList[0] == 
+			m_DepthNodeList[iDepth][i]->m_CornerIndexList[2])
+		{
+			pNode->m_NeighborList[0] = m_DepthNodeList[iDepth][i];
+		}
+		//왼쪽
+		if (pNode->m_CornerIndexList[0] ==
+			m_DepthNodeList[iDepth][i]->m_CornerIndexList[1])
+		{
+			pNode->m_NeighborList[1] = m_DepthNodeList[iDepth][i];
+		}
+		//오른쪽
+		if (pNode->m_CornerIndexList[3] ==
+			m_DepthNodeList[iDepth][i]->m_CornerIndexList[2])
+		{
+			pNode->m_NeighborList[2] = m_DepthNodeList[iDepth][i];
+		}
+		//아래쪽
+		if (pNode->m_CornerIndexList[3] ==
+			m_DepthNodeList[iDepth][i]->m_CornerIndexList[1])
+		{
+			pNode->m_NeighborList[3] = m_DepthNodeList[iDepth][i];
+		}
 	}
+
+	if (pNode->m_isLeaf)
+		return;
+
+	SetNeighborNode(pNode->m_ChildList[0]);
+	SetNeighborNode(pNode->m_ChildList[1]);
+	SetNeighborNode(pNode->m_ChildList[2]);
+	SetNeighborNode(pNode->m_ChildList[3]);
 }
 
 bool myQuadTree::CreateQuadTree(myMap* pMap)
@@ -20,6 +51,9 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 		m_pMap->m_iNumVertices - 1);
 
 	Partition(m_pRootNode);
+
+	SetNeighborNode(m_pRootNode);
+
 	return true;
 }
 

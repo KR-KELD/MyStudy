@@ -2,6 +2,7 @@
 #include "myGameObject.h"
 #include "myTextureManager.h"
 #include "myBaseObject.h"
+//나중에는 얘는 하나만있고 재사용할예정
 
 #pragma region structArea
 
@@ -59,6 +60,19 @@ struct myTriangle
 	myTriangle() : iSubIndex(-1) {}
 };
 
+struct mySubMesh
+{
+	vector<myTriangle>		m_TriangleList;
+	vector<PNCT_VERTEX>		m_VertexList;
+	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
+	myTexture*				m_pTexture;
+	int						m_iPolyCount;
+	mySubMesh()
+	{
+		m_iPolyCount = 0;
+	}
+};
+
 struct myDataCB
 {
 	Matrix  matWorld;
@@ -91,7 +105,7 @@ struct myDataCB
 //
 //
 //ID3D11InputLayout* CreateInputlayout(ID3D11Device*  pd3dDevice, DWORD dwSize, LPCVOID lpData, D3D11_INPUT_ELEMENT_DESC* layout, UINT numElements);
-//ID3D11Buffer* CreateVertexBuffer(ID3D11Device*  pd3dDevice, void *vertices, UINT iNumVertex, UINT iVertexSize, bool bDynamic = false);
+ID3D11Buffer* CreateVertexBuffer(ID3D11Device*  pd3dDevice, void *vertices, UINT iNumVertex, UINT iVertexSize, bool bDynamic = false);
 ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT iNumIndex, UINT iSize, bool bDynamic = false);
 //ID3D11Buffer* CreateConstantBuffer(ID3D11Device*  pd3dDevice, void *data, UINT iNumIndex, UINT iSize, bool bDynamic = false);
 //
@@ -118,6 +132,8 @@ public:
 	std::vector<PNCT_VERTEX>	m_VertexList;
 	std::vector<DWORD>			m_IndexList;
 	std::vector<myTriangle>		m_TriangleList;
+	std::vector<wstring>		m_MaterialList;
+	std::vector<mySubMesh>		m_SubMeshList;
 	ComPtr<ID3D11Buffer>		m_pVertexBuffer;
 	ComPtr<ID3D11Buffer>		m_pIndexBuffer;
 	ComPtr<ID3D11Buffer>		m_pConstantBuffer;

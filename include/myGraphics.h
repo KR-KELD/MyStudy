@@ -2,6 +2,9 @@
 #include "myGameObject.h"
 #include "myTextureManager.h"
 #include "myBaseObject.h"
+
+#pragma region structArea
+
 struct P_VERTEX
 {
 	Vector3 p;
@@ -21,6 +24,7 @@ struct P_VERTEX
 		this->t = t;
 	}
 };
+
 struct PNCT_VERTEX
 {
 	Vector3 p;
@@ -51,7 +55,16 @@ struct myTriangle
 	PNCT_VERTEX vVertex[3];
 	Vector3		vNormal;
 	int			iSubIndex;
+	myTriangle(int iIndex) : iSubIndex(iIndex) {}
+	myTriangle() : iSubIndex(-1) {}
+};
 
+struct mySubMesh
+{
+	vector<myTriangle>		m_TriangleList;
+	vector<PNCT_VERTEX>		m_VertexList;
+	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
+	myTexture*				m_pTexture;
 };
 
 struct myDataCB
@@ -62,6 +75,11 @@ struct myDataCB
 	float vColor[4];
 	float vTime[4];
 };
+
+#pragma endregion
+
+#pragma region staticFuncArea
+
 //
 //////////////////////////// 아래의 경고가 있을 경우 사용한다.
 //// 이와 같은 경고는 이미 쉐이더 파이프라인에 할당(리소스 및 상태값들이)되어 사용 중일 경우에 발생한다.
@@ -81,13 +99,15 @@ struct myDataCB
 //
 //
 //ID3D11InputLayout* CreateInputlayout(ID3D11Device*  pd3dDevice, DWORD dwSize, LPCVOID lpData, D3D11_INPUT_ELEMENT_DESC* layout, UINT numElements);
-//ID3D11Buffer* CreateVertexBuffer(ID3D11Device*  pd3dDevice, void *vertices, UINT iNumVertex, UINT iVertexSize, bool bDynamic = false);
+ID3D11Buffer* CreateVertexBuffer(ID3D11Device*  pd3dDevice, void *vertices, UINT iNumVertex, UINT iVertexSize, bool bDynamic = false);
 ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT iNumIndex, UINT iSize, bool bDynamic = false);
 //ID3D11Buffer* CreateConstantBuffer(ID3D11Device*  pd3dDevice, void *data, UINT iNumIndex, UINT iSize, bool bDynamic = false);
 //
 //ID3D11ShaderResourceView*	CreateShaderResourceView(ID3D11Device* pDevice, const TCHAR* strFilePath);
 //ID3D11ShaderResourceView*	CreateShaderResourceView(ID3D11Device* pDevice, ID3D11DeviceContext*    pContext, const TCHAR* strFilePath);
 //ID3D11DepthStencilView* CreateDepthStencilView(ID3D11Device* pDevice, DWORD dwWidth, DWORD dwHeight);
+
+#pragma endregion
 
 class myGraphics : public myComponent
 {
@@ -106,6 +126,8 @@ public:
 	std::vector<PNCT_VERTEX>	m_VertexList;
 	std::vector<DWORD>			m_IndexList;
 	std::vector<myTriangle>		m_TriangleList;
+	std::vector<wstring>		m_MaterialList;
+	std::vector<mySubMesh>		m_SubMeshList;
 	ComPtr<ID3D11Buffer>		m_pVertexBuffer;
 	ComPtr<ID3D11Buffer>		m_pIndexBuffer;
 	ComPtr<ID3D11Buffer>		m_pConstantBuffer;
