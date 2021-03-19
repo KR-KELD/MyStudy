@@ -1,10 +1,10 @@
 #pragma once
 #include "myCore.h"
-#include "myShape.h"
 #include "myModelViewCamera.h"
 #include "myHeightMap.h"
 #include "myMiniMap.h"
 #include "myQuadTree.h"
+#include "myFbxLoader.h"
 #include "myMouse.h"
 class Sample : public myCore
 {

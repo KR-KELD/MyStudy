@@ -745,6 +745,7 @@ bool    myGraphics::CreateConstantBuffer()
 }
 bool	myGraphics::CreateVertexBuffer()
 {
+	if (m_VertexList.size() <= 0) return true;
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
 	bd.ByteWidth = sizeof(PNCT_VERTEX) * m_VertexList.size();
@@ -763,6 +764,7 @@ bool	myGraphics::CreateVertexBuffer()
 }
 bool	myGraphics::CreateIndexBuffer()
 {
+	if (m_IndexList.size() <= 0) return true;
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
 	bd.ByteWidth = sizeof(DWORD) * m_IndexList.size();

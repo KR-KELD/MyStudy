@@ -2,6 +2,7 @@
 #include "myGameObject.h"
 #include "myTextureManager.h"
 #include "myBaseObject.h"
+//나중에는 얘는 하나만있고 재사용할예정
 
 #pragma region structArea
 
@@ -65,6 +66,11 @@ struct mySubMesh
 	vector<PNCT_VERTEX>		m_VertexList;
 	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
 	myTexture*				m_pTexture;
+	int						m_iPolyCount;
+	mySubMesh()
+	{
+		m_iPolyCount = 0;
+	}
 };
 
 struct myDataCB

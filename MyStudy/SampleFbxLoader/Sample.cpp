@@ -3,7 +3,7 @@ GAMERUN;
 
 bool Sample::Init()
 {
-
+	g_FbxLoader.Init();
 	return true;
 }
 
@@ -37,14 +37,7 @@ bool Sample::Render()
 	//최종적으로는 모든 함수는 각자의 Render에서 돌아가게끔 해야함
 	//그걸 호출하는건 obj매니저에 있는 메인gameobject
 
-	//IA에 그려줄 타입 설정
-	g_pImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//레스터라이저 스테이트 세팅
-	g_pImmediateContext->RSSetState(myDxState::m_pRS.Get());
-	//픽셀 섀이더에 샘플러 세팅(보간법)
-	g_pImmediateContext->PSSetSamplers(0, 1, myDxState::m_pWrapLinear.GetAddressOf());
-	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
-	g_pImmediateContext->OMSetDepthStencilState(myDxState::m_pDSS.Get(), 0);
+
 
 	return true;
 }
