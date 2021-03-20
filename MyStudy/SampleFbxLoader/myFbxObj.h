@@ -17,10 +17,10 @@ public:
 	bool	Load(string strFileName);
 	bool	LoadFBX(string strFileName);
 	bool	Init(string strFileName);
-	void	PreProcess(FbxNode* pNode);
-	void	ParseNode(FbxNode* pNode, Matrix matParent);
-	void	ParseMesh(FbxNode* pNode, FbxMesh* pMesh, myGraphics* pGraphics);
-	Matrix  ParseTransform(FbxNode* pNode, Matrix& matParentWorld);
+	void	PreProcess(FbxNode* pFbxNode);
+	void	ParseNode(FbxNode* pFbxNode, Matrix matParent);
+	void	ParseMesh(FbxNode* pFbxNode, FbxMesh* pFbxMesh, myGraphics* pGraphics);
+	Matrix  ParseTransform(FbxNode* pFbxNode, Matrix& matParentWorld);
 	void	ReadTextureCoord(FbxMesh* pFbxMesh, FbxLayerElementUV* pUVSet,
 		int iVertexIndex, int iUVIndex, FbxVector2& uv);
 	string	ParseMaterial(FbxSurfaceMaterial* pMtrl);
