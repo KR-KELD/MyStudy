@@ -13,6 +13,7 @@ public:
 	unordered_map<string, Matrix>	m_dxMatList;
 	unordered_map<string, Matrix>::iterator	m_dxMatIter;
 	unordered_map<FbxNode*, myGameObject*> m_MeshList;
+	unordered_map<FbxNode*, myGameObject*>::iterator m_MeshIter;
 public:
 	bool	Load(string strFileName);
 	bool	LoadFBX(string strFileName);

@@ -6,7 +6,13 @@ class myFbxLoader : public SingleTon<myFbxLoader>
 	friend SingleTon<myFbxLoader>;
 public:
 	FbxManager*		m_pSDKManager;
+	std::map<string, myFbxObj*>				m_List;
+	std::map<string, myFbxObj*>::iterator	m_iter;
+	std::string								m_szDefaultPath;
 public:
+	myFbxObj*    Load(const char* szfilename);
+	myFbxObj*    GetPtr(string szfilename);
+
 	bool		Init();
 	bool		Release();
 public:

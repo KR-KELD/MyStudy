@@ -1,5 +1,6 @@
 #include "myFbxObj.h"
 
+//메테리얼 종류 파라미터
 class ExportMaterialParameter
 {
 public:
@@ -28,6 +29,14 @@ myFbxObj::myFbxObj(FbxManager* pFbxManager)
 
 myFbxObj::~myFbxObj()
 {
+	for (m_MeshIter = m_MeshList.begin();
+		m_MeshIter != m_MeshList.end();
+		m_MeshIter++)
+	{
+		(*m_MeshIter).second->Release();
+		delete (*m_MeshIter).second;
+	}
+	m_MeshList.clear();
 }
 
 bool myFbxObj::Load(string strFileName)
@@ -45,6 +54,7 @@ bool myFbxObj::LoadFBX(string strFileName)
 	{
 		return true;
 	}
+	//루트노드를 설정하고 루트를 기준으로 순회하면서 파싱한다
 	FbxNode* pFbxRootNode = m_pFbxScene->GetRootNode();
 	ParseNode(pFbxRootNode, Matrix::Identity);
 	return false;
@@ -82,6 +92,7 @@ bool myFbxObj::Init(string strFileName)
 
 void myFbxObj::PreProcess(FbxNode * pFbxNode)
 {
+	//카메라나 라이트는 제외하고 순회
 	if (pFbxNode && (pFbxNode->GetCamera() || pFbxNode->GetLight())) return;
 	Matrix mat = mat.Identity;
 	m_dxMatIter = m_dxMatList.find(pFbxNode->GetName());
@@ -89,6 +100,7 @@ void myFbxObj::PreProcess(FbxNode * pFbxNode)
 	{
 		m_dxMatList[pFbxNode->GetName()] = mat;
 	}
+	//자식 노드를 돌면서 메쉬와 본 정보만 가지고온다
 	int iChild = pFbxNode->GetChildCount();
 	for (int i = 0; i < iChild; i++)
 	{
@@ -114,9 +126,11 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 	{
 		return;
 	}
+	//노드를 순회하면서 오브젝트화 시키고 리스트에 저장한다
 	myGameObject* pObj = myGameObject::CreateComponentObj(new myGraphics,
 										to_mw(pFbxNode->GetName()).c_str());
 	m_MeshList[pFbxNode] = pObj;
+	//부모의 월드를 상속받는다
 	Matrix matWorld = ParseTransform(pFbxNode, matParent);
 	pObj->m_pTransform->m_matWorld = matWorld;
 
@@ -128,30 +142,33 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 
 void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pGraphics)
 {
+	//uv좌표
 	vector<FbxLayerElementUV*> LayerUVVertices;
+	//메테리얼 리스트
 	vector<FbxLayerElementMaterial*> LayerMaterials;
 
+	//레이어의 갯수 가져오기(멀티 텍스쳐링)
 	int iLayerCount = pFbxMesh->GetLayerCount();
 	for (int iLayer = 0; iLayer < iLayerCount; iLayer++)
 	{
 		FbxLayer* pLayer = pFbxMesh->GetLayer(iLayer);
-		// 버텍스 컬러
+		//버텍스 컬러(라이트 맵핑에 사용 가능)
 		if (pLayer->GetVertexColors() != NULL)
 		{
 
 		}
-		// UV
+		//uv좌표를 리스트에 저장
 		if (pLayer->GetUVs() != NULL)
 		{
 			LayerUVVertices.push_back(pLayer->GetUVs());
 		}
+		//메테리얼을 리스트에 저장
 		if (pFbxMesh->GetLayer(iLayer)->GetMaterials() != nullptr)
 		{
 			LayerMaterials.push_back(pFbxMesh->GetLayer(iLayer)->GetMaterials());
 		}
 	}
-
-	//std::vector<std::string> fbxMaterialList;
+	//노드의 (서브)메테리얼 갯수 가져오기
 	int iNumMtrl = pFbxNode->GetMaterialCount();
 	for (int iMtrl = 0; iMtrl < iNumMtrl; iMtrl++)
 	{
@@ -160,15 +177,17 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 		{
 			continue;
 		}
+		//지금은 메테리얼의 이름만 리스트에 저장
 		pGraphics->m_MaterialList.push_back(to_mw(ParseMaterial(pMtrl)));
 	}
+	//메테리얼이 1개 이상이라면 서브메테리얼이 존재하므로
+	//서브메시 리스트를 리사이즈 해준다
 	if (iNumMtrl > 1)
 	{
 		pGraphics->m_SubMeshList.resize(iNumMtrl);
 	}
 
-	// transform
-	FbxAMatrix geom1;
+	//지오메트리 매트릭스(질문 로컬이랑 같이)
 	FbxAMatrix geom;
 	FbxVector4 trans = pFbxNode->GetGeometricTranslation(FbxNode::eSourcePivot);
 	FbxVector4 rot = pFbxNode->GetGeometricRotation(FbxNode::eSourcePivot);
@@ -176,16 +195,20 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 	geom.SetT(trans);
 	geom.SetR(rot);
 	geom.SetS(scale);
-	//Matrix matWorld = DxConvertMatrix(ConvertMatrixA(geom));
-	//geom1 = pNode->EvaluateGlobalTransform(1.0f);
-	//pObj->m_matWorld = DxConvertMatrix(ConvertMatrixA(pNode->EvaluateGlobalTransform(1.0f)));
-	FbxAMatrix globalMatrix = pFbxNode->EvaluateLocalTransform();
-	FbxAMatrix matrix = globalMatrix * geom;
-	//geom1 = geom1.Inverse();
 
+	FbxAMatrix matNormal = geom;
+	matNormal = matNormal.Inverse();
+	matNormal = matNormal.Transpose();
+
+	//FbxAMatrix globalMatrix = pFbxNode->EvaluateLocalTransform();
+	//FbxAMatrix matrix = globalMatrix * geom;
+
+	//기본 단위 도형의 정점 갯수
 	int iPolyCount = pFbxMesh->GetPolygonCount();
+	//정점의 갯수
 	int iVertexCount = pFbxMesh->GetControlPointsCount();
-	FbxVector4* pVertexPosiions = pFbxMesh->GetControlPoints();
+	//정점들의 정보
+	FbxVector4* pVertexPositions = pFbxMesh->GetControlPoints();
 
 	for (int iPoly = 0; iPoly < iPolyCount; iPoly++)
 	{
@@ -246,7 +269,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 			{
 				PNCT_VERTEX v;
 				//auto finalPos = matrix.MultT(pVertexPosiions[iCornerIndices[iIndex]]);
-				auto finalPos = geom.MultT(pVertexPosiions[iCornerIndices[iIndex]]);
+				auto finalPos = geom.MultT(pVertexPositions[iCornerIndices[iIndex]]);
 				//finalPos = geom.MultT(finalPos);
 				v.p.x = finalPos.mData[0]; // x
 				v.p.y = finalPos.mData[2]; // z
@@ -290,6 +313,7 @@ Matrix myFbxObj::ParseTransform(FbxNode * pFbxNode, Matrix & matParentWorld)
 	return matWorld;
 }
 
+//그래픽 툴의 uv 좌표(u,v,w) 를 dx의 uv 좌표(u,v) 로 변환
 void myFbxObj::ReadTextureCoord(FbxMesh * pFbxMesh, FbxLayerElementUV * pUVSet, int iVertexIndex, int iUVIndex, FbxVector2 & uv)
 {
 	FbxLayerElementUV *pFbxLayerElementUV = pUVSet;
@@ -298,6 +322,7 @@ void myFbxObj::ReadTextureCoord(FbxMesh * pFbxMesh, FbxLayerElementUV * pUVSet, 
 
 	switch (pFbxLayerElementUV->GetMappingMode())
 	{
+		//제어점 (공유정점)
 		case FbxLayerElementUV::eByControlPoint:
 		{
 			switch (pFbxLayerElementUV->GetReferenceMode())
@@ -320,6 +345,7 @@ void myFbxObj::ReadTextureCoord(FbxMesh * pFbxMesh, FbxLayerElementUV * pUVSet, 
 			}
 			break;
 		}
+		//폴리곤당 버텍스(폴리곤당 정점따로)
 		case FbxLayerElementUV::eByPolygonVertex:
 		{
 			switch (pFbxLayerElementUV->GetReferenceMode())
@@ -345,9 +371,11 @@ string myFbxObj::ParseMaterial(FbxSurfaceMaterial * pMtrl)
 	auto Property = pMtrl->FindProperty(FbxSurfaceMaterial::sDiffuse);
 	if (Property.IsValid())
 	{
+		//텍스쳐의 정보를 불러온다
 		const FbxFileTexture* tex = Property.GetSrcObject<FbxFileTexture>(0);
 		if (tex != nullptr)
 		{
+			//이름을 불러와서 tga파일이면 dds로 바꾸고 이름을 리턴
 			const CHAR* szFileName = tex->GetFileName();
 			CHAR Drive[MAX_PATH];
 			CHAR Dir[MAX_PATH];
