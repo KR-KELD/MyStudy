@@ -9,14 +9,11 @@
 class Sample : public myCore
 {
 public:
-
+	myFbxObj* m_pFbxObj;
 public:
 	bool Init() override;
 	bool Frame() override;
 	bool Render() override;
 	bool Release() override;
-	Matrix CreateMatrixShadow(Vector4* pPlane, Vector4* pLight);
-	LRESULT	 MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
 };
 

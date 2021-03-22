@@ -10,8 +10,8 @@ public:
 	std::map<string, myFbxObj*>::iterator	m_iter;
 	std::string								m_szDefaultPath;
 public:
-	myFbxObj*    Load(const char* szfilename);
-	myFbxObj*    GetPtr(string szfilename);
+	myFbxObj*    Load(const char* szFileName);
+	myFbxObj*    GetPtr(string szFileName);
 
 	bool		Init();
 	bool		Release();

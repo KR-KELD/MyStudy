@@ -7,7 +7,7 @@ cbuffer myDataCB
 	float4x4  g_matWorld: packoffset(c0);
 	float4x4  g_matView: packoffset(c4);
 	float4x4  g_matProj: packoffset(c8);
-	float4 vColor : packoffset(c12.x);
+	float4 vColor : packoffset(c12);
 	float  fTime  : packoffset(c13.x);
 	float  fGameTime  : packoffset(c13.y);
 };
@@ -17,6 +17,7 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
+	float4 v : TEXCOORD1;
 };
 struct PS_OUTPUT
 {
@@ -26,10 +27,13 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
-	float3 Light = float3(-1.0f,-1.0f,-0.1f);
+	float4 vFinalColor;
+	vFinalColor = vTexture * vIn.c;
+	float3 Light = float3(-1.0f,-1.0f,-1.0f);
 	Light = normalize(Light);
-	float ratio = dot(-Light,vIn.n);
-	vOut.c = vTexture * ratio;// *vIn.c * ratio;
+	float c = dot(-Light,vIn.n);
+	float4 vLightColor = float4(c,c,c,1);
+	vOut.c = vFinalColor * vLightColor;
 	return vOut;
 }
 PS_OUTPUT PSLine( VS_OUTPUT vIn)

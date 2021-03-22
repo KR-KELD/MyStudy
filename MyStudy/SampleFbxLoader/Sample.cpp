@@ -4,31 +4,75 @@ GAMERUN;
 bool Sample::Init()
 {
 	g_FbxLoader.Init();
+	m_pFbxObj = g_FbxLoader.Load("ship.fbx");
+
+	for (auto data : m_pFbxObj->m_MeshList)
+	{
+		myGraphics* pGraphics = data.second->GetComponent<myGraphics>();
+		if (pGraphics->m_TriangleList.size() <= 0 &&
+			pGraphics->m_SubMeshList.size() <= 0)
+		{
+			continue;
+		}
+		if (pGraphics->m_SubMeshList.size() == 0)
+		{
+			pGraphics->m_VertexList.resize(pGraphics->m_TriangleList.size() * 3);
+			for (int iFace = 0; iFace < pGraphics->m_TriangleList.size(); iFace++)
+			{
+				int iIndex = iFace * 3;
+				pGraphics->m_VertexList[iIndex + 0] =
+					pGraphics->m_TriangleList[iFace].vVertex[0];
+				pGraphics->m_VertexList[iIndex + 1] =
+					pGraphics->m_TriangleList[iFace].vVertex[1];
+				pGraphics->m_VertexList[iIndex + 2] =
+					pGraphics->m_TriangleList[iFace].vVertex[2];
+			}
+
+			T_STR loadTexName = pGraphics->m_MaterialList[0];
+			if (!pGraphics->Create(L"../../data/shader/vs.txt", L"../../data/shader/ps.txt", loadTexName))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
+			{
+				mySubMesh* pSub = &pGraphics->m_SubMeshList[iSub];
+				pSub->m_VertexList.resize(
+					pSub->m_TriangleList.size() * 3);
+				for (int iFace = 0; iFace < pSub->m_TriangleList.size(); iFace++)
+				{
+					int iIndex = iFace * 3;
+					pSub->m_VertexList[iIndex + 0] =
+						pSub->m_TriangleList[iFace].vVertex[0];
+					pSub->m_VertexList[iIndex + 1] =
+						pSub->m_TriangleList[iFace].vVertex[1];
+					pSub->m_VertexList[iIndex + 2] =
+						pSub->m_TriangleList[iFace].vVertex[2];
+				}
+
+				// vb
+				ID3D11Buffer* vb =
+					CreateVertexBuffer(g_pd3dDevice,
+						&pSub->m_VertexList.at(0),
+						pSub->m_VertexList.size(),
+						sizeof(PNCT_VERTEX));
+				pSub->m_pVertexBuffer.Attach(vb);
+				wstring loadTex = pGraphics->m_MaterialList[iSub].c_str();
+				pSub->m_pTexture = g_TextureMgr.Load(loadTex.c_str());
+			}
+			if (!pGraphics->Create(L"../../data/shader/vs.txt", L"../../data/shader/ps.txt", L""))
+			{
+				return false;
+			}
+		}
+	}
 	return true;
 }
 
 bool Sample::Frame()
 {
-	if (g_Input.GetKey('0') == KEY_PUSH)
-	{
-		myDxState::m_FillMode = D3D11_FILL_WIREFRAME;
-		myDxState::SetRasterizerState();
-	}
-	if (g_Input.GetKey('9') == KEY_PUSH)
-	{
-		myDxState::m_FillMode = D3D11_FILL_SOLID;
-		myDxState::SetRasterizerState();
-	}
-	if (g_Input.GetKey('8') == KEY_PUSH)
-	{
-		myDxState::m_CullMode = D3D11_CULL_BACK;
-		myDxState::SetRasterizerState();
-	}
-	if (g_Input.GetKey('7') == KEY_PUSH)
-	{
-		myDxState::m_CullMode = D3D11_CULL_FRONT;
-		myDxState::SetRasterizerState();
-	}
 	return true;
 }
 
@@ -37,39 +81,62 @@ bool Sample::Render()
 	//최종적으로는 모든 함수는 각자의 Render에서 돌아가게끔 해야함
 	//그걸 호출하는건 obj매니저에 있는 메인gameobject
 
+	for (auto data : m_pFbxObj->m_MeshList)
+	{
+		myGraphics* pGraphics = data.second->GetComponent<myGraphics>();
+		if (pGraphics->m_SubMeshList.size() == 0)
+		{
+			if (pGraphics->m_TriangleList.size() <= 0) continue;
 
+			pGraphics->m_pTransform->SetMatrix(&pGraphics->m_pTransform->m_matWorld,
+				&g_pMainCamTransform->m_matView,
+				&g_pMainCamTransform->m_matProj);
+			pGraphics->Render();
+		}
+		else
+		{
+			pGraphics->m_pTransform->SetMatrix(&pGraphics->m_pTransform->m_matWorld,
+				&g_pMainCamTransform->m_matView,
+				&g_pMainCamTransform->m_matProj);
+			pGraphics->Update();
+			pGraphics->PreRender();
+			UINT iStride = sizeof(PNCT_VERTEX);
+			UINT iOffset = 0;
+			g_pImmediateContext->IASetIndexBuffer(pGraphics->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+			g_pImmediateContext->IASetInputLayout(pGraphics->m_pInputLayout.Get());
+			g_pImmediateContext->VSSetConstantBuffers(0, 1, pGraphics->m_pConstantBuffer.GetAddressOf());
+			g_pImmediateContext->PSSetConstantBuffers(0, 1, pGraphics->m_pConstantBuffer.GetAddressOf());
+			g_pImmediateContext->VSSetShader(pGraphics->m_pVertexShader.Get(), NULL, 0);
+			g_pImmediateContext->PSSetShader(pGraphics->m_pPixelShader.Get(), NULL, 0);
+			g_pImmediateContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)pGraphics->m_iTopology);
 
+			for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
+			{
+				mySubMesh* pMesh = &pGraphics->m_SubMeshList[iSub];
+				if (pMesh->m_TriangleList.size() <= 0) continue;
+				g_pImmediateContext->IASetVertexBuffers(0, 1,
+					pMesh->m_pVertexBuffer.GetAddressOf(), &iStride, &iOffset);
+				if (pMesh->m_pTexture != nullptr)
+				{
+					g_pImmediateContext->PSSetShaderResources(0, 1,
+						pMesh->m_pTexture->m_pTextureSRV.GetAddressOf());
+				}
+				if (pGraphics->m_pIndexBuffer.Get() == nullptr)
+				{
+					g_pImmediateContext->Draw(pMesh->m_VertexList.size(), 0);
+				}
+				else
+				{
+					PostRender();
+				}
+			}
+		}
+	}
 	return true;
 }
 
 bool Sample::Release()
 {
-
+	g_FbxLoader.Release();
 	return true;
 }
-
-Matrix Sample::CreateMatrixShadow(Vector4 * pPlane, Vector4 * pLight)
-{
-	Matrix mat;
-	Vector4 plane, light;
-	pPlane->Normalize();
-	plane.x = pPlane->x * -1.0f;
-	plane.y = pPlane->y * -1.0f;
-	plane.z = pPlane->z * -1.0f;
-	plane.w = pPlane->w * -1.0f;
-	light = *pLight;// * -1.0f;
-	float D = -(plane.Dot(light));
-	mat._11 = plane.x * light.x + D;	mat._12 = plane.x * light.y;	mat._13 = plane.x * light.z;	mat._14 = plane.x * light.w;
-	mat._21 = plane.y * light.x;	mat._22 = plane.y * light.y + D;	mat._23 = plane.y * light.z;	mat._24 = plane.y * light.w;
-	mat._31 = plane.z * light.x;	mat._32 = plane.z * light.y;	mat._33 = plane.z * light.z + D;	mat._34 = plane.z * light.w;
-	mat._41 = plane.w * light.x;	mat._42 = plane.w * light.y;	mat._43 = plane.w * light.z;	mat._44 = plane.w * light.w + D;
-	return mat;
-}
-
-LRESULT Sample::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	if (g_CamMgr.m_pMainCamera == nullptr) return -1;
-	int iRet = g_CamMgr.m_pMainCamera->WndProc(hWnd, message, wParam, lParam);
-	return -1;
-}
-

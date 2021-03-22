@@ -50,14 +50,14 @@ bool myFbxObj::Load(string strFileName)
 
 bool myFbxObj::LoadFBX(string strFileName)
 {
-	if (Init(strFileName))
+	if (Init(strFileName) == false)
 	{
-		return true;
+		return false;
 	}
 	//루트노드를 설정하고 루트를 기준으로 순회하면서 파싱한다
 	FbxNode* pFbxRootNode = m_pFbxScene->GetRootNode();
 	ParseNode(pFbxRootNode, Matrix::Identity);
-	return false;
+	return true;
 }
 
 bool myFbxObj::Init(string strFileName)
@@ -138,6 +138,12 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 	{
 		ParseMesh(pFbxNode, pFbxNode->GetMesh(), pObj->GetComponent<myGraphics>());
 	}
+	int dwChild = pFbxNode->GetChildCount();
+	for (int dwObj = 0; dwObj < dwChild; dwObj++)
+	{
+		FbxNode* pChildNode = pFbxNode->GetChild(dwObj);
+		ParseNode(pChildNode, matWorld);
+	}
 }
 
 void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pGraphics)
@@ -146,6 +152,8 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 	vector<FbxLayerElementUV*> LayerUVVertices;
 	//메테리얼 리스트
 	vector<FbxLayerElementMaterial*> LayerMaterials;
+	//정점 컬러 리스트
+	vector<FbxLayerElementVertexColor*> LayerVertexColors;
 
 	//레이어의 갯수 가져오기(멀티 텍스쳐링)
 	int iLayerCount = pFbxMesh->GetLayerCount();
@@ -155,7 +163,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 		//버텍스 컬러(라이트 맵핑에 사용 가능)
 		if (pLayer->GetVertexColors() != NULL)
 		{
-
+			LayerVertexColors.push_back(pLayer->GetVertexColors());
 		}
 		//uv좌표를 리스트에 저장
 		if (pLayer->GetUVs() != NULL)
@@ -187,7 +195,8 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 		pGraphics->m_SubMeshList.resize(iNumMtrl);
 	}
 
-	//지오메트리 매트릭스(질문 로컬이랑 같이)
+	//지오메트리 매트릭스(해당 메쉬의 좌표를 로컬에서 본좌표(뼈대의 월드상 위치))
+	//로 변환해주는 매트릭스
 	FbxAMatrix geom;
 	FbxVector4 trans = pFbxNode->GetGeometricTranslation(FbxNode::eSourcePivot);
 	FbxVector4 rot = pFbxNode->GetGeometricRotation(FbxNode::eSourcePivot);
@@ -200,8 +209,8 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 	matNormal = matNormal.Inverse();
 	matNormal = matNormal.Transpose();
 
-	//FbxAMatrix globalMatrix = pFbxNode->EvaluateLocalTransform();
-	//FbxAMatrix matrix = globalMatrix * geom;
+	
+	//pGraphics->m_pTransform->m_matWorld = DxConvertMatrix(ConvertMatrixA(geom));
 
 	//기본 단위 도형의 정점 갯수
 	int iPolyCount = pFbxMesh->GetPolygonCount();
@@ -209,6 +218,8 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 	int iVertexCount = pFbxMesh->GetControlPointsCount();
 	//정점들의 정보
 	FbxVector4* pVertexPositions = pFbxMesh->GetControlPoints();
+	//폴리곤의 누적 인덱스
+	int iBasePolyIndex = 0;
 
 	for (int iPoly = 0; iPoly < iPolyCount; iPoly++)
 	{
@@ -217,49 +228,54 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 		int iCornerIndices[3];
 		myTriangle tri;
 
-		// sub mtrl
+		//서브 메테리얼의 종류
 		int iSubMtrl = 0;
 		if (LayerMaterials.size() > 0)
 		{
 			switch (LayerMaterials[0]->GetMappingMode())
 			{
-			case FbxLayerElement::eByPolygon:
-			{
-				switch (LayerMaterials[0]->GetReferenceMode())
+				//폴리곤 단위 맵핑이면
+				case FbxLayerElement::eByPolygon:
 				{
-				case FbxLayerElement::eIndex:
+					//래퍼런스 타입에따라
+					switch (LayerMaterials[0]->GetReferenceMode())
+					{
+						//폴리곤의 인덱스를 따라간다
+						case FbxLayerElement::eIndex:
+						{
+							iSubMtrl = iPoly;
+						}break;
+						//가지고있는 인덱스를 가져와서 쓴다
+						case FbxLayerElement::eIndexToDirect:
+						{
+							iSubMtrl = LayerMaterials[0]->GetIndexArray().GetAt(iPoly);
+							pGraphics->m_SubMeshList[iSubMtrl].m_iPolyCount++;
+						}break;
+					}
+				}
+				default:
 				{
-					iSubMtrl = iPoly;
-				}break;
-				case FbxLayerElement::eIndexToDirect:
-				{
-					iSubMtrl = LayerMaterials[0]->GetIndexArray().GetAt(iPoly);
-					pGraphics->m_SubMeshList[iSubMtrl].m_iPolyCount++;
-				}break;
+					break;
 				}
 			}
-			default:
-			{
-				break;
-			}
-			}
 		}
-
+		//삼각형 정보 컨버트
 		for (int iTriangle = 0; iTriangle < iTriangleCount; iTriangle++)
 		{
+			//인덱스 순서를 반시계(그래픽 툴)에서 시계(DX)로 바꿔준다
 			INT iVertIndex[3] = { 0, (INT)iTriangle + 2, (INT)iTriangle + 1 };
-
+			//삼각형 정점의 정보
 			iCornerIndices[0] = pFbxMesh->GetPolygonVertex(iPoly, iVertIndex[0]);
 			iCornerIndices[1] = pFbxMesh->GetPolygonVertex(iPoly, iVertIndex[1]);
 			iCornerIndices[2] = pFbxMesh->GetPolygonVertex(iPoly, iVertIndex[2]);
-			// 0, 9, 8
+			//삼각형 노말의 정보
 			FbxVector4 vNormals[3];
 			ZeroMemory(vNormals, 3 * sizeof(FbxVector4));
 			INT iPolyIndex = (INT)iPoly;
 			pFbxMesh->GetPolygonVertexNormal(iPolyIndex, iVertIndex[0], vNormals[0]);
 			pFbxMesh->GetPolygonVertexNormal(iPolyIndex, iVertIndex[1], vNormals[1]);
 			pFbxMesh->GetPolygonVertexNormal(iPolyIndex, iVertIndex[2], vNormals[2]);
-
+			//삼각형 uv좌표의 정보
 			int u[3];
 			u[0] = pFbxMesh->GetTextureUVIndex(iPolyIndex, iVertIndex[0]);
 			u[1] = pFbxMesh->GetTextureUVIndex(iPolyIndex, iVertIndex[1]);
@@ -268,18 +284,31 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 			for (int iIndex = 0; iIndex < 3; iIndex++)
 			{
 				PNCT_VERTEX v;
-				//auto finalPos = matrix.MultT(pVertexPosiions[iCornerIndices[iIndex]]);
+				//삼각형 정점에 지오매트릭 매트릭스를 곱해줘서 해당 위치로 보내준다
 				auto finalPos = geom.MultT(pVertexPositions[iCornerIndices[iIndex]]);
-				//finalPos = geom.MultT(finalPos);
+				//Dx 좌표로 바꿔서 넣어준다
 				v.p.x = finalPos.mData[0]; // x
 				v.p.y = finalPos.mData[2]; // z
 				v.p.z = finalPos.mData[1]; // y
-
-
-				v.c = Vector4(1, 1, 1, 1);
-				v.n.x = 0;// vNormals[iCornerIndices[iIndex]].mData[0]; // x
-				v.n.y = 0;//vNormals[iCornerIndices[iIndex]].mData[2]; // z
-				v.n.z = 0;//vNormals[iCornerIndices[iIndex]].mData[1]; // y
+				//컬러 정보를 변환해서 pnct버텍스에 넣어준다
+				FbxColor color = ReadColor(pFbxMesh,
+					LayerVertexColors.size(),
+					LayerVertexColors[0],
+					iCornerIndices[iIndex],
+					iBasePolyIndex + iVertIndex[iIndex]);
+				v.c.x = (float)color.mRed;
+				v.c.y = (float)color.mGreen;
+				v.c.z = (float)color.mBlue;
+				v.c.w = 1;
+				//노말 정보를 변환해서 pnct버텍스에 넣어준다
+				FbxVector4 normal = ReadNormal(pFbxMesh,
+					iCornerIndices[iIndex],
+					iBasePolyIndex + iVertIndex[iIndex]);
+				finalPos = matNormal.MultT(normal);
+				v.n.x = finalPos.mData[0]; // x
+				v.n.y = finalPos.mData[2]; // z
+				v.n.z = finalPos.mData[1]; // y
+				//uv좌표 정보를 변환해서 pnct버텍스에 넣어준다
 				for (int iUVIndex = 0; iUVIndex < LayerUVVertices.size(); ++iUVIndex)
 				{
 					FbxLayerElementUV* pUVSet = LayerUVVertices[iUVIndex];
@@ -293,8 +322,13 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 					v.t.x = uv.mData[0];
 					v.t.y = 1.0f - uv.mData[1];
 				}
+				//삼각형 구조체에 pnct 버텍스를 등록해준다
 				tri.vVertex[iIndex] = v;
 			}
+			//서브메테리얼이 존재하면
+			//서브메쉬의 트라이앵글리스트에 삼각형을 등록하고
+			//존재하지 않는다면 바로 기존 오브젝트의 
+			//트라이앵글리스트에 삼각형을 등록해준다
 			if (iNumMtrl > 1)
 			{
 				pGraphics->m_SubMeshList[iSubMtrl].m_TriangleList.push_back(tri);
@@ -304,6 +338,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 				pGraphics->m_TriangleList.push_back(tri);
 			}
 		}
+		iBasePolyIndex += iPolySize;
 	}
 }
 
@@ -322,11 +357,12 @@ void myFbxObj::ReadTextureCoord(FbxMesh * pFbxMesh, FbxLayerElementUV * pUVSet, 
 
 	switch (pFbxLayerElementUV->GetMappingMode())
 	{
-		//제어점 (공유정점)
+		//제어점 (공유정점) 단위로
 		case FbxLayerElementUV::eByControlPoint:
 		{
 			switch (pFbxLayerElementUV->GetReferenceMode())
 			{
+				//직접 대입
 				case FbxLayerElementUV::eDirect:
 				{
 					FbxVector2 fbxUv = pFbxLayerElementUV->GetDirectArray().GetAt(iVertexIndex);
@@ -334,6 +370,7 @@ void myFbxObj::ReadTextureCoord(FbxMesh * pFbxMesh, FbxLayerElementUV * pUVSet, 
 					uv.mData[1] = fbxUv.mData[1];
 					break;
 				}
+				//인덱스좌표로 대입
 				case FbxLayerElementUV::eIndexToDirect:
 				{
 					int id = pFbxLayerElementUV->GetIndexArray().GetAt(iVertexIndex);
@@ -345,12 +382,11 @@ void myFbxObj::ReadTextureCoord(FbxMesh * pFbxMesh, FbxLayerElementUV * pUVSet, 
 			}
 			break;
 		}
-		//폴리곤당 버텍스(폴리곤당 정점따로)
+		//폴리곤당 정점 단위로
 		case FbxLayerElementUV::eByPolygonVertex:
 		{
 			switch (pFbxLayerElementUV->GetReferenceMode())
 			{
-				// Always enters this part for the example model
 				case FbxLayerElementUV::eDirect:
 				case FbxLayerElementUV::eIndexToDirect:
 				{
@@ -381,7 +417,7 @@ string myFbxObj::ParseMaterial(FbxSurfaceMaterial * pMtrl)
 			CHAR Dir[MAX_PATH];
 			CHAR FName[MAX_PATH];
 			CHAR Ext[MAX_PATH];
-			_splitpath(szFileName, Drive, Dir, FName, Ext);
+			_splitpath_s(szFileName, Drive, Dir, FName, Ext);
 			std::string texName = FName;
 			std::string ext = Ext;
 			if (ext == ".tga")
@@ -398,4 +434,107 @@ string myFbxObj::ParseMaterial(FbxSurfaceMaterial * pMtrl)
 
 void myFbxObj::ParseAnimation(FbxScene * pFbxScene)
 {
+}
+
+FbxVector4 myFbxObj::ReadNormal(const FbxMesh* mesh,
+	int controlPointIndex,
+	int vertexCounter)
+{
+	if (mesh->GetElementNormalCount() < 1) {}
+
+	const FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal(0);
+	// 노말 획득 
+	FbxVector4 result;
+	// 노말 벡터를 저장할 벡터 
+	switch (vertexNormal->GetMappingMode()) 	// 매핑 모드 
+	{
+		// 제어점 마다 1개의 매핑 좌표가 있다.
+	case FbxGeometryElement::eByControlPoint:
+	{
+		// control point mapping 
+		switch (vertexNormal->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+		{
+			result[0] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(controlPointIndex).mData[0]);
+			result[1] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(controlPointIndex).mData[1]);
+			result[2] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(controlPointIndex).mData[2]);
+		} break;
+		case FbxGeometryElement::eIndexToDirect:
+		{
+			int index = vertexNormal->GetIndexArray().GetAt(controlPointIndex);
+			// 인덱스를 얻어온다. 
+			result[0] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);
+			result[1] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);
+			result[2] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);
+		}break;
+		}break;
+	}break;
+	// 정점 마다 1개의 매핑 좌표가 있다.
+	case FbxGeometryElement::eByPolygonVertex:
+	{
+		switch (vertexNormal->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+		{
+			result[0] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(vertexCounter).mData[0]);
+			result[1] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(vertexCounter).mData[1]);
+			result[2] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(vertexCounter).mData[2]);
+		}
+		break;
+		case FbxGeometryElement::eIndexToDirect:
+		{
+			int index = vertexNormal->GetIndexArray().GetAt(vertexCounter);
+			// 인덱스를 얻어온다. 
+			result[0] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);
+			result[1] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);
+			result[2] = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);
+		}break;
+		}
+	}break;
+	}
+	return result;
+}
+FbxColor myFbxObj::ReadColor(const FbxMesh* mesh,
+	DWORD dwVertexColorCount,
+	FbxLayerElementVertexColor* pVertexColorSet,
+	DWORD dwDCCIndex, DWORD dwVertexIndex)
+{
+	FbxColor Value(1, 1, 1, 1);
+	if (dwVertexColorCount > 0 && pVertexColorSet != NULL)
+	{
+		// Crack apart the FBX dereferencing system for Color coordinates		
+		switch (pVertexColorSet->GetMappingMode())
+		{
+		case FbxLayerElement::eByControlPoint:
+			switch (pVertexColorSet->GetReferenceMode())
+			{
+			case FbxLayerElement::eDirect:
+			{
+				Value = pVertexColorSet->GetDirectArray().GetAt(dwDCCIndex);
+			}break;
+			case FbxLayerElement::eIndexToDirect:
+			{
+				int iColorIndex = pVertexColorSet->GetIndexArray().GetAt(dwDCCIndex);
+				Value = pVertexColorSet->GetDirectArray().GetAt(iColorIndex);
+			}break;
+			}
+		case FbxLayerElement::eByPolygonVertex:
+			switch (pVertexColorSet->GetReferenceMode())
+			{
+			case FbxLayerElement::eDirect:
+			{
+				int iColorIndex = dwVertexIndex;
+				Value = pVertexColorSet->GetDirectArray().GetAt(iColorIndex);
+			}break;
+			case FbxLayerElement::eIndexToDirect:
+			{
+				int iColorIndex = pVertexColorSet->GetIndexArray().GetAt(dwVertexIndex);
+				Value = pVertexColorSet->GetDirectArray().GetAt(iColorIndex);
+			}break;
+			}
+			break;
+		}
+	}
+	return Value;
 }

@@ -80,7 +80,7 @@ bool myTextureManager::Release()
 
 myTextureManager::myTextureManager()
 {
-	m_szDefaultPath = L"../../data/bitmap/";
+	m_szDefaultPath = L"../../data/object/";
 }
 
 myTextureManager::~myTextureManager()

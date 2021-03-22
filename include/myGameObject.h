@@ -121,6 +121,7 @@ public:
 	bool			m_isRender;
 	DEFINE_COMPONENT(myComponent, null_t, false);
 public:
+	virtual myComponent* Clone();
 	virtual bool	Init();
 	virtual bool	PreFrame();
 	virtual bool	Frame();
@@ -245,7 +246,7 @@ public:
 public:
 	T_STR			m_strName;
 	T_STR			m_strTag;
-private:
+public:
 	//게임오브젝트 언오더맵으로 바꿔보기
 	myGameObject*									m_pParent;
 	unordered_map<wstring, myGameObject*>			m_Childs;

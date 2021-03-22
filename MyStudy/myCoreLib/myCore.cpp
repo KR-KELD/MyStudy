@@ -46,7 +46,7 @@ bool myCore::GameInit()
 	g_GameObject.InsertComponent(m_pBasisLine);
 	m_pBasisLine->Init();
 	if (!m_pBasisLine->Create(L"../../data/shader/VS.txt", L"../../data/shader/PS.txt",
-	L"../../data/bitmap/flametank.bmp"))
+	L""))
 	{
 		return false;
 	}

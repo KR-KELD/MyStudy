@@ -3,6 +3,10 @@
 DECLARE_COMPONENT(myComponent);
 DECLARE_COMPONENT(myTransform);
 DECLARE_COMPONENT(myGameObject);
+myComponent * myComponent::Clone()
+{
+	return new myComponent(*this);
+}
 bool myComponent::Init()
 {
 	return true;
@@ -214,7 +218,8 @@ bool myTransform::Release()
 
 myGameObject * myGameObject::Clone()
 {
-	//Áú¹®
+	//myGameObject* pObj = new myGameObject(*this);
+
 	//for (m_ComIter = m_ComponentList.begin();
 	//	m_ComIter != m_ComponentList.end();
 	//	m_ComIter++)

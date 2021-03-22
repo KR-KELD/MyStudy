@@ -1,14 +1,12 @@
 #include "myFbxLoader.h"
 
-myFbxObj * myFbxLoader::Load(const char* szfilename)
+myFbxObj * myFbxLoader::Load(const char* szFileName)
 {
-
-
 	CHAR drive[MAX_PATH] = { 0, };
 	CHAR dir[MAX_PATH] = { 0, };
 	CHAR name[MAX_PATH] = { 0, };
 	CHAR ext[MAX_PATH] = { 0, };
-	_splitpath_s(szfilename, drive, dir, name, ext);
+	_splitpath_s(szFileName, drive, dir, name, ext);
 
 	std::string Dir = dir;
 	std::string key;
@@ -16,12 +14,12 @@ myFbxObj * myFbxLoader::Load(const char* szfilename)
 	if (Dir.empty())
 	{
 		loadfile = m_szDefaultPath;
-		loadfile += szfilename;
-		key = szfilename;
+		loadfile += szFileName;
+		key = szFileName;
 	}
 	else
 	{
-		loadfile = szfilename;
+		loadfile = szFileName;
 		key = name;
 		key += ext;
 	}
@@ -41,9 +39,14 @@ myFbxObj * myFbxLoader::Load(const char* szfilename)
 	return nullptr;
 }
 
-myFbxObj * myFbxLoader::GetPtr(string szfilename)
+myFbxObj * myFbxLoader::GetPtr(string szFileName)
 {
-	return nullptr;
+	m_iter = m_List.find(szFileName);
+	if (m_iter == m_List.end())
+	{
+		return nullptr;
+	}
+	return (*m_iter).second;
 }
 
 bool myFbxLoader::Init()
@@ -69,7 +72,7 @@ bool myFbxLoader::Release()
 
 myFbxLoader::myFbxLoader()
 {
-	m_szDefaultPath = "../../data";
+	m_szDefaultPath = "../../data/object/";
 }
 
 myFbxLoader::~myFbxLoader()
