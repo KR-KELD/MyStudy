@@ -6,16 +6,20 @@ bool Sample::Init()
 	g_FbxLoader.Init();
 	m_pFbxObj = g_FbxLoader.Load("ship.fbx");
 
+	//fbx오브젝트를 기반으로 gameobject 데이터를 채워준다
 	for (auto data : m_pFbxObj->m_MeshList)
 	{
 		myGraphics* pGraphics = data.second->GetComponent<myGraphics>();
+		//그래픽 정보가 없으면 넘어가고
 		if (pGraphics->m_TriangleList.size() <= 0 &&
 			pGraphics->m_SubMeshList.size() <= 0)
 		{
 			continue;
 		}
+		//서브메쉬가 없을때(메테리얼을 1개만 쓰는 오브젝트)
 		if (pGraphics->m_SubMeshList.size() == 0)
 		{
+			//정점 정보와 텍스쳐를 불러온다
 			pGraphics->m_VertexList.resize(pGraphics->m_TriangleList.size() * 3);
 			for (int iFace = 0; iFace < pGraphics->m_TriangleList.size(); iFace++)
 			{
@@ -34,8 +38,10 @@ bool Sample::Init()
 				return false;
 			}
 		}
+		//서브메쉬가 있을때(한 오브젝트에 여러개의 서브메테리얼을 사용)
 		else
 		{
+			//서브메쉬마다 버텍스리스트,버퍼,텍스쳐를 각각 세팅해준다
 			for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
 			{
 				mySubMesh* pSub = &pGraphics->m_SubMeshList[iSub];
@@ -67,6 +73,7 @@ bool Sample::Init()
 				return false;
 			}
 		}
+		m_graphicObj.push_back(pGraphics);
 	}
 	return true;
 }
@@ -81,57 +88,14 @@ bool Sample::Render()
 	//최종적으로는 모든 함수는 각자의 Render에서 돌아가게끔 해야함
 	//그걸 호출하는건 obj매니저에 있는 메인gameobject
 
-	for (auto data : m_pFbxObj->m_MeshList)
+	for (auto p: m_graphicObj)
 	{
-		myGraphics* pGraphics = data.second->GetComponent<myGraphics>();
-		if (pGraphics->m_SubMeshList.size() == 0)
-		{
-			if (pGraphics->m_TriangleList.size() <= 0) continue;
-
-			pGraphics->m_pTransform->SetMatrix(&pGraphics->m_pTransform->m_matWorld,
-				&g_pMainCamTransform->m_matView,
-				&g_pMainCamTransform->m_matProj);
-			pGraphics->Render();
-		}
-		else
-		{
-			pGraphics->m_pTransform->SetMatrix(&pGraphics->m_pTransform->m_matWorld,
-				&g_pMainCamTransform->m_matView,
-				&g_pMainCamTransform->m_matProj);
-			pGraphics->Update();
-			pGraphics->PreRender();
-			UINT iStride = sizeof(PNCT_VERTEX);
-			UINT iOffset = 0;
-			g_pImmediateContext->IASetIndexBuffer(pGraphics->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-			g_pImmediateContext->IASetInputLayout(pGraphics->m_pInputLayout.Get());
-			g_pImmediateContext->VSSetConstantBuffers(0, 1, pGraphics->m_pConstantBuffer.GetAddressOf());
-			g_pImmediateContext->PSSetConstantBuffers(0, 1, pGraphics->m_pConstantBuffer.GetAddressOf());
-			g_pImmediateContext->VSSetShader(pGraphics->m_pVertexShader.Get(), NULL, 0);
-			g_pImmediateContext->PSSetShader(pGraphics->m_pPixelShader.Get(), NULL, 0);
-			g_pImmediateContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)pGraphics->m_iTopology);
-
-			for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
-			{
-				mySubMesh* pMesh = &pGraphics->m_SubMeshList[iSub];
-				if (pMesh->m_TriangleList.size() <= 0) continue;
-				g_pImmediateContext->IASetVertexBuffers(0, 1,
-					pMesh->m_pVertexBuffer.GetAddressOf(), &iStride, &iOffset);
-				if (pMesh->m_pTexture != nullptr)
-				{
-					g_pImmediateContext->PSSetShaderResources(0, 1,
-						pMesh->m_pTexture->m_pTextureSRV.GetAddressOf());
-				}
-				if (pGraphics->m_pIndexBuffer.Get() == nullptr)
-				{
-					g_pImmediateContext->Draw(pMesh->m_VertexList.size(), 0);
-				}
-				else
-				{
-					PostRender();
-				}
-			}
-		}
+		p->m_pTransform->SetMatrix(&p->m_pTransform->m_matWorld,
+			&g_pMainCamTransform->m_matView,
+			&g_pMainCamTransform->m_matProj);
+		p->Render();
 	}
+	
 	return true;
 }
 

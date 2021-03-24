@@ -453,15 +453,24 @@ myGameObject* myGameObject::Add(wstring strName)
 	myGameObject* obj;
 	if (strName.empty())
 	{
-		obj = CreateGameObject(L"myGameObject");
+		obj = CreateGameObject();
 		obj->SetParent(this);
-		m_Childs.insert(make_pair(L"myGameObject", obj));
+		m_Childs.insert(make_pair(obj->m_strName, obj));
 		return obj;
 	}
 	obj = CreateGameObject(strName.c_str());
 	obj->SetParent(this);
 	m_Childs.insert(make_pair(strName, obj));
 	return obj;
+}
+
+myGameObject * myGameObject::Add(myGameObject * pGameObj)
+{
+	if (pGameObj == nullptr) return nullptr;
+	
+	pGameObj->SetParent(this);
+	m_Childs.insert(make_pair(pGameObj->m_strName, pGameObj));
+	return pGameObj;
 }
 
 myGameObject * myGameObject::GetGameObject(wstring strName)

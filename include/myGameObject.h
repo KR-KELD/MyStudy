@@ -249,8 +249,8 @@ public:
 public:
 	//게임오브젝트 언오더맵으로 바꿔보기
 	myGameObject*									m_pParent;
-	unordered_map<wstring, myGameObject*>			m_Childs;
-	unordered_map<wstring, myGameObject*>::iterator	m_ObjIter;
+	multimap<wstring, myGameObject*>				m_Childs;
+	multimap<wstring, myGameObject*>::iterator		m_ObjIter;
 	unordered_map<size_t, myComponent*>				m_ComponentList;
 	unordered_map<size_t, myComponent*>::iterator	m_ComIter;
 public:
@@ -295,6 +295,7 @@ public:
 	virtual bool	Release();
 public:
 	myGameObject*			Add(wstring strName = L"");
+	myGameObject*			Add(myGameObject* pGameObj);
 	myGameObject*			GetGameObject(wstring strName);
 	list<myGameObject*>*	GetGameObjects(wstring strName);
 private:
@@ -339,11 +340,13 @@ public:
 	myGameObject() 
 	{ 
 		m_pParent = nullptr;
+		m_strName = L"myGameObject";
 		m_pTransform = new myTransform;
 		InsertComponent(m_pTransform);
 	}
 	myGameObject(const TCHAR* szName)
 	{
+		m_pParent = nullptr;
 		m_strName = szName;
 		m_pTransform = new myTransform;
 		InsertComponent(m_pTransform);

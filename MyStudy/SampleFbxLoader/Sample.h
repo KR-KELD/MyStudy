@@ -10,6 +10,7 @@ class Sample : public myCore
 {
 public:
 	myFbxObj* m_pFbxObj;
+	vector<myGraphics*> m_graphicObj;
 public:
 	bool Init() override;
 	bool Frame() override;

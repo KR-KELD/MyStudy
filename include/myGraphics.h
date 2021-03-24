@@ -150,6 +150,8 @@ public:
 	virtual bool	PostRender();
 	virtual bool	Release();
 	virtual bool	SettingPipeLine();
+	//юс╫ц
+	virtual bool	MultiDraw();
 	virtual bool	Draw();
 	virtual bool    CreateVertexData(Vector3 vCenter, float fRange);
 	virtual bool    CreateVertexData();

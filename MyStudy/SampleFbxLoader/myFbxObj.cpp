@@ -309,18 +309,21 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 				v.n.y = finalPos.mData[2]; // z
 				v.n.z = finalPos.mData[1]; // y
 				//uv좌표 정보를 변환해서 pnct버텍스에 넣어준다
-				for (int iUVIndex = 0; iUVIndex < LayerUVVertices.size(); ++iUVIndex)
+				if (LayerUVVertices.size())
 				{
-					FbxLayerElementUV* pUVSet = LayerUVVertices[iUVIndex];
-					FbxVector2 uv(0, 0);
-					ReadTextureCoord(
-						pFbxMesh,
-						pUVSet,
-						iCornerIndices[iIndex],
-						u[iIndex],
-						uv);
-					v.t.x = uv.mData[0];
-					v.t.y = 1.0f - uv.mData[1];
+					for (int iUVIndex = 0; iUVIndex < 1/*LayerUVVertices.size()*/; ++iUVIndex)
+					{
+						FbxLayerElementUV* pUVSet = LayerUVVertices[iUVIndex];
+						FbxVector2 uv(0, 0);
+						ReadTextureCoord(
+							pFbxMesh,
+							pUVSet,
+							iCornerIndices[iIndex],
+							u[iIndex],
+							uv);
+						v.t.x = uv.mData[0];
+						v.t.y = 1.0f - uv.mData[1];
+					}
 				}
 				//삼각형 구조체에 pnct 버텍스를 등록해준다
 				tri.vVertex[iIndex] = v;
