@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="myFbxAnimation.cpp" />
     <ClCompile Include="myFbxGraphics.cpp" />
     <ClCompile Include="myFbxLoader.cpp" />
     <ClCompile Include="myFbxObj.cpp" />

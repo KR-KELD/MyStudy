@@ -437,6 +437,13 @@ string myFbxObj::ParseMaterial(FbxSurfaceMaterial * pMtrl)
 
 void myFbxObj::ParseAnimation(FbxScene * pFbxScene)
 {
+	FbxArray<FbxString*>  AnimStackNameArray;
+	pFbxScene->FillAnimStackNameArray(AnimStackNameArray);
+	int iAnimStackCount = AnimStackNameArray.GetCount();
+	for (int i = 0; i < iAnimStackCount; i++)
+	{
+		ParseAnimStack(pFbxScene, AnimStackNameArray.GetAt(i));
+	}
 }
 
 FbxVector4 myFbxObj::ReadNormal(const FbxMesh* mesh,

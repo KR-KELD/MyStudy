@@ -31,6 +31,15 @@ static Matrix ConvertMatrixA(const FbxMatrix& matrix)
 	return matResult;
 }
 
+//struct AnimationScanNode
+//{
+//	INT iParentIndex;
+//	FbxNode* pNode;
+//	ExportAnimationTrack* pTrack;
+//	DWORD dwFlags;
+//	XMFLOAT4X4 matGlobal;
+//};
+
 class myFbxObj
 {
 public:
@@ -52,11 +61,14 @@ public:
 	void		ReadTextureCoord(FbxMesh* pFbxMesh, FbxLayerElementUV* pUVSet,
 								int iVertexIndex, int iUVIndex, FbxVector2& uv);
 	string		ParseMaterial(FbxSurfaceMaterial* pMtrl);
-	void		ParseAnimation(FbxScene* pFbxScene);
 	FbxVector4  ReadNormal(const FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 	FbxColor	ReadColor(const FbxMesh* mesh, DWORD dwVertexColorCount, 
 						FbxLayerElementVertexColor* pVertexColorSet, DWORD dwDCCIndex,
 						DWORD dwVertexIndex);
+
+	void		ParseAnimation(FbxScene* pFbxScene);
+	void		ParseAnimStack(FbxScene* pFbxScene, FbxString* strAnimStackName);
+	void		ParseNodeAnimation(FbxNode* pNode);
 public:
 	myFbxObj(FbxManager* pFbxManager);
 	virtual ~myFbxObj();
