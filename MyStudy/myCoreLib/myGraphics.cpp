@@ -635,9 +635,9 @@ void    myGraphics::Update()
 		pData->matView = m_pTransform->m_matView.Transpose();
 		pData->matProject = m_pTransform->m_matProj.Transpose();
 
-		pData->vColor[0] = cosf(g_fGameTimer);
-		pData->vColor[1] = sinf(g_fGameTimer);
-		pData->vColor[2] = 1.0f - cosf(g_fGameTimer);
+		pData->vColor[0] = m_cbData.vColor[0];
+		pData->vColor[1] = m_cbData.vColor[1];
+		pData->vColor[2] = m_cbData.vColor[2];
 		pData->vColor[3] = 1;
 		pData->vTime[0] = cosf(g_fGameTimer)*0.5f + 0.5f;
 		pData->vTime[1] = g_fGameTimer;

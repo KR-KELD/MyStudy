@@ -476,11 +476,23 @@ myGameObject * myGameObject::Add(myGameObject * pGameObj)
 myGameObject * myGameObject::GetGameObject(wstring strName)
 {
 	m_ObjIter = m_Childs.find(strName);
-	if (m_ObjIter == m_Childs.end())
+	myGameObject * pObj = nullptr;
+	if (m_ObjIter != m_Childs.end())
 	{
-		return nullptr;
+		return (*m_ObjIter).second;
 	}
-	return (*m_ObjIter).second;
+
+	for (m_ObjIter = m_Childs.begin();
+		m_ObjIter != m_Childs.end();
+		m_ObjIter++)
+	{
+		pObj = GetGameObject(strName);
+		if (pObj != nullptr)
+		{
+			return pObj;
+		}
+	}
+	return nullptr;
 }
 
 list<myGameObject*>* myGameObject::GetGameObjects(wstring strName)

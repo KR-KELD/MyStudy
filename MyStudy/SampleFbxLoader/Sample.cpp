@@ -93,6 +93,9 @@ bool Sample::Render()
 		p->m_pTransform->SetMatrix(&p->m_pTransform->m_matWorld,
 			&g_pMainCamTransform->m_matView,
 			&g_pMainCamTransform->m_matProj);
+		p->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
+		p->m_cbData.vColor[1] = g_pMainCamTransform->m_vLook.y;
+		p->m_cbData.vColor[2] = g_pMainCamTransform->m_vLook.z;
 		p->Render();
 	}
 	

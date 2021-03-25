@@ -29,11 +29,11 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
 	float4 vFinalColor;
 	vFinalColor = vTexture * vIn.c;
-	float3 Light = float3(-1.0f,-1.0f,-1.0f);
-	Light = normalize(Light);
+	float3 Light = normalize(vColor.xyz);
 	float c = dot(-Light,vIn.n);
 	float4 vLightColor = float4(c,c,c,1);
-	vOut.c = vFinalColor * vLightColor;
+	float4 vAmbientLight = float4(0.3f, 0.3f, 0.3f,1.0f);
+	vOut.c = vFinalColor * (vAmbientLight + vLightColor);
 	return vOut;
 }
 PS_OUTPUT PSLine( VS_OUTPUT vIn)

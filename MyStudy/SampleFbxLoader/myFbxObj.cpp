@@ -57,6 +57,7 @@ bool myFbxObj::LoadFBX(string strFileName)
 	//루트노드를 설정하고 루트를 기준으로 순회하면서 파싱한다
 	FbxNode* pFbxRootNode = m_pFbxScene->GetRootNode();
 	ParseNode(pFbxRootNode, Matrix::Identity);
+	ParseAnimation(m_pFbxScene);
 	return true;
 }
 
