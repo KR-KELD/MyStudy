@@ -4,7 +4,7 @@ GAMERUN;
 bool Sample::Init()
 {
 	g_FbxLoader.Init();
-	m_pFbxObj = g_FbxLoader.Load("ship.fbx");
+	m_pFbxObj = g_FbxLoader.Load("../../data/object/rockBlobFive.fbx");
 
 	//fbx오브젝트를 기반으로 gameobject 데이터를 채워준다
 	for (auto data : m_pFbxObj->m_MeshList)
@@ -32,7 +32,11 @@ bool Sample::Init()
 					pGraphics->m_TriangleList[iFace].vVertex[2];
 			}
 
-			T_STR loadTexName = pGraphics->m_MaterialList[0];
+			T_STR loadTexName;
+			if (pGraphics->m_MaterialList.size())
+			{
+				loadTexName = pGraphics->m_MaterialList[0];
+			}
 			if (!pGraphics->Create(L"../../data/shader/vs.txt", L"../../data/shader/ps.txt", loadTexName))
 			{
 				return false;

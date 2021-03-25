@@ -291,12 +291,17 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 				v.p.x = finalPos.mData[0]; // x
 				v.p.y = finalPos.mData[2]; // z
 				v.p.z = finalPos.mData[1]; // y
+
+				FbxColor color = FbxColor(1, 1, 1, 1);
 				//컬러 정보를 변환해서 pnct버텍스에 넣어준다
-				FbxColor color = ReadColor(pFbxMesh,
-					LayerVertexColors.size(),
-					LayerVertexColors[0],
-					iCornerIndices[iIndex],
-					iBasePolyIndex + iVertIndex[iIndex]);
+				if (LayerVertexColors.size())
+				{
+					color = ReadColor(pFbxMesh,
+						LayerVertexColors.size(),
+						LayerVertexColors[0],
+						iCornerIndices[iIndex],
+						iBasePolyIndex + iVertIndex[iIndex]);
+				}
 				v.c.x = (float)color.mRed;
 				v.c.y = (float)color.mGreen;
 				v.c.z = (float)color.mBlue;

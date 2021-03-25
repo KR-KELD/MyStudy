@@ -737,7 +737,14 @@ bool myGraphics::MultiDraw()
 
 bool myGraphics::Draw()
 {
-	g_pImmediateContext->DrawIndexed(m_IndexList.size(), 0, 0);
+	if (m_IndexList.size())
+	{
+		g_pImmediateContext->DrawIndexed(m_IndexList.size(), 0, 0);
+	}
+	else
+	{
+		g_pImmediateContext->Draw(m_VertexList.size(), 0);
+	}
 	return true;
 }
 

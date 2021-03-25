@@ -32,7 +32,12 @@ bool myTexture::Load(T_STR strTex)
 		g_pd3dDevice, strTex.c_str(),
 		NULL,
 		m_pTextureSRV.GetAddressOf());
-	if (FAILED(hr)) return false;
+
+	if (FAILED(hr))
+	{
+		hr = CreateDDSTextureFromFile(g_pd3dDevice, strTex.c_str(), NULL, m_pTextureSRV.GetAddressOf());
+		if (FAILED(hr)) return false;
+	}
 	return true;
 }
 
