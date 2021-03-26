@@ -64,6 +64,7 @@ struct mySubMesh
 {
 	vector<myTriangle>		m_TriangleList;
 	vector<PNCT_VERTEX>		m_VertexList;
+	vector<DWORD>			m_IndexList;
 	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
 	myTexture*				m_pTexture;
 	int						m_iPolyCount;
@@ -113,6 +114,11 @@ ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT i
 //ID3D11ShaderResourceView*	CreateShaderResourceView(ID3D11Device* pDevice, ID3D11DeviceContext*    pContext, const TCHAR* strFilePath);
 //ID3D11DepthStencilView* CreateDepthStencilView(ID3D11Device* pDevice, DWORD dwWidth, DWORD dwHeight);
 
+bool	AscendingTri(myTriangle& a, myTriangle& b)
+{
+	return a.iSubIndex > b.iSubIndex;
+}
+bool	CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList, vector<myTriangle>& triList);
 #pragma endregion
 
 class myGraphics : public myComponent

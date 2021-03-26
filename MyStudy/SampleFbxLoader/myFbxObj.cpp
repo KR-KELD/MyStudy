@@ -86,8 +86,8 @@ bool myFbxObj::Init(string strFileName)
 	FbxAxisSystem::MayaZUp.ConvertScene(m_pFbxScene);
 	FbxAxisSystem SceneAxisSystem = m_pFbxScene->GetGlobalSettings().GetAxisSystem();
 	//»ï°¢Çü º¯È¯
-	FbxGeometryConverter GeomConverter(m_pFbxManager);
-	GeomConverter.Triangulate(m_pFbxScene, true);
+	//FbxGeometryConverter GeomConverter(m_pFbxManager);
+	//GeomConverter.Triangulate(m_pFbxScene, true);
 	return true;
 }
 

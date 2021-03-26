@@ -478,6 +478,7 @@ ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT i
 	}
 	return pBuffer;
 }
+
 //ID3D11Buffer* CreateConstantBuffer(ID3D11Device*  pd3dDevice, void *data, UINT iNumIndex,
 //	UINT iSize, bool bDynamic)
 //{
@@ -606,6 +607,18 @@ ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT i
 //	}
 //	return pDSV;
 //}
+
+bool CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList, vector<myTriangle>& triList)
+{
+	int iTriNum = triList.size();
+	vertexList.clear();
+	indexList.clear();
+	vertexList.reserve(iTriNum * 3);
+	indexList.reserve(iTriNum * 3);
+
+	return true;
+}
+
 #pragma endregion
 
 void myGraphics::CompilerCheck(ID3DBlob* pErrorMsgs)
