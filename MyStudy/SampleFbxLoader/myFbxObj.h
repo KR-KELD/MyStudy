@@ -4,6 +4,7 @@
 #include "myStd.h"
 #include <fbxsdk.h>
 #include "myGraphics.h"
+#include "myAnimation.h"
 
 // Y축 Z축 스왑
 static Matrix DxConvertMatrix(Matrix m)
@@ -31,6 +32,25 @@ static Matrix ConvertMatrixA(const FbxMatrix& matrix)
 	return matResult;
 }
 
+struct myTrack
+{
+	int iTick;
+	Matrix matWorld;
+};
+
+struct myScene
+{
+	int iFirstFrame;
+	int iLastFrame;
+	int iFrameSpeed; // 30
+	int iTickPerFrame;// 160
+	int iNumMesh;
+	int iDeltaTick; // 1frame
+	float fDeltaTime;
+	float fFirstTime;
+	float fLastTime;
+};
+
 //struct AnimationScanNode
 //{
 //	INT iParentIndex;
@@ -39,6 +59,28 @@ static Matrix ConvertMatrixA(const FbxMatrix& matrix)
 //	DWORD dwFlags;
 //	XMFLOAT4X4 matGlobal;
 //};
+
+class SkinData
+{
+public:
+	static int				iNumMaxWeight;
+	std::vector<FbxNode*>	InfluenceNodes;
+	std::unordered_map<T_STR, Matrix> m_matBindPoseMap;
+
+	size_t					dwVertexCount;
+	DWORD					dwVertexStride;
+	std::unique_ptr<int[]>	pBoneIndices;
+	std::unique_ptr<float[]> pBoneWeights;
+public:
+	void	Alloc(size_t dwCount, DWORD dwStride);
+	int*	GetIndices(size_t dwIndex);
+	float*	GetWeights(size_t dwIndex);
+	DWORD	GetBoneCount() const;
+	void	InsertWeight(size_t dwIndex, DWORD dwBoneIndex, float fBoneWeight);
+public:
+	SkinData() : dwVertexCount(0), dwVertexStride(0) {}
+	~SkinData() {}
+};
 
 class myFbxObj
 {
@@ -50,6 +92,9 @@ public:
 	unordered_map<string, Matrix>::iterator	m_dxMatIter;
 	unordered_map<FbxNode*, myGameObject*> m_MeshList;
 	unordered_map<FbxNode*, myGameObject*>::iterator m_MeshIter;
+
+	vector<myTrack>		m_TrackList;
+	myScene				m_Scene;
 public:
 	bool		Load(string strFileName);
 	bool		LoadFBX(string strFileName);

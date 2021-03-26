@@ -8,3 +8,4 @@ myAnimation::myAnimation()
 myAnimation::~myAnimation()
 {
 }
+
