@@ -196,6 +196,26 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 		pGraphics->m_SubMeshList.resize(iNumMtrl);
 	}
 
+	// 정점 당 영향을 미치는 행렬 및 가중치 검색
+	SkinData skindata;
+	bool bSkinnedMesh = ParseMeshSkinning(pFbxMesh, &skindata);
+	if (bSkinnedMesh)
+	{
+		DWORD dwBoneCount = skindata.GetBoneCount();
+		for (DWORD i = 0; i < dwBoneCount; ++i)
+		{
+			T_STR name = to_mw(skindata.InfluenceNodes[i]->GetName());
+			//pMesh->AddInfluence(name, skindata.m_matBindPoseMap[name]);
+		}
+	}
+	else
+	{
+		//TMatrix mat;
+		//D3DXMatrixIdentity(&mat);
+		//pMesh->AddInfluence(pMesh->m_szName, mat);
+	}
+
+
 	//지오메트리 매트릭스(해당 메쉬의 좌표를 로컬에서 본좌표(뼈대의 월드상 위치))
 	//로 변환해주는 매트릭스
 	FbxAMatrix geom;
@@ -211,7 +231,10 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 	matNormal = matNormal.Transpose();
 
 	
-	//pGraphics->m_pTransform->m_matWorld = DxConvertMatrix(ConvertMatrixA(geom));
+	pGraphics->m_pTransform->m_matWorld = 
+		DxConvertMatrix(
+		ConvertMatrixA(
+			pFbxNode->EvaluateGlobalTransform(1.0f)));
 
 	//기본 단위 도형의 정점 갯수
 	int iPolyCount = pFbxMesh->GetPolygonCount();
@@ -250,7 +273,6 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 						case FbxLayerElement::eIndexToDirect:
 						{
 							iSubMtrl = LayerMaterials[0]->GetIndexArray().GetAt(iPoly);
-							pGraphics->m_SubMeshList[iSubMtrl].m_iPolyCount++;
 						}break;
 					}
 				}
@@ -330,6 +352,27 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 						v.t.x = uv.mData[0];
 						v.t.y = 1.0f - uv.mData[1];
 					}
+				}
+				//영향을 미치는 정점과 가중치 등록
+				int i[4];
+				float w[4];
+				if (bSkinnedMesh)
+				{
+					int* pPoint = skindata.GetIndices(iCornerIndices[iIndex]);
+					i[0] = pPoint[0];
+					i[1] = pPoint[1];
+					i[2] = pPoint[2];
+					i[3] = pPoint[3];
+					float* fPoint = skindata.GetWeights(iCornerIndices[iIndex]);
+					w[0] = fPoint[0];
+					w[1] = fPoint[1];
+					w[2] = fPoint[2];
+					w[3] = fPoint[3];
+				}
+				else
+				{
+					i[0] = 0; // 자기 자신
+					w[0] = 1.0f;
 				}
 				//삼각형 구조체에 pnct 버텍스를 등록해준다
 				tri.vVertex[iIndex] = v;
@@ -439,17 +482,6 @@ string myFbxObj::ParseMaterial(FbxSurfaceMaterial * pMtrl)
 		}
 	}
 	return std::string("");
-}
-
-void myFbxObj::ParseAnimation(FbxScene * pFbxScene)
-{
-	FbxArray<FbxString*>  AnimStackNameArray;
-	pFbxScene->FillAnimStackNameArray(AnimStackNameArray);
-	int iAnimStackCount = AnimStackNameArray.GetCount();
-	for (int i = 0; i < iAnimStackCount; i++)
-	{
-		ParseAnimStack(pFbxScene, AnimStackNameArray.GetAt(i));
-	}
 }
 
 FbxVector4 myFbxObj::ReadNormal(const FbxMesh* mesh,

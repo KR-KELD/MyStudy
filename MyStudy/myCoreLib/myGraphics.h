@@ -4,6 +4,26 @@
 #include "myBaseObject.h"
 //나중에는 얘는 하나만있고 재사용할예정
 
+//임시 나중에 옮기기
+struct myAnimTrack
+{
+	int iTick;
+	Matrix matWorld;
+};
+
+struct myScene
+{
+	int iFirstFrame;
+	int iLastFrame;
+	int iFrameSpeed; // 30
+	int iTickPerFrame;// 160
+	int iNumMesh;
+	int iDeltaTick; // 1frame
+	float fDeltaTime;
+	float fFirstTime;
+	float fLastTime;
+};
+
 #pragma region structArea
 
 struct P_VERTEX
@@ -133,6 +153,8 @@ public:
 	UINT						m_iTopology;
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
+public:
+	vector<myAnimTrack>			m_AnimTrackList;
 public:
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;

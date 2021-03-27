@@ -4,6 +4,26 @@
 #include "myBaseObject.h"
 //나중에는 얘는 하나만있고 재사용할예정
 
+//임시 나중에 옮기기
+struct myAnimTrack
+{
+	int iTick;
+	Matrix matWorld;
+};
+
+struct myScene
+{
+	int iFirstFrame;
+	int iLastFrame;
+	int iFrameSpeed; // 30
+	int iTickPerFrame;// 160
+	int iNumMesh;
+	int iDeltaTick; // 1frame
+	float fDeltaTime;
+	float fFirstTime;
+	float fLastTime;
+};
+
 #pragma region structArea
 
 struct P_VERTEX
@@ -64,6 +84,7 @@ struct mySubMesh
 {
 	vector<myTriangle>		m_TriangleList;
 	vector<PNCT_VERTEX>		m_VertexList;
+	vector<DWORD>			m_IndexList;
 	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
 	myTexture*				m_pTexture;
 	int						m_iPolyCount;
@@ -113,6 +134,11 @@ ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT i
 //ID3D11ShaderResourceView*	CreateShaderResourceView(ID3D11Device* pDevice, ID3D11DeviceContext*    pContext, const TCHAR* strFilePath);
 //ID3D11DepthStencilView* CreateDepthStencilView(ID3D11Device* pDevice, DWORD dwWidth, DWORD dwHeight);
 
+bool	AscendingTri(myTriangle& a, myTriangle& b)
+{
+	return a.iSubIndex > b.iSubIndex;
+}
+bool	CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList, vector<myTriangle>& triList);
 #pragma endregion
 
 class myGraphics : public myComponent
@@ -127,6 +153,8 @@ public:
 	UINT						m_iTopology;
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
+public:
+	vector<myAnimTrack>			m_AnimTrackList;
 public:
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;

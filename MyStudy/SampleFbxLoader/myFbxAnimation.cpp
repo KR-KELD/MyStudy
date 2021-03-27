@@ -1,24 +1,71 @@
 #include "myFbxObj.h"
 
+bool myFbxObj::ParseMeshSkinning(const FbxMesh* pFbxMesh, SkinData* skindata)
+{
+	//영향을 주는 객체가 있는가
+	int iDeformerCount = pFbxMesh->GetDeformerCount(FbxDeformer::eSkin);
+	if (iDeformerCount == 0)
+	{
+		return false;
+	}
+	//메쉬 제어점의 총 갯수를 가져온다
+	int iVertexCount = pFbxMesh->GetControlPointsCount();
+	//제어점마다 영향받는 노드를 8개까지만 지정해서 할당한다
+	skindata->Alloc(iVertexCount, 8);
+
+	for (int dwDeformerIndex = 0; dwDeformerIndex < iDeformerCount; dwDeformerIndex++)
+	{
+		//스킨정보를 불러온다
+		auto pSkin = reinterpret_cast<FbxSkin*>(pFbxMesh->GetDeformer(dwDeformerIndex, FbxDeformer::eSkin));
+		//정점들에 영향을 주는 노드의 갯수를 가져온다
+		DWORD dwClusterCount = pSkin->GetClusterCount();
+		for (int dwClusterIndex = 0; dwClusterIndex < dwClusterCount; dwClusterIndex++)
+		{
+			//크러스터 정보를 가져온다
+			auto pCluster = pSkin->GetCluster(dwClusterIndex);
+			//크러스터에 영향을 받는 정점의 갯수를 가져온다
+			int  dwClusterSize = pCluster->GetControlPointIndicesCount();
+			//노드의 정보를 가져온다
+			auto pLink = pCluster->GetLink();
+			//임의로 본 인덱스를 설정해서 노드 정보를 연결한다
+			int  iBoneIndex = skindata->GetBoneCount();
+			skindata->InfluenceNodes.push_back(pLink);
+			//영향을 받는 정점들의 인덱스와 가중치
+			int* pIndices = pCluster->GetControlPointIndices();
+			double* pWeights = pCluster->GetControlPointWeights();
+			for (int i = 0; i < dwClusterSize; i++)
+			{
+				//pIndices[i] 번 정점이
+				//iBoneIndex 번 행렬에 영향을 받아
+				//pWeights[i] 가중치로 
+				skindata->InsertWeight(pIndices[i],
+					iBoneIndex,
+					pWeights[i]);
+			}
+		}
+	}
+	return true;
+}
+
 void myFbxObj::ParseAnimStack(FbxScene * pFbxScene, FbxString * strAnimStackName)
 {
+	//애니메이션 스택 정보를 가져온다
 	FbxAnimStack* anim = pFbxScene->FindMember<FbxAnimStack>(strAnimStackName->Buffer());
 	if (anim == nullptr) return;
+	//애니메이션의 정보를 가져온다
 	FbxTakeInfo* info = pFbxScene->GetTakeInfo(*strAnimStackName);
 
 	FbxTime FrameTime;
+	//1프레임에 걸리는 시간을 가져온다?
 	FrameTime.SetTime(0, 0, 0, 1, 0, pFbxScene->GetGlobalSettings().GetTimeMode());
+	//
 	float fFrameTime = FrameTime.GetSecondDouble();
-	float fSampleTime = fFrameTime * 1.0f;
-	float fSoureSamplingInterval = fSampleTime;
-	// tick = 1Sec* FrameSpeed * FramePerTick
-	// 4800 = 1Sec*30* 160;
-	// 0.033 = 1Sec / 30;
 	float fStartTime, fEndTime;
-
+	//인포의 유무에따라 불러오는 방식차이로 추정
 	if (info)
 	{
 		// scene
+		//애니메이션의 시작시간과 끝시간을 가져온다
 		fStartTime = info->mLocalTimeSpan.GetStart().GetSecondDouble();
 		fEndTime = info->mLocalTimeSpan.GetStop().GetSecondDouble();
 	}
@@ -30,13 +77,20 @@ void myFbxObj::ParseAnimStack(FbxScene * pFbxScene, FbxString * strAnimStackName
 		fStartTime = (float)tlTimeSpan.GetStart().GetSecondDouble();
 		fEndTime = (float)tlTimeSpan.GetStop().GetSecondDouble();
 	}
-
-
-	float SCENE_FRAMESPEED = 30;
-	float SCENE_TICKSPERFRAME = 160;
-	int iFirstFrame = fStartTime * 30.0f;
-	int iLastFrame = fEndTime * 30.0f;
-
+	//시작 프레임 30을 곱해지는 이유 질문
+	m_Scene.iFirstFrame = fStartTime * 30.0f;
+	//끝 프레임
+	m_Scene.iLastFrame = fEndTime * 30.0f;
+	//초당 30프레임
+	m_Scene.iFrameSpeed = 30;
+	//프레임당 160틱
+	m_Scene.iTickPerFrame = 160;
+	m_Scene.iDeltaTick = 1;
+	m_Scene.fDeltaTime = fFrameTime * 1.0f;
+	//시작 시간
+	m_Scene.fFirstTime = fStartTime;
+	//끝 시간
+	m_Scene.fLastTime = fEndTime;
 	ParseNodeAnimation(pFbxScene->GetRootNode());
 }
 
@@ -47,14 +101,27 @@ void myFbxObj::ParseNodeAnimation(FbxNode * pNode)
 	{
 		return;
 	}
-	FbxAnimEvaluator* anim = m_pFbxScene->GetAnimationEvaluator();
+#if (FBXSDK_VERSION_MAJOR > 2014 || ((FBXSDK_VERSION_MAJOR==2014) && (FBXSDK_VERSION_MINOR>1) ) )
+	auto anim = m_pFbxScene->GetAnimationEvaluator();
+#else
+	auto anim = m_pFBXScene->GetEvaluator();
+#endif
 	float fCurrentTime = 0.0f;
-	float fEndTime = 1.666f;
-	float fDeltaTime = 0.0333f;
-	while (fCurrentTime <= fEndTime)
+	while (fCurrentTime <= m_Scene.fLastTime)
 	{
-		FbxAMatrix mat = anim->GetNodeGlobalTransform(pNode, fCurrentTime);
-		fCurrentTime += fDeltaTime;
+		FbxTime t;
+		//현재 시간을 받아온다
+		t.SetSecondDouble(fCurrentTime);
+		FbxAMatrix mat = anim->GetNodeGlobalTransform(pNode, t);
+		myAnimTrack track;
+		//그 시간대의 트랙정보를 계산해서
+		track.iTick = fCurrentTime * 30 * 160;
+		track.matWorld = DxConvertMatrix(ConvertMatrixA(mat));
+		//오브젝트에 넣어준다
+		auto data = m_MeshList.find(pNode);
+		myGraphics* pGraphics = data->second->GetComponent<myGraphics>();
+		pGraphics->m_AnimTrackList.push_back(track);
+		fCurrentTime += m_Scene.fDeltaTime;
 		// mat 1차 부모행렬 역행렬 곱한다.
 		FbxAMatrix self;
 		// self 2차 행렬 분해( S, R, T )
@@ -67,5 +134,16 @@ void myFbxObj::ParseNodeAnimation(FbxNode * pNode)
 	{
 		FbxNode* pChildNode = pNode->GetChild(dwObj);
 		ParseNodeAnimation(pChildNode);
+	}
+}
+
+void myFbxObj::ParseAnimation(FbxScene * pFbxScene)
+{
+	FbxArray<FbxString*>  AnimStackNameArray;
+	pFbxScene->FillAnimStackNameArray(AnimStackNameArray);
+	int iAnimStackCount = AnimStackNameArray.GetCount();
+	for (int i = 0; i < iAnimStackCount; i++)
+	{
+		ParseAnimStack(pFbxScene, AnimStackNameArray.GetAt(i));
 	}
 }

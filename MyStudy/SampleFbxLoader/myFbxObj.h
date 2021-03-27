@@ -32,25 +32,6 @@ static Matrix ConvertMatrixA(const FbxMatrix& matrix)
 	return matResult;
 }
 
-struct myTrack
-{
-	int iTick;
-	Matrix matWorld;
-};
-
-struct myScene
-{
-	int iFirstFrame;
-	int iLastFrame;
-	int iFrameSpeed; // 30
-	int iTickPerFrame;// 160
-	int iNumMesh;
-	int iDeltaTick; // 1frame
-	float fDeltaTime;
-	float fFirstTime;
-	float fLastTime;
-};
-
 //struct AnimationScanNode
 //{
 //	INT iParentIndex;
@@ -93,7 +74,6 @@ public:
 	unordered_map<FbxNode*, myGameObject*> m_MeshList;
 	unordered_map<FbxNode*, myGameObject*>::iterator m_MeshIter;
 
-	vector<myTrack>		m_TrackList;
 	myScene				m_Scene;
 public:
 	bool		Load(string strFileName);
@@ -114,6 +94,8 @@ public:
 	void		ParseAnimation(FbxScene* pFbxScene);
 	void		ParseAnimStack(FbxScene* pFbxScene, FbxString* strAnimStackName);
 	void		ParseNodeAnimation(FbxNode* pNode);
+
+	bool ParseMeshSkinning(const FbxMesh* pFbxMesh, SkinData* skindata);
 public:
 	myFbxObj(FbxManager* pFbxManager);
 	virtual ~myFbxObj();
