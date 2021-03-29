@@ -3,8 +3,6 @@
 #include "myGameObject.h"
 
 
-
-
 class myAnimation : public myComponent
 {
 public:

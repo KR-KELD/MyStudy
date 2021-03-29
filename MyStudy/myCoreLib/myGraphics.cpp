@@ -607,6 +607,10 @@ ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT i
 //	}
 //	return pDSV;
 //}
+bool AscendingTriangle(myTriangle& a, myTriangle& b)
+{
+	return a.iSubIndex > b.iSubIndex;
+}
 
 bool CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList, vector<myTriangle>& triList)
 {

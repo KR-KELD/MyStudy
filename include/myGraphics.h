@@ -134,11 +134,9 @@ ID3D11Buffer* CreateIndexBuffer(ID3D11Device*  pd3dDevice, void *indices, UINT i
 //ID3D11ShaderResourceView*	CreateShaderResourceView(ID3D11Device* pDevice, ID3D11DeviceContext*    pContext, const TCHAR* strFilePath);
 //ID3D11DepthStencilView* CreateDepthStencilView(ID3D11Device* pDevice, DWORD dwWidth, DWORD dwHeight);
 
-bool	AscendingTri(myTriangle& a, myTriangle& b)
-{
-	return a.iSubIndex > b.iSubIndex;
-}
-bool	CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList, vector<myTriangle>& triList);
+bool AscendingTriangle(myTriangle& a, myTriangle& b);
+
+bool CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList, vector<myTriangle>& triList);
 #pragma endregion
 
 class myGraphics : public myComponent
