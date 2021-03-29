@@ -154,6 +154,7 @@
     <ClCompile Include="myFbxLoader.cpp" />
     <ClCompile Include="myFbxObj.cpp" />
     <ClCompile Include="myHeightMap.cpp" />
+    <ClCompile Include="myModelObject.cpp" />
     <ClCompile Include="myMouse.cpp" />
     <ClCompile Include="myNode.cpp" />
     <ClCompile Include="myQuadTree.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="myFbxLoader.h" />
     <ClInclude Include="myFbxObj.h" />
     <ClInclude Include="myHeightMap.h" />
+    <ClInclude Include="myModelObject.h" />
     <ClInclude Include="myMouse.h" />
     <ClInclude Include="myNode.h" />
     <ClInclude Include="myQuadTree.h" />
