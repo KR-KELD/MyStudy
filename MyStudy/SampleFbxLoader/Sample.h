@@ -6,11 +6,11 @@
 #include "myQuadTree.h"
 #include "myFbxLoader.h"
 #include "myMouse.h"
+#include "myModelGraphics.h"
 class Sample : public myCore
 {
 public:
 	myFbxObj* m_pFbxObj;
-	vector<myGraphics*> m_graphicObj;
 public:
 	bool Init() override;
 	bool Frame() override;

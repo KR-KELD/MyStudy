@@ -5,26 +5,27 @@
 //나중에는 얘는 하나만있고 재사용할예정
 
 //임시 나중에 옮기기
-struct myAnimTrack
-{
-	int iTick;
-	Matrix matWorld;
-};
-
-struct myScene
-{
-	int iFirstFrame;
-	int iLastFrame;
-	int iFrameSpeed; // 30
-	int iTickPerFrame;// 160
-	int iNumMesh;
-	int iDeltaTick; // 1frame
-	float fDeltaTime;
-	float fFirstTime;
-	float fLastTime;
-};
 
 #pragma region structArea
+
+//struct myAnimTrack
+//{
+//	int iTick;
+//	Matrix matWorld;
+//};
+//
+//struct myAnimScene
+//{
+//	int iFirstFrame;
+//	int iLastFrame;
+//	int iFrameSpeed; // 30
+//	int iTickPerFrame;// 160
+//	int iNumMesh;
+//	int iDeltaTick; // 1frame
+//	float fDeltaTime;
+//	float fFirstTime;
+//	float fLastTime;
+//};
 
 struct P_VERTEX
 {
@@ -71,9 +72,55 @@ struct PNCT_VERTEX
 	}
 };
 
+struct IW_VERTEX
+{
+	float i1[4];
+	float w1[4];
+	float i2[4];
+	float w2[4];
+	IW_VERTEX()
+	{
+		i1[0] = i1[1] = i1[2] = i1[3] = 0.0f;
+		w1[0] = w1[1] = w1[2] = w1[3] = 0.0f;
+		i2[0] = i2[1] = i2[2] = i2[3] = 0.0f;
+		w2[0] = w2[1] = w2[2] = w2[3] = 0.0f;
+	}
+};
+
+struct PNCTIW_VERTEX
+{
+	Vector3 p;
+	Vector3 n;
+	Vector4 c;
+	Vector2 t;
+	Vector4 i;
+	Vector4	w;
+	bool operator == (const PNCTIW_VERTEX & Vertex)
+	{
+		if (p == Vertex.p  && n == Vertex.n && 	c == Vertex.c  &&	t == Vertex.t
+			&& i == Vertex.i && w == Vertex.w)
+		{
+			return true;
+		}
+		return  false;
+	}
+	PNCTIW_VERTEX() {}
+	PNCTIW_VERTEX(
+		Vector3 vp,
+		Vector3 vn,
+		Vector4 vc,
+		Vector2 vt,
+		Vector4 vi,
+		Vector4 vw)
+	{
+		p = vp, n = vn, c = vc, t = vt, i = vi, w = vw;
+	}
+};
+
 struct myTriangle
 {
 	PNCT_VERTEX vVertex[3];
+	IW_VERTEX vVertexIW[3];
 	Vector3		vNormal;
 	int			iSubIndex;
 	myTriangle(int iIndex) : iSubIndex(iIndex) {}
@@ -84,6 +131,7 @@ struct mySubMesh
 {
 	vector<myTriangle>		m_TriangleList;
 	vector<PNCT_VERTEX>		m_VertexList;
+	vector<PNCTIW_VERTEX>	m_VertexListIW;
 	vector<DWORD>			m_IndexList;
 	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
 	myTexture*				m_pTexture;
@@ -152,10 +200,12 @@ public:
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
 public:
-	vector<myAnimTrack>			m_AnimTrackList;
+	//vector<myAnimTrack>			m_AnimTrackList;
+	//int							m_iTick = 0;
 public:
 	myDataCB					m_cbData;
 	std::vector<PNCT_VERTEX>	m_VertexList;
+	//std::vector<PNCTIW_VERTEX>	m_VertexListIW;
 	std::vector<DWORD>			m_IndexList;
 	std::vector<myTriangle>		m_TriangleList;
 	std::vector<wstring>		m_MaterialList;

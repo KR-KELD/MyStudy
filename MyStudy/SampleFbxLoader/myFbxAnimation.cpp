@@ -1,6 +1,6 @@
 #include "myFbxObj.h"
 
-bool myFbxObj::ParseMeshSkinning(const FbxMesh* pFbxMesh, SkinData* skindata)
+bool myFbxObj::ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& skindata)
 {
 	//영향을 주는 객체가 있는가
 	int iDeformerCount = pFbxMesh->GetDeformerCount(FbxDeformer::eSkin);
@@ -11,7 +11,7 @@ bool myFbxObj::ParseMeshSkinning(const FbxMesh* pFbxMesh, SkinData* skindata)
 	//메쉬 제어점의 총 갯수를 가져온다
 	int iVertexCount = pFbxMesh->GetControlPointsCount();
 	//제어점마다 영향받는 노드를 8개까지만 지정해서 할당한다
-	skindata->Alloc(iVertexCount, 8);
+	skindata.resize(iVertexCount);
 
 	for (int dwDeformerIndex = 0; dwDeformerIndex < iDeformerCount; dwDeformerIndex++)
 	{
@@ -26,10 +26,9 @@ bool myFbxObj::ParseMeshSkinning(const FbxMesh* pFbxMesh, SkinData* skindata)
 			//크러스터에 영향을 받는 정점의 갯수를 가져온다
 			int  dwClusterSize = pCluster->GetControlPointIndicesCount();
 			//노드의 정보를 가져온다
-			auto pLink = pCluster->GetLink();
+			auto data = m_pNodeMap.find(pCluster->GetLink());
 			//임의로 본 인덱스를 설정해서 노드 정보를 연결한다
-			int  iBoneIndex = skindata->GetBoneCount();
-			skindata->InfluenceNodes.push_back(pLink);
+			int  iBoneIndex = data->second;
 			//영향을 받는 정점들의 인덱스와 가중치
 			int* pIndices = pCluster->GetControlPointIndices();
 			double* pWeights = pCluster->GetControlPointWeights();
@@ -38,9 +37,7 @@ bool myFbxObj::ParseMeshSkinning(const FbxMesh* pFbxMesh, SkinData* skindata)
 				//pIndices[i] 번 정점이
 				//iBoneIndex 번 행렬에 영향을 받아
 				//pWeights[i] 가중치로 
-				skindata->InsertWeight(pIndices[i],
-					iBoneIndex,
-					pWeights[i]);
+				skindata[pIndices[i]].InsertWeight(iBoneIndex, pWeights[i]);
 			}
 		}
 	}
@@ -77,20 +74,20 @@ void myFbxObj::ParseAnimStack(FbxScene * pFbxScene, FbxString * strAnimStackName
 		fStartTime = (float)tlTimeSpan.GetStart().GetSecondDouble();
 		fEndTime = (float)tlTimeSpan.GetStop().GetSecondDouble();
 	}
-	//시작 프레임 30을 곱해지는 이유 질문
-	m_Scene.iFirstFrame = fStartTime * 30.0f;
+	//시작 프레임
+	m_Animation.m_AnimScene.iFirstFrame = fStartTime * 30.0f;   //0.1초  0.1 x 30 프레임
 	//끝 프레임
-	m_Scene.iLastFrame = fEndTime * 30.0f;
+	m_Animation.m_AnimScene.iLastFrame = fEndTime * 30.0f;		//1초 1 x 30 프레임
 	//초당 30프레임
-	m_Scene.iFrameSpeed = 30;
+	m_Animation.m_AnimScene.iFrameSpeed = 30;
 	//프레임당 160틱
-	m_Scene.iTickPerFrame = 160;
-	m_Scene.iDeltaTick = 1;
-	m_Scene.fDeltaTime = fFrameTime * 1.0f;
+	m_Animation.m_AnimScene.iTickPerFrame = 160;
+	m_Animation.m_AnimScene.iDeltaTick = 1;
+	m_Animation.m_AnimScene.fDeltaTime = fFrameTime * 1.0f;
 	//시작 시간
-	m_Scene.fFirstTime = fStartTime;
+	m_Animation.m_AnimScene.fFirstTime = fStartTime;
 	//끝 시간
-	m_Scene.fLastTime = fEndTime;
+	m_Animation.m_AnimScene.fLastTime = fEndTime;
 	ParseNodeAnimation(pFbxScene->GetRootNode());
 }
 
@@ -107,7 +104,7 @@ void myFbxObj::ParseNodeAnimation(FbxNode * pNode)
 	auto anim = m_pFBXScene->GetEvaluator();
 #endif
 	float fCurrentTime = 0.0f;
-	while (fCurrentTime <= m_Scene.fLastTime)
+	while (fCurrentTime <= m_Animation.m_AnimScene.fLastTime)
 	{
 		FbxTime t;
 		//현재 시간을 받아온다
@@ -119,9 +116,9 @@ void myFbxObj::ParseNodeAnimation(FbxNode * pNode)
 		track.matWorld = DxConvertMatrix(ConvertMatrixA(mat));
 		//오브젝트에 넣어준다
 		auto data = m_MeshList.find(pNode);
-		myGraphics* pGraphics = data->second->GetComponent<myGraphics>();
+		myModelGraphics* pGraphics = data->second->GetComponent<myModelGraphics>();
 		pGraphics->m_AnimTrackList.push_back(track);
-		fCurrentTime += m_Scene.fDeltaTime;
+		fCurrentTime += m_Animation.m_AnimScene.fDeltaTime;
 		// mat 1차 부모행렬 역행렬 곱한다.
 		FbxAMatrix self;
 		// self 2차 행렬 분해( S, R, T )

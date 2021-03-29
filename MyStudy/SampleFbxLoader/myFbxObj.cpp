@@ -100,22 +100,24 @@ void myFbxObj::PreProcess(FbxNode * pFbxNode)
 	if (m_dxMatIter == m_dxMatList.end())
 	{
 		m_dxMatList[pFbxNode->GetName()] = mat;
+		m_pNodeMap[pFbxNode] = m_MatrixList.size();
+		m_MatrixList.push_back(mat);
 	}
 	//자식 노드를 돌면서 메쉬와 본 정보만 가지고온다
 	int iChild = pFbxNode->GetChildCount();
 	for (int i = 0; i < iChild; i++)
 	{
 		FbxNode* pChildNode = pFbxNode->GetChild(i);
-		if (pChildNode->GetNodeAttribute() != NULL)
-		{
-			FbxNodeAttribute::EType AttributeType = pChildNode->GetNodeAttribute()->GetAttributeType();
-			if (AttributeType != FbxNodeAttribute::eMesh &&
-				AttributeType != FbxNodeAttribute::eSkeleton&&
-				AttributeType != FbxNodeAttribute::eNull)
-			{
-				continue;
-			}
-		}
+		//if (pChildNode->GetNodeAttribute() != NULL)
+		//{
+		//	FbxNodeAttribute::EType AttributeType = pChildNode->GetNodeAttribute()->GetAttributeType();
+		//	if (AttributeType != FbxNodeAttribute::eMesh &&
+		//		AttributeType != FbxNodeAttribute::eSkeleton&&
+		//		AttributeType != FbxNodeAttribute::eNull)
+		//	{
+		//		continue;
+		//	}
+		//}
 		PreProcess(pChildNode);
 	}
 }
@@ -128,7 +130,7 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 		return;
 	}
 	//노드를 순회하면서 오브젝트화 시키고 리스트에 저장한다
-	myGameObject* pObj = myGameObject::CreateComponentObj(new myGraphics,
+	myGameObject* pObj = myGameObject::CreateComponentObj(new myModelGraphics,
 										to_mw(pFbxNode->GetName()).c_str());
 	m_MeshList[pFbxNode] = pObj;
 	//부모의 월드를 상속받는다
@@ -137,7 +139,7 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 
 	if (pFbxNode->GetMesh() != nullptr)
 	{
-		ParseMesh(pFbxNode, pFbxNode->GetMesh(), pObj->GetComponent<myGraphics>());
+		ParseMesh(pFbxNode, pFbxNode->GetMesh(), pObj->GetComponent<myModelGraphics>());
 	}
 	int dwChild = pFbxNode->GetChildCount();
 	for (int dwObj = 0; dwObj < dwChild; dwObj++)
@@ -147,7 +149,7 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 	}
 }
 
-void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pGraphics)
+void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics * pGraphics)
 {
 	//uv좌표
 	vector<FbxLayerElementUV*> LayerUVVertices;
@@ -196,26 +198,6 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 		pGraphics->m_SubMeshList.resize(iNumMtrl);
 	}
 
-	// 정점 당 영향을 미치는 행렬 및 가중치 검색
-	SkinData skindata;
-	bool bSkinnedMesh = ParseMeshSkinning(pFbxMesh, &skindata);
-	if (bSkinnedMesh)
-	{
-		DWORD dwBoneCount = skindata.GetBoneCount();
-		for (DWORD i = 0; i < dwBoneCount; ++i)
-		{
-			T_STR name = to_mw(skindata.InfluenceNodes[i]->GetName());
-			//pMesh->AddInfluence(name, skindata.m_matBindPoseMap[name]);
-		}
-	}
-	else
-	{
-		//TMatrix mat;
-		//D3DXMatrixIdentity(&mat);
-		//pMesh->AddInfluence(pMesh->m_szName, mat);
-	}
-
-
 	//지오메트리 매트릭스(해당 메쉬의 좌표를 로컬에서 본좌표(뼈대의 월드상 위치))
 	//로 변환해주는 매트릭스
 	FbxAMatrix geom;
@@ -243,8 +225,11 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 	//정점들의 정보
 	FbxVector4* pVertexPositions = pFbxMesh->GetControlPoints();
 	//폴리곤의 누적 인덱스
-	int iBasePolyIndex = 0;
 
+	bool bSkinnedMesh = ParseMeshSkinningMap(pFbxMesh, pGraphics->m_WeightList);
+	pGraphics->m_bSkinnedMesh = bSkinnedMesh;
+
+	int iBasePolyIndex = 0;
 	for (int iPoly = 0; iPoly < iPolyCount; iPoly++)
 	{
 		int iPolySize = pFbxMesh->GetPolygonSize(iPoly);
@@ -354,28 +339,36 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myGraphics * pG
 					}
 				}
 				//영향을 미치는 정점과 가중치 등록
-				int i[4];
-				float w[4];
-				if (bSkinnedMesh)
+				IW_VERTEX iw;
+				if (pGraphics->m_bSkinnedMesh)
 				{
-					int* pPoint = skindata.GetIndices(iCornerIndices[iIndex]);
-					i[0] = pPoint[0];
-					i[1] = pPoint[1];
-					i[2] = pPoint[2];
-					i[3] = pPoint[3];
-					float* fPoint = skindata.GetWeights(iCornerIndices[iIndex]);
-					w[0] = fPoint[0];
-					w[1] = fPoint[1];
-					w[2] = fPoint[2];
-					w[3] = fPoint[3];
+					myWeight* pW = &pGraphics->m_WeightList[iCornerIndices[iIndex]];
+					_ASSERT(pW != nullptr);
+
+					for (int i = 0; i < pW->nodeIndex.size(); i++)
+					{
+						if (i < 4)
+							iw.i1[i] = pW->nodeIndex[i];
+						else
+							iw.i2[i - 4] = pW->nodeIndex[i];
+
+					}
+					for (int i = 0; i < pW->nodeWeight.size(); i++)
+					{
+						if (i < 4)
+							iw.w1[i] = pW->nodeWeight[i];
+						else
+							iw.w2[i - 4] = pW->nodeWeight[i];
+					}
 				}
 				else
 				{
-					i[0] = 0; // 자기 자신
-					w[0] = 1.0f;
+					auto data = m_pNodeMap.find(pFbxNode);
+					iw.i1[0] = data->second; // 자기 자신
+					iw.w1[0] = 1.0f;
 				}
-				//삼각형 구조체에 pnct 버텍스를 등록해준다
 				tri.vVertex[iIndex] = v;
+				tri.vVertexIW[iIndex] = iw;
 			}
 			//서브메테리얼이 존재하면
 			//서브메쉬의 트라이앵글리스트에 삼각형을 등록하고
@@ -585,63 +578,4 @@ FbxColor myFbxObj::ReadColor(const FbxMesh* mesh,
 		}
 	}
 	return Value;
-}
-
-int SkinData::iNumMaxWeight = 0;
-void SkinData::Alloc(size_t dwCount, DWORD dwStride)
-{
-	dwVertexCount = dwCount;
-	dwVertexStride = dwStride;
-
-	size_t dwBufferSize = dwVertexCount * dwVertexStride;
-	pBoneIndices.reset(new int[dwBufferSize]);
-	ZeroMemory(pBoneIndices.get(), sizeof(float) * dwBufferSize);
-
-	pBoneWeights.reset(new float[dwBufferSize]);
-	ZeroMemory(pBoneWeights.get(), sizeof(float) * dwBufferSize);
-}
-
-
-int* SkinData::GetIndices(size_t dwIndex)
-{
-	assert(dwIndex < dwVertexCount);
-	return pBoneIndices.get() + (dwIndex * dwVertexStride);
-}
-float* SkinData::GetWeights(size_t dwIndex)
-{
-	assert(dwIndex < dwVertexCount);
-	return pBoneWeights.get() + (dwIndex * dwVertexStride);
-}
-
-DWORD SkinData::GetBoneCount() const
-{
-	return static_cast<DWORD>(InfluenceNodes.size());
-}
-
-void SkinData::InsertWeight(size_t dwIndex, DWORD dwBoneIndex, float fBoneWeight)
-{
-	assert(dwBoneIndex < 256);
-
-	auto pIndices = GetIndices(dwIndex);
-	auto pWeights = GetWeights(dwIndex);
-
-	for (DWORD i = 0; i < dwVertexStride; ++i)
-	{
-		if (fBoneWeight > pWeights[i])
-		{
-			for (DWORD j = (dwVertexStride - 1); j > i; --j)
-			{
-				pIndices[j] = pIndices[j - 1];
-				pWeights[j] = pWeights[j - 1];
-			}
-			pIndices[i] = static_cast<int>(dwBoneIndex);
-			pWeights[i] = fBoneWeight;
-			break;
-		}
-		// 최대 본 인덱스를 얻는다.
-		if (iNumMaxWeight < i)
-		{
-			iNumMaxWeight = i;
-		}
-	}
 }

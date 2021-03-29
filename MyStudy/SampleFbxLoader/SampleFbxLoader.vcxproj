@@ -150,7 +150,7 @@
   <ItemGroup>
     <ClCompile Include="myAnimation.cpp" />
     <ClCompile Include="myFbxAnimation.cpp" />
-    <ClCompile Include="myFbxGraphics.cpp" />
+    <ClCompile Include="myModelGraphics.cpp" />
     <ClCompile Include="myFbxLoader.cpp" />
     <ClCompile Include="myFbxObj.cpp" />
     <ClCompile Include="myHeightMap.cpp" />
@@ -161,7 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="myAnimation.h" />
-    <ClInclude Include="myFbxGraphics.h" />
+    <ClInclude Include="myModelGraphics.h" />
     <ClInclude Include="myFbxLoader.h" />
     <ClInclude Include="myFbxObj.h" />
     <ClInclude Include="myHeightMap.h" />

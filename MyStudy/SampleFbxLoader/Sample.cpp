@@ -4,12 +4,13 @@ GAMERUN;
 bool Sample::Init()
 {
 	g_FbxLoader.Init();
-	m_pFbxObj = g_FbxLoader.Load("../../data/object/rockBlobFive.fbx");
+	m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
 
 	//fbx오브젝트를 기반으로 gameobject 데이터를 채워준다
+
 	for (auto data : m_pFbxObj->m_MeshList)
 	{
-		myGraphics* pGraphics = data.second->GetComponent<myGraphics>();
+		myModelGraphics* pGraphics = data.second->GetComponent<myModelGraphics>();
 		//그래픽 정보가 없으면 넘어가고
 		if (pGraphics->m_TriangleList.size() <= 0 &&
 			pGraphics->m_SubMeshList.size() <= 0)
@@ -49,6 +50,7 @@ bool Sample::Init()
 			for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
 			{
 				mySubMesh* pSub = &pGraphics->m_SubMeshList[iSub];
+				if (pSub->m_TriangleList.size() <= 0) continue;
 				pSub->m_VertexList.resize(
 					pSub->m_TriangleList.size() * 3);
 				for (int iFace = 0; iFace < pSub->m_TriangleList.size(); iFace++)
@@ -79,6 +81,7 @@ bool Sample::Init()
 		}
 		m_graphicObj.push_back(pGraphics);
 	}
+
 	return true;
 }
 
@@ -94,6 +97,7 @@ bool Sample::Render()
 
 	for (auto p: m_graphicObj)
 	{
+		//p->m_iTick += g_fSecondPerFrame * p->m_p
 		p->m_pTransform->SetMatrix(&p->m_pTransform->m_matWorld,
 			&g_pMainCamTransform->m_matView,
 			&g_pMainCamTransform->m_matProj);
