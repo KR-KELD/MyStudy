@@ -14,6 +14,8 @@ public:
 	vector<Matrix>				m_nodeMatList;
 	vector<Matrix>				m_nodeMatBindPoseList;
 public:
+	virtual bool				Frame() override;
+public:
 	myModelObject();
 	virtual ~myModelObject();
 };

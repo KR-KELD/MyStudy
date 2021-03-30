@@ -58,6 +58,7 @@ public:
 
 	unordered_map<FbxNode*, int>				     m_pNodeIndexMap;
 public:
+	bool		ModelInit();
 	bool		Load(string strFileName);
 	bool		LoadFBX(string strFileName);
 	bool		Init(string strFileName);

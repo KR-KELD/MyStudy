@@ -41,6 +41,66 @@ myFbxObj::~myFbxObj()
 	//매니저에 넣을거면 매니저에서 딜리트
 }
 
+bool myFbxObj::ModelInit()
+{
+	for (auto data : m_pModelObject->m_myNodeList)
+	{
+		myModelGraphics* pGraphics = data->GetComponent<myModelGraphics>();
+		//서브메쉬마다 버텍스리스트,버퍼,텍스쳐를 각각 세팅해준다
+		for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
+		{
+			mySubMesh* pSub = &pGraphics->m_SubMeshList[iSub];
+			if (pSub->m_TriangleList.size() <= 0) continue;
+			pSub->m_VertexList.resize(pSub->m_TriangleList.size() * 3);
+			for (int iFace = 0; iFace < pSub->m_TriangleList.size(); iFace++)
+			{
+				int iIndex = iFace * 3;
+				pSub->m_VertexList[iIndex + 0] =
+					pSub->m_TriangleList[iFace].vVertex[0];
+				pSub->m_VertexList[iIndex + 1] =
+					pSub->m_TriangleList[iFace].vVertex[1];
+				pSub->m_VertexList[iIndex + 2] =
+					pSub->m_TriangleList[iFace].vVertex[2];
+			}
+
+			// vb
+			ID3D11Buffer* vb =
+				CreateVertexBuffer(g_pd3dDevice,
+					&pSub->m_VertexList.at(0),
+					pSub->m_VertexList.size(),
+					sizeof(PNCT_VERTEX));
+			pSub->m_pVertexBuffer.Attach(vb);
+
+			// vbiw
+			pSub->m_VertexListIW.resize(pSub->m_TriangleList.size() * 3);
+			for (int iFace = 0; iFace < pSub->m_TriangleList.size(); iFace++)
+			{
+				int iIndex = iFace * 3;
+				pSub->m_VertexListIW[iIndex + 0] =
+					pSub->m_TriangleList[iFace].vVertexIW[0];
+				pSub->m_VertexListIW[iIndex + 1] =
+					pSub->m_TriangleList[iFace].vVertexIW[1];
+				pSub->m_VertexListIW[iIndex + 2] =
+					pSub->m_TriangleList[iFace].vVertexIW[2];
+			}
+
+			ID3D11Buffer* vbiw =
+				CreateVertexBuffer(g_pd3dDevice,
+					&pSub->m_VertexListIW.at(0),
+					pSub->m_VertexListIW.size(),
+					sizeof(IW_VERTEX));
+			pSub->m_pVertexBufferIW.Attach(vbiw);
+
+			wstring loadTex = pGraphics->m_MaterialList[iSub].c_str();
+			pSub->m_pTexture = g_TextureMgr.Load(loadTex.c_str());
+		}
+		if (!pGraphics->Create(L"../../data/shader/vs.txt", L"../../data/shader/ps.txt", L""))
+		{
+			return false;
+		}
+	}
+}
+
 bool myFbxObj::Load(string strFileName)
 {
 	if (LoadFBX(strFileName))
@@ -61,6 +121,7 @@ bool myFbxObj::LoadFBX(string strFileName)
 	PreProcess(pFbxRootNode);
 	ParseNode(pFbxRootNode, Matrix::Identity);
 	ParseAnimation(m_pFbxScene);
+	ModelInit();
 	return true;
 }
 
