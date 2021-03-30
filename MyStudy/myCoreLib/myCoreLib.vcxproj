@@ -286,6 +286,10 @@ copy "*.h" "..\\..\\include"</Command>
   <ItemGroup>
     <None Include="SimpleMath.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\data\shader\PS.txt" />
+    <Text Include="..\..\data\shader\VS.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

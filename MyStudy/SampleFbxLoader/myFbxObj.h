@@ -3,8 +3,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "myStd.h"
 #include <fbxsdk.h>
-#include "myModelGraphics.h"
-#include "myAnimation.h"
+#include "myModelObject.h"
 
 // Y축 Z축 스왑
 static Matrix DxConvertMatrix(Matrix m)
@@ -45,19 +44,19 @@ static Matrix ConvertMatrixA(const FbxMatrix& matrix)
 class myFbxObj
 {
 public:
+	shared_ptr<myModelObject>		m_pModelObject;
+
 	FbxManager*						m_pFbxManager;
 	FbxImporter*					m_pFbxImporter;
 	FbxScene*						m_pFbxScene;
-	myAnimation						m_Animation;
+	//myAnimation						m_Animation;
 
 	unordered_map<string, Matrix>					 m_dxMatList;
 	unordered_map<string, Matrix>::iterator			 m_dxMatIter;
-	unordered_map<FbxNode*, myGameObject*>			 m_MeshList;
-	unordered_map<FbxNode*, myGameObject*>::iterator m_MeshIter;
+	unordered_map<FbxNode*, myGameObject*>			 m_NodeList;
+	unordered_map<FbxNode*, myGameObject*>::iterator m_NodeIter;
 
 	unordered_map<FbxNode*, int>				     m_pNodeMap;
-	vector<Matrix>									 m_MatrixList;
-
 public:
 	bool		Load(string strFileName);
 	bool		LoadFBX(string strFileName);

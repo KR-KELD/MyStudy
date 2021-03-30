@@ -344,4 +344,8 @@
       <Filter>Math</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\data\shader\PS.txt" />
+    <Text Include="..\..\data\shader\VS.txt" />
+  </ItemGroup>
 </Project>

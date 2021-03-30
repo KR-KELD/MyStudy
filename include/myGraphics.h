@@ -131,9 +131,10 @@ struct mySubMesh
 {
 	vector<myTriangle>		m_TriangleList;
 	vector<PNCT_VERTEX>		m_VertexList;
-	vector<PNCTIW_VERTEX>	m_VertexListIW;
+	vector<IW_VERTEX>		m_VertexListIW;
 	vector<DWORD>			m_IndexList;
 	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
+	ComPtr<ID3D11Buffer>	m_pVertexBufferIW;
 	myTexture*				m_pTexture;
 	int						m_iPolyCount;
 	mySubMesh()

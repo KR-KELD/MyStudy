@@ -21,7 +21,7 @@ public:
 	DEFINE_COMPONENT(myAnimation, myComponent, true);
 public:
 	myAnimScene			m_AnimScene;
-	int					m_iTick = 0;
+	float				m_fTick;
 public:
 	myAnimation();
 	virtual ~myAnimation();

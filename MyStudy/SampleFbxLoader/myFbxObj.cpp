@@ -25,18 +25,20 @@ myFbxObj::myFbxObj(FbxManager* pFbxManager)
 	m_pFbxManager = pFbxManager;
 	m_pFbxImporter = nullptr;
 	m_pFbxScene = nullptr;
+	m_pModelObject = make_shared<myModelObject>();
 }
 
 myFbxObj::~myFbxObj()
 {
-	for (m_MeshIter = m_MeshList.begin();
-		m_MeshIter != m_MeshList.end();
-		m_MeshIter++)
-	{
-		(*m_MeshIter).second->Release();
-		delete (*m_MeshIter).second;
-	}
-	m_MeshList.clear();
+	//for (m_NodeIter = m_NodeList.begin();
+	//	m_NodeIter != m_NodeList.end();
+	//	m_NodeIter++)
+	//{
+	//	(*m_NodeIter).second->Release();
+	//	delete (*m_NodeIter).second;
+	//}
+	m_NodeList.clear();
+	//매니저에 넣을거면 매니저에서 딜리트
 }
 
 bool myFbxObj::Load(string strFileName)
@@ -100,8 +102,8 @@ void myFbxObj::PreProcess(FbxNode * pFbxNode)
 	if (m_dxMatIter == m_dxMatList.end())
 	{
 		m_dxMatList[pFbxNode->GetName()] = mat;
-		m_pNodeMap[pFbxNode] = m_MatrixList.size();
-		m_MatrixList.push_back(mat);
+		m_pNodeMap[pFbxNode] = m_pModelObject->m_nodeMatList.size();
+		m_pModelObject->m_nodeMatList.push_back(mat);
 	}
 	//자식 노드를 돌면서 메쉬와 본 정보만 가지고온다
 	int iChild = pFbxNode->GetChildCount();
@@ -132,7 +134,8 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 	//노드를 순회하면서 오브젝트화 시키고 리스트에 저장한다
 	myGameObject* pObj = myGameObject::CreateComponentObj(new myModelGraphics,
 										to_mw(pFbxNode->GetName()).c_str());
-	m_MeshList[pFbxNode] = pObj;
+	m_NodeList[pFbxNode] = pObj;
+	m_pModelObject->m_myNodeList.push_back(pObj);
 	//부모의 월드를 상속받는다
 	Matrix matWorld = ParseTransform(pFbxNode, matParent);
 	pObj->m_pTransform->m_matWorld = matWorld;
@@ -197,6 +200,10 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 	{
 		pGraphics->m_SubMeshList.resize(iNumMtrl);
 	}
+	else
+	{
+		pGraphics->m_SubMeshList.resize(1);
+	}
 
 	//지오메트리 매트릭스(해당 메쉬의 좌표를 로컬에서 본좌표(뼈대의 월드상 위치))
 	//로 변환해주는 매트릭스
@@ -224,11 +231,12 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 	int iVertexCount = pFbxMesh->GetControlPointsCount();
 	//정점들의 정보
 	FbxVector4* pVertexPositions = pFbxMesh->GetControlPoints();
-	//폴리곤의 누적 인덱스
+
 
 	bool bSkinnedMesh = ParseMeshSkinningMap(pFbxMesh, pGraphics->m_WeightList);
 	pGraphics->m_bSkinnedMesh = bSkinnedMesh;
 
+	//폴리곤의 누적 인덱스
 	int iBasePolyIndex = 0;
 	for (int iPoly = 0; iPoly < iPolyCount; iPoly++)
 	{
@@ -343,22 +351,10 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 				if (pGraphics->m_bSkinnedMesh)
 				{
 					myWeight* pW = &pGraphics->m_WeightList[iCornerIndices[iIndex]];
-					_ASSERT(pW != nullptr);
-
-					for (int i = 0; i < pW->nodeIndex.size(); i++)
+					for (int i = 0; i < 4; i++)
 					{
-						if (i < 4)
-							iw.i1[i] = pW->nodeIndex[i];
-						else
-							iw.i2[i - 4] = pW->nodeIndex[i];
-
-					}
-					for (int i = 0; i < pW->nodeWeight.size(); i++)
-					{
-						if (i < 4)
-							iw.w1[i] = pW->nodeWeight[i];
-						else
-							iw.w2[i - 4] = pW->nodeWeight[i];
+						iw.i1[i] = pW->nodeIndex[i];
+						iw.w1[i] = pW->nodeWeight[i];
 					}
 				}
 				else
@@ -380,7 +376,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 			}
 			else
 			{
-				pGraphics->m_TriangleList.push_back(tri);
+				pGraphics->m_SubMeshList[0].m_TriangleList.push_back(tri);
 			}
 		}
 		iBasePolyIndex += iPolySize;
