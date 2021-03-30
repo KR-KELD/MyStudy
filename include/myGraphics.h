@@ -76,14 +76,10 @@ struct IW_VERTEX
 {
 	float i1[4];
 	float w1[4];
-	float i2[4];
-	float w2[4];
 	IW_VERTEX()
 	{
 		i1[0] = i1[1] = i1[2] = i1[3] = 0.0f;
 		w1[0] = w1[1] = w1[2] = w1[3] = 0.0f;
-		i2[0] = i2[1] = i2[2] = i2[3] = 0.0f;
-		w2[0] = w2[1] = w2[2] = w2[3] = 0.0f;
 	}
 };
 

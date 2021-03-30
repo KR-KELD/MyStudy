@@ -51,12 +51,12 @@ public:
 	FbxScene*						m_pFbxScene;
 	//myAnimation						m_Animation;
 
-	unordered_map<string, Matrix>					 m_dxMatList;
+	unordered_map<string, Matrix>					 m_dxMatMap;
 	unordered_map<string, Matrix>::iterator			 m_dxMatIter;
-	unordered_map<FbxNode*, myGameObject*>			 m_NodeList;
+	unordered_map<FbxNode*, myGameObject*>			 m_NodeMap;
 	unordered_map<FbxNode*, myGameObject*>::iterator m_NodeIter;
 
-	unordered_map<FbxNode*, int>				     m_pNodeMap;
+	unordered_map<FbxNode*, int>				     m_pNodeIndexMap;
 public:
 	bool		Load(string strFileName);
 	bool		LoadFBX(string strFileName);

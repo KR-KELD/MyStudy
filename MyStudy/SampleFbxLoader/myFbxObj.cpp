@@ -30,14 +30,14 @@ myFbxObj::myFbxObj(FbxManager* pFbxManager)
 
 myFbxObj::~myFbxObj()
 {
-	//for (m_NodeIter = m_NodeList.begin();
-	//	m_NodeIter != m_NodeList.end();
+	//for (m_NodeIter = m_NodeMap.begin();
+	//	m_NodeIter != m_NodeMap.end();
 	//	m_NodeIter++)
 	//{
 	//	(*m_NodeIter).second->Release();
 	//	delete (*m_NodeIter).second;
 	//}
-	m_NodeList.clear();
+	m_NodeMap.clear();
 	//매니저에 넣을거면 매니저에서 딜리트
 }
 
@@ -58,6 +58,7 @@ bool myFbxObj::LoadFBX(string strFileName)
 	}
 	//루트노드를 설정하고 루트를 기준으로 순회하면서 파싱한다
 	FbxNode* pFbxRootNode = m_pFbxScene->GetRootNode();
+	PreProcess(pFbxRootNode);
 	ParseNode(pFbxRootNode, Matrix::Identity);
 	ParseAnimation(m_pFbxScene);
 	return true;
@@ -98,11 +99,11 @@ void myFbxObj::PreProcess(FbxNode * pFbxNode)
 	//카메라나 라이트는 제외하고 순회
 	if (pFbxNode && (pFbxNode->GetCamera() || pFbxNode->GetLight())) return;
 	Matrix mat = mat.Identity;
-	m_dxMatIter = m_dxMatList.find(pFbxNode->GetName());
-	if (m_dxMatIter == m_dxMatList.end())
+	m_dxMatIter = m_dxMatMap.find(pFbxNode->GetName());
+	if (m_dxMatIter == m_dxMatMap.end())
 	{
-		m_dxMatList[pFbxNode->GetName()] = mat;
-		m_pNodeMap[pFbxNode] = m_pModelObject->m_nodeMatList.size();
+		m_dxMatMap[pFbxNode->GetName()] = mat;
+		m_pNodeIndexMap[pFbxNode] = m_pModelObject->m_nodeMatList.size();
 		m_pModelObject->m_nodeMatList.push_back(mat);
 	}
 	//자식 노드를 돌면서 메쉬와 본 정보만 가지고온다
@@ -134,7 +135,7 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 	//노드를 순회하면서 오브젝트화 시키고 리스트에 저장한다
 	myGameObject* pObj = myGameObject::CreateComponentObj(new myModelGraphics,
 										to_mw(pFbxNode->GetName()).c_str());
-	m_NodeList[pFbxNode] = pObj;
+	m_NodeMap[pFbxNode] = pObj;
 	m_pModelObject->m_myNodeList.push_back(pObj);
 	//부모의 월드를 상속받는다
 	Matrix matWorld = ParseTransform(pFbxNode, matParent);
@@ -359,7 +360,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 				}
 				else
 				{
-					auto data = m_pNodeMap.find(pFbxNode);
+					auto data = m_pNodeIndexMap.find(pFbxNode);
 					iw.i1[0] = data->second; // 자기 자신
 					iw.w1[0] = 1.0f;
 				}

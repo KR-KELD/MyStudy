@@ -12,6 +12,7 @@ public:
 	//기존의 맵을 써도 상관없음 나중에 수정해도 됨
 	vector<myGameObject*>		m_myNodeList;
 	vector<Matrix>				m_nodeMatList;
+	vector<Matrix>				m_nodeMatBindPoseList;
 public:
 	myModelObject();
 	virtual ~myModelObject();

@@ -1,27 +1,6 @@
 #include "myModelGraphics.h"
 DECLARE_COMPONENT(myModelGraphics);
 
-//bool myModelGraphics::CreateVertexBuffer()
-//{
-//	myGraphics::CreateVertexBuffer();
-//	if (m_VertexIWList.size() <= 0) return true;
-//	D3D11_BUFFER_DESC bd;
-//	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-//	bd.ByteWidth = sizeof(IW_VERTEX) * m_VertexIWList.size();
-//	bd.Usage = D3D11_USAGE_DEFAULT;
-//	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//
-//	D3D11_SUBRESOURCE_DATA sd;
-//	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
-//	sd.pSysMem = &m_VertexIWList.at(0);
-//	HRESULT hr = g_pd3dDevice->CreateBuffer(&bd, &sd, m_pVertexIWBuffer.GetAddressOf());
-//	if (FAILED(hr))
-//	{
-//		return false;
-//	}
-//	return true;
-//}
-
 bool myModelGraphics::CreateInputLayout()
 {
 	HRESULT hr = S_OK;
@@ -44,6 +23,43 @@ bool myModelGraphics::CreateInputLayout()
 		&m_pInputLayout
 	);
 	if (FAILED(hr)) return false;
+	return true;
+}
+
+bool myModelGraphics::MultiDraw()
+{
+	g_pImmediateContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	g_pImmediateContext->IASetInputLayout(m_pInputLayout.Get());
+	g_pImmediateContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+	g_pImmediateContext->PSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+	g_pImmediateContext->VSSetShader(m_pVertexShader.Get(), NULL, 0);
+	g_pImmediateContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
+	g_pImmediateContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_iTopology);
+
+	for (int iSub = 0; iSub < m_SubMeshList.size(); iSub++)
+	{
+		mySubMesh* pMesh = &m_SubMeshList[iSub];
+		if (pMesh->m_TriangleList.size() <= 0) continue;
+
+		ID3D11Buffer* vb[2] = { pMesh->m_pVertexBuffer.Get(), pMesh->m_pVertexBufferIW.Get() };
+		UINT iStride[2] = { sizeof(PNCT_VERTEX) ,sizeof(IW_VERTEX) };
+		UINT iOffset[2] = { 0,0 };
+		g_pImmediateContext->IASetVertexBuffers(0, 2, vb, iStride, iOffset);
+
+		if (m_SubMeshList[iSub].m_pTexture != nullptr)
+		{
+			g_pImmediateContext->PSSetShaderResources(0, 1,
+				m_SubMeshList[iSub].m_pTexture->m_pTextureSRV.GetAddressOf());
+		}
+		if (m_pIndexBuffer.Get() == nullptr)
+		{
+			g_pImmediateContext->Draw(m_SubMeshList[iSub].m_VertexList.size(), 0);
+		}
+		else
+		{
+			g_pImmediateContext->DrawIndexed(m_IndexList.size(), 0, 0);
+		}
+	}
 	return true;
 }
 

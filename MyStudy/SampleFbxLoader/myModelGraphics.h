@@ -43,11 +43,9 @@ public:
 	vector<myAnimTrack>			m_AnimTrackList;
 	vector<myWeight>			m_WeightList;
 	bool						m_bSkinnedMesh = false;
-	//vector<IW_VERTEX>			m_VertexIWList;
-	//ComPtr<ID3D11Buffer>		m_pVertexIWBuffer;
 public:
-	//virtual bool    CreateVertexBuffer();
-	virtual bool	CreateInputLayout();
+	virtual bool	CreateInputLayout() override;
+	virtual bool	MultiDraw() override;
 public:
 	myModelGraphics();
 	virtual ~myModelGraphics();
