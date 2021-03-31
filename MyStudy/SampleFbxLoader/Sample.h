@@ -18,3 +18,6 @@ public:
 	bool Release() override;
 };
 
+//walk 3-35
+//idle1 36-101
+//idle2 102-161

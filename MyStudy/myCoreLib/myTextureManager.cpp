@@ -52,6 +52,7 @@ myTexture * myTextureManager::GetPtr(wstring filename)
 
 bool myTextureManager::Init()
 {
+	m_pWhiteTexture = Load(L"white.png");
 	return true;
 }
 

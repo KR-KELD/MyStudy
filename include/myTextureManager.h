@@ -9,6 +9,8 @@ private:
 	std::map<wstring, myTexture*>::iterator		m_iter;
 	std::wstring								m_szDefaultPath;
 public:
+	myTexture*									m_pWhiteTexture;
+public:
 	myTexture*		Load(const TCHAR* filename);
 	myTexture*		GetPtr(wstring filename);
 	bool		Init();

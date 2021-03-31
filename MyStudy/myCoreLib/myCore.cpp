@@ -32,6 +32,7 @@ bool myCore::GameInit()
 	g_Timer.Init();
 	g_Input.Init();
 	g_SoundMgr.Init();
+	g_TextureMgr.Init();
 	//g_CamMgr.Init();
 	//g_ObjMgr.Init();
 	ComPtr<IDXGISurface1> pBackBuffer = nullptr;
@@ -45,7 +46,7 @@ bool myCore::GameInit()
 	m_pBasisLine = new myShapeLine;
 	g_GameObject.InsertComponent(m_pBasisLine);
 	m_pBasisLine->Init();
-	if (!m_pBasisLine->Create(L"../../data/shader/VS.txt", L"../../data/shader/PS.txt",
+	if (!m_pBasisLine->Create(L"../../data/shader/VS1.txt", L"../../data/shader/PS1.txt",
 	L""))
 	{
 		return false;

@@ -30,14 +30,14 @@ myFbxObj::myFbxObj(FbxManager* pFbxManager)
 
 myFbxObj::~myFbxObj()
 {
-	//for (m_NodeIter = m_NodeMap.begin();
-	//	m_NodeIter != m_NodeMap.end();
-	//	m_NodeIter++)
+	//for (m_pNodeIter = m_pNodeMap.begin();
+	//	m_pNodeIter != m_pNodeMap.end();
+	//	m_pNodeIter++)
 	//{
-	//	(*m_NodeIter).second->Release();
-	//	delete (*m_NodeIter).second;
+	//	(*m_pNodeIter).second->Release();
+	//	delete (*m_pNodeIter).second;
 	//}
-	m_NodeMap.clear();
+	m_pNodeMap.clear();
 	//매니저에 넣을거면 매니저에서 딜리트
 }
 
@@ -50,19 +50,7 @@ bool myFbxObj::ModelInit()
 		for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
 		{
 			mySubMesh* pSub = &pGraphics->m_SubMeshList[iSub];
-			if (pSub->m_TriangleList.size() <= 0) continue;
-			pSub->m_VertexList.resize(pSub->m_TriangleList.size() * 3);
-			for (int iFace = 0; iFace < pSub->m_TriangleList.size(); iFace++)
-			{
-				int iIndex = iFace * 3;
-				pSub->m_VertexList[iIndex + 0] =
-					pSub->m_TriangleList[iFace].vVertex[0];
-				pSub->m_VertexList[iIndex + 1] =
-					pSub->m_TriangleList[iFace].vVertex[1];
-				pSub->m_VertexList[iIndex + 2] =
-					pSub->m_TriangleList[iFace].vVertex[2];
-			}
-
+			if (pSub->m_iFaceCount <= 0) continue;
 			// vb
 			ID3D11Buffer* vb =
 				CreateVertexBuffer(g_pd3dDevice,
@@ -70,34 +58,29 @@ bool myFbxObj::ModelInit()
 					pSub->m_VertexList.size(),
 					sizeof(PNCT_VERTEX));
 			pSub->m_pVertexBuffer.Attach(vb);
-
 			// vbiw
-			pSub->m_VertexListIW.resize(pSub->m_TriangleList.size() * 3);
-			for (int iFace = 0; iFace < pSub->m_TriangleList.size(); iFace++)
-			{
-				int iIndex = iFace * 3;
-				pSub->m_VertexListIW[iIndex + 0] =
-					pSub->m_TriangleList[iFace].vVertexIW[0];
-				pSub->m_VertexListIW[iIndex + 1] =
-					pSub->m_TriangleList[iFace].vVertexIW[1];
-				pSub->m_VertexListIW[iIndex + 2] =
-					pSub->m_TriangleList[iFace].vVertexIW[2];
-			}
-
 			ID3D11Buffer* vbiw =
 				CreateVertexBuffer(g_pd3dDevice,
 					&pSub->m_VertexListIW.at(0),
 					pSub->m_VertexListIW.size(),
 					sizeof(IW_VERTEX));
 			pSub->m_pVertexBufferIW.Attach(vbiw);
+			// ib
+			ID3D11Buffer* ib =
+				CreateVertexBuffer(g_pd3dDevice,
+					&pSub->m_IndexList.at(0),
+					pSub->m_IndexList.size(),
+					sizeof(DWORD));
+			pSub->m_pIndexBuffer.Attach(ib);
 
 			wstring loadTex = pGraphics->m_MaterialList[iSub].c_str();
 			pSub->m_pTexture = g_TextureMgr.Load(loadTex.c_str());
 		}
-		if (!pGraphics->Create(L"../../data/shader/vs.txt", L"../../data/shader/ps.txt", L""))
-		{
-			return false;
-		}
+	}
+	if (!m_pModelObject->m_pGraphics->
+		Create(L"../../data/shader/vs.txt", L"../../data/shader/ps.txt", L""))
+	{
+		return false;
 	}
 }
 
@@ -119,8 +102,53 @@ bool myFbxObj::LoadFBX(string strFileName)
 	//루트노드를 설정하고 루트를 기준으로 순회하면서 파싱한다
 	FbxNode* pFbxRootNode = m_pFbxScene->GetRootNode();
 	PreProcess(pFbxRootNode);
-	ParseNode(pFbxRootNode, Matrix::Identity);
+
+	for (int iNode = 0; iNode < m_pFbxNodeList.size(); iNode++)
+	{
+		FbxNode* pNode = m_pFbxNodeList[iNode];
+		myGameObject* pObj = myGameObject::CreateComponentObj(new myModelGraphics,
+			to_mw(pNode->GetName()).c_str());
+
+		//노드에 대응하는 게임오브젝트 생성 및 맵에 추가
+		m_pNodeMap[pNode] = pObj;
+		//백터에도 추가
+		m_pModelObject->m_myNodeList.push_back(pObj);
+
+		if (pNode->GetMesh() != nullptr)
+		{
+			ParseMesh(pNode, pNode->GetMesh(), pObj->GetComponent<myModelGraphics>());
+		}
+	}
+
+#if (FBXSDK_VERSION_MAJOR > 2014 || ((FBXSDK_VERSION_MAJOR==2014) && (FBXSDK_VERSION_MINOR>1) ) )
+	auto anim = m_pFbxScene->GetAnimationEvaluator();
+#else
+	auto anim = m_pFbxScene->GetEvaluator();
+#endif
 	ParseAnimation(m_pFbxScene);
+
+	myAnimation* pAnim = m_pModelObject->GetComponent<myAnimation>();
+	float fCurrentTime = 0.0f;
+	while (fCurrentTime <= pAnim->m_AnimScene.fLastTime)
+	{
+		FbxTime t;
+		t.SetSecondDouble(fCurrentTime);
+		for (int iNode = 0; iNode < m_pFbxNodeList.size(); iNode++)
+		{
+			FbxNode* pNode = m_pFbxNodeList[iNode];
+			//시간에 해당하는 애니메이션 매트릭스 정보 가져오기
+			FbxAMatrix mat = anim->GetNodeGlobalTransform(pNode, t);
+			//트랙정보 구성
+			myAnimTrack track;
+			track.iTick = fCurrentTime * 30 * 160;
+			track.matWorld = DxConvertMatrix(ConvertMatrixA(mat));
+			//해당노드에 정보 삽입
+			myModelGraphics* pGraphics = m_pNodeMap.find(pNode)->
+				second->GetComponent<myModelGraphics>();
+			pGraphics->m_AnimTrackList.push_back(track);
+		}
+		fCurrentTime += pAnim->m_AnimScene.fDeltaTime * 1.0f;
+	}
 	ModelInit();
 	return true;
 }
@@ -160,13 +188,13 @@ void myFbxObj::PreProcess(FbxNode * pFbxNode)
 	//카메라나 라이트는 제외하고 순회
 	if (pFbxNode && (pFbxNode->GetCamera() || pFbxNode->GetLight())) return;
 	Matrix mat = mat.Identity;
-	m_dxMatIter = m_dxMatMap.find(pFbxNode->GetName());
-	if (m_dxMatIter == m_dxMatMap.end())
-	{
-		m_dxMatMap[pFbxNode->GetName()] = mat;
-		m_pNodeIndexMap[pFbxNode] = m_pModelObject->m_nodeMatList.size();
-		m_pModelObject->m_nodeMatList.push_back(mat);
-	}
+	//노드 인덱스 추가
+	m_pNodeIndexMap.insert(make_pair(pFbxNode, m_pModelObject->m_nodeMatList.size()));
+	//인덱스에 해당하는 매트릭스 추가
+	m_pModelObject->m_nodeMatList.push_back(mat);
+	//노드리스트 추가
+	m_pFbxNodeList.push_back(pFbxNode);
+
 	//자식 노드를 돌면서 메쉬와 본 정보만 가지고온다
 	int iChild = pFbxNode->GetChildCount();
 	for (int i = 0; i < iChild; i++)
@@ -193,10 +221,14 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 	{
 		return;
 	}
+
 	//노드를 순회하면서 오브젝트화 시키고 리스트에 저장한다
 	myGameObject* pObj = myGameObject::CreateComponentObj(new myModelGraphics,
 										to_mw(pFbxNode->GetName()).c_str());
-	m_NodeMap[pFbxNode] = pObj;
+
+	//노드에 대응하는 게임오브젝트 생성 및 맵에 추가
+	m_pNodeMap[pFbxNode] = pObj;
+	//백터에도 추가
 	m_pModelObject->m_myNodeList.push_back(pObj);
 	//부모의 월드를 상속받는다
 	Matrix matWorld = ParseTransform(pFbxNode, matParent);
@@ -225,6 +257,17 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 
 	//레이어의 갯수 가져오기(멀티 텍스쳐링)
 	int iLayerCount = pFbxMesh->GetLayerCount();
+
+	if (iLayerCount == 0 || pFbxMesh->GetLayer(0)->GetNormals() == nullptr)
+	{
+		pFbxMesh->InitNormals();
+#if (FBXSDK_VERSION_MAJOR >= 2015)
+		pFbxMesh->GenerateNormals();
+#else
+		pFbxMesh->ComputeVertexNormals();
+#endif
+	}
+
 	for (int iLayer = 0; iLayer < iLayerCount; iLayer++)
 	{
 		FbxLayer* pLayer = pFbxMesh->GetLayer(iLayer);
@@ -244,18 +287,22 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 			LayerMaterials.push_back(pFbxMesh->GetLayer(iLayer)->GetMaterials());
 		}
 	}
+
+
+	//기본 단위 도형의 갯수
+	int iPolyCount = pFbxMesh->GetPolygonCount();
+	//정점의 갯수
+	int iVertexCount = pFbxMesh->GetControlPointsCount();
+	//트라이앵글의 갯수
+	int iMaxTriangleCount = 0;
+	for (int iPoly = 0; iPoly < iPolyCount; iPoly++)
+	{
+		int iPolySize = pFbxMesh->GetPolygonSize(iPoly);
+		iMaxTriangleCount += iPolySize - 2;
+	}
+
 	//노드의 (서브)메테리얼 갯수 가져오기
 	int iNumMtrl = pFbxNode->GetMaterialCount();
-	for (int iMtrl = 0; iMtrl < iNumMtrl; iMtrl++)
-	{
-		FbxSurfaceMaterial* pMtrl = pFbxNode->GetMaterial(iMtrl);
-		if (pMtrl == nullptr)
-		{
-			continue;
-		}
-		//지금은 메테리얼의 이름만 리스트에 저장
-		pGraphics->m_MaterialList.push_back(to_mw(ParseMaterial(pMtrl)));
-	}
 	//메테리얼이 1개 이상이라면 서브메테리얼이 존재하므로
 	//서브메시 리스트를 리사이즈 해준다
 	if (iNumMtrl > 1)
@@ -265,6 +312,21 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 	else
 	{
 		pGraphics->m_SubMeshList.resize(1);
+		//트라이앵글의 갯수x3만큼 정점의 공간을 예약해둔다
+		pGraphics->m_SubMeshList[0].m_VertexList.reserve(iMaxTriangleCount * 3);
+	}
+
+
+	for (int iMtrl = 0; iMtrl < iNumMtrl; iMtrl++)
+	{
+		FbxSurfaceMaterial* pMtrl = pFbxNode->GetMaterial(iMtrl);
+		if (pMtrl == nullptr)
+		{
+			continue;
+		}
+		//지금은 메테리얼의 이름만 리스트에 저장
+		pGraphics->m_MaterialList.push_back(to_mw(ParseMaterial(pMtrl)));
+		pGraphics->m_SubMeshList[iMtrl].m_VertexList.reserve(iMaxTriangleCount * 3);
 	}
 
 	//지오메트리 매트릭스(해당 메쉬의 좌표를 로컬에서 본좌표(뼈대의 월드상 위치))
@@ -287,13 +349,8 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 		ConvertMatrixA(
 			pFbxNode->EvaluateGlobalTransform(1.0f)));
 
-	//기본 단위 도형의 정점 갯수
-	int iPolyCount = pFbxMesh->GetPolygonCount();
-	//정점의 갯수
-	int iVertexCount = pFbxMesh->GetControlPointsCount();
 	//정점들의 정보
 	FbxVector4* pVertexPositions = pFbxMesh->GetControlPoints();
-
 
 	bool bSkinnedMesh = ParseMeshSkinningMap(pFbxMesh, pGraphics->m_WeightList);
 	pGraphics->m_bSkinnedMesh = bSkinnedMesh;
@@ -434,11 +491,14 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 			//트라이앵글리스트에 삼각형을 등록해준다
 			if (iNumMtrl > 1)
 			{
-				pGraphics->m_SubMeshList[iSubMtrl].m_TriangleList.push_back(tri);
+				//트라이앵글 리스트가 필요할때 주석 풀기
+				//pGraphics->m_SubMeshList[iSubMtrl].m_TriangleList.push_back(tri);
+				pGraphics->m_SubMeshList[iSubMtrl].SetUniqueBuffer(tri);
 			}
 			else
 			{
-				pGraphics->m_SubMeshList[0].m_TriangleList.push_back(tri);
+				//pGraphics->m_SubMeshList[0].m_TriangleList.push_back(tri);
+				pGraphics->m_SubMeshList[0].SetUniqueBuffer(tri);
 			}
 		}
 		iBasePolyIndex += iPolySize;

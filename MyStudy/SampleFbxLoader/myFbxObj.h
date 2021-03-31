@@ -51,9 +51,9 @@ public:
 	FbxScene*						m_pFbxScene;
 	//myAnimation						m_Animation;
 
-	unordered_map<string, Matrix>					 m_dxMatMap;
 	unordered_map<string, Matrix>::iterator			 m_dxMatIter;
-	unordered_map<FbxNode*, myGameObject*>			 m_NodeMap;
+	vector<FbxNode*>								 m_pFbxNodeList;
+	unordered_map<FbxNode*, myGameObject*>			 m_pNodeMap;
 	unordered_map<FbxNode*, myGameObject*>::iterator m_NodeIter;
 
 	unordered_map<FbxNode*, int>				     m_pNodeIndexMap;

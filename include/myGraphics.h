@@ -131,11 +131,13 @@ struct mySubMesh
 	vector<DWORD>			m_IndexList;
 	ComPtr<ID3D11Buffer>	m_pVertexBuffer;
 	ComPtr<ID3D11Buffer>	m_pVertexBufferIW;
+	ComPtr<ID3D11Buffer>	m_pIndexBuffer;
 	myTexture*				m_pTexture;
-	int						m_iPolyCount;
+	int						m_iFaceCount;
+	void	SetUniqueBuffer(myTriangle& tri);
 	mySubMesh()
 	{
-		m_iPolyCount = 0;
+		m_iFaceCount = 0;
 	}
 };
 

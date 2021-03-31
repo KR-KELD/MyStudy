@@ -23,12 +23,28 @@ bool myFbxObj::ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& s
 		{
 			//크러스터 정보를 가져온다
 			auto pCluster = pSkin->GetCluster(dwClusterIndex);
+			//뼈대공간으로 보내주는 매트릭스
+			FbxAMatrix matXBindPose;
+			//로컬공간으로 보내주는 매트릭스
+			FbxAMatrix matReferenceGlobalInitPosition;
+			pCluster->GetTransformLinkMatrix(matXBindPose);
+			pCluster->GetTransformMatrix(matReferenceGlobalInitPosition);
+			//월드에 있는 정점을 원점으로 보냈다가 뼈대공간으로 보내주는 매트릭스
+			FbxMatrix matBindPose = matReferenceGlobalInitPosition.Inverse() * matXBindPose;
+			//뼈대공간에 있는 정점을 원점으로 모아주는 매트릭스
+			Matrix matInvBindPos = DxConvertMatrix(ConvertMatrixA(matBindPose));
+			matInvBindPos = matInvBindPos.Invert();
+
+			m_pModelObject->m_nodeMatBindPoseMap.insert(
+				make_pair(pCluster->GetLink()->GetName(), matInvBindPos));
+
 			//크러스터에 영향을 받는 정점의 갯수를 가져온다
 			int  dwClusterSize = pCluster->GetControlPointIndicesCount();
 			//노드의 정보를 가져온다
 			auto data = m_pNodeIndexMap.find(pCluster->GetLink());
 			//임의로 본 인덱스를 설정해서 노드 정보를 연결한다
 			int  iBoneIndex = data->second;
+
 			//영향을 받는 정점들의 인덱스와 가중치
 			int* pIndices = pCluster->GetControlPointIndices();
 			double* pWeights = pCluster->GetControlPointWeights();
@@ -89,7 +105,7 @@ void myFbxObj::ParseAnimStack(FbxScene * pFbxScene, FbxString * strAnimStackName
 	pAnim->m_AnimScene.fFirstTime = fStartTime;
 	//끝 시간
 	pAnim->m_AnimScene.fLastTime = fEndTime;
-	ParseNodeAnimation(pFbxScene->GetRootNode());
+	//ParseNodeAnimation(pFbxScene->GetRootNode());
 }
 
 void myFbxObj::ParseNodeAnimation(FbxNode * pNode)
@@ -118,7 +134,7 @@ void myFbxObj::ParseNodeAnimation(FbxNode * pNode)
 		track.iTick = fCurrentTime * 30 * 160;
 		track.matWorld = DxConvertMatrix(ConvertMatrixA(mat));
 		//오브젝트에 넣어준다
-		auto data = m_NodeMap.find(pNode);
+		auto data = m_pNodeMap.find(pNode);
 		myModelGraphics* pGraphics = data->second->GetComponent<myModelGraphics>();
 		pGraphics->m_AnimTrackList.push_back(track);
 		fCurrentTime += pAnim->m_AnimScene.fDeltaTime;
