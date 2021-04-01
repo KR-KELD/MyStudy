@@ -49,7 +49,6 @@ public:
 	FbxManager*						m_pFbxManager;
 	FbxImporter*					m_pFbxImporter;
 	FbxScene*						m_pFbxScene;
-	//myAnimation						m_Animation;
 
 	unordered_map<string, Matrix>::iterator			 m_dxMatIter;
 	vector<FbxNode*>								 m_pFbxNodeList;

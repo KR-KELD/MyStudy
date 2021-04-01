@@ -75,6 +75,8 @@ bool myFbxObj::ModelInit()
 
 			wstring loadTex = pGraphics->m_MaterialList[iSub].c_str();
 			pSub->m_pTexture = g_TextureMgr.Load(loadTex.c_str());
+			if (pSub->m_pTexture == nullptr)
+				pSub->m_pTexture = g_TextureMgr.m_pWhiteTexture;
 		}
 	}
 	if (!m_pModelObject->m_pGraphics->
@@ -129,6 +131,11 @@ bool myFbxObj::LoadFBX(string strFileName)
 
 	myAnimation* pAnim = m_pModelObject->GetComponent<myAnimation>();
 	float fCurrentTime = 0.0f;
+	//속도차이 질문
+	//추측
+	//while을 바깥으로 빼면 GetNode어쩌고 함수를 호출하는
+	//객체가 동일해서 캐시에 남아있는 함수를 더 빨리 부르기때문
+	//안으로 넣으면 반복문마다 
 	while (fCurrentTime <= pAnim->m_AnimScene.fLastTime)
 	{
 		FbxTime t;

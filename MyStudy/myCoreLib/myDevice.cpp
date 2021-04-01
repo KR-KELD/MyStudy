@@ -227,10 +227,7 @@ bool myDevice::PreRender()
 		m_pd3dContext->RSSetViewports(1, &m_Viewport);
 		//랜더링 파이프라인 아웃풋 병합에 랜더타겟을 설정해준다
 		m_pd3dContext->OMSetRenderTargets(1, m_pRednerTargetView.GetAddressOf(), m_pDSV.Get());
-		/*float clearColor[] = { cosf(g_fGameTimer)*0.5f + 0.5f,
-								-cosf(g_fGameTimer)*0.5f + 0.5f,
-								sinf(g_fGameTimer)*0.5f + 0.5f,1 };*/
-		float clearColor[] = { 0,0,0,1 };
+		float clearColor[] = { 0.1f,0.1f,0.1f,1 };
 		//랜더타겟을 초기화해준다
 		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView.Get(), clearColor);
 		m_pd3dContext->ClearDepthStencilView(m_pDSV.Get(), D3D10_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
