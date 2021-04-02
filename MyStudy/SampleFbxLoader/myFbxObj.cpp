@@ -67,7 +67,7 @@ bool myFbxObj::ModelInit()
 			pSub->m_pVertexBufferIW.Attach(vbiw);
 			// ib
 			ID3D11Buffer* ib =
-				CreateVertexBuffer(g_pd3dDevice,
+				CreateIndexBuffer(g_pd3dDevice,
 					&pSub->m_IndexList.at(0),
 					pSub->m_IndexList.size(),
 					sizeof(DWORD));
