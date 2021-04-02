@@ -143,15 +143,51 @@ bool myFbxObj::LoadFBX(string strFileName)
 		for (int iNode = 0; iNode < m_pFbxNodeList.size(); iNode++)
 		{
 			FbxNode* pNode = m_pFbxNodeList[iNode];
-			//시간에 해당하는 애니메이션 매트릭스 정보 가져오기
-			FbxAMatrix mat = anim->GetNodeGlobalTransform(pNode, t);
-			//트랙정보 구성
+			////시간에 해당하는 애니메이션 매트릭스 정보 가져오기
+			//FbxAMatrix mat = anim->GetNodeGlobalTransform(pNode, t);
+			////트랙정보 구성
+			//myAnimTrack track;
+			//track.iTick = fCurrentTime * 30 * 160;
+			//track.matWorld = DxConvertMatrix(ConvertMatrixA(mat));
+			////해당노드에 정보 삽입
+
+			//pGraphics->m_AnimTrackList.push_back(track);
+
+			Matrix pChildGlobal = DxConvertMatrix(
+				ConvertMatrixA(anim->GetNodeGlobalTransform(pNode, t)));
+			FbxNode* pParentNode = pNode->GetParent();
+
+			Matrix matInvParentGlobal = Matrix::Identity;
+			if (pParentNode)
+			{
+				matInvParentGlobal = DxConvertMatrix(
+					ConvertMatrixA(anim->GetNodeGlobalTransform(pParentNode, t)));
+				matInvParentGlobal = matInvParentGlobal.Invert();
+			}
+			Matrix m = pChildGlobal * matInvParentGlobal;
+
+			// 분해
+			Vector3 vScale;
+			Quaternion qRot;
+			Vector3 vTrans;
+
 			myAnimTrack track;
 			track.iTick = fCurrentTime * 30 * 160;
-			track.matWorld = DxConvertMatrix(ConvertMatrixA(mat));
-			//해당노드에 정보 삽입
+			track.matWorld = pChildGlobal;
 			myModelGraphics* pGraphics = m_pNodeMap.find(pNode)->
 				second->GetComponent<myModelGraphics>();
+			if (m.Decompose(vScale, qRot, vTrans))
+			{
+				track.vScale = vScale;
+				track.qRot = qRot;
+				track.vTrans = vTrans;
+			}
+			else
+			{
+				track.vScale = Vector3(1.0f, 1.0f, 1.0f);
+				track.qRot = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+				track.vTrans = Vector3(0.0f, 0.0f, 0.0f);
+			}
 			pGraphics->m_AnimTrackList.push_back(track);
 		}
 		fCurrentTime += pAnim->m_AnimScene.fDeltaTime * 1.0f;

@@ -20,6 +20,7 @@ bool myModelObject::Frame()
 	{
 		Matrix matWorld = Matrix::Identity;
 		Matrix matBiped = Matrix::Identity;
+		Matrix matParent = Matrix::Identity;
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
 
 		// 스킨을 바이패드공간으로 이동시킨다
@@ -32,12 +33,40 @@ bool myModelObject::Frame()
 			matBiped = data->second;
 		}
 
-		for (int iTick = 0; iTick < pGraphics->m_AnimTrackList.size(); iTick++)
+		if (m_myNodeList[iNode]->m_pParent != nullptr)
 		{
-			if (pGraphics->m_AnimTrackList[iTick].iTick >= pAnim->m_fTick)
+			matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matWorld;
+		}
+		for (int iTick = 1; iTick < pGraphics->m_AnimTrackList.size() - 1; iTick++)
+		{
+			if (pGraphics->m_AnimTrackList[iTick].iTick >=
+				pAnim->m_fTick)
 			{
-				matWorld = pGraphics->m_AnimTrackList[iTick].matWorld;
-				m_nodeMatList[iNode] = matBiped * matWorld;
+				int iStart = pGraphics->m_AnimTrackList[iTick - 1].iTick;
+				int iEnd = pGraphics->m_AnimTrackList[iTick].iTick;
+				int iStepTick = iEnd - iStart;
+				float t = (pAnim->m_fTick - iStart) / iStepTick;
+				Vector3 vStart, vEnd, vTrans;
+				vStart = pGraphics->m_AnimTrackList[iTick - 1].vTrans;
+				vEnd = pGraphics->m_AnimTrackList[iTick].vTrans;
+				vTrans = Vector3::Lerp(vStart, vEnd, t);
+				Vector3 vScale;
+				vStart = pGraphics->m_AnimTrackList[iTick - 1].vScale;
+				vEnd = pGraphics->m_AnimTrackList[iTick].vScale;
+				vScale = Vector3::Lerp(vStart, vEnd, t);
+
+				Quaternion q1, q2, qRot;
+				q1 = pGraphics->m_AnimTrackList[iTick - 1].qRot;
+				q2 = pGraphics->m_AnimTrackList[iTick].qRot;
+				qRot = Quaternion::Slerp(q1, q2, t);
+
+				Matrix matScale = Matrix::CreateScale(vScale);
+				Matrix matRotate = Matrix::CreateFromQuaternion(qRot);
+				Matrix matTrans = Matrix::CreateTranslation(vTrans);
+				m_myNodeList[iNode]->m_pTransform->m_matWorld = matScale * matRotate * matTrans *matParent;
+				//pModelObject->m_matAnim = pModelObject->animlist[iTick].mat;
+
+				m_nodeMatList[iNode] = matBiped * m_myNodeList[iNode]->m_pTransform->m_matWorld;
 				break;
 			}
 		}

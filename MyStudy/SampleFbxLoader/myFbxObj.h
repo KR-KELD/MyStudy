@@ -76,8 +76,6 @@ public:
 	void		ParseAnimation(FbxScene* pFbxScene);
 	void		ParseAnimStack(FbxScene* pFbxScene, FbxString* strAnimStackName);
 	void		ParseNodeAnimation(FbxNode* pNode);
-
-
 	bool ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& skindata);
 public:
 	myFbxObj(FbxManager* pFbxManager);
