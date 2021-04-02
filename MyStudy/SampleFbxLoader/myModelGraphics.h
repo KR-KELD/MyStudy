@@ -5,6 +5,9 @@ struct myAnimTrack
 {
 	int iTick;
 	Matrix matWorld;
+	Vector3 vScale;
+	Quaternion qRot;
+	Vector3 vTrans;
 };
 
 struct myWeight

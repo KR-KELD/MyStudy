@@ -298,7 +298,7 @@ public:
 	myGameObject*			Add(myGameObject* pGameObj);
 	myGameObject*			GetGameObject(wstring strName);
 	list<myGameObject*>*	GetGameObjects(wstring strName);
-private:
+public:
 	void					SetParent(myGameObject* pParent);
 public:
 

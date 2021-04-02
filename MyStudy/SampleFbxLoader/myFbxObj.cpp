@@ -110,7 +110,7 @@ bool myFbxObj::LoadFBX(string strFileName)
 		FbxNode* pNode = m_pFbxNodeList[iNode];
 		myGameObject* pObj = myGameObject::CreateComponentObj(new myModelGraphics,
 			to_mw(pNode->GetName()).c_str());
-
+		pObj->SetParent(m_pNodeMap[pNode->GetParent()]);
 		//노드에 대응하는 게임오브젝트 생성 및 맵에 추가
 		m_pNodeMap[pNode] = pObj;
 		//백터에도 추가
