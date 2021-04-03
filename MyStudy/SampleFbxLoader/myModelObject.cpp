@@ -37,7 +37,8 @@ bool myModelObject::Frame()
 		{
 			matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matWorld;
 		}
-		for (int iTick = 1; iTick < pGraphics->m_AnimTrackList.size() - 1; iTick++)
+
+		for (int iTick = 1; iTick < pGraphics->m_AnimTrackList.size(); iTick++)
 		{
 			if (pGraphics->m_AnimTrackList[iTick].iTick >=
 				pAnim->m_fTick)
