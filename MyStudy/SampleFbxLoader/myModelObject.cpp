@@ -4,6 +4,7 @@
 DECLARE_COMPONENT(myModelObject);
 bool myModelObject::Frame()
 {
+	myGameObject::PreFrame();
 	myGameObject::Frame();
 	myAnimation* pAnim = GetComponent<myAnimation>();
 	pAnim->m_fTick += g_fSecondPerFrame *
@@ -35,7 +36,7 @@ bool myModelObject::Frame()
 
 		if (m_myNodeList[iNode]->m_pParent != nullptr)
 		{
-			matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matWorld;
+			matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matAnim;
 		}
 
 		for (int iTick = 1; iTick < pGraphics->m_AnimTrackList.size(); iTick++)
@@ -64,10 +65,10 @@ bool myModelObject::Frame()
 				Matrix matScale = Matrix::CreateScale(vScale);
 				Matrix matRotate = Matrix::CreateFromQuaternion(qRot);
 				Matrix matTrans = Matrix::CreateTranslation(vTrans);
-				m_myNodeList[iNode]->m_pTransform->m_matWorld = matScale * matRotate * matTrans *matParent;
+				m_myNodeList[iNode]->m_pTransform->m_matAnim = matScale * matRotate * matTrans *matParent;
 				//pModelObject->m_matAnim = pModelObject->animlist[iTick].mat;
 
-				m_nodeMatList[iNode] = matBiped * m_myNodeList[iNode]->m_pTransform->m_matWorld;
+				m_nodeMatList[iNode] = matBiped * m_myNodeList[iNode]->m_pTransform->m_matAnim;
 				break;
 			}
 		}
@@ -142,6 +143,7 @@ bool myModelObject::Render()
 myModelObject::myModelObject()
 {
 	InsertComponent(new myAnimation);
+	InsertComponent(new myController);
 	m_pGraphics = make_shared<myModelGraphics>();
 	m_pGraphics->m_pTransform = this->m_pTransform;
 	m_pGraphics->m_pGameObject = this;

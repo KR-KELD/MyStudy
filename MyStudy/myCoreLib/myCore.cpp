@@ -54,7 +54,7 @@ bool myCore::GameInit()
 
 	myDebugCamera* pDebugCamera = new myDebugCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"DebugCamera", pDebugCamera);
-	g_CamList.GetGameObject(L"DebugCamera")->InsertComponent(new myController);
+	//g_CamList.GetGameObject(L"DebugCamera")->InsertComponent(new myController);
 	pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);

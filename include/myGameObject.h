@@ -182,6 +182,8 @@ public:
 	Matrix		m_matView;
 	Matrix		m_matProj;
 public:
+	Matrix		m_matAnim;
+public:
 	virtual bool	SetMatrix(Matrix* pWorld, Matrix* pView, Matrix* pProj);
 	virtual void	UpdateVector();
 	virtual void	SetPos(Vector3 p);
@@ -235,6 +237,7 @@ public:
 
 		m_matView = Matrix::Identity;
 		m_matProj = Matrix::Identity;
+		m_matAnim = Matrix::Identity;
 	}
 	~myTransform() {}
 };
