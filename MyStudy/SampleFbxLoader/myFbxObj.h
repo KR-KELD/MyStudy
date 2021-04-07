@@ -49,6 +49,7 @@ public:
 	FbxManager*						m_pFbxManager;
 	FbxImporter*					m_pFbxImporter;
 	FbxScene*						m_pFbxScene;
+	myAnimScene						m_AnimScene;
 
 	unordered_map<string, Matrix>::iterator			 m_dxMatIter;
 	vector<FbxNode*>								 m_pFbxNodeList;
@@ -58,6 +59,7 @@ public:
 	unordered_map<FbxNode*, int>				     m_pNodeIndexMap;
 public:
 	bool		ModelInit();
+	bool		CuttingAnimScene(wstring strSceneName, int iFirstFrame, int iLastFrame);
 	bool		Load(string strFileName);
 	bool		LoadFBX(string strFileName);
 	bool		Init(string strFileName);
@@ -76,7 +78,7 @@ public:
 	void		ParseAnimation(FbxScene* pFbxScene);
 	void		ParseAnimStack(FbxScene* pFbxScene, FbxString* strAnimStackName);
 	void		ParseNodeAnimation(FbxNode* pNode);
-	bool ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& skindata);
+	bool		ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& skindata);
 public:
 	myFbxObj(FbxManager* pFbxManager);
 	virtual ~myFbxObj();

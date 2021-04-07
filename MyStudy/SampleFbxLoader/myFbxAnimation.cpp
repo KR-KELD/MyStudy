@@ -90,21 +90,24 @@ void myFbxObj::ParseAnimStack(FbxScene * pFbxScene, FbxString * strAnimStackName
 		fStartTime = (float)tlTimeSpan.GetStart().GetSecondDouble();
 		fEndTime = (float)tlTimeSpan.GetStop().GetSecondDouble();
 	}
-	myAnimation* pAnim = m_pModelObject->GetComponent<myAnimation>();
+	//myAnimation* pAnim = m_pModelObject->GetComponent<myAnimation>();
 	//시작 프레임
-	pAnim->m_AnimScene.iFirstFrame = fStartTime * 30.0f;   //0.1초  0.1 x 30 프레임
+	m_AnimScene.iFirstFrame = fStartTime * 30.0f;   //0.1초  0.1 x 30 프레임
 	//끝 프레임
-	pAnim->m_AnimScene.iLastFrame = fEndTime * 30.0f;		//1초 1 x 30 프레임
+	m_AnimScene.iLastFrame = fEndTime * 30.0f;		//1초 1 x 30 프레임
 	//초당 30프레임
-	pAnim->m_AnimScene.iFrameSpeed = 30;
+	m_AnimScene.iFrameSpeed = 30;
 	//프레임당 160틱
-	pAnim->m_AnimScene.iTickPerFrame = 160;
-	pAnim->m_AnimScene.iDeltaTick = 1;
-	pAnim->m_AnimScene.fDeltaTime = fFrameTime * 1.0f;
+	m_AnimScene.iTickPerFrame = 160;
+	m_AnimScene.iDeltaTick = 1;
+	m_AnimScene.fDeltaTime = fFrameTime * 1.0f;
 	//시작 시간
-	pAnim->m_AnimScene.fFirstTime = fStartTime;
+	m_AnimScene.fFirstTime = fStartTime;
 	//끝 시간
-	pAnim->m_AnimScene.fLastTime = fEndTime;
+	m_AnimScene.fLastTime = fEndTime;
+	//fbx 내장애니메이션일경우 가장 먼저 만들어지기때문에
+	//스택이 0번이 된다
+	m_AnimScene.iAnimStackIndex = 0;
 	//ParseNodeAnimation(pFbxScene->GetRootNode());
 }
 
@@ -115,15 +118,16 @@ void myFbxObj::ParseNodeAnimation(FbxNode * pNode)
 	{
 		return;
 	}
-	myAnimation* pAnim = m_pModelObject->GetComponent<myAnimation>();
-
 #if (FBXSDK_VERSION_MAJOR > 2014 || ((FBXSDK_VERSION_MAJOR==2014) && (FBXSDK_VERSION_MINOR>1) ) )
 	auto anim = m_pFbxScene->GetAnimationEvaluator();
 #else
 	auto anim = m_pFBXScene->GetEvaluator();
 #endif
+	auto data = m_pNodeMap.find(pNode);
+	myModelGraphics* pGraphics = data->second->GetComponent<myModelGraphics>();
+	pGraphics->m_AnimTrackList.push_back(AnimTrackList());
 	float fCurrentTime = 0.0f;
-	while (fCurrentTime <= pAnim->m_AnimScene.fLastTime)
+	while (fCurrentTime <= m_AnimScene.fLastTime)
 	{
 		FbxTime t;
 		//현재 시간을 받아온다
@@ -134,10 +138,9 @@ void myFbxObj::ParseNodeAnimation(FbxNode * pNode)
 		track.iTick = fCurrentTime * 30 * 160;
 		track.matWorld = DxConvertMatrix(ConvertMatrixA(mat));
 		//오브젝트에 넣어준다
-		auto data = m_pNodeMap.find(pNode);
-		myModelGraphics* pGraphics = data->second->GetComponent<myModelGraphics>();
-		pGraphics->m_AnimTrackList.push_back(track);
-		fCurrentTime += pAnim->m_AnimScene.fDeltaTime;
+
+		pGraphics->m_AnimTrackList.back().push_back(track);
+		fCurrentTime += m_AnimScene.fDeltaTime;
 		// mat 1차 부모행렬 역행렬 곱한다.
 		FbxAMatrix self;
 		// self 2차 행렬 분해( S, R, T )

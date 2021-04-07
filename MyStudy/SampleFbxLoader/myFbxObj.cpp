@@ -86,6 +86,18 @@ bool myFbxObj::ModelInit()
 	}
 }
 
+bool myFbxObj::CuttingAnimScene(wstring strSceneName, int iFirstFrame, int iLastFrame)
+{
+	myAnimScene scene = m_AnimScene;
+	scene.iFirstFrame = iFirstFrame;
+	scene.iLastFrame = iLastFrame;
+	myAnimation* pAnim = m_pModelObject->GetComponent<myAnimation>();
+	if (pAnim == nullptr) return false;
+	pAnim->m_AnimSceneMap.insert(make_pair(strSceneName, scene));
+
+	return true;
+}
+
 bool myFbxObj::Load(string strFileName)
 {
 	if (LoadFBX(strFileName))
@@ -129,14 +141,14 @@ bool myFbxObj::LoadFBX(string strFileName)
 #endif
 	ParseAnimation(m_pFbxScene);
 
-	myAnimation* pAnim = m_pModelObject->GetComponent<myAnimation>();
+
 	float fCurrentTime = 0.0f;
 	//속도차이 질문
 	//추측
 	//while을 바깥으로 빼면 GetNode어쩌고 함수를 호출하는
 	//객체가 동일해서 캐시에 남아있는 함수를 더 빨리 부르기때문
 	//안으로 넣으면 반복문마다 
-	while (fCurrentTime <= pAnim->m_AnimScene.fLastTime)
+	while (fCurrentTime <= m_AnimScene.fLastTime)
 	{
 		FbxTime t;
 		t.SetSecondDouble(fCurrentTime);
@@ -176,6 +188,8 @@ bool myFbxObj::LoadFBX(string strFileName)
 			track.matWorld = pChildGlobal;
 			myModelGraphics* pGraphics = m_pNodeMap.find(pNode)->
 				second->GetComponent<myModelGraphics>();
+			if (pGraphics->m_AnimTrackList.empty())
+				pGraphics->m_AnimTrackList.push_back(AnimTrackList());
 			if (m.Decompose(vScale, qRot, vTrans))
 			{
 				track.vScale = vScale;
@@ -188,9 +202,9 @@ bool myFbxObj::LoadFBX(string strFileName)
 				track.qRot = Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 				track.vTrans = Vector3(0.0f, 0.0f, 0.0f);
 			}
-			pGraphics->m_AnimTrackList.push_back(track);
+			pGraphics->m_AnimTrackList.back().push_back(track);
 		}
-		fCurrentTime += pAnim->m_AnimScene.fDeltaTime * 1.0f;
+		fCurrentTime += m_AnimScene.fDeltaTime * 1.0f;
 	}
 	ModelInit();
 	return true;

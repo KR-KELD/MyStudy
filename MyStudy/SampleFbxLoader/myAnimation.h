@@ -4,6 +4,7 @@
 
 struct myAnimScene
 {
+	int iAnimStackIndex;
 	int iFirstFrame;
 	int iLastFrame;
 	int iFrameSpeed; // 30
@@ -20,8 +21,12 @@ class myAnimation : public myComponent
 public:
 	DEFINE_COMPONENT(myAnimation, myComponent, true);
 public:
-	myAnimScene			m_AnimScene;
-	float				m_fTick;
+	map<wstring, myAnimScene>	m_AnimSceneMap;
+	map<wstring, myAnimScene>::iterator m_AnimSceneIter;
+	myAnimScene*				m_pCurrentScene;
+	float						m_fTick;
+public:
+	bool						ChangeAnim(wstring strSceneName);
 public:
 	myAnimation();
 	virtual ~myAnimation();

@@ -4,9 +4,12 @@ GAMERUN;
 bool Sample::Init()
 {
 	g_FbxLoader.Init();
-	m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
-	//m_pFbxObj = g_FbxLoader.Load("../../data/object/Scifi_Model_L2_all_in_one.fbx");
+	//m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
+	m_pFbxObj = g_FbxLoader.Load("../../data/object/Scifi_Model_L2_all_in_one.fbx");
 	m_pModelObj = m_pFbxObj->m_pModelObject;
+	m_pFbxObj->CuttingAnimScene(L"1", 0, 30);
+	m_pFbxObj->CuttingAnimScene(L"2", 30, 60);
+	m_pModelObj->m_pAnim->ChangeAnim(L"1");
 	//fbx오브젝트를 기반으로 gameobject 데이터를 채워준다
 
 	return true;
@@ -15,6 +18,14 @@ bool Sample::Init()
 bool Sample::Frame()
 {
 	m_pModelObj->Frame();
+	if (g_Input.GetKey('1') == KEY_PUSH)
+	{
+		m_pModelObj->m_pAnim->ChangeAnim(L"1");
+	}
+	if (g_Input.GetKey('2') == KEY_PUSH)
+	{
+		m_pModelObj->m_pAnim->ChangeAnim(L"2");
+	}
 	return true;
 }
 

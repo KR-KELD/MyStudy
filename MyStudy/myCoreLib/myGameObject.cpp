@@ -66,6 +66,7 @@ bool myTransform::SetMatrix(Matrix * pWorld, Matrix * pView, Matrix * pProj)
 	if (pWorld != nullptr)
 	{
 		m_matWorld = *pWorld;
+
 	}
 	else
 	{
@@ -74,6 +75,8 @@ bool myTransform::SetMatrix(Matrix * pWorld, Matrix * pView, Matrix * pProj)
 		m_matWorld._42 = m_vPos.y;
 		m_matWorld._43 = m_vPos.z;
 	}
+	if (m_pGameObject->m_pParent != nullptr)
+		m_matWorld *= m_pGameObject->m_pParent->m_pTransform->m_matWorld;
 	if (pView != nullptr)
 	{
 		m_matView = *pView;

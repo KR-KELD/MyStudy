@@ -6,87 +6,91 @@ bool myModelObject::Frame()
 {
 	myGameObject::PreFrame();
 	myGameObject::Frame();
-	myAnimation* pAnim = GetComponent<myAnimation>();
-	pAnim->m_fTick += g_fSecondPerFrame *
-		pAnim->m_AnimScene.iFrameSpeed *
-		pAnim->m_AnimScene.iTickPerFrame;
-
-	if (pAnim->m_fTick >=
-		(pAnim->m_AnimScene.iLastFrame * pAnim->m_AnimScene.iTickPerFrame))
+	myAnimScene* pScene = m_pAnim->m_pCurrentScene;
+	if (pScene != nullptr)
 	{
-		pAnim->m_fTick = 0;
-	}
+		m_pAnim->m_fTick += g_fSecondPerFrame *
+			pScene->iFrameSpeed *
+			pScene->iTickPerFrame;
 
-	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
-	{
-		Matrix matWorld = Matrix::Identity;
-		Matrix matBiped = Matrix::Identity;
-		Matrix matParent = Matrix::Identity;
-		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
-
-		// 스킨을 바이패드공간으로 이동시킨다
-		string szName = to_wm(pGraphics->m_pGameObject->m_strName);
-
-
-		auto data = m_nodeMatBindPoseMap.find(szName);
-		if (data != m_nodeMatBindPoseMap.end())
+		if (m_pAnim->m_fTick >=
+			(pScene->iLastFrame * pScene->iTickPerFrame))
 		{
-			matBiped = data->second;
+			m_pAnim->m_fTick = pScene->iFirstFrame *
+				pScene->iTickPerFrame;
 		}
 
-		if (m_myNodeList[iNode]->m_pParent != nullptr)
+		for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 		{
-			matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matAnim;
-		}
+			Matrix matWorld = Matrix::Identity;
+			Matrix matBiped = Matrix::Identity;
+			Matrix matParent = Matrix::Identity;
+			myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
 
-		for (int iTick = 1; iTick < pGraphics->m_AnimTrackList.size(); iTick++)
-		{
-			if (pGraphics->m_AnimTrackList[iTick].iTick >=
-				pAnim->m_fTick)
+			// 스킨을 바이패드공간으로 이동시킨다
+			string szName = to_wm(pGraphics->m_pGameObject->m_strName);
+
+
+			auto data = m_nodeMatBindPoseMap.find(szName);
+			if (data != m_nodeMatBindPoseMap.end())
 			{
-				int iStart = pGraphics->m_AnimTrackList[iTick - 1].iTick;
-				int iEnd = pGraphics->m_AnimTrackList[iTick].iTick;
-				int iStepTick = iEnd - iStart;
-				float t = (pAnim->m_fTick - iStart) / iStepTick;
-				Vector3 vStart, vEnd, vTrans;
-				vStart = pGraphics->m_AnimTrackList[iTick - 1].vTrans;
-				vEnd = pGraphics->m_AnimTrackList[iTick].vTrans;
-				vTrans = Vector3::Lerp(vStart, vEnd, t);
-				Vector3 vScale;
-				vStart = pGraphics->m_AnimTrackList[iTick - 1].vScale;
-				vEnd = pGraphics->m_AnimTrackList[iTick].vScale;
-				vScale = Vector3::Lerp(vStart, vEnd, t);
+				matBiped = data->second;
+			}
 
-				Quaternion q1, q2, qRot;
-				q1 = pGraphics->m_AnimTrackList[iTick - 1].qRot;
-				q2 = pGraphics->m_AnimTrackList[iTick].qRot;
-				qRot = Quaternion::Slerp(q1, q2, t);
+			if (m_myNodeList[iNode]->m_pParent != nullptr)
+			{
+				matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matAnim;
+			}
 
-				Matrix matScale = Matrix::CreateScale(vScale);
-				Matrix matRotate = Matrix::CreateFromQuaternion(qRot);
-				Matrix matTrans = Matrix::CreateTranslation(vTrans);
-				m_myNodeList[iNode]->m_pTransform->m_matAnim = matScale * matRotate * matTrans *matParent;
-				//pModelObject->m_matAnim = pModelObject->animlist[iTick].mat;
+			for (int iTick = 1; iTick < pGraphics->m_AnimTrackList[pScene->iAnimStackIndex].size(); iTick++)
+			{
+				if (pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].iTick >=
+					m_pAnim->m_fTick)
+				{
+					int iStart = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick - 1].iTick;
+					int iEnd = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].iTick;
+					int iStepTick = iEnd - iStart;
+					float t = (m_pAnim->m_fTick - iStart) / iStepTick;
+					Vector3 vStart, vEnd, vTrans;
+					vStart = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick - 1].vTrans;
+					vEnd = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].vTrans;
+					vTrans = Vector3::Lerp(vStart, vEnd, t);
+					Vector3 vScale;
+					vStart = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick - 1].vScale;
+					vEnd = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].vScale;
+					vScale = Vector3::Lerp(vStart, vEnd, t);
 
-				m_nodeMatList[iNode] = matBiped * m_myNodeList[iNode]->m_pTransform->m_matAnim;
-				break;
+					Quaternion q1, q2, qRot;
+					q1 = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick - 1].qRot;
+					q2 = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].qRot;
+					qRot = Quaternion::Slerp(q1, q2, t);
+
+					Matrix matScale = Matrix::CreateScale(vScale);
+					Matrix matRotate = Matrix::CreateFromQuaternion(qRot);
+					Matrix matTrans = Matrix::CreateTranslation(vTrans);
+					m_myNodeList[iNode]->m_pTransform->m_matAnim = matScale * matRotate * matTrans *matParent;
+					//pModelObject->m_matAnim = pModelObject->animlist[iTick].mat;
+
+					m_nodeMatList[iNode] = matBiped * m_myNodeList[iNode]->m_pTransform->m_matAnim;
+					break;
+				}
 			}
 		}
-	}
 
-	Matrix* pMatrices;
-	HRESULT hr = S_OK;
-	D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
-	if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)m_pBoneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedFaceDest)))
-	{
-		pMatrices = (Matrix*)MappedFaceDest.pData;
-		for (int dwObject = 0; dwObject < m_myNodeList.size(); dwObject++)
+		Matrix* pMatrices;
+		HRESULT hr = S_OK;
+		D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
+		if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)m_pBoneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedFaceDest)))
 		{
-			//전치 (내적하려고)
-			Matrix matAnim = m_nodeMatList[dwObject].Transpose();
-			pMatrices[dwObject] = matAnim;
+			pMatrices = (Matrix*)MappedFaceDest.pData;
+			for (int dwObject = 0; dwObject < m_myNodeList.size(); dwObject++)
+			{
+				//전치 (내적하려고)
+				Matrix matAnim = m_nodeMatList[dwObject].Transpose();
+				pMatrices[dwObject] = matAnim;
+			}
+			g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
 		}
-		g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
 	}
 	return true;
 }
@@ -147,6 +151,7 @@ myModelObject::myModelObject()
 	m_pGraphics = make_shared<myModelGraphics>();
 	m_pGraphics->m_pTransform = this->m_pTransform;
 	m_pGraphics->m_pGameObject = this;
+	m_pAnim = GetComponent<myAnimation>();
 	D3D11_BUFFER_DESC vbdesc =
 	{
 		MAX_BONE_MATRICES * sizeof(Matrix),
