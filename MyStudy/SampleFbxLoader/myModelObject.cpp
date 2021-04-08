@@ -2,14 +2,15 @@
 #include "myCameraManager.h"
 #define MAX_BONE_MATRICES 255
 DECLARE_COMPONENT(myModelObject);
-bool myModelObject::SetAnimScene(wstring strSceneName, myAnimScene & anim)
+//bool myModelObject::SetAnimScene(wstring strSceneName, myAnimScene & anim)
+//{
+//	m_pAnim->m_AnimSceneMap.insert(make_pair(strSceneName, myAnimScene(anim)));
+//	return true;
+//}
+int myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
 {
-	m_pAnim->m_AnimSceneMap.insert(make_pair(strSceneName, myAnimScene(anim)));
-	return true;
-}
-bool myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
-{
-	if (nodeList.size() != m_myNodeList.size()) return false;
+	if (nodeList.size() != m_myNodeList.size()) return -1;
+	int iTrackIndex = -1;
 	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 	{
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
@@ -18,31 +19,20 @@ bool myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
 		{
 			if (pSourceGraphics->m_AnimTrackList.size() <= 0) continue;
 			pGraphics->m_AnimTrackList.emplace_back(pSourceGraphics->m_AnimTrackList.front());
-		}
-	}
-	return true;
-}
-bool myModelObject::SetAnim(wstring strSceneName, myAnimScene & anim, vector<myGameObject*>& nodeList)
-{
-	if (nodeList.size() != m_myNodeList.size()) return false;
-	myAnimScene scene = myAnimScene(anim);
-	int iStackIndex = -1;
-	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
-	{
-		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
-		myModelGraphics* pSourceGraphics = nodeList[iNode]->GetComponent<myModelGraphics>();
-		if (pGraphics != nullptr && pSourceGraphics != nullptr)
-		{
-			if (pSourceGraphics->m_AnimTrackList.size() <= 0)  continue;
-			pGraphics->m_AnimTrackList.emplace_back(pSourceGraphics->m_AnimTrackList.front());
-			if (iStackIndex < 0)
+			if (iTrackIndex < 0)
 			{
-				iStackIndex = pGraphics->m_AnimTrackList.size();
+				iTrackIndex = pGraphics->m_AnimTrackList.size() - 1;
 			}
 		}
 	}
-	scene.iAnimStackIndex = iStackIndex;
-	m_pAnim->m_AnimSceneMap.insert(make_pair(strSceneName, scene));
+	return iTrackIndex;
+}
+bool myModelObject::SetAnim(wstring strSceneName, myAnimScene & scene, vector<myGameObject*>& nodeList)
+{
+	int iTrackIndex = SetAnimTrack(nodeList);
+	if (iTrackIndex == -1) return false;
+	scene.iAnimTrackIndex = iTrackIndex;
+	m_pAnim->AddAnim(strSceneName, scene);
 	return true;
 }
 bool myModelObject::Frame()
@@ -85,27 +75,27 @@ bool myModelObject::Frame()
 				matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matAnim;
 			}
 
-			for (int iTick = 1; iTick < pGraphics->m_AnimTrackList[pScene->iAnimStackIndex].size(); iTick++)
+			for (int iTick = 1; iTick < pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex].size(); iTick++)
 			{
-				if (pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].iTick >=
+				if (pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].iTick >=
 					m_pAnim->m_fTick)
 				{
-					int iStart = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick - 1].iTick;
-					int iEnd = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].iTick;
+					int iStart = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick - 1].iTick;
+					int iEnd = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].iTick;
 					int iStepTick = iEnd - iStart;
 					float t = (m_pAnim->m_fTick - iStart) / iStepTick;
 					Vector3 vStart, vEnd, vTrans;
-					vStart = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick - 1].vTrans;
-					vEnd = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].vTrans;
+					vStart = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick - 1].vTrans;
+					vEnd = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].vTrans;
 					vTrans = Vector3::Lerp(vStart, vEnd, t);
 					Vector3 vScale;
-					vStart = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick - 1].vScale;
-					vEnd = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].vScale;
+					vStart = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick - 1].vScale;
+					vEnd = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].vScale;
 					vScale = Vector3::Lerp(vStart, vEnd, t);
 
 					Quaternion q1, q2, qRot;
-					q1 = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick - 1].qRot;
-					q2 = pGraphics->m_AnimTrackList[pScene->iAnimStackIndex][iTick].qRot;
+					q1 = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick - 1].qRot;
+					q2 = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].qRot;
 					qRot = Quaternion::Slerp(q1, q2, t);
 
 					Matrix matScale = Matrix::CreateScale(vScale);

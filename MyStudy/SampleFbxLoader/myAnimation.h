@@ -4,7 +4,7 @@
 
 struct myAnimScene
 {
-	int iAnimStackIndex;
+	int iAnimTrackIndex;
 	int iFirstFrame;
 	int iLastFrame;
 	int iFrameSpeed; // 30
@@ -14,7 +14,7 @@ struct myAnimScene
 	float fDeltaTime;
 	float fFirstTime;
 	float fLastTime;
-	myAnimScene	CuttingAnimScene(int iFirstFrame, int iLastFrame)
+	myAnimScene CuttingAnimScene(int iFirstFrame, int iLastFrame)
 	{
 		myAnimScene scene = myAnimScene(*this);
 		scene.iFirstFrame = iFirstFrame;
@@ -33,6 +33,7 @@ public:
 	myAnimScene*				m_pCurrentScene;
 	float						m_fTick;
 public:
+	bool						AddAnim(wstring strSceneName, myAnimScene scene);
 	bool						ChangeAnim(wstring strSceneName);
 public:
 	myAnimation();

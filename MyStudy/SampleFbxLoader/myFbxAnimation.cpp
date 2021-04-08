@@ -107,7 +107,7 @@ void myFbxObj::ParseAnimStack(FbxScene * pFbxScene, FbxString * strAnimStackName
 	m_AnimScene.fLastTime = fEndTime;
 	//fbx 내장애니메이션일경우 가장 먼저 만들어지기때문에
 	//스택이 0번이 된다
-	m_AnimScene.iAnimStackIndex = 0;
+	m_AnimScene.iAnimTrackIndex = 0;
 	//ParseNodeAnimation(pFbxScene->GetRootNode());
 }
 

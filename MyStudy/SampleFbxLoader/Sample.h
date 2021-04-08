@@ -10,6 +10,7 @@ class Sample : public myCore
 {
 public:
 	myFbxObj* m_pFbxObj;
+	myFbxObj* m_pFbxObj2;
 	shared_ptr<myModelObject> m_pModelObj;
 public:
 	bool Init() override;

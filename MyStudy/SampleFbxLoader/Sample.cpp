@@ -5,10 +5,13 @@ bool Sample::Init()
 {
 	g_FbxLoader.Init();
 	//m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
-	m_pFbxObj = g_FbxLoader.Load("../../data/object/Scifi_Model_L2_all_in_one.fbx");
+	//테스트 오류 노드의 갯수가 일치하지 않음
+	//뼈대만 뽑아야 하는지 질문
+	m_pFbxObj2 = g_FbxLoader.Load("../../data/object/Scifi_Model_L2_all_in_one.fbx");
+	m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
 	m_pModelObj = m_pFbxObj->m_pModelObject;
-	m_pFbxObj->CuttingAnimScene(L"1", 0, 30);
-	m_pFbxObj->CuttingAnimScene(L"2", 30, 60);
+	m_pFbxObj->CuttingAnimScene(L"1", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
+	m_pModelObj->SetAnim(L"2", m_pFbxObj2->m_AnimScene, m_pFbxObj2->m_pModelObject->m_myNodeList);
 	m_pModelObj->m_pAnim->ChangeAnim(L"1");
 	//fbx오브젝트를 기반으로 gameobject 데이터를 채워준다
 
