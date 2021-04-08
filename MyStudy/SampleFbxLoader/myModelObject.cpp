@@ -2,6 +2,49 @@
 #include "myCameraManager.h"
 #define MAX_BONE_MATRICES 255
 DECLARE_COMPONENT(myModelObject);
+bool myModelObject::SetAnimScene(wstring strSceneName, myAnimScene & anim)
+{
+	m_pAnim->m_AnimSceneMap.insert(make_pair(strSceneName, myAnimScene(anim)));
+	return true;
+}
+bool myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
+{
+	if (nodeList.size() != m_myNodeList.size()) return false;
+	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
+	{
+		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
+		myModelGraphics* pSourceGraphics = nodeList[iNode]->GetComponent<myModelGraphics>();
+		if (pGraphics != nullptr && pSourceGraphics != nullptr)
+		{
+			if (pSourceGraphics->m_AnimTrackList.size() <= 0) continue;
+			pGraphics->m_AnimTrackList.emplace_back(pSourceGraphics->m_AnimTrackList.front());
+		}
+	}
+	return true;
+}
+bool myModelObject::SetAnim(wstring strSceneName, myAnimScene & anim, vector<myGameObject*>& nodeList)
+{
+	if (nodeList.size() != m_myNodeList.size()) return false;
+	myAnimScene scene = myAnimScene(anim);
+	int iStackIndex = -1;
+	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
+	{
+		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
+		myModelGraphics* pSourceGraphics = nodeList[iNode]->GetComponent<myModelGraphics>();
+		if (pGraphics != nullptr && pSourceGraphics != nullptr)
+		{
+			if (pSourceGraphics->m_AnimTrackList.size() <= 0)  continue;
+			pGraphics->m_AnimTrackList.emplace_back(pSourceGraphics->m_AnimTrackList.front());
+			if (iStackIndex < 0)
+			{
+				iStackIndex = pGraphics->m_AnimTrackList.size();
+			}
+		}
+	}
+	scene.iAnimStackIndex = iStackIndex;
+	m_pAnim->m_AnimSceneMap.insert(make_pair(strSceneName, scene));
+	return true;
+}
 bool myModelObject::Frame()
 {
 	myGameObject::PreFrame();

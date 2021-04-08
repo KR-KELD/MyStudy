@@ -16,8 +16,12 @@ public:
 	vector<Matrix>					m_nodeMatList;
 	unordered_map<string, Matrix>	m_nodeMatBindPoseMap;
 public:
-	virtual bool				Frame() override;
-	virtual bool				Render() override;
+	bool				SetAnimScene(wstring strSceneName, myAnimScene& anim);
+	bool				SetAnimTrack(vector<myGameObject*>& nodeList);
+	bool				SetAnim(wstring strSceneName, myAnimScene& anim, vector<myGameObject*>& nodeList);
+public:					
+	virtual bool		Frame() override;
+	virtual bool		Render() override;
 public:
 	myModelObject();
 	virtual ~myModelObject();

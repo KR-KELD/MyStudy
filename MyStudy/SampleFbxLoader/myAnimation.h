@@ -14,6 +14,13 @@ struct myAnimScene
 	float fDeltaTime;
 	float fFirstTime;
 	float fLastTime;
+	myAnimScene	CuttingAnimScene(int iFirstFrame, int iLastFrame)
+	{
+		myAnimScene scene = myAnimScene(*this);
+		scene.iFirstFrame = iFirstFrame;
+		scene.iLastFrame = iLastFrame;
+		return scene;
+	}
 };
 
 class myAnimation : public myComponent

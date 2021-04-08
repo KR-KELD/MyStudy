@@ -88,12 +88,10 @@ bool myFbxObj::ModelInit()
 
 bool myFbxObj::CuttingAnimScene(wstring strSceneName, int iFirstFrame, int iLastFrame)
 {
-	myAnimScene scene = m_AnimScene;
-	scene.iFirstFrame = iFirstFrame;
-	scene.iLastFrame = iLastFrame;
 	myAnimation* pAnim = m_pModelObject->GetComponent<myAnimation>();
 	if (pAnim == nullptr) return false;
-	pAnim->m_AnimSceneMap.insert(make_pair(strSceneName, scene));
+	pAnim->m_AnimSceneMap.insert(make_pair(strSceneName,
+		m_AnimScene.CuttingAnimScene(iFirstFrame, iLastFrame)));
 
 	return true;
 }
