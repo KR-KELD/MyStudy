@@ -138,13 +138,9 @@ bool myFbxObj::LoadFBX(string strFileName)
 #endif
 	ParseAnimation(m_pFbxScene);
 
-
 	float fCurrentTime = 0.0f;
-	//속도차이 질문
-	//추측
-	//while을 바깥으로 빼면 GetNode어쩌고 함수를 호출하는
-	//객체가 동일해서 캐시에 남아있는 함수를 더 빨리 부르기때문
-	//안으로 넣으면 반복문마다 
+	//속도차이 그냥 함수호출때문
+
 	while (fCurrentTime <= m_AnimScene.fLastTime)
 	{
 		FbxTime t;
@@ -202,6 +198,52 @@ bool myFbxObj::LoadFBX(string strFileName)
 			pGraphics->m_AnimTrackList.back().push_back(track);
 		}
 		fCurrentTime += m_AnimScene.fDeltaTime * 1.0f;
+	}
+
+	//시간별 SRT 변화량을 체크해서 변화가 없으면 애니메이션이 없는걸로 간주하고
+	//트랙을 제거한다
+	bool isAnim = false;
+	Vector3 vCheckScale;
+	Quaternion qCheckRot;
+	Vector3 vCheckTrans;
+	for (int iNode = 0; iNode < m_pModelObject->m_myNodeList.size(); iNode++)
+	{
+		myModelGraphics* pGraphics = m_pModelObject->
+			m_myNodeList[iNode]->GetComponent<myModelGraphics>();
+		bool isFirst = true;
+		for (int iIndex = 0; iIndex < pGraphics->m_AnimTrackList.back().size(); iIndex++)
+		{
+			myAnimTrack* pTrack = &pGraphics->m_AnimTrackList.back()[iIndex];
+			if (isFirst)
+			{
+				vCheckScale = pTrack->vScale;
+				qCheckRot = pTrack->qRot;
+				vCheckTrans = pTrack->vTrans;
+				isFirst = false;
+			}
+			else
+			{
+				if (vCheckTrans != pTrack->vTrans ||
+					qCheckRot != pTrack->qRot ||
+					vCheckScale != pTrack->vScale)
+				{
+					isAnim = true;
+					break;
+				}
+			}
+		}
+		if (isAnim)
+			break;
+	}
+
+	if (!isAnim)
+	{
+		for (int iNode = 0; iNode < m_pModelObject->m_myNodeList.size(); iNode++)
+		{
+			myModelGraphics* pGraphics = m_pModelObject->
+				m_myNodeList[iNode]->GetComponent<myModelGraphics>();
+			pGraphics->m_AnimTrackList.back().clear();
+		}
 	}
 	ModelInit();
 	return true;

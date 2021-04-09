@@ -31,7 +31,7 @@ bool myModelObject::SetAnim(wstring strSceneName, myAnimScene & scene, vector<my
 {
 	int iTrackIndex = SetAnimTrack(nodeList);
 	if (iTrackIndex == -1) return false;
-	scene.iAnimTrackIndex = iTrackIndex;
+	scene.ptAnimTrackIndex.x = iTrackIndex;
 	m_pAnim->AddAnim(strSceneName, scene);
 	return true;
 }
@@ -75,27 +75,27 @@ bool myModelObject::Frame()
 				matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matAnim;
 			}
 
-			for (int iTick = 1; iTick < pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex].size(); iTick++)
+			for (int iTick = 1; iTick < pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x].size(); iTick++)
 			{
-				if (pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].iTick >=
+				if (pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick].iTick >=
 					m_pAnim->m_fTick)
 				{
-					int iStart = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick - 1].iTick;
-					int iEnd = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].iTick;
+					int iStart = pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick - 1].iTick;
+					int iEnd = pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick].iTick;
 					int iStepTick = iEnd - iStart;
 					float t = (m_pAnim->m_fTick - iStart) / iStepTick;
 					Vector3 vStart, vEnd, vTrans;
-					vStart = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick - 1].vTrans;
-					vEnd = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].vTrans;
+					vStart = pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick - 1].vTrans;
+					vEnd = pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick].vTrans;
 					vTrans = Vector3::Lerp(vStart, vEnd, t);
 					Vector3 vScale;
-					vStart = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick - 1].vScale;
-					vEnd = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].vScale;
+					vStart = pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick - 1].vScale;
+					vEnd = pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick].vScale;
 					vScale = Vector3::Lerp(vStart, vEnd, t);
 
 					Quaternion q1, q2, qRot;
-					q1 = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick - 1].qRot;
-					q2 = pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex][iTick].qRot;
+					q1 = pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick - 1].qRot;
+					q2 = pGraphics->m_AnimTrackList[pScene->ptAnimTrackIndex.x][iTick].qRot;
 					qRot = Quaternion::Slerp(q1, q2, t);
 
 					Matrix matScale = Matrix::CreateScale(vScale);
@@ -180,7 +180,7 @@ bool myModelObject::Render()
 myModelObject::myModelObject()
 {
 	InsertComponent(new myAnimation);
-	InsertComponent(new myController);
+	//InsertComponent(new myController);
 	m_pGraphics = make_shared<myModelGraphics>();
 	m_pGraphics->m_pTransform = this->m_pTransform;
 	m_pGraphics->m_pGameObject = this;

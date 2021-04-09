@@ -4,7 +4,9 @@
 
 struct myAnimScene
 {
-	int iAnimTrackIndex;
+	//x는 애니메이션 종류, y는 시간별로 쪼갠 인덱스
+	POINT ptAnimTrackIndex;
+	//int iAnimTrackIndex;
 	int iFirstFrame;
 	int iLastFrame;
 	int iFrameSpeed; // 30

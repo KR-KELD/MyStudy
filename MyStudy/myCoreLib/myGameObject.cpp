@@ -66,10 +66,12 @@ bool myTransform::SetMatrix(Matrix * pWorld, Matrix * pView, Matrix * pProj)
 	if (pWorld != nullptr)
 	{
 		m_matWorld = *pWorld;
-
 	}
 	else
 	{
+		//필요할때 풀기
+		//m_matScale = Matrix::CreateScale(m_vScale);
+		//m_matRot = Matrix::CreateFromQuaternion(m_qRot);
 		m_matWorld = m_matScale * m_matRot;
 		m_matWorld._41 = m_vPos.x;
 		m_matWorld._42 = m_vPos.y;
