@@ -9,12 +9,21 @@ DECLARE_COMPONENT(myModelObject);
 //}
 int myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
 {
+	//뼈대를 검색해서 추가하거나
+	//기본 베이스를 복사하고 뼈대만 덮어쓰기
+	//시간자르는거도 따로 해야할듯
 	if (nodeList.size() != m_myNodeList.size()) return -1;
 	int iTrackIndex = -1;
 	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 	{
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
 		myModelGraphics* pSourceGraphics = nodeList[iNode]->GetComponent<myModelGraphics>();
+		pGraphics->m_AnimTrackList.emplace_back(pGraphics->m_AnimTrackList.front());
+		
+		for (int iTrack = 0; iTrack < pGraphics->m_AnimTrackList.back().size(); iTrack++)
+		{
+
+		}
 		if (pGraphics != nullptr && pSourceGraphics != nullptr)
 		{
 			if (pSourceGraphics->m_AnimTrackList.size() <= 0) continue;
@@ -135,7 +144,7 @@ bool myModelObject::Render()
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
 
 		//바인드포즈가 없으면 상수버퍼를 넘기지마라
-		if (pGraphics->m_nodeMatBindPoseMap.size() > 0)
+		//if (pGraphics->m_nodeMatBindPoseMap.size() > 0)
 		{
 			Matrix* pMatrices;
 			D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
@@ -163,7 +172,6 @@ bool myModelObject::Render()
 				g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
 			}
 		}
-
 
 		for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
 		{
