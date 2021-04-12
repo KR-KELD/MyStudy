@@ -56,19 +56,19 @@ bool myModelObject::Frame()
 		for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 		{
 			Matrix matWorld = Matrix::Identity;
-			Matrix matBiped = Matrix::Identity;
+			//Matrix matBiped = Matrix::Identity;
 			Matrix matParent = Matrix::Identity;
 			myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
 
 			// 스킨을 바이패드공간으로 이동시킨다
-			string szName = to_wm(pGraphics->m_pGameObject->m_strName);
+			//string szName = to_wm(pGraphics->m_pGameObject->m_strName);
 
 
-			auto data = m_nodeMatBindPoseMap.find(szName);
-			if (data != m_nodeMatBindPoseMap.end())
-			{
-				matBiped = data->second;
-			}
+			//auto data = m_nodeMatBindPoseMap.find(szName);
+			//if (data != m_nodeMatBindPoseMap.end())
+			//{
+			//	matBiped = data->second;
+			//}
 
 			if (m_myNodeList[iNode]->m_pParent != nullptr)
 			{
@@ -104,25 +104,10 @@ bool myModelObject::Frame()
 					m_myNodeList[iNode]->m_pTransform->m_matAnim = matScale * matRotate * matTrans *matParent;
 					//pModelObject->m_matAnim = pModelObject->animlist[iTick].mat;
 
-					m_nodeMatList[iNode] = matBiped * m_myNodeList[iNode]->m_pTransform->m_matAnim;
+					m_nodeMatList[iNode] = /*matBiped **/ m_myNodeList[iNode]->m_pTransform->m_matAnim;
 					break;
 				}
 			}
-		}
-
-		Matrix* pMatrices;
-		HRESULT hr = S_OK;
-		D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
-		if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)m_pBoneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedFaceDest)))
-		{
-			pMatrices = (Matrix*)MappedFaceDest.pData;
-			for (int dwObject = 0; dwObject < m_myNodeList.size(); dwObject++)
-			{
-				//전치 (내적하려고)
-				Matrix matAnim = m_nodeMatList[dwObject].Transpose();
-				pMatrices[dwObject] = matAnim;
-			}
-			g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
 		}
 	}
 	return true;
@@ -148,6 +133,38 @@ bool myModelObject::Render()
 	{
 		Matrix matWorld = Matrix::Identity;
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
+
+		//바인드포즈가 없으면 상수버퍼를 넘기지마라
+		if (pGraphics->m_nodeMatBindPoseMap.size() > 0)
+		{
+			Matrix* pMatrices;
+			D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
+			if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)m_pBoneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedFaceDest)))
+			{
+				pMatrices = (Matrix*)MappedFaceDest.pData;
+				//바인드포즈가 있는(메시) 노드를 찾아서 크루스터(영향을 주는 노드)
+				//의 매트릭스를 채워서 상수버퍼로 전달해준다
+				//뼈대 가져올때 이부분을 참고
+				for (int dwObject = 0; dwObject < m_myNodeList.size(); dwObject++)
+				{
+					Matrix matBiped = Matrix::Identity;
+					string szName = to_wm(m_myNodeList[dwObject]->m_strName);
+
+					auto data = pGraphics->m_nodeMatBindPoseMap.find(szName);
+					if (data != pGraphics->m_nodeMatBindPoseMap.end())
+					{
+						matBiped = data->second;
+					}
+
+					//전치 (내적하려고)
+					Matrix matAnim = matBiped * m_nodeMatList[dwObject];
+					pMatrices[dwObject] = matAnim.Transpose();
+				}
+				g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
+			}
+		}
+
+
 		for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
 		{
 			mySubMesh* pMesh = &pGraphics->m_SubMeshList[iSub];

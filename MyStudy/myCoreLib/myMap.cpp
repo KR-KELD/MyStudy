@@ -86,28 +86,28 @@ bool myMap::CreateMap(myMapDesc  desc)
 	return true;
 }
 
-bool myMap::CalNormal()
-{
-	int iIndex = 0;
-	for (int iFace = 0; iFace < m_IndexList.size() / 3; iFace++)
-	{
-		Vector3 n;
-		Vector3 e0 = m_VertexList[m_IndexList[iIndex + 1]].p - m_VertexList[m_IndexList[iIndex + 0]].p;
-		Vector3 e1 = m_VertexList[m_IndexList[iIndex + 2]].p - m_VertexList[m_IndexList[iIndex + 0]].p;
-		n = e0.Cross(e1);
-		n.Normalize();
-		m_VertexList[m_IndexList[iIndex + 0]].n += n;
-		m_VertexList[m_IndexList[iIndex + 1]].n += n;
-		m_VertexList[m_IndexList[iIndex + 2]].n += n;
-		iIndex += 3;
-	}
-
-	for (int i = 0; i < m_VertexList.size(); i++)
-	{
-		m_VertexList[i].n.Normalize();
-	}
-	return true;
-}
+//bool myMap::CalNormal()
+//{
+//	int iIndex = 0;
+//	for (int iFace = 0; iFace < m_IndexList.size() / 3; iFace++)
+//	{
+//		Vector3 n;
+//		Vector3 e0 = m_VertexList[m_IndexList[iIndex + 1]].p - m_VertexList[m_IndexList[iIndex + 0]].p;
+//		Vector3 e1 = m_VertexList[m_IndexList[iIndex + 2]].p - m_VertexList[m_IndexList[iIndex + 0]].p;
+//		n = e0.Cross(e1);
+//		n.Normalize();
+//		m_VertexList[m_IndexList[iIndex + 0]].n += n;
+//		m_VertexList[m_IndexList[iIndex + 1]].n += n;
+//		m_VertexList[m_IndexList[iIndex + 2]].n += n;
+//		iIndex += 3;
+//	}
+//
+//	for (int i = 0; i < m_VertexList.size(); i++)
+//	{
+//		m_VertexList[i].n.Normalize();
+//	}
+//	return true;
+//}
 
 float myMap::Lerp(float fStart, float fEnd, float fTangent)
 {
@@ -179,4 +179,81 @@ float myMap::GetFaceHeight(UINT index)
 float myMap::GetHeightMap(int row, int col)
 {
 	return m_VertexList[row * m_iNumRows + col].p.y;
+}
+
+void myMap::GetVertexNormal()
+{
+	InitFaceNormals();
+	GenNormalLookupTable();
+	CalcPerVertexNormalsFastLookup();
+}
+Vector3 myMap::ComputeFaceNormal(DWORD i0, DWORD i1, DWORD i2)
+{
+	Vector3 normal;
+	Vector3 v0 = m_VertexList[i1].p - m_VertexList[i0].p;
+	Vector3 v1 = m_VertexList[i2].p - m_VertexList[i0].p;
+	normal = v0.Cross(v1);
+	normal.Normalize();
+	return normal;
+}
+void myMap::CalcFaceNormals()
+{
+	int index = 0;
+	for (int i = 0; i < m_iNumFaces * 3; i += 3)
+	{
+		m_FaceNormals[index++] = ComputeFaceNormal(
+			m_IndexList[i],
+			m_IndexList[i + 1],
+			m_IndexList[i + 2]);
+	}
+}
+void myMap::InitFaceNormals()
+{
+	m_FaceNormals.resize(m_iNumFaces);
+	for (int i = 0; i < m_iNumFaces; i++)
+	{
+		m_FaceNormals[i] = Vector3::Zero;
+	}
+}
+void myMap::GenNormalLookupTable()
+{
+	m_LookupTabel.resize(m_iNumVertices);
+	for (int iFace = 0; iFace < m_iNumFaces; iFace++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			for (int k = 0; k < 6; k++)
+			{
+				int id = m_IndexList[iFace * 3 + j];
+				if (m_LookupTabel[id].index[k] == -1)
+				{
+					m_LookupTabel[id].index[k] = iFace;
+					break;
+				}
+			}
+		}
+	}
+}
+
+void myMap::CalcPerVertexNormalsFastLookup()
+{
+	CalcFaceNormals();
+	for (int i = 0; i < m_iNumVertices; i++)
+	{
+		Vector3 avgNormal = { 0,0,0 };
+		for (int f = 0; f < 6; f++)
+		{
+			int index = m_LookupTabel[i].index[f];
+			if (index != -1)
+			{
+				avgNormal += m_FaceNormals[index];
+			}
+			else
+			{
+				break;
+			}
+		}
+		m_VertexList[i].n = avgNormal;
+		m_VertexList[i].n.Normalize();
+	}
 }

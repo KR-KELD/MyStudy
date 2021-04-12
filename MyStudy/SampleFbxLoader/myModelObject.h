@@ -14,7 +14,7 @@ public:
 	//기존의 맵을 써도 상관없음 나중에 수정해도 됨
 	vector<myGameObject*>			m_myNodeList;
 	vector<Matrix>					m_nodeMatList;
-	unordered_map<string, Matrix>	m_nodeMatBindPoseMap;
+	//unordered_map<string, Matrix>	m_nodeMatBindPoseMap;
 public:
 	//bool				SetAnimScene(wstring strSceneName, myAnimScene& anim);
 	int					SetAnimTrack(vector<myGameObject*>& nodeList);

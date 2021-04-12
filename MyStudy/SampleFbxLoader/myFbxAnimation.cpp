@@ -1,6 +1,6 @@
 #include "myFbxObj.h"
 
-bool myFbxObj::ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& skindata)
+bool myFbxObj::ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& skindata, myModelGraphics* pGraphics)
 {
 	//영향을 주는 객체가 있는가
 	int iDeformerCount = pFbxMesh->GetDeformerCount(FbxDeformer::eSkin);
@@ -35,7 +35,7 @@ bool myFbxObj::ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& s
 			Matrix matInvBindPos = DxConvertMatrix(ConvertMatrixA(matBindPose));
 			matInvBindPos = matInvBindPos.Invert();
 
-			m_pModelObject->m_nodeMatBindPoseMap.insert(
+			pGraphics->m_nodeMatBindPoseMap.insert(
 				make_pair(pCluster->GetLink()->GetName(), matInvBindPos));
 
 			//크러스터에 영향을 받는 정점의 갯수를 가져온다

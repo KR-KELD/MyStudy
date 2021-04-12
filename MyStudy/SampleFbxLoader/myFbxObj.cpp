@@ -448,7 +448,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 	//정점들의 정보
 	FbxVector4* pVertexPositions = pFbxMesh->GetControlPoints();
 
-	bool bSkinnedMesh = ParseMeshSkinningMap(pFbxMesh, pGraphics->m_WeightList);
+	bool bSkinnedMesh = ParseMeshSkinningMap(pFbxMesh, pGraphics->m_WeightList, pGraphics);
 	pGraphics->m_bSkinnedMesh = bSkinnedMesh;
 
 	//폴리곤의 누적 인덱스
