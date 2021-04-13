@@ -14,7 +14,6 @@ int myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
 	//시간자르는거도 따로 해야할듯
 	int iTrackIndex = -1;
 	if (nodeList.size() <= 0) return iTrackIndex;
-	
 	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 	{
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
@@ -29,6 +28,7 @@ int myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
 				break;
 			}
 		}
+		
 		if (isBone == false)
 		{
 			pGraphics->m_AnimTrackList.emplace_back(pGraphics->m_AnimTrackList.front());
@@ -59,6 +59,18 @@ bool myModelObject::Frame()
 		m_pAnim->m_fTick += g_fSecondPerFrame *
 			pScene->iFrameSpeed *
 			pScene->iTickPerFrame;
+
+		//보간 생각정리해보기 커런트랑 같이
+		//if (m_pAnim->m_fPrevTick > m_pAnim->m_fLerpTick)
+		//{
+		//	m_pAnim->m_isLerp = false;
+		//}
+		//if (m_pAnim->m_isLerp)
+		//{
+		//	m_pAnim->m_fPrevTick += g_fSecondPerFrame *
+		//		m_pAnim->m_pPrevScene->iFrameSpeed *
+		//		m_pAnim->m_pPrevScene->iTickPerFrame;
+		//}
 
 		if (m_pAnim->m_fTick >=
 			(pScene->iLastFrame * pScene->iTickPerFrame))

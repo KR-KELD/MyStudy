@@ -32,11 +32,15 @@ public:
 public:
 	map<wstring, myAnimScene>	m_AnimSceneMap;
 	map<wstring, myAnimScene>::iterator m_AnimSceneIter;
+	myAnimScene*				m_pPrevScene;
+	float						m_fPrevTick;
+	bool						m_isLerp;
+	float						m_fLerpTick;
 	myAnimScene*				m_pCurrentScene;
 	float						m_fTick;
 public:
 	bool						AddAnim(wstring strSceneName, myAnimScene scene);
-	bool						ChangeAnim(wstring strSceneName);
+	bool						ChangeAnim(wstring strSceneName,bool isLerp = false, float fLerpTime = 0.0f);
 public:
 	myAnimation();
 	virtual ~myAnimation();

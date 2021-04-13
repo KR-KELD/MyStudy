@@ -1,7 +1,7 @@
 // HLSL
 Texture2D g_txDiffuse;// : register(t0);
 SamplerState g_Sample;// : register(s0);
-
+#define g_iNumLight 3
 cbuffer myDataCB
 {
 	float4x4  g_matWorld: packoffset(c0);
@@ -11,6 +11,86 @@ cbuffer myDataCB
 	float  fTime  : packoffset(c13.x);
 	float  fGameTime  : packoffset(c13.y);
 };
+
+//--------------------------------------------------------------------------------------
+//Lighting Variables
+//--------------------------------------------------------------------------------------
+cbuffer cb1: register(b1)
+{
+	float4				g_cAmbientMaterial[g_iNumLight];
+	float4				g_cDiffuseMaterial[g_iNumLight];
+	float4				g_cSpecularMaterial[g_iNumLight];
+	float4				g_cEmissionMaterial[g_iNumLight];
+
+	float4				g_cAmbientLightColor[g_iNumLight];
+	float4				g_cDiffuseLightColor[g_iNumLight];
+	float4				g_cSpecularLightColor[g_iNumLight];
+};
+//--------------------------------------------------------------------------------------
+//Lighting Variables
+//--------------------------------------------------------------------------------------
+cbuffer cb2: register(b2)
+{
+	matrix				g_matWorldInverse[g_iNumLight];
+	float4				g_vLightDir[g_iNumLight];	
+	float4				g_vLightPos[g_iNumLight];	
+	float4				g_vEyeDir[g_iNumLight];	
+	float4				g_vEyePos[g_iNumLight];	
+};
+//--------------------------------------------------------------------------------------
+//Lighting Variables
+//--------------------------------------------------------------------------------------
+cbuffer cb3: register(b3)
+{	
+	float4		g_vSpotInfo[g_iNumLight];
+	//float		g_fTheta[g_iNumLight] : packoffset(c0.x);		// 내부 콘의 각도 범위	
+	//float		g_fPhi[g_iNumLight] : packoffset(c0.y);			// 외부 콘의 각도 범위
+	//float		g_fFalloff[g_iNumLight] : packoffset(c0.z);		// 내부 콘과 외부 콘의 휘도( Luminance )	
+	//float     g_nNumLights[g_iNumLight] : packoffset(c0.w);	// 거리
+};
+float4 ComputePointLight( float3 vVertexPos, float3 vVertexNormal, int nNumLights )
+{
+	float4 vPointLightColor= float4(0,0,0,1);
+	for( int iLight = 0; iLight < nNumLights; iLight++ )
+	{		
+		float4 vLight;
+		vLight.xyz	= normalize( vVertexPos - g_vLightPos[iLight].xyz );
+		vLight.w	= distance( vVertexPos, g_vLightPos[iLight].xyz );
+		
+		float fLuminance = smoothstep( vLight.w-5,  vLight.w, g_vLightPos[iLight].w);
+		float fIntensity = saturate( dot( vVertexNormal, -vLight.xyz ) );
+		vPointLightColor += float4(g_cDiffuseLightColor[iLight].rgb *  fLuminance , 1.0f);
+	}			
+	return vPointLightColor;
+}
+float4 ComputeSpotLight(float3 vVertexPos,	float3 vVertexNormal,	int nNumLights)
+{	
+	float4 vSpotLightColor = float4(0, 0, 0, 1);
+	for (int iLight = 0; iLight < nNumLights; iLight++)
+	{		
+		float fInner = g_vSpotInfo[iLight].x;
+		float fOutner = g_vSpotInfo[iLight].y;
+		float fFalloff = g_vSpotInfo[iLight].z;
+		float fRange = g_vSpotInfo[iLight].w;
+		float4 vLight;
+		float3 ownerLight = g_vLightDir[iLight].xyz;
+		//ownerLight = normalize(ownerLight);
+		vLight.xyz = normalize(vVertexPos - g_vLightPos[iLight].xyz);
+		vLight.w = distance(vVertexPos, g_vLightPos[iLight].xyz);
+		float fDot = max(0.0f, dot(vLight.xyz, g_vLightDir[iLight].xyz));
+		//각도체크후 스포트라이트 컬러 설정
+		fDot = acos(fDot) * (180.0f / 3.141592f);
+		if( fDot < 20) 
+		{
+			vSpotLightColor += float4(0.33f,0.33f,0.33f,1);
+		}
+		else
+		{
+			vSpotLightColor += float4(0.02f,0.02f,0.02f,1);
+		}
+	}
+	return vSpotLightColor;
+}
 struct VS_OUTPUT
 {
 	float4 p : SV_POSITION;
