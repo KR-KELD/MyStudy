@@ -148,15 +148,6 @@ bool myFbxObj::LoadFBX(string strFileName)
 		for (int iNode = 0; iNode < m_pFbxNodeList.size(); iNode++)
 		{
 			FbxNode* pNode = m_pFbxNodeList[iNode];
-			////시간에 해당하는 애니메이션 매트릭스 정보 가져오기
-			//FbxAMatrix mat = anim->GetNodeGlobalTransform(pNode, t);
-			////트랙정보 구성
-			//myAnimTrack track;
-			//track.iTick = fCurrentTime * 30 * 160;
-			//track.matWorld = DxConvertMatrix(ConvertMatrixA(mat));
-			////해당노드에 정보 삽입
-
-			//pGraphics->m_AnimTrackList.push_back(track);
 
 			Matrix pChildGlobal = DxConvertMatrix(
 				ConvertMatrixA(anim->GetNodeGlobalTransform(pNode, t)));
@@ -202,47 +193,43 @@ bool myFbxObj::LoadFBX(string strFileName)
 
 	//시간별 SRT 변화량을 체크해서 변화가 없으면 애니메이션이 없는걸로 간주하고
 	//트랙을 제거한다
-	bool isAnim = false;
-	Vector3 vCheckScale;
-	Quaternion qCheckRot;
-	Vector3 vCheckTrans;
+
 	for (int iNode = 0; iNode < m_pModelObject->m_myNodeList.size(); iNode++)
 	{
 		myModelGraphics* pGraphics = m_pModelObject->
 			m_myNodeList[iNode]->GetComponent<myModelGraphics>();
-		bool isFirst = true;
+
+		bool bFirst = true;
+		bool isAnim = false;
+		Vector3 vCheckScale;
+		Quaternion qCheckRot;
+		Vector3 vCheckTrans;
 		for (int iIndex = 0; iIndex < pGraphics->m_AnimTrackList.back().size(); iIndex++)
 		{
 			myAnimTrack* pTrack = &pGraphics->m_AnimTrackList.back()[iIndex];
-			if (isFirst)
+			if (bFirst)
 			{
 				vCheckScale = pTrack->vScale;
 				qCheckRot = pTrack->qRot;
 				vCheckTrans = pTrack->vTrans;
-				isFirst = false;
+				bFirst = false;
 			}
 			else
 			{
-				if (vCheckTrans != pTrack->vTrans ||
+				if (vCheckScale != pTrack->vScale ||
 					qCheckRot != pTrack->qRot ||
-					vCheckScale != pTrack->vScale)
+					vCheckTrans != pTrack->vTrans)
 				{
 					isAnim = true;
 					break;
 				}
 			}
 		}
-		if (isAnim)
-			break;
-	}
-
-	if (!isAnim)
-	{
-		for (int iNode = 0; iNode < m_pModelObject->m_myNodeList.size(); iNode++)
+		if (!isAnim)
 		{
-			myModelGraphics* pGraphics = m_pModelObject->
-				m_myNodeList[iNode]->GetComponent<myModelGraphics>();
-			pGraphics->m_AnimTrackList.back().clear();
+			pGraphics->m_AnimTrackList.back().erase(
+				pGraphics->m_AnimTrackList.back().begin() + 1,
+				pGraphics->m_AnimTrackList.back().end());
 		}
 	}
 	ModelInit();

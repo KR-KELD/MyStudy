@@ -12,26 +12,31 @@ int myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
 	//뼈대를 검색해서 추가하거나
 	//기본 베이스를 복사하고 뼈대만 덮어쓰기
 	//시간자르는거도 따로 해야할듯
-	if (nodeList.size() != m_myNodeList.size()) return -1;
 	int iTrackIndex = -1;
+	if (nodeList.size() <= 0) return iTrackIndex;
+	
 	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 	{
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
-		myModelGraphics* pSourceGraphics = nodeList[iNode]->GetComponent<myModelGraphics>();
-		pGraphics->m_AnimTrackList.emplace_back(pGraphics->m_AnimTrackList.front());
-		
-		for (int iTrack = 0; iTrack < pGraphics->m_AnimTrackList.back().size(); iTrack++)
+		bool isBone = false;
+		for (int sNode = 0; sNode < nodeList.size(); sNode++)
 		{
+			if (m_myNodeList[iNode]->m_strName == nodeList[sNode]->m_strName)
+			{
+				myModelGraphics* pSourceGraphics = nodeList[sNode]->GetComponent<myModelGraphics>();
+				pGraphics->m_AnimTrackList.emplace_back(pSourceGraphics->m_AnimTrackList.front());
+				isBone = true;
+				break;
+			}
+		}
+		if (isBone == false)
+		{
+			pGraphics->m_AnimTrackList.emplace_back(pGraphics->m_AnimTrackList.front());
 
 		}
-		if (pGraphics != nullptr && pSourceGraphics != nullptr)
+		if (iTrackIndex < 0)
 		{
-			if (pSourceGraphics->m_AnimTrackList.size() <= 0) continue;
-			pGraphics->m_AnimTrackList.emplace_back(pSourceGraphics->m_AnimTrackList.front());
-			if (iTrackIndex < 0)
-			{
-				iTrackIndex = pGraphics->m_AnimTrackList.size() - 1;
-			}
+			iTrackIndex = pGraphics->m_AnimTrackList.size() - 1;
 		}
 	}
 	return iTrackIndex;
