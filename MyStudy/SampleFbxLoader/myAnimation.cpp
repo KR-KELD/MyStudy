@@ -16,6 +16,7 @@ bool myAnimation::AddAnim(wstring strSceneName, myAnimScene scene)
 bool myAnimation::ChangeAnim(wstring strSceneName, bool isLerp, float fLerpTime)
 {
 	//여기에 나중에 보간추가
+	//보간 추가적으로 더 하기
 	m_AnimSceneIter = m_AnimSceneMap.find(strSceneName);
 	if (m_AnimSceneIter == m_AnimSceneMap.end()) return false;
 	m_isLerp = isLerp;
@@ -23,7 +24,7 @@ bool myAnimation::ChangeAnim(wstring strSceneName, bool isLerp, float fLerpTime)
 	{
 		m_pPrevScene = m_pCurrentScene;
 		m_fPrevTick = m_fTick;
-		m_fLerpTick = min(m_pPrevScene->iLastFrame,
+		m_fLerpTick = min(m_pPrevScene->iLastFrame * m_pPrevScene->iTickPerFrame,
 			m_fPrevTick + fLerpTime * 
 			m_pPrevScene->iFrameSpeed * 
 			m_pPrevScene->iTickPerFrame);

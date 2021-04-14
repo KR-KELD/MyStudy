@@ -62,16 +62,16 @@ bool myModelObject::Frame()
 			pScene->iTickPerFrame;
 
 		//보간 생각정리해보기 커런트랑 같이
-		//if (m_pAnim->m_fPrevTick > m_pAnim->m_fLerpTick)
-		//{
-		//	m_pAnim->m_isLerp = false;
-		//}
-		//if (m_pAnim->m_isLerp)
-		//{
-		//	m_pAnim->m_fPrevTick += g_fSecondPerFrame *
-		//		m_pAnim->m_pPrevScene->iFrameSpeed *
-		//		m_pAnim->m_pPrevScene->iTickPerFrame;
-		//}
+		if (m_pAnim->m_fPrevTick > m_pAnim->m_fLerpTick)
+		{
+			m_pAnim->m_isLerp = false;
+		}
+		if (m_pAnim->m_isLerp)
+		{
+			m_pAnim->m_fPrevTick += g_fSecondPerFrame *
+				m_pAnim->m_pPrevScene->iFrameSpeed *
+				m_pAnim->m_pPrevScene->iTickPerFrame;
+		}
 
 		if (m_pAnim->m_fTick >=
 			(pScene->iLastFrame * pScene->iTickPerFrame))
@@ -84,19 +84,8 @@ bool myModelObject::Frame()
 		for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 		{
 			Matrix matWorld = Matrix::Identity;
-			//Matrix matBiped = Matrix::Identity;
 			Matrix matParent = Matrix::Identity;
 			myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
-			AnimTrackList* pAnimTrackList = &pGraphics->m_AnimTrackList[pScene->iAnimTrackIndex];
-			// 스킨을 바이패드공간으로 이동시킨다
-			//string szName = to_wm(pGraphics->m_pGameObject->m_strName);
-
-
-			//auto data = m_nodeMatBindPoseMap.find(szName);
-			//if (data != m_nodeMatBindPoseMap.end())
-			//{
-			//	matBiped = data->second;
-			//}
 
 			if (m_myNodeList[iNode]->m_pParent != nullptr)
 			{
@@ -105,43 +94,50 @@ bool myModelObject::Frame()
 
 			Vector3 vTrans, vScale;
 			Quaternion qRot;
-			if (pGraphics->m_pCurrentTrack != pGraphics->m_pNextTrack)
+			//pGraphics->m_iTrackIndex = pGraphics->GetTrackIndex(
+			//	pScene->iAnimTrackIndex, m_pAnim->m_fTick);
+			//if (pGraphics->m_iTrackIndex >= 0)
+			//{
+			//	int iStart = (*pAnimTrackList)[pGraphics->m_iTrackIndex - 1].iTick;
+			//	int iEnd = (*pAnimTrackList)[pGraphics->m_iTrackIndex].iTick;
+			//	int iStepTick = iEnd - iStart;
+			//	float t = (m_pAnim->m_fTick - iStart) / iStepTick;
+			//	Vector3 vStart, vEnd;
+			//	vStart = (*pAnimTrackList)[pGraphics->m_iTrackIndex - 1].vTrans;
+			//	vEnd = (*pAnimTrackList)[pGraphics->m_iTrackIndex].vTrans;
+			//	vTrans = Vector3::Lerp(vStart, vEnd, t);
+			//	vStart = (*pAnimTrackList)[pGraphics->m_iTrackIndex - 1].vScale;
+			//	vEnd = (*pAnimTrackList)[pGraphics->m_iTrackIndex].vScale;
+			//	vScale = Vector3::Lerp(vStart, vEnd, t);
+			//	Quaternion q1, q2;
+			//	q1 = (*pAnimTrackList)[pGraphics->m_iTrackIndex - 1].qRot;
+			//	q2 = (*pAnimTrackList)[pGraphics->m_iTrackIndex].qRot;
+			//	qRot = Quaternion::Slerp(q1, q2, t);
+			//}
+			//if (pGraphics->m_iTrackIndex == -1)
+			//{
+			//	vTrans = (*pAnimTrackList)[0].vTrans;
+			//	vScale = (*pAnimTrackList)[0].vScale;
+			//	qRot = (*pAnimTrackList)[0].qRot;
+			//}
+			pGraphics->GetAnimSRT(pScene->iAnimTrackIndex, m_pAnim->m_fTick
+			, vScale, qRot, vTrans);
+			if (m_pAnim->m_isLerp)
 			{
-				//if ((*pAnimTrackList)[pScene->ptAnimTrackIndex.y].iTick <= m_pAnim->m_fTick)
-				//{
-				//	pScene->ptAnimTrackIndex.y++;
-				//	if (pAnimTrackList->size() <= pScene->ptAnimTrackIndex.y)
-				//	{
-				//		pScene->ptAnimTrackIndex.y = 1;
-				//	}
-				//}
-				int iStart = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y - 1].iTick;
-				int iEnd = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y].iTick;
-				int iStepTick = iEnd - iStart;
-				float t = (m_pAnim->m_fTick - iStart) / iStepTick;
-				Vector3 vStart, vEnd;
-				vStart = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y - 1].vTrans;
-				vEnd = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y].vTrans;
-				vTrans = Vector3::Lerp(vStart, vEnd, t);
-				vStart = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y - 1].vScale;
-				vEnd = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y].vScale;
-				vScale = Vector3::Lerp(vStart, vEnd, t);
-				Quaternion q1, q2;
-				q1 = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y - 1].qRot;
-				q2 = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y].qRot;
-				qRot = Quaternion::Slerp(q1, q2, t);
-			}
-			else
-			{
-				vTrans = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y - 1].vTrans;
-				vScale = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y - 1].vScale;
-				qRot = (*pAnimTrackList)[pScene->ptAnimTrackIndex.y - 1].qRot;
+				Vector3 vPrevTrans, vPrevScale;
+				Quaternion qPrevRot;
+				pGraphics->GetAnimSRT(m_pAnim->m_pPrevScene->iAnimTrackIndex, m_pAnim->m_fPrevTick
+					, vPrevScale, qPrevRot, vPrevTrans);
+				vScale = Vector3::Lerp(vPrevScale, vScale, 0.5f);
+				qRot = Quaternion::Slerp(qPrevRot, qRot, 0.5f);
+				vTrans = Vector3::Lerp(vPrevTrans, vTrans, 0.5f);
 			}
 			Matrix matScale = Matrix::CreateScale(vScale);
 			Matrix matRotate = Matrix::CreateFromQuaternion(qRot);
 			Matrix matTrans = Matrix::CreateTranslation(vTrans);
+
 			m_myNodeList[iNode]->m_pTransform->m_matAnim = matScale * matRotate * matTrans *matParent;
-			m_nodeMatList[iNode] = /*matBiped **/ m_myNodeList[iNode]->m_pTransform->m_matAnim;
+			m_nodeMatList[iNode] = m_myNodeList[iNode]->m_pTransform->m_matAnim;
 		}
 	}
 	return true;

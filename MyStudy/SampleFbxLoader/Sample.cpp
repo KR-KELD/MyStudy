@@ -9,7 +9,9 @@ bool Sample::Init()
 	//뼈대만 뽑아야 하는지 질문
 	m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
 	m_pModelObj = m_pFbxObj->m_pModelObject;
-	m_pFbxObj->CuttingAnimScene(L"1", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
+	//m_pFbxObj->CuttingAnimScene(L"1", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
+	m_pFbxObj->CuttingAnimScene(L"1", 62,91);
+	m_pFbxObj->CuttingAnimScene(L"2", 92, 116);
 	m_pModelObj->m_pAnim->ChangeAnim(L"1");
 	//fbx오브젝트를 기반으로 gameobject 데이터를 채워준다
 
@@ -21,11 +23,11 @@ bool Sample::Frame()
 	m_pModelObj->Frame();
 	if (g_Input.GetKey('1') == KEY_PUSH)
 	{
-		m_pModelObj->m_pAnim->ChangeAnim(L"1");
+		m_pModelObj->m_pAnim->ChangeAnim(L"1",true,1.5f);
 	}
 	if (g_Input.GetKey('2') == KEY_PUSH)
 	{
-		m_pModelObj->m_pAnim->ChangeAnim(L"2");
+		m_pModelObj->m_pAnim->ChangeAnim(L"2", true, 1.5f);
 	}
 	return true;
 }

@@ -1,11 +1,45 @@
 #include "myModelGraphics.h"
 DECLARE_COMPONENT(myModelGraphics);
 
+void myModelGraphics::GetAnimSRT(int iAnimIndex, float fTick, Vector3& vScale, Quaternion& qRot, Vector3& vTrans)
+{
+	m_iTrackIndex = GetTrackIndex(iAnimIndex, fTick);
+	if (m_iTrackIndex >= 0)
+	{
+		int iStart = m_AnimTrackList[iAnimIndex][m_iTrackIndex - 1].iTick;
+		int iEnd = m_AnimTrackList[iAnimIndex][m_iTrackIndex].iTick;
+		int iStepTick = iEnd - iStart;
+		float t = (fTick - iStart) / iStepTick;
+		Vector3 vStart, vEnd;
+		vStart = m_AnimTrackList[iAnimIndex][m_iTrackIndex - 1].vTrans;
+		vEnd = m_AnimTrackList[iAnimIndex][m_iTrackIndex].vTrans;
+		vTrans = Vector3::Lerp(vStart, vEnd, t);
+		vStart = m_AnimTrackList[iAnimIndex][m_iTrackIndex - 1].vScale;
+		vEnd = m_AnimTrackList[iAnimIndex][m_iTrackIndex].vScale;
+		vScale = Vector3::Lerp(vStart, vEnd, t);
+		Quaternion q1, q2;
+		q1 = m_AnimTrackList[iAnimIndex][m_iTrackIndex - 1].qRot;
+		q2 = m_AnimTrackList[iAnimIndex][m_iTrackIndex].qRot;
+		qRot = Quaternion::Slerp(q1, q2, t);
+	}
+	if (m_iTrackIndex == -1)
+	{
+		vTrans = m_AnimTrackList[iAnimIndex][0].vTrans;
+		vScale = m_AnimTrackList[iAnimIndex][0].vScale;
+		qRot = m_AnimTrackList[iAnimIndex][0].qRot;
+	}
+}
+
 int myModelGraphics::GetTrackIndex(int iAnimIndex, float fTick)
 {
-	//이어서
-	for (int i=0 < i)
-	return 0;
+	//애님씬 입력값오류
+	if (iAnimIndex < 0 || iAnimIndex >= m_AnimTrackList.size()) return -2;
+	for (int i = 1; i < m_AnimTrackList[iAnimIndex].size(); i++)
+	{
+		if (fTick <= m_AnimTrackList[iAnimIndex][i].iTick) return i;
+
+	}
+	return -1;
 }
 
 bool myModelGraphics::CreateInputLayout()
@@ -72,7 +106,7 @@ bool myModelGraphics::MultiDraw()
 
 myModelGraphics::myModelGraphics()
 {
-	m_iPrevTrackIndex = 0;
+	m_iNextTrackIndex = 0;
 	m_iTrackIndex = 0;
 }
 

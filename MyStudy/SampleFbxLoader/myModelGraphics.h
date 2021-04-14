@@ -49,12 +49,13 @@ public:
 public:
 	//주의 인덱스가 순서대로 안쌓이면 애님씬의 인덱스와 틀어진다
 	vector<AnimTrackList>		m_AnimTrackList;
-	int							m_iPrevTrackIndex;
+	int							m_iNextTrackIndex;
 	int							m_iTrackIndex;
 	vector<myWeight>			m_WeightList;
 	unordered_map<string, Matrix>	m_nodeMatBindPoseMap;
 	bool						m_bSkinnedMesh = false;
 public:
+	void			GetAnimSRT(int iAnimIndex, float fTick, Vector3& vScale, Quaternion& qRot, Vector3& vTrans);
 	int				GetTrackIndex(int iAnimIndex, float fTick);
 public:
 	virtual bool	CreateInputLayout() override;
