@@ -1,6 +1,13 @@
 #include "myModelGraphics.h"
 DECLARE_COMPONENT(myModelGraphics);
 
+int myModelGraphics::GetTrackIndex(int iAnimIndex, float fTick)
+{
+	//�̾
+	for (int i=0 < i)
+	return 0;
+}
+
 bool myModelGraphics::CreateInputLayout()
 {
 	HRESULT hr = S_OK;
@@ -65,6 +72,8 @@ bool myModelGraphics::MultiDraw()
 
 myModelGraphics::myModelGraphics()
 {
+	m_iPrevTrackIndex = 0;
+	m_iTrackIndex = 0;
 }
 
 myModelGraphics::~myModelGraphics()

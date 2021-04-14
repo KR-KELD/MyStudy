@@ -225,11 +225,13 @@ bool myFbxObj::LoadFBX(string strFileName)
 				}
 			}
 		}
+		//현재 트랙과 다음트랙 포인터 추가
 		if (!isAnim)
 		{
 			pGraphics->m_AnimTrackList.back().erase(
 				pGraphics->m_AnimTrackList.back().begin() + 1,
 				pGraphics->m_AnimTrackList.back().end());
+			continue;
 		}
 	}
 	ModelInit();

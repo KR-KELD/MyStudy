@@ -29,6 +29,7 @@ bool myAnimation::ChangeAnim(wstring strSceneName, bool isLerp, float fLerpTime)
 			m_pPrevScene->iTickPerFrame);
 	}
 	m_pCurrentScene = &m_AnimSceneIter->second;
+	
 	m_fTick = m_pCurrentScene->iFirstFrame *m_pCurrentScene->iTickPerFrame;
 	return true;
 }
