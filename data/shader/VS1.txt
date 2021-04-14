@@ -35,17 +35,20 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
+	float4 wp : TEXCOORD1;
 };
 VS_OUTPUT VS( VS_INPUT vIn)
 {
 	VS_OUTPUT vOut;
 	float4 p = float4(vIn.p,1.0f);
 	p = mul(p, g_matWorld);
+	vOut.wp = p;
 	p = mul(p, g_matView);
 	vOut.p = mul(p, g_matProj);
 	// dot
 	vOut.n = vIn.n;
-	vOut.c = vIn.c;
+	float fdot = dot(-vColor.xyz, vIn.n);
+	vOut.c = float4(fdot, fdot, fdot, 1.0f);
 	vOut.t = vIn.t;	
 	return vOut;
 }

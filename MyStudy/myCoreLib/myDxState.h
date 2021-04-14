@@ -3,6 +3,7 @@
 class myDxState
 {
 public:
+	static ComPtr<ID3D11RasterizerState>		m_pRSSolidNone;
 	static ComPtr<ID3D11RasterizerState>		m_pRSSolidBack;
 	static ComPtr<ID3D11RasterizerState>		m_pRSWireBack;
 	static ComPtr<ID3D11RasterizerState>		m_pRS;

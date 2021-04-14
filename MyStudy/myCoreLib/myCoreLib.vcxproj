@@ -219,6 +219,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myProjectile.cpp" />
     <ClCompile Include="myScene.cpp" />
     <ClCompile Include="myShape.cpp" />
+    <ClCompile Include="mySkyBox.cpp" />
     <ClCompile Include="mySound.cpp" />
     <ClCompile Include="mySoundManager.cpp" />
     <ClCompile Include="myTexture.cpp" />
@@ -272,6 +273,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myProtocol.h" />
     <ClInclude Include="myScene.h" />
     <ClInclude Include="myShape.h" />
+    <ClInclude Include="mySkyBox.h" />
     <ClInclude Include="mySound.h" />
     <ClInclude Include="mySoundManager.h" />
     <ClInclude Include="myStd.h" />
@@ -288,7 +290,10 @@ copy "*.h" "..\\..\\include"</Command>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\data\shader\PS.txt" />
+    <Text Include="..\..\data\shader\PS1.txt" />
+    <Text Include="..\..\data\shader\SkyBox.txt" />
     <Text Include="..\..\data\shader\VS.txt" />
+    <Text Include="..\..\data\shader\VS1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

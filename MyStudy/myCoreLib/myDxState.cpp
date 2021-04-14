@@ -1,4 +1,5 @@
 #include "myDxState.h"
+ComPtr<ID3D11RasterizerState>	myDxState::m_pRSSolidNone = nullptr;
 ComPtr<ID3D11RasterizerState>	myDxState::m_pRSSolidBack = nullptr;
 ComPtr<ID3D11RasterizerState>	myDxState::m_pRSWireBack = nullptr;
 ComPtr<ID3D11RasterizerState>	myDxState::m_pRS = nullptr;
@@ -46,6 +47,14 @@ bool myDxState::Set()
 	rdesc.FillMode = D3D11_FILL_SOLID;
 	rdesc.CullMode = D3D11_CULL_BACK;
 	hr = g_pd3dDevice->CreateRasterizerState(&rdesc, m_pRSSolidBack.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	rdesc.FillMode = D3D11_FILL_SOLID;
+	rdesc.CullMode = D3D11_CULL_NONE;
+	hr = g_pd3dDevice->CreateRasterizerState(&rdesc, m_pRSSolidNone.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

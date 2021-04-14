@@ -177,6 +177,9 @@
     <ClCompile Include="myBaseObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="mySkyBox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mySoundManager.h">
@@ -338,6 +341,9 @@
     <ClInclude Include="myBaseObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="mySkyBox.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -347,5 +353,8 @@
   <ItemGroup>
     <Text Include="..\..\data\shader\PS.txt" />
     <Text Include="..\..\data\shader\VS.txt" />
+    <Text Include="..\..\data\shader\PS1.txt" />
+    <Text Include="..\..\data\shader\SkyBox.txt" />
+    <Text Include="..\..\data\shader\VS1.txt" />
   </ItemGroup>
 </Project>
