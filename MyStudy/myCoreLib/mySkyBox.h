@@ -8,7 +8,7 @@ public:
 	DEFINE_COMPONENT(mySkyBox, myShapeBox, false);
 public:
 	ComPtr<ID3D11ShaderResourceView>	m_pTexSRV[MAX_SKYBOX_TEXTURE];
-	ComPtr<ID3D11PixelShader>			m_pPSTextrueIndex;
+	ComPtr<ID3D11PixelShader>			m_pPSTextureIndex;
 	bool								m_bRenderType;
 public:
 	bool				Create(T_STR szVS, T_STR szPS, T_STR	szTex);

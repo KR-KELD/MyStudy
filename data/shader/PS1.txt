@@ -23,9 +23,13 @@ cbuffer myDataCB : register(b0)
 //--------------------------------------------------------------------------------------
 cbuffer cb1: register(b1)
 {
+						//오브젝트의 엠비언트라이트(주변광)흡수율
 	float4				g_cAmbientMaterial[g_iNumLight];
+						//오브젝트의 디퓨즈라이트(확산광) 흡수율
 	float4				g_cDiffuseMaterial[g_iNumLight];
+						//오브젝트의 스펙큘러라이트(반사광) 흡수율
 	float4				g_cSpecularMaterial[g_iNumLight];
+						//오브젝트의 에미션라이트(방출광-메시가 내뿜음) 흡수율
 	float4				g_cEmissionMaterial[g_iNumLight];
 
 	float4				g_cAmbientLightColor[g_iNumLight];
@@ -69,6 +73,7 @@ struct PS_OUTPUT
 };
 float4 Diffuse(float3 vNormal, float4 vLightDir)
 {
+	//빛의 방향과 픽셀의 노말값의 내적으로 빛의 세기를 계산
 	float fIntensity = max(0, dot(vNormal, normalize(-vLightDir.xyz)));
 	float4 diffuse = float4(1,1,1,1)* fIntensity;
 	diffuse.w = 1.0f;
@@ -78,10 +83,14 @@ float4 Specular(float3 vNormal, float4 vLightDir,
 					float4 vEyeDir)
 {
 	float  fPower = 0.0f;
+	
 #ifndef HALF_VECTOR
+	//반사 벡터를 계산 
 	float3 R = reflect(vLightDir.xyz, vNormal);
+	//빛의 세기를 계산하고 0~1값으로 만들어준다음 반사지수 vEyeDir.w 값으로 거듭제곱 해준다
 	fPower = pow(saturate(dot(R, -vEyeDir)), vEyeDir.w);
 #else
+	//하프벡터를 계산
 	float3 vHalf = normalize(-vLightDir.xyz + -vEyeDir.xyz);
 	fPower = pow(saturate(dot(vNormal, vHalf)), vEyeDir.w);
 #endif
@@ -95,10 +104,13 @@ float4 ComputePointLight( float3 vVertexPos, float3 vVertexNormal, int nNumLight
 	for( int iLight = 0; iLight < nNumLights; iLight++ )
 	{		
 		float4 vLight;
+		//픽셀과 라이트 포지션으로 포인트 라이트의 방향을 계산
 		vLight.xyz	= normalize( vVertexPos - g_vLightPos[iLight].xyz );
+		//픽셀과 라이트의 거리를 계산
 		vLight.w	= distance( vVertexPos, g_vLightPos[iLight].xyz );
-		
+		//빛의 중심으로부터 멀어질수록 서서히 감쇠를 준다
 		float fLuminance = smoothstep( vLight.w-5,  vLight.w, g_vLightPos[iLight].w);
+		//라이트의 갯수만큼 빛을 합산
 		vPointLightColor += Diffuse(vVertexNormal, vLight) *  fLuminance;
 	}			
 	vPointLightColor.w =1.0f;
@@ -109,20 +121,29 @@ float4 ComputeSpotLight(float3 vVertexPos,	float3 vVertexNormal,	int nNumLights)
 	float4 vSpotLightColor = float4(0, 0, 0, 1);
 	for (int iLight = 0; iLight < nNumLights; iLight++)
 	{		
+		//내부콘의 각도
 		float fInner = g_vSpotInfo[iLight].x;
+		//외부콘의 각도
 		float fOutner = g_vSpotInfo[iLight].y;
+		//외부콘과 내부콘의 휘도
 		float fFalloff = g_vSpotInfo[iLight].z;
+		//범위
 		float fRange = g_vSpotInfo[iLight].w;
 		float4 vLight;
-		float3 ownerLight = g_vLightDir[iLight].xyz;
-		//ownerLight = normalize(ownerLight);
+		//픽셀과 라이트의 방향을 계산
 		vLight.xyz = normalize(vVertexPos - g_vLightPos[iLight].xyz);
+		//픽셀과 라이트의 거리를 계산
 		vLight.w = distance(vVertexPos, g_vLightPos[iLight].xyz);
+		//라이트에서 픽셀쪽으로의 방향과 빛의 방향의 각도를 계산
 		float fDot = max(0.0f, dot(vLight.xyz, g_vLightDir[iLight].xyz));
 		fDot = acos(fDot) * (180.0f / 3.141592f);
+		//외부콘의 각도보다 작으면
 		if( fDot < fOutner) 
 		{
+			//빛의 세기를 내부콘 각도까지 감쇠시킨다 최소값은 0.3f로
+			//내부콘 각도보다 작으면 최대치
 			float fIntensity = max(0.3f,1.0f-smoothstep(fInner, fOutner, fDot));
+			//빛을 합산
 			vSpotLightColor += 
 			Diffuse(vVertexNormal, vLight)+Specular(vVertexNormal, vLight,g_vEyeDir[iLight] )*fIntensity;
 		}
@@ -143,7 +164,9 @@ float4 Rim( VS_OUTPUT vIn)
 }
 float Geom(VS_OUTPUT vIn)
 {
+	//하프벡터를 계산
 	float3 vReflect = normalize(-g_vLightDir[0] + -g_vEyeDir[0]);
+	//하브벡터와 픽셀의 노말값의 각도를 구함?
 	float fDot  = pow(saturate(dot(vIn.n, vReflect)), 1);
 
 	float NdotL = saturate(dot(vIn.n, -g_vLightDir[0]));

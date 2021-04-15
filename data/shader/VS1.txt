@@ -47,6 +47,7 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	vOut.p = mul(p, g_matProj);
 	// dot
 	vOut.n = vIn.n;
+	//고러드쉐이딩
 	float fdot = dot(-vColor.xyz, vIn.n);
 	vOut.c = float4(fdot, fdot, fdot, 1.0f);
 	vOut.t = vIn.t;	

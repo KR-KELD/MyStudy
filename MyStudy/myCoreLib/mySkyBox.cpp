@@ -8,7 +8,7 @@ bool mySkyBox::Create(T_STR szVS, T_STR szPS, T_STR szTex)
 		MessageBox(0, _T("m_pDirectionLIne 실패"), _T("Fatal error"), MB_OK);
 		return 0;
 	}
-	m_pPSTextrueIndex.Attach(LoadPixelShaderFile(g_pd3dDevice, szPS.c_str(), "PS_TextureIndex"));
+	m_pPSTextureIndex.Attach(LoadPixelShaderFile(g_pd3dDevice, szPS.c_str(), "PS_TextureIndex"));
 	return true;
 }
 
@@ -80,7 +80,7 @@ bool mySkyBox::Draw()
 	else
 	{
 		g_pImmediateContext->PSSetShaderResources(1, 6, m_pTexSRV[0].GetAddressOf());
-		g_pImmediateContext->PSSetShader(m_pPSTextrueIndex.Get(), NULL, 0);
+		g_pImmediateContext->PSSetShader(m_pPSTextureIndex.Get(), NULL, 0);
 		// 랜더링에 사용할 인덱스 버퍼 갯수, 인덱스 버퍼 시작, 버텍스 버퍼 시작
 		g_pImmediateContext->DrawIndexed(36, 0, 0);
 	}
