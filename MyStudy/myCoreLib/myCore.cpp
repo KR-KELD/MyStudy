@@ -46,7 +46,7 @@ bool myCore::GameInit()
 	m_pBasisLine = new myShapeLine;
 	g_GameObject.InsertComponent(m_pBasisLine);
 	m_pBasisLine->Init();
-	if (!m_pBasisLine->Create(L"../../data/shader/VS1.txt", L"../../data/shader/PS1.txt",
+	if (!m_pBasisLine->Create(L"../../data/shader/BasisVS.txt", L"../../data/shader/BasisPS.txt",
 	L""))
 	{
 		return false;

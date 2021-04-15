@@ -28,8 +28,6 @@ struct VS_INPUT
 	float3 n : NORMAL;
 	float4 c : COLOR;
 	float2 t : TEXTURE;
-	float4 i : INDEX;
-	float4 w : WEIGHT;
 };
 struct VS_OUTPUT
 {
@@ -37,43 +35,21 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
+	float4 wp : TEXCOORD1;
 };
 VS_OUTPUT VS( VS_INPUT vIn)
 {
-	VS_OUTPUT vOut = (VS_OUTPUT)0;
-	float4 p = float4(vIn.p, 1.0f);
-	float3 Norm = vIn.n;
-	float4x4 matMatrix;
-	float4 vLocal;
-
-	for (int iBiped = 0; iBiped < 4; iBiped++)
-	{
-		uint iBoneIndex = (uint)vIn.i[iBiped];
-		float fWeight = vIn.w[iBiped];
-
-		vLocal = p;
-		if (iBiped < 4)
-		{
-			matMatrix = FetchBoneTransform(iBoneIndex);
-			vOut.p += fWeight * mul(vLocal, matMatrix);
-			vOut.n += fWeight * mul(Norm, (float3x3)matMatrix);
-		}
-		else
-		{
-			iBoneIndex = (uint)vIn.i[iBiped];
-			fWeight = vIn.w[iBiped];
-			matMatrix = FetchBoneTransform(iBoneIndex);
-			vOut.p += fWeight * mul(vLocal, matMatrix);
-			vOut.n += fWeight * mul(Norm, (float3x3)matMatrix);
-		}
-	}
-
-	vOut.p = mul(vOut.p, g_matWorld);
-	vOut.p = mul(vOut.p, g_matView);
-	vOut.p = mul(vOut.p, g_matProj);
-	vOut.n = normalize(mul(vOut.n, (float3x3)g_matWorld)); // g_matWorldInvTrans));
-	vOut.c = vIn.c;
+	VS_OUTPUT vOut;
+	float4 p = float4(vIn.p,1.0f);
+	p = mul(p, g_matWorld);
+	vOut.wp = p;
+	p = mul(p, g_matView);
+	vOut.p = mul(p, g_matProj);
+	// dot
+	vOut.n = vIn.n;
+	//고러드쉐이딩
+	float fdot = dot(-vColor.xyz, vIn.n);
+	vOut.c = float4(fdot, fdot, fdot, 1.0f);
 	vOut.t = vIn.t;	
-
 	return vOut;
 }

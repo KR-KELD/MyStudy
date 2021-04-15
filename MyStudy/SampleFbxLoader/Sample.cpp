@@ -3,6 +3,10 @@ GAMERUN;
 
 bool Sample::Init()
 {
+	m_pSkyBoxObj = myGameObject::CreateComponentObj(new mySkyBox);
+	m_pSkyBox = m_pSkyBoxObj->GetComponent<mySkyBox>();
+	m_pSkyBox->Create(L"../../data/shader/VS.txt", L"../../data/shader/SkyBox.txt", L"");
+
 	g_FbxLoader.Init();
 	//m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
 	//테스트 오류 노드의 갯수가 일치하지 않음
@@ -15,9 +19,7 @@ bool Sample::Init()
 	//m_pModelObj->m_pAnim->ChangeAnim(L"1");
 	//fbx오브젝트를 기반으로 gameobject 데이터를 채워준다
 
-	m_pSkyBoxObj = myGameObject::CreateComponentObj(new mySkyBox);
-	m_pSkyBox = m_pSkyBoxObj->GetComponent<mySkyBox>();
-	m_pSkyBox->Create(L"../../data/shader/VS1.txt", L"../../data/shader/SkyBox.txt", L"");
+
 
 	return true;
 }

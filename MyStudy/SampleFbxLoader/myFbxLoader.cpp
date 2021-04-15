@@ -56,6 +56,7 @@ bool myFbxLoader::Init()
 	FbxIOSettings* ios = FbxIOSettings::Create(m_pSDKManager, IOSROOT);
 	if (ios == nullptr) return false;
 	m_pSDKManager->SetIOSettings(ios);
+	return true;
 }
 
 bool myFbxLoader::Release()

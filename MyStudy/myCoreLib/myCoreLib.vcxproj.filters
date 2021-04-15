@@ -52,6 +52,15 @@
     <Filter Include="DXTK">
       <UniqueIdentifier>{bcdd0f02-4749-4573-b59f-ce5cb24e66ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{2f34cc7a-5d39-42d0-b437-73487e818800}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{059a1e58-41c2-4026-b805-4501ebb19833}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Light">
+      <UniqueIdentifier>{1acf8960-3dbd-495c-be05-7f590a391c51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -162,22 +171,25 @@
     <ClCompile Include="myMap.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="myFPSController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="myCameraManager.cpp">
       <Filter>Mgr</Filter>
     </ClCompile>
-    <ClCompile Include="myController.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="mySkyBox.cpp">
+      <Filter>Obj</Filter>
     </ClCompile>
     <ClCompile Include="myLog.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="myBaseObject.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Obj</Filter>
     </ClCompile>
-    <ClCompile Include="mySkyBox.cpp">
+    <ClCompile Include="myFPSController.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="myController.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="myLight.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -326,22 +338,25 @@
     <ClInclude Include="myMap.h">
       <Filter>Map</Filter>
     </ClInclude>
-    <ClInclude Include="myFPSController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="myCameraManager.h">
       <Filter>Mgr</Filter>
     </ClInclude>
-    <ClInclude Include="myController.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="mySkyBox.h">
+      <Filter>Obj</Filter>
     </ClInclude>
     <ClInclude Include="myLog.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="myBaseObject.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Obj</Filter>
     </ClInclude>
-    <ClInclude Include="mySkyBox.h">
+    <ClInclude Include="myFPSController.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="myController.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="myLight.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -351,10 +366,26 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\data\shader\PS.txt" />
-    <Text Include="..\..\data\shader\VS.txt" />
-    <Text Include="..\..\data\shader\PS1.txt" />
-    <Text Include="..\..\data\shader\SkyBox.txt" />
-    <Text Include="..\..\data\shader\VS1.txt" />
+    <Text Include="..\..\data\shader\SkyBox.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\ModelVS.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\BasisLinePS.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\BasisLineVS.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\ModelPS.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\VS.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\PS.txt">
+      <Filter>Shader</Filter>
+    </Text>
   </ItemGroup>
 </Project>

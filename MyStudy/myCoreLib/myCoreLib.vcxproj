@@ -206,6 +206,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myGameObject.cpp" />
     <ClCompile Include="myGraphics.cpp" />
     <ClCompile Include="myInput.cpp" />
+    <ClCompile Include="myLight.cpp" />
     <ClCompile Include="myLog.cpp" />
     <ClCompile Include="myMap.cpp" />
     <ClCompile Include="myMiniMap.cpp" />
@@ -257,6 +258,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myGameObject.h" />
     <ClInclude Include="myGraphics.h" />
     <ClInclude Include="myInput.h" />
+    <ClInclude Include="myLight.h" />
     <ClInclude Include="myLog.h" />
     <ClInclude Include="myMap.h" />
     <ClInclude Include="myMath.h" />
@@ -289,11 +291,13 @@ copy "*.h" "..\\..\\include"</Command>
     <None Include="SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\..\data\shader\BasisLinePS.txt" />
+    <Text Include="..\..\data\shader\BasisLineVS.txt" />
+    <Text Include="..\..\data\shader\ModelPS.txt" />
+    <Text Include="..\..\data\shader\ModelVS.txt" />
     <Text Include="..\..\data\shader\PS.txt" />
-    <Text Include="..\..\data\shader\PS1.txt" />
     <Text Include="..\..\data\shader\SkyBox.txt" />
     <Text Include="..\..\data\shader\VS.txt" />
-    <Text Include="..\..\data\shader\VS1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -80,10 +80,11 @@ bool myFbxObj::ModelInit()
 		}
 	}
 	if (!m_pModelObject->m_pGraphics->
-		Create(L"../../data/shader/vs.txt", L"../../data/shader/ps.txt", L""))
+		Create(L"../../data/shader/modelvs.txt", L"../../data/shader/modelps.txt", L""))
 	{
 		return false;
 	}
+	return true;
 }
 
 bool myFbxObj::CuttingAnimScene(wstring strSceneName, int iFirstFrame, int iLastFrame)
