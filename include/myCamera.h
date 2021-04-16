@@ -35,7 +35,7 @@ public:
 	virtual bool Release();
 	virtual  int WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	virtual bool FrameFrustum();
-	virtual bool DrawFrustum(Matrix* pmatView, Matrix* pmatProj);
+	virtual bool DrawFrustum(ID3D11DeviceContext*	pd3dContext, Matrix* pmatView, Matrix* pmatProj);
 public:
 	myCamera();
 	virtual ~myCamera();

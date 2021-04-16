@@ -6,7 +6,7 @@
 #include "myQuadTree.h"
 #include "myFbxLoader.h"
 #include "myMouse.h"
-#include "mySkyBox.h"
+
 
 
 class Sample : public myCore
@@ -15,8 +15,7 @@ public:
 	myFbxObj* m_pFbxObj;
 	myFbxObj* m_pFbxObj2;
 	shared_ptr<myModelObject> m_pModelObj;
-	mySkyBox* m_pSkyBox;
-	myGameObject* m_pSkyBoxObj;
+
 public:
 	bool Init() override;
 	bool Frame() override;

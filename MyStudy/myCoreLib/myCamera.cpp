@@ -123,13 +123,12 @@ bool myCamera::FrameFrustum()
 	m_Frustum.Frame(matInvViewProj);
 	return true;
 }
-
-bool myCamera::DrawFrustum(Matrix * pmatView, Matrix * pmatProj)
+bool myCamera::DrawFrustum(ID3D11DeviceContext*	pd3dContext, Matrix * pmatView, Matrix * pmatProj)
 {
 	m_Frustum.m_FrustumObj.m_pTransform->SetMatrix(NULL,
 		pmatView,
 		pmatProj);
-	m_Frustum.m_FrustumObj.Render();
+	m_Frustum.m_FrustumObj.Render(pd3dContext);
 	return true;
 }
 myCamera::myCamera()

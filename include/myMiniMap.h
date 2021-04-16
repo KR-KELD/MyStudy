@@ -14,6 +14,5 @@ public:
 	virtual bool	Begin();
 	virtual bool	End();
 	virtual bool	Release() override;
-	virtual bool	PostRender() override;
-	virtual bool	Draw();
+	virtual bool	Draw(ID3D11DeviceContext*	pd3dContext);
 };

@@ -1,6 +1,13 @@
 #include "myCollision.h"
 
-bool myCollision::InterSectSegToFace(Vector3 & vSegStart, Vector3 & vSegEnd, Vector3 & vFaceNormal,
+bool myCollision::IntersectSphereToSphere(MY_SPHERE & mySp1, MY_SPHERE & mySp2)
+{
+	float fDist = (mySp1.vCenter - mySp2.vCenter).Length();
+	if ((mySp1.fRadius + mySp2.fRadius) > fDist) return true;
+	return false;
+}
+
+bool myCollision::IntersectSegToFace(Vector3 & vSegStart, Vector3 & vSegEnd, Vector3 & vFaceNormal,
 	Vector3 & v1, Vector3 & v2, Vector3 & v3, Vector3* vRet)
 {
 	Vector3 vDir = vSegEnd - vSegStart;
@@ -42,7 +49,7 @@ bool myCollision::DetermineFace(Vector3 & vPos, Vector3 & vFaceNormal, Vector3 &
 	return true;
 }
 
-bool myCollision::InterSectSegToFace(MY_RAY & myRay, Vector3 & v1, Vector3 & v2, Vector3 & v3,
+bool myCollision::IntersectSegToFace(MY_RAY & myRay, Vector3 & v1, Vector3 & v2, Vector3 & v3,
 	float * t, float * u, float * v)
 {
 	Vector3 vEdge1 = v2 - v1;
@@ -77,7 +84,7 @@ bool myCollision::InterSectSegToFace(MY_RAY & myRay, Vector3 & v1, Vector3 & v2,
 	return true;
 }
 //aabb
-bool myCollision::InterSectRayToBox(MY_RAY& myRay, MY_BOX& myBox, Vector3* vRet)
+bool myCollision::IntersectRayToBox(MY_RAY& myRay, MY_BOX& myBox, Vector3* vRet)
 {
 	Vector3 vMin;
 	vMin.x = (myBox.vMin.x - myRay.vOrigin.x) / myRay.vDir.x + EPSILON;
@@ -109,7 +116,7 @@ bool myCollision::InterSectRayToBox(MY_RAY& myRay, MY_BOX& myBox, Vector3* vRet)
 	return false;
 }
 
-bool myCollision::InterSectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
+bool myCollision::IntersectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
 {
 
 	float fDirDot[3];
@@ -160,9 +167,9 @@ bool myCollision::InterSectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
 	return true;
 }
 
-bool myCollision::InterSectRayToSphere(MY_RAY & myRay, MY_SPHERE & mySphere)
+bool myCollision::IntersectRayToSphere(MY_RAY & myRay, MY_SPHERE & mySphere)
 {
-	Vector3 vDir = myRay.vOrigin- mySphere.vCenter;
+	Vector3 vDir = myRay.vOrigin - mySphere.vCenter;
 	// B = 2(u dot (p0 - c ))
 	float  fProj = myRay.vDir.Dot(vDir);
 	// 제한된 길이(세그먼트) 제외처리

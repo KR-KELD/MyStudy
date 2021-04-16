@@ -177,9 +177,6 @@
     <ClCompile Include="myCameraManager.cpp">
       <Filter>Mgr</Filter>
     </ClCompile>
-    <ClCompile Include="mySkyBox.cpp">
-      <Filter>Obj</Filter>
-    </ClCompile>
     <ClCompile Include="myLog.cpp">
       <Filter>Util</Filter>
     </ClCompile>
@@ -212,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="myAnimation.cpp">
       <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="mySkyBox.cpp">
+      <Filter>Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -362,9 +362,6 @@
     <ClInclude Include="myCameraManager.h">
       <Filter>Mgr</Filter>
     </ClInclude>
-    <ClInclude Include="mySkyBox.h">
-      <Filter>Obj</Filter>
-    </ClInclude>
     <ClInclude Include="myLog.h">
       <Filter>Util</Filter>
     </ClInclude>
@@ -395,6 +392,9 @@
     <ClInclude Include="myModelGraphics.h">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="mySkyBox.h">
+      <Filter>Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -402,25 +402,28 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\data\shader\SkyBox.txt">
+    <Text Include="..\..\data\shader\VS.txt">
       <Filter>Shader</Filter>
     </Text>
-    <Text Include="..\..\data\shader\ModelVS.txt">
+    <Text Include="..\..\data\shader\BasisPS.txt">
       <Filter>Shader</Filter>
     </Text>
-    <Text Include="..\..\data\shader\BasisLinePS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\BasisLineVS.txt">
+    <Text Include="..\..\data\shader\BasisVS.txt">
       <Filter>Shader</Filter>
     </Text>
     <Text Include="..\..\data\shader\ModelPS.txt">
       <Filter>Shader</Filter>
     </Text>
-    <Text Include="..\..\data\shader\VS.txt">
+    <Text Include="..\..\data\shader\ModelVS.txt">
       <Filter>Shader</Filter>
     </Text>
     <Text Include="..\..\data\shader\PS.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\SkyBoxPS.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\SkyBoxVS.txt">
       <Filter>Shader</Filter>
     </Text>
   </ItemGroup>

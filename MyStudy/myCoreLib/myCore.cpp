@@ -43,11 +43,17 @@ bool myCore::GameInit()
 		g_rtClient.right,
 		g_rtClient.bottom, pBackBuffer.Get());
 
+	m_pSkyBoxObj = myGameObject::CreateComponentObj(new mySkyBox);
+	m_pSkyBoxObj->GetComponent<mySkyBox>()->Create(
+		L"../../data/shader/SkyBoxVS.txt", L"../../data/shader/SkyBoxPS.txt", L"");
+
+
+
 	m_pBasisLine = new myShapeLine;
 	g_GameObject.InsertComponent(m_pBasisLine);
 	m_pBasisLine->Init();
 	if (!m_pBasisLine->Create(L"../../data/shader/BasisVS.txt", L"../../data/shader/BasisPS.txt",
-	L""))
+		L""))
 	{
 		return false;
 	}
@@ -84,6 +90,10 @@ bool myCore::GameFrame()
 
 bool myCore::PreRender()
 {
+	m_pSkyBoxObj->m_pTransform->SetMatrix(NULL,
+		&g_pMainCamTransform->m_matView,
+		&g_pMainCamTransform->m_matProj);
+	m_pSkyBoxObj->Render();
 	myDevice::PreRender();
 	return true;
 }
@@ -98,12 +108,13 @@ bool myCore::GameRender()
 
 bool myCore::PostRender()
 {
-	m_pBasisLine->m_pTransform->SetMatrix(NULL, 
+	m_pBasisLine->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
-	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(50, 0, 0), Vector4(1, 0, 0, 1));
-	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 50, 0), Vector4(0, 1, 0, 1));
-	m_pBasisLine->Draw(Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
+
+	m_pBasisLine->Draw(g_pImmediateContext, Vector3(0, 0, 0), Vector3(50, 0, 0), Vector4(1, 0, 0, 1));
+	m_pBasisLine->Draw(g_pImmediateContext, Vector3(0, 0, 0), Vector3(0, 50, 0), Vector4(0, 1, 0, 1));
+	m_pBasisLine->Draw(g_pImmediateContext, Vector3(0, 0, 0), Vector3(0, 0, 50), Vector4(0, 0, 1, 1));
 	g_Timer.Render();
 	g_Input.Render();
 	g_ObjMgr.Render();
@@ -158,6 +169,8 @@ myCore::~myCore()
 
 bool myCore::GameRelease()
 {
+	m_pSkyBoxObj->Release();
+	SAFE_DELETE(m_pSkyBoxObj);
 	Release();
 	g_CamMgr.Release();
 	g_Draw.Release();

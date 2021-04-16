@@ -42,10 +42,10 @@ bool myMiniMap::End()
 	return true;
 }
 
-bool myMiniMap::Draw()
+bool myMiniMap::Draw(ID3D11DeviceContext*	pd3dContext)
 {
-	g_pImmediateContext->PSSetShaderResources(0, 1, m_DxRT.m_pSRV.GetAddressOf());
-	myGraphics::PostRender();
+	pd3dContext->PSSetShaderResources(0, 1, m_DxRT.m_pSRV.GetAddressOf());
+	myGraphics::PostRender(pd3dContext);
 	m_DxRT.ClearShaderResources();
 	return true;
 }

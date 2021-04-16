@@ -7,14 +7,15 @@
 #include "myDebugCamera.h"
 #include "myObjManager.h"
 #include "myCameraManager.h"
-#include "myShape.h"
 #include "myController.h"
+#include "mySkyBox.h"
 
 class myCore : public myDevice
 {
 public:
 	bool				m_isGameRun;
 	myShapeLine*		m_pBasisLine;
+	myGameObject*		m_pSkyBoxObj;
 public:
 	virtual bool		Init() { return true; }
 	virtual bool		PreInit() { return true; }

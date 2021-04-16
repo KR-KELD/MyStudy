@@ -54,9 +54,9 @@ bool myMap::Frame()
 	return true;
 }
 
-bool myMap::Draw()
+bool myMap::Draw(ID3D11DeviceContext*	pd3dContext)
 {
-	g_pImmediateContext->DrawIndexed(m_iNumFaces * 3, 0, 0);
+	pd3dContext->DrawIndexed(m_iNumFaces * 3, 0, 0);
 	return true;
 }
 
@@ -181,6 +181,7 @@ float myMap::GetHeightMap(int row, int col)
 	return m_VertexList[row * m_iNumRows + col].p.y;
 }
 
+//처음 1번 호출로 노말값 생성
 void myMap::GetVertexNormal()
 {
 	InitFaceNormals();
@@ -234,7 +235,7 @@ void myMap::GenNormalLookupTable()
 		}
 	}
 }
-
+//생성된 테이블을 기반으로 노말값 갱신
 void myMap::CalcPerVertexNormalsFastLookup()
 {
 	CalcFaceNormals();

@@ -12,7 +12,7 @@ bool mySkyBox::Create(T_STR szVS, T_STR szPS, T_STR szTex)
 	return true;
 }
 
-bool mySkyBox::Render()
+bool mySkyBox::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	m_pTransform->m_matWorld = Matrix::CreateScale(100.0f, 100.0f, 100.0f);
 	Matrix matSkyBoxView = m_pTransform->m_matView;
@@ -20,9 +20,9 @@ bool mySkyBox::Render()
 	matSkyBoxView._42 = 0;
 	matSkyBoxView._43 = 0;
 
-	g_pImmediateContext->RSSetState(myDxState::m_pRSSolidNone.Get());
-	g_pImmediateContext->PSSetSamplers(0, 1, myDxState::m_pWrapLinear.GetAddressOf());
-	g_pImmediateContext->OMSetDepthStencilState(myDxState::m_pDSS.Get(), 0);
+	g_pImmediateContext->RSSetState(myDxState::g_pRSNoneCullSolid);
+	g_pImmediateContext->PSSetSamplers(0, 1, &myDxState::g_pSSClampPoint);
+	g_pImmediateContext->OMSetDepthStencilState(myDxState::g_pDSSDepthDisable, 0);
 	/*TBASIS_CORE_LIB::ApplyDSS(pContext,
 		TBASIS_CORE_LIB::TDxState::g_pDSSDepthDisable);
 
@@ -32,7 +32,7 @@ bool mySkyBox::Render()
 	pContext->PSSetSamplers(0, 2, ppSamplerStates);*/
 
 	m_pTransform->SetMatrix(&m_pTransform->m_matWorld, &matSkyBoxView, &m_pTransform->m_matProj);
-	myGraphics::Render();
+	myGraphics::Render(pd3dContext);
 	return true;
 }
 
@@ -57,12 +57,16 @@ bool mySkyBox::LoadTexture(T_STR szTex)
 			g_pd3dDevice,
 			g_pImmediateContext, g_szSkyTextures[iTex]));
 	}
-
+	m_pTexCubeSRV.Attach(CreateShaderResourceView(
+		g_pd3dDevice,
+		g_pImmediateContext, L"..\\..\\data\\sky\\grassenvmap1024.dds"));
 	return true;
 }
 
-bool mySkyBox::Draw()
+bool mySkyBox::Draw(ID3D11DeviceContext*	pd3dContext)
 {
+	//큐브텍스쳐 전달 1번슬롯에
+	//pd3dContext->PSSetShaderResources(1, 1, m_pTexCubeSRV.GetAddressOf());
 	if (m_bRenderType)
 	{
 		//--------------------------------------------------------------------------------------
@@ -71,18 +75,19 @@ bool mySkyBox::Draw()
 		for (int iTex = 0; iTex < MAX_SKYBOX_TEXTURE; iTex++)
 		{
 			if (m_pTexSRV[iTex] == nullptr) break;
-			g_pImmediateContext->PSSetShaderResources(0, 1, m_pTexSRV[iTex].GetAddressOf());
-			g_pImmediateContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
+			pd3dContext->PSSetShaderResources(0, 1, m_pTexSRV[iTex].GetAddressOf());
+			pd3dContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
 			// 랜더링에 사용할 인덱스 버퍼 갯수, 인덱스 버퍼 시작, 버텍스 버퍼 시작
-			g_pImmediateContext->DrawIndexed(6, 6 * iTex, 0);
+			pd3dContext->DrawIndexed(6, 6 * iTex, 0);
 		}
 	}
 	else
 	{
-		g_pImmediateContext->PSSetShaderResources(1, 6, m_pTexSRV[0].GetAddressOf());
-		g_pImmediateContext->PSSetShader(m_pPSTextureIndex.Get(), NULL, 0);
+		//잠시꺼둠
+		pd3dContext->PSSetShaderResources(1, 6, m_pTexSRV[0].GetAddressOf());
+		pd3dContext->PSSetShader(m_pPSTextureIndex.Get(), NULL, 0);
 		// 랜더링에 사용할 인덱스 버퍼 갯수, 인덱스 버퍼 시작, 버텍스 버퍼 시작
-		g_pImmediateContext->DrawIndexed(36, 0, 0);
+		pd3dContext->DrawIndexed(36, 0, 0);
 	}
 	return true;
 }

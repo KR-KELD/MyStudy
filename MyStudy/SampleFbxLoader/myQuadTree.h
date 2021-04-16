@@ -22,11 +22,11 @@ public:
 	virtual bool	Release();
 	virtual bool	PreFrame();
 	virtual bool	Frame();
-	virtual bool	Render();
-	virtual bool	Draw(myNode* pNode);
-	virtual bool	DrawCulling();
+	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	Draw(ID3D11DeviceContext*	pd3dContext, myNode* pNode);
+	virtual bool	DrawCulling(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	CullingNode();
-	virtual bool	CullingVertex(myNode* pNode);
+	virtual bool	CullingVertex(ID3D11DeviceContext*	pd3dContext, myNode* pNode);
 
 	myNode*			CreateNode(myNode* pParentNode, DWORD LeftTop, DWORD RightTop, DWORD LeftBottom, DWORD RightBottom);
 public:

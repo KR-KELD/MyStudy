@@ -197,7 +197,7 @@ bool myDevice::Init()
 	{
 		return false;
 	}
-	myDxState::Set();
+	myDxState::SetState(g_pd3dDevice);
 	if (FAILED(m_pGIFactory->MakeWindowAssociation(m_hWnd,
 		DXGI_MWA_NO_WINDOW_CHANGES |
 		DXGI_MWA_NO_ALT_ENTER)))
@@ -236,11 +236,11 @@ bool myDevice::PreRender()
 		//IA에 그려줄 타입 설정
 		m_pd3dContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		//레스터라이저 스테이트 세팅
-		m_pd3dContext->RSSetState(myDxState::m_pRS.Get());
+		m_pd3dContext->RSSetState(myDxState::g_pRSBackCullSolid);
 		//픽셀 섀이더에 샘플러 세팅(보간법)
-		m_pd3dContext->PSSetSamplers(0, 1, myDxState::m_pWrapLinear.GetAddressOf());
+		m_pd3dContext->PSSetSamplers(0, 1, &myDxState::g_pSSWrapLinear);
 		//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
-		m_pd3dContext->OMSetDepthStencilState(myDxState::m_pDSS.Get(), 0);
+		m_pd3dContext->OMSetDepthStencilState(myDxState::g_pDSSDepthEnable, 0);
 
 	}
 	return true;

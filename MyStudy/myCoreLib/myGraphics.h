@@ -219,15 +219,15 @@ public:
 public:
 	virtual bool	Init();
 	virtual bool	Frame();
-	virtual void    Update();
-	virtual bool	PreRender();
-	virtual bool	Render();
-	virtual bool	PostRender();
+	virtual void    Update(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	PreRender(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	PostRender(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Release();
-	virtual bool	SettingPipeLine();
+	virtual bool	SettingPipeLine(ID3D11DeviceContext*	pd3dContext);
 	//юс╫ц
-	virtual bool	MultiDraw();
-	virtual bool	Draw();
+	virtual bool	MultiDraw(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	Draw(ID3D11DeviceContext*	pd3dContext);
 	virtual bool    CreateVertexData(Vector3 vCenter, float fRange);
 	virtual bool    CreateVertexData();
 	virtual bool    CreateIndexData();

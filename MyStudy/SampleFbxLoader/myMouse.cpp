@@ -31,7 +31,7 @@ bool myMouse::PickingFace(myNode* pNode)
 		Vector3 vEnd = m_myRay.vOrigin + m_myRay.vDir * m_fRange;
 		Vector3 vFaceNormal = (v[1] - v[0]).Cross(v[2] - v[0]);
 		vFaceNormal.Normalize();
-		if (myCollision::InterSectSegToFace(m_myRay, v[0], v[1], v[2],&fT,&fU,&fV))
+		if (myCollision::IntersectSegToFace(m_myRay, v[0], v[1], v[2],&fT,&fU,&fV))
 		{
 			m_vIntersectionPos = m_myRay.vOrigin + m_myRay.vDir * fT;
 			return true;
@@ -43,7 +43,7 @@ bool myMouse::PickingFace(myNode* pNode)
 bool myMouse::PickingAABBBox(myNode * pNode)
 {
 	ScreenToRay();
-	if (myCollision::InterSectRayToBox(m_myRay, pNode->m_myBox, &m_vIntersectionPos))
+	if (myCollision::IntersectRayToBox(m_myRay, pNode->m_myBox, &m_vIntersectionPos))
 	{
 		return true;
 	}

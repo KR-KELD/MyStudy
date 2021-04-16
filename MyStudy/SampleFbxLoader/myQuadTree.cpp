@@ -64,39 +64,39 @@ bool myQuadTree::Frame()
 	return false;
 }
 
-bool myQuadTree::Render()
+bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 {
-	m_pMap->Update();
-	m_pMap->SettingPipeLine();
-	g_pImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-	DrawCulling();
+	m_pMap->Update(g_pImmediateContext);
+	m_pMap->SettingPipeLine(g_pImmediateContext);
+	pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+	DrawCulling(pd3dContext);
 	//Draw(m_pRootNode);
 	return true;
 }
 
-bool myQuadTree::Draw(myNode* pNode)
+bool myQuadTree::Draw(ID3D11DeviceContext*	pd3dContext, myNode* pNode)
 {
 	if (pNode == nullptr) return false;
 	if (pNode->m_isLeaf == true)
 	{
-		g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
+		pd3dContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		pd3dContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
 		return true;
 	}
 	for (int i = 0; i < pNode->m_ChildList.size(); i++)
 	{
-		Draw(pNode->m_ChildList[i]);
+		Draw(pd3dContext, pNode->m_ChildList[i]);
 	}
 	return true;
 }
 
-bool myQuadTree::DrawCulling()
+bool myQuadTree::DrawCulling(ID3D11DeviceContext*	pd3dContext)
 {
 	CullingNode();
 	for (myNode* pNode : m_DrawNodeList)
 	{
-		g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
+		pd3dContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		pd3dContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
 
 
 		//CullingVertex(pNode);
@@ -123,7 +123,7 @@ bool myQuadTree::CullingNode()
 	return true;
 }
 
-bool myQuadTree::CullingVertex(myNode * pNode)
+bool myQuadTree::CullingVertex(ID3D11DeviceContext*	pd3dContext, myNode * pNode)
 {
 	if (pNode == nullptr) return false;
 	vector<DWORD> drawIndexList;
@@ -152,7 +152,7 @@ bool myQuadTree::CullingVertex(myNode * pNode)
 			}
 		}
 	}
-	g_pImmediateContext->UpdateSubresource(pNode->m_pIndexBuffer.Get()
+	pd3dContext->UpdateSubresource(pNode->m_pIndexBuffer.Get()
 		, 0, NULL, &drawIndexList.at(0), 0, 0);
 	return true;
 }

@@ -665,15 +665,15 @@ bool	myGraphics::Init()
 {
 	return true;
 }
-bool	myGraphics::Frame() 
+bool	myGraphics::Frame()
 {
 	return true;
 }
 
-void    myGraphics::Update()
+void    myGraphics::Update(ID3D11DeviceContext*	pd3dContext)
 {
 	D3D11_MAPPED_SUBRESOURCE mr;
-	HRESULT hr = g_pImmediateContext->Map(m_pConstantBuffer.Get(), 0,
+	HRESULT hr = pd3dContext->Map(m_pConstantBuffer.Get(), 0,
 		D3D11_MAP_WRITE_DISCARD, 0, &mr);
 	if (SUCCEEDED(hr))
 	{
@@ -688,33 +688,33 @@ void    myGraphics::Update()
 		pData->vColor[3] = 1;
 		pData->vTime[0] = cosf(g_fGameTimer)*0.5f + 0.5f;
 		pData->vTime[1] = g_fGameTimer;
-		g_pImmediateContext->Unmap(m_pConstantBuffer.Get(), 0);
+		pd3dContext->Unmap(m_pConstantBuffer.Get(), 0);
 	}
 }
-bool myGraphics::PreRender()
+bool myGraphics::PreRender(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
-bool	myGraphics::Render()
+bool	myGraphics::Render(ID3D11DeviceContext*	pd3dContext)
 {
-	Update();
-	PreRender();
+	Update(pd3dContext);
+	PreRender(pd3dContext);
 	if (m_SubMeshList.size() == 0)
 	{
-		SettingPipeLine();
-		Draw();
+		SettingPipeLine(pd3dContext);
+		Draw(pd3dContext);
 	}
 	else
 	{
-		MultiDraw();
+		MultiDraw(pd3dContext);
 	}
 
 	//pd3dContext->Draw(m_VertexList.size(), 0);
 
-	PostRender();
+	PostRender(pd3dContext);
 	return true;
 }
-bool myGraphics::PostRender()
+bool myGraphics::PostRender(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
@@ -729,50 +729,50 @@ bool	myGraphics::Release()
 	return true;
 }
 
-bool myGraphics::SettingPipeLine()
+bool myGraphics::SettingPipeLine(ID3D11DeviceContext*	pd3dContext)
 {
 	UINT iStride = sizeof(PNCT_VERTEX);
 	UINT iOffset = 0;
-	g_pImmediateContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	g_pImmediateContext->IASetInputLayout(m_pInputLayout.Get());
-	g_pImmediateContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
-	g_pImmediateContext->PSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
-	g_pImmediateContext->VSSetShader(m_pVertexShader.Get(), NULL, 0);
-	g_pImmediateContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
-	g_pImmediateContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_iTopology);
-	g_pImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &iStride, &iOffset);
+	pd3dContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	pd3dContext->IASetInputLayout(m_pInputLayout.Get());
+	pd3dContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+	pd3dContext->PSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+	pd3dContext->VSSetShader(m_pVertexShader.Get(), NULL, 0);
+	pd3dContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
+	pd3dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_iTopology);
+	pd3dContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &iStride, &iOffset);
 	if (m_pTexture != nullptr)
 	{
-		g_pImmediateContext->PSSetShaderResources(0, 1,
+		pd3dContext->PSSetShaderResources(0, 1,
 			m_pTexture->m_pTextureSRV.GetAddressOf());
 	}
 	return true;
 }
 
-bool myGraphics::MultiDraw()
+bool myGraphics::MultiDraw(ID3D11DeviceContext*	pd3dContext)
 {
 	UINT iStride = sizeof(PNCT_VERTEX);
 	UINT iOffset = 0;
-	g_pImmediateContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	g_pImmediateContext->IASetInputLayout(m_pInputLayout.Get());
-	g_pImmediateContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
-	g_pImmediateContext->PSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
-	g_pImmediateContext->VSSetShader(m_pVertexShader.Get(), NULL, 0);
-	g_pImmediateContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
-	g_pImmediateContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_iTopology);
+	pd3dContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	pd3dContext->IASetInputLayout(m_pInputLayout.Get());
+	pd3dContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+	pd3dContext->PSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+	pd3dContext->VSSetShader(m_pVertexShader.Get(), NULL, 0);
+	pd3dContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
+	pd3dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_iTopology);
 	for (int iSub = 0; iSub < m_SubMeshList.size(); iSub++)
 	{
 		if (m_SubMeshList[iSub].m_TriangleList.size() <= 0) continue;
-		g_pImmediateContext->IASetVertexBuffers(0, 1, m_SubMeshList[iSub].m_pVertexBuffer.GetAddressOf(), &iStride, &iOffset);
+		pd3dContext->IASetVertexBuffers(0, 1, m_SubMeshList[iSub].m_pVertexBuffer.GetAddressOf(), &iStride, &iOffset);
 
 		if (m_SubMeshList[iSub].m_pTexture != nullptr)
 		{
-			g_pImmediateContext->PSSetShaderResources(0, 1,
+			pd3dContext->PSSetShaderResources(0, 1,
 				m_SubMeshList[iSub].m_pTexture->m_pTextureSRV.GetAddressOf());
 		}
 		if (m_pIndexBuffer.Get() == nullptr)
 		{
-			g_pImmediateContext->Draw(m_SubMeshList[iSub].m_VertexList.size(), 0);
+			pd3dContext->Draw(m_SubMeshList[iSub].m_VertexList.size(), 0);
 		}
 		//else
 		//{
@@ -782,15 +782,15 @@ bool myGraphics::MultiDraw()
 	return true;
 }
 
-bool myGraphics::Draw()
+bool myGraphics::Draw(ID3D11DeviceContext*	pd3dContext)
 {
 	if (m_IndexList.size())
 	{
-		g_pImmediateContext->DrawIndexed(m_IndexList.size(), 0, 0);
+		pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
 	}
 	else
 	{
-		g_pImmediateContext->Draw(m_VertexList.size(), 0);
+		pd3dContext->Draw(m_VertexList.size(), 0);
 	}
 	return true;
 }
@@ -810,12 +810,12 @@ myGraphics::~myGraphics()
 {
 
 }
-bool    myGraphics::CreateVertexData() 
+bool    myGraphics::CreateVertexData()
 {
 	return true;
 };
 
-bool    myGraphics::CreateIndexData() 
+bool    myGraphics::CreateIndexData()
 {
 	return true;
 };

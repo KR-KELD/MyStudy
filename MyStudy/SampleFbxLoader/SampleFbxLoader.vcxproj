@@ -148,33 +148,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="myAnimation.cpp" />
-    <ClCompile Include="myFbxAnimation.cpp" />
-    <ClCompile Include="myModelGraphics.cpp" />
-    <ClCompile Include="myFbxLoader.cpp" />
-    <ClCompile Include="myFbxObj.cpp" />
     <ClCompile Include="myHeightMap.cpp" />
-    <ClCompile Include="myModelObject.cpp" />
     <ClCompile Include="myMouse.cpp" />
     <ClCompile Include="myNode.cpp" />
     <ClCompile Include="myQuadTree.cpp" />
     <ClCompile Include="Sample.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="myAnimation.h" />
-    <ClInclude Include="myModelGraphics.h" />
-    <ClInclude Include="myFbxLoader.h" />
-    <ClInclude Include="myFbxObj.h" />
     <ClInclude Include="myHeightMap.h" />
-    <ClInclude Include="myModelObject.h" />
     <ClInclude Include="myMouse.h" />
     <ClInclude Include="myNode.h" />
     <ClInclude Include="myQuadTree.h" />
     <ClInclude Include="Sample.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="PS.txt" />
-    <Text Include="VS.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

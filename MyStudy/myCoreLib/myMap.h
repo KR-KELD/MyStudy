@@ -59,7 +59,7 @@ public:
 	virtual bool    CreateVertexData() override;
 	virtual bool    CreateIndexData()override;
 	virtual bool	Frame() override;
-	virtual bool	Draw() override;
+	virtual bool	Draw(ID3D11DeviceContext*	pd3dContext) override;
 public:
 	myMap();
 	virtual ~myMap();
