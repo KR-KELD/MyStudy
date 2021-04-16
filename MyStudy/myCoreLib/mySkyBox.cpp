@@ -66,7 +66,7 @@ bool mySkyBox::LoadTexture(T_STR szTex)
 bool mySkyBox::Draw(ID3D11DeviceContext*	pd3dContext)
 {
 	//큐브텍스쳐 전달 1번슬롯에
-	//pd3dContext->PSSetShaderResources(1, 1, m_pTexCubeSRV.GetAddressOf());
+	pd3dContext->PSSetShaderResources(1, 1, m_pTexCubeSRV.GetAddressOf());
 	if (m_bRenderType)
 	{
 		//--------------------------------------------------------------------------------------
@@ -84,8 +84,9 @@ bool mySkyBox::Draw(ID3D11DeviceContext*	pd3dContext)
 	else
 	{
 		//잠시꺼둠
-		pd3dContext->PSSetShaderResources(1, 6, m_pTexSRV[0].GetAddressOf());
-		pd3dContext->PSSetShader(m_pPSTextureIndex.Get(), NULL, 0);
+		//pd3dContext->PSSetShaderResources(2, 6, m_pTexSRV[0].GetAddressOf());
+		//pd3dContext->PSSetShader(m_pPSTextureIndex.Get(), NULL, 0);
+		pd3dContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
 		// 랜더링에 사용할 인덱스 버퍼 갯수, 인덱스 버퍼 시작, 버텍스 버퍼 시작
 		pd3dContext->DrawIndexed(36, 0, 0);
 	}

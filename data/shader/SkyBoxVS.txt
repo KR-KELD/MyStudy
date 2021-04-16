@@ -23,6 +23,7 @@ struct VS_OUTPUT
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
 	float4 wp : TEXCOORD1;
+	float3 tex : TEXCOORD2;
 };
 VS_OUTPUT VS( VS_INPUT vIn)
 {
@@ -31,12 +32,10 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	p = mul(p, g_matWorld);
 	vOut.wp = p;
 	p = mul(p, g_matView);
-	vOut.p = mul(p, g_matProj);
+	float4 fPos = mul(p, g_matProj);
+	vOut.p = fPos.xyww;
 	// dot
-	vOut.n = vIn.n;
-	//고러드쉐이딩
-	float fdot = dot(-vColor.xyz, vIn.n);
-	vOut.c = float4(fdot, fdot, fdot, 1.0f);
 	vOut.t = vIn.t;	
+	vOut.tex = normalize(vIn.p);
 	return vOut;
 }

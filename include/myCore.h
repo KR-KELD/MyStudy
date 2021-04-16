@@ -16,6 +16,7 @@ public:
 	bool				m_isGameRun;
 	myShapeLine*		m_pBasisLine;
 	myGameObject*		m_pSkyBoxObj;
+	mySkyBox*			m_pSkyBox;
 public:
 	virtual bool		Init() { return true; }
 	virtual bool		PreInit() { return true; }

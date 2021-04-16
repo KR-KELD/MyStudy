@@ -44,7 +44,8 @@ bool myCore::GameInit()
 		g_rtClient.bottom, pBackBuffer.Get());
 
 	m_pSkyBoxObj = myGameObject::CreateComponentObj(new mySkyBox);
-	m_pSkyBoxObj->GetComponent<mySkyBox>()->Create(
+	m_pSkyBox = m_pSkyBoxObj->GetComponent<mySkyBox>(); 
+	m_pSkyBox->Create(
 		L"../../data/shader/SkyBoxVS.txt", L"../../data/shader/SkyBoxPS.txt", L"");
 
 
@@ -90,11 +91,18 @@ bool myCore::GameFrame()
 
 bool myCore::PreRender()
 {
-	m_pSkyBoxObj->m_pTransform->SetMatrix(NULL,
+	myDevice::PreRender();
+	m_pSkyBox->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
-	m_pSkyBoxObj->Render();
-	myDevice::PreRender();
+	m_pSkyBox->Render(g_pImmediateContext);
+
+	//레스터라이저 스테이트 세팅
+	m_pd3dContext->RSSetState(myDxState::g_pRSBackCullSolid);
+	//픽셀 섀이더에 샘플러 세팅(보간법)
+	m_pd3dContext->PSSetSamplers(0, 1, &myDxState::g_pSSWrapLinear);
+	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)
+	m_pd3dContext->OMSetDepthStencilState(myDxState::g_pDSSDepthEnable, 0);
 	return true;
 }
 
