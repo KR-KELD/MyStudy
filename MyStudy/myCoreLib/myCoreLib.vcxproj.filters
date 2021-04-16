@@ -61,6 +61,9 @@
     <Filter Include="Light">
       <UniqueIdentifier>{1acf8960-3dbd-495c-be05-7f590a391c51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{bce041a5-3e43-4857-9d8a-432bfb233e59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -190,7 +193,25 @@
       <Filter>Player</Filter>
     </ClCompile>
     <ClCompile Include="myLight.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="myModelObject.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="myModelGraphics.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="myFbxObj.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="myFbxLoader.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="myFbxAnimation.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="myAnimation.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -357,7 +378,22 @@
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="myLight.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="myModelObject.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="myAnimation.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="myFbxLoader.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="myFbxObj.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="myModelGraphics.h">
+      <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
