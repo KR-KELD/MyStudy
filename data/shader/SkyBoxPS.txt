@@ -7,7 +7,7 @@ SamplerState		g_Sample : register(s0);
 SamplerState        g_samPointClamp : register(s1);
 SamplerState        g_samLinearWrap : register(s2);
 
-cbuffer TDataCB : register(b0)
+cbuffer myDataCB : register(b0)
 {
 	float4x4  g_matWorld: packoffset(c0);
 	float4x4  g_matView: packoffset(c4);
@@ -35,8 +35,8 @@ struct PS_OUTPUT
 PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
-	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
-	//float4 vTexture = g_txCubeMap.Sample( g_Sample, vIn.tex);
+	//float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
+	float4 vTexture = g_txCubeMap.Sample( g_Sample, vIn.tex);
 	vOut.c = vTexture;
 	return vOut;
 }

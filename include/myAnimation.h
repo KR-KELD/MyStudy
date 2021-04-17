@@ -16,11 +16,11 @@ struct myAnimScene
 	float fDeltaTime;
 	float fFirstTime;
 	float fLastTime;
-	myAnimScene CuttingAnimScene(int iFirstFrame, int iLastFrame)
+	myAnimScene CuttingAnimScene(int _iFirstFrame, int _iLastFrame)
 	{
 		myAnimScene scene = myAnimScene(*this);
-		scene.iFirstFrame = iFirstFrame;
-		scene.iLastFrame = iLastFrame;
+		scene.iFirstFrame = min(max(_iFirstFrame, iFirstFrame), iLastFrame);
+		scene.iLastFrame = max(min(_iLastFrame, iLastFrame), iFirstFrame);
 		return scene;
 	}
 };

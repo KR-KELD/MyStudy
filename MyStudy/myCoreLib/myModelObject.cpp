@@ -52,8 +52,8 @@ bool myModelObject::SetAnim(wstring strSceneName, myAnimScene & scene, vector<my
 
 bool myModelObject::Frame()
 {
-	myGameObject::PreFrame();
-	myGameObject::Frame();
+	//myGameObject::PreFrame();
+	//myGameObject::Frame();
 	myAnimScene* pScene = m_pAnim->m_pCurrentScene;
 	if (pScene != nullptr)
 	{
@@ -87,14 +87,15 @@ bool myModelObject::Frame()
 		//		m_pAnim->m_isLerp = false;
 		//	}
 		//}
-
-		if (m_pAnim->m_fTick + (pScene->iFirstFrame * pScene->iTickPerFrame) >= (pScene->iLastFrame * pScene->iTickPerFrame))
+		float fTick = m_pAnim->m_fTick + (pScene->iFirstFrame * pScene->iTickPerFrame);
+		if (fTick >= (pScene->iLastFrame * pScene->iTickPerFrame))
 		{
 			m_pAnim->m_fTick = 0.0f;
+			fTick = pScene->iFirstFrame * pScene->iTickPerFrame;
 			//m_pAnim->m_fTick = pScene->iFirstFrame *
 			//	pScene->iTickPerFrame;
 		}
-		float fTick = m_pAnim->m_fTick + (pScene->iFirstFrame * pScene->iTickPerFrame);
+
 
 		for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 		{
