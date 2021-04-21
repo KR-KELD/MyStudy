@@ -50,7 +50,7 @@ bool Sample::Frame()
 		for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
 		{
 			myNode* pNode = m_QuadTree.m_LeafNodeList[i];
-			if (myCollision::IntersectRayToBox(m_Mouse.m_myRay, pNode->m_myBox,&m_Mouse.m_vIntersectionPos))
+			if (myCollision::IntersectRayToBox(m_Mouse.m_myRay, pNode->m_myBox/*,&m_Mouse.m_vIntersectionPos*/))
 			{
 				m_SelectNodeList.push_back(pNode);
 			}

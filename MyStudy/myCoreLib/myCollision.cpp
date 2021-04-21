@@ -129,7 +129,7 @@ bool myCollision::IntersectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
 	fInner[0] = vOC.Dot(myBox.vAxis[0]);
 	fAbsInner[0] = fabs(fInner[0]);
 	//박스 범위 안쪽 체크와 레이 방향체크를 동시에 한다
-	if (fAbsInner[1] > myBox.fExtent[1] && fDirDot[1] * fInner[1] >= 0.0f)
+	if (fAbsInner[0] > myBox.fExtent[0] && fDirDot[0] * fInner[0] >= 0.0f)
 		return false;
 	fDirDot[1] = myRay.vDir.Dot(myBox.vAxis[1]);
 
@@ -157,11 +157,11 @@ bool myCollision::IntersectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
 	fRhs = myBox.fExtent[1] * fAbsDir[2] + myBox.fExtent[2] * fAbsDir[1];
 	if (fAbsDirCrossDot[0] > fRhs) return false;
 
-	fAbsDirCrossDot[1] = fabs(fDirCross.Dot(myBox.vAxis[0]));
+	fAbsDirCrossDot[1] = fabs(fDirCross.Dot(myBox.vAxis[1]));
 	fRhs = myBox.fExtent[0] * fAbsDir[2] + myBox.fExtent[2] * fAbsDir[0];
 	if (fAbsDirCrossDot[1] > fRhs) return false;
 
-	fAbsDirCrossDot[2] = fabs(fDirCross.Dot(myBox.vAxis[0]));
+	fAbsDirCrossDot[2] = fabs(fDirCross.Dot(myBox.vAxis[2]));
 	fRhs = myBox.fExtent[0] * fAbsDir[1] + myBox.fExtent[1] * fAbsDir[0];
 	if (fAbsDirCrossDot[2] > fRhs) return false;
 	return true;
