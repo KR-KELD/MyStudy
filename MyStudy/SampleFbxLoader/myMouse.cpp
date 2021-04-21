@@ -19,7 +19,6 @@ void myMouse::ScreenToRay()
 
 bool myMouse::PickingFace(myNode* pNode)
 {
-	ScreenToRay();
 	Vector3 v[3];
 	float fT, fU, fV;
 	for (int face = 0; face < pNode->m_NodeIndexList.size() / 3; face++)

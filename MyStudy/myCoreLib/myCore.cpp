@@ -98,7 +98,7 @@ bool myCore::PreRender()
 	m_pSkyBox->Render(g_pImmediateContext);
 
 	//레스터라이저 스테이트 세팅
-	m_pd3dContext->RSSetState(myDxState::g_pRSBackCullSolid);
+	m_pd3dContext->RSSetState(myDxState::g_pRSEdit.Get());
 	//픽셀 섀이더에 샘플러 세팅(보간법)
 	m_pd3dContext->PSSetSamplers(0, 1, &myDxState::g_pSSWrapLinear);
 	//뎁스 스탠실 스테이트 세팅(깊이값 버퍼)

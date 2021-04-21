@@ -115,7 +115,7 @@ bool myCollision::IntersectRayToBox(MY_RAY& myRay, MY_BOX& myBox, Vector3* vRet)
 	}
 	return false;
 }
-
+//¼öÁ¤
 bool myCollision::IntersectRayToBox(MY_RAY & myRay, MY_BOX & myBox)
 {
 

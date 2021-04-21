@@ -13,9 +13,13 @@ class Sample : public myCore
 {
 public:
 	myFbxObj* m_pFbxObj;
-	myFbxObj* m_pFbxObj2;
 	shared_ptr<myModelObject> m_pModelObj;
 
+	myQuadTree		m_QuadTree;
+	myMouse			m_Mouse;
+	myMap*			m_Map;
+	vector<myNode*> m_SelectNodeList;
+	vector<myNode*> m_ControlNodeList;
 public:
 	bool Init() override;
 	bool Frame() override;

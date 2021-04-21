@@ -205,6 +205,14 @@ HRESULT myDxState::SetState(ID3D11Device*	pd3dDevice)
 	//레스터라이즈 상태 객체 생성
 	D3D11_RASTERIZER_DESC rsDesc;
 	ZeroMemory(&rsDesc, sizeof(rsDesc));
+
+
+	ZeroMemory(&g_RasterizerDesc, sizeof(g_RasterizerDesc));
+	g_RasterizerDesc.DepthClipEnable = TRUE;
+	g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	g_RasterizerDesc.CullMode = D3D11_CULL_BACK;
+
+
 	rsDesc.DepthClipEnable = TRUE;
 	rsDesc.FillMode = D3D11_FILL_SOLID;
 	rsDesc.CullMode = D3D11_CULL_BACK;
