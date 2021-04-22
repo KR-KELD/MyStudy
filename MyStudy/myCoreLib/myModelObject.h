@@ -2,12 +2,12 @@
 #include "myModelGraphics.h"
 #include "myAnimation.h"
 
-
 class myModelObject : public myGameObject
 {
 public:
 	DEFINE_COMPONENT(myModelObject, myGameObject, true);
 public:
+
 	myAnimation*					m_pAnim;
 	shared_ptr<myModelGraphics>		m_pGraphics;
 	ComPtr<ID3D11Buffer>			m_pBoneBuffer;

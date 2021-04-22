@@ -7,8 +7,6 @@
 #include "myFbxLoader.h"
 #include "myMouse.h"
 
-
-
 class Sample : public myCore
 {
 public:
@@ -20,6 +18,7 @@ public:
 	myMap*			m_Map;
 	vector<myNode*> m_SelectNodeList;
 	vector<myNode*> m_ControlNodeList;
+
 public:
 	bool Init() override;
 	bool Frame() override;

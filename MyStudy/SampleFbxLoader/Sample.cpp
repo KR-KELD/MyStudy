@@ -23,10 +23,10 @@ bool Sample::Init()
 	m_QuadTree.CreateQuadTree(m_Map);
 
 
-	//m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
-	//m_pModelObj = m_pFbxObj->m_pModelObject;
-	//m_pFbxObj->CuttingAnimScene(L"0", 0, 60);
-	//m_pFbxObj->CuttingAnimScene(L"1", 61, 91);
+	m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
+	m_pModelObj = m_pFbxObj->m_pModelObject;
+	m_pFbxObj->CuttingAnimScene(L"0", 0, 60);
+	m_pFbxObj->CuttingAnimScene(L"1", 61, 91);
 	//m_pFbxObj->CuttingAnimScene(L"2", 92, 116);
 	//m_pFbxObj->CuttingAnimScene(L"3", 117, 167);
 	//m_pFbxObj->CuttingAnimScene(L"4", 168, 208);
@@ -34,19 +34,17 @@ bool Sample::Init()
 	//m_pFbxObj->CuttingAnimScene(L"5", 209, 239);
 	//m_pFbxObj->CuttingAnimScene(L"6", 240, 287);
 	//m_pFbxObj->CuttingAnimScene(L"7", 288, 319);
-	//m_pModelObj->m_pAnim->ChangeAnim(L"0");
+	m_pModelObj->m_pAnim->ChangeAnim(L"1");
 
 	return true;
 }
 
 bool Sample::Frame()
 {
-
+	m_SelectNodeList.clear();
 	if (g_Input.GetKey(VK_RBUTTON) == KEY_PUSH)
 	{
 		m_Mouse.ScreenToRay();
-		m_SelectNodeList.clear();
-		
 		for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
 		{
 			myNode* pNode = m_QuadTree.m_LeafNodeList[i];
@@ -55,16 +53,30 @@ bool Sample::Frame()
 				m_SelectNodeList.push_back(pNode);
 			}
 		}
-
-		//for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
-		//{
-		//	if (m_Mouse.PickingFace(m_QuadTree.m_LeafNodeList[i]))
-		//	{
-		//		//m_pBox->m_pTransform->SetPos(m_Mouse.m_vIntersectionPos);
-		//		break;
-		//	}
-		//}
 	}
+
+	Vector3 vPick;
+	float fMaxDist = 99999.0f;
+	bool bUpdate = false;
+
+	for (myNode* pNode : m_SelectNodeList)
+	{
+		if (m_Mouse.PickingFace(pNode))
+		{
+			float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
+			if (fDist < fMaxDist)
+			{
+				vPick = m_Mouse.m_vIntersectionPos;
+				fMaxDist = fDist;
+				bUpdate = true;
+			}
+		}
+	}
+	if (bUpdate)
+	{
+		//오브젝트 띄우기
+	}
+
 
 	//m_pModelObj->Frame();
 	//if (g_Input.GetKey('0') == KEY_PUSH)
@@ -110,15 +122,14 @@ bool Sample::Render()
 		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
 		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 			myDxState::g_RasterizerDesc);
-		//ApplyRS(g_pImmediateContext, myDxState::g_pRSWireFrame);
 	}
 	if (g_Input.GetKey('9') == KEY_PUSH)
 	{
 		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
 		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 			myDxState::g_RasterizerDesc);
-		//ApplyRS(g_pImmediateContext, myDxState::g_pRSSolid);
 	}
+
 	m_Map->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
@@ -137,7 +148,9 @@ bool Sample::Render()
 
 	//최종적으로는 모든 함수는 각자의 Render에서 돌아가게끔 해야함
 	//그걸 호출하는건 obj매니저에 있는 메인gameobject
-	//m_pModelObj->Render();
+
+
+	
 	return true;
 }
 

@@ -54,13 +54,13 @@ bool myModelObject::Frame()
 {
 	//myGameObject::PreFrame();
 	//myGameObject::Frame();
+
 	myAnimScene* pScene = m_pAnim->m_pCurrentScene;
 	if (pScene != nullptr)
 	{
 		m_pAnim->m_fTick += g_fSecondPerFrame *
 			pScene->iFrameSpeed *
 			pScene->iTickPerFrame;
-
 
 		//보간 생각정리해보기 커런트랑 같이
 		//if (m_pAnim->m_fPrevTick > m_pAnim->m_fLerpTick)
@@ -87,6 +87,7 @@ bool myModelObject::Frame()
 		//		m_pAnim->m_isLerp = false;
 		//	}
 		//}
+
 		float fTick = m_pAnim->m_fTick + (pScene->iFirstFrame * pScene->iTickPerFrame);
 		if (fTick >= (pScene->iLastFrame * pScene->iTickPerFrame))
 		{
@@ -95,7 +96,6 @@ bool myModelObject::Frame()
 			//m_pAnim->m_fTick = pScene->iFirstFrame *
 			//	pScene->iTickPerFrame;
 		}
-
 
 		for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 		{
