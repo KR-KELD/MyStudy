@@ -123,8 +123,17 @@ struct myTriangle
 	myTriangle() : iSubIndex(-1) {}
 };
 
+//테스트
+struct myInstance
+{
+	Matrix matWorld;
+};
+
 struct mySubMesh
 {
+	//생각해보기
+	ComPtr<ID3D11Buffer>	m_pInstanceBuffer;
+
 	vector<myTriangle>		m_TriangleList;
 	vector<PNCT_VERTEX>		m_VertexList;
 	vector<IW_VERTEX>		m_VertexListIW;
