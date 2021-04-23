@@ -7,6 +7,12 @@
 #include "myFbxLoader.h"
 #include "myMouse.h"
 
+struct myModelInstance
+{
+	Vector3 vPos;
+	float fTick;
+};
+
 class Sample : public myCore
 {
 public:
@@ -19,6 +25,7 @@ public:
 	vector<myNode*> m_SelectNodeList;
 	vector<myNode*> m_ControlNodeList;
 
+	vector<myModelInstance> m_ModelList;
 public:
 	bool Init() override;
 	bool Frame() override;

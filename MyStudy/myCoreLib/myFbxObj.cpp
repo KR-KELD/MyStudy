@@ -341,6 +341,8 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 	//정점 컬러 리스트
 	vector<FbxLayerElementVertexColor*> LayerVertexColors;
 
+	vector<FbxLayerElementTangent*> LayerVertexTangents;
+
 	//레이어의 갯수 가져오기(멀티 텍스쳐링)
 	int iLayerCount = pFbxMesh->GetLayerCount();
 
@@ -361,6 +363,10 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 		if (pLayer->GetVertexColors() != NULL)
 		{
 			LayerVertexColors.push_back(pLayer->GetVertexColors());
+		}
+		if (pLayer->GetTangents() != NULL)
+		{
+			LayerVertexTangents.push_back(pLayer->GetTangents());
 		}
 		//uv좌표를 리스트에 저장
 		if (pLayer->GetUVs() != NULL)
@@ -551,6 +557,25 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 						v.t.y = 1.0f - uv.mData[1];
 					}
 				}
+				if (LayerVertexTangents.size())
+				{
+					FbxGeometryElementTangent* tangentElement =
+						pFbxMesh->GetElementTangent(0);
+					if (tangentElement != nullptr)
+					{
+						FbxVector4 tangent =
+							ReadTangent(pFbxMesh, LayerVertexTangents.size(),
+								tangentElement,
+								iCornerIndices[iIndex],
+								iBasePolyIndex + iVertIndex[iIndex]);
+						/*vertex.tangent.x = (FLOAT)tangent.mData[0];
+						vertex.tangent.y = (FLOAT)tangent.mData[2];
+						vertex.tangent.z = (FLOAT)tangent.mData[1];
+						vertex.tangent.w = (FLOAT)tangent.mData[3];*/
+					}
+				}
+
+
 				//영향을 미치는 정점과 가중치 등록
 				IW_VERTEX iw;
 				if (pGraphics->m_bSkinnedMesh)
@@ -669,7 +694,7 @@ string myFbxObj::ParseMaterial(FbxSurfaceMaterial * pMtrl)
 			_splitpath_s(szFileName, Drive, Dir, FName, Ext);
 			std::string texName = FName;
 			std::string ext = Ext;
-			if (ext == ".tga")
+			if (ext == ".tga" || ext == ".TGA")
 			{
 				ext.clear();
 				ext = ".dds";
@@ -782,4 +807,70 @@ FbxColor myFbxObj::ReadColor(const FbxMesh* mesh,
 		}
 	}
 	return Value;
+}
+
+FbxVector4 myFbxObj::ReadTangent(const FbxMesh * mesh, DWORD dwVertexTangentCount, FbxGeometryElementTangent * VertexTangentSets, DWORD dwDCCIndex, DWORD dwVertexIndex)
+{
+	FbxVector4 ret(0, 0, 0);
+	if (dwVertexTangentCount < 1)
+	{
+		return ret;
+	}
+	int dwVertexTangentCountLayer = mesh->GetElementTangentCount();
+	const FbxGeometryElementTangent* vertexTangent = mesh->GetElementTangent(0);
+	if (vertexTangent != nullptr)
+	{
+		switch (vertexTangent->GetMappingMode())
+		{
+		case FbxGeometryElement::eByControlPoint:
+		{
+			switch (vertexTangent->GetReferenceMode())
+			{
+			case FbxGeometryElement::eDirect:
+			{
+				ret[0] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(dwDCCIndex).mData[0]);
+				ret[1] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(dwDCCIndex).mData[1]);
+				ret[2] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(dwDCCIndex).mData[2]);
+			}break;
+			case FbxGeometryElement::eIndexToDirect:
+			{
+				int index = vertexTangent->GetIndexArray().GetAt(dwDCCIndex);
+				ret[0] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(index).mData[0]);
+				ret[1] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(index).mData[1]);
+				ret[2] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(index).mData[2]);
+			}break;
+			default:
+			{
+				assert(0);
+			}break;
+			}break;
+		}
+
+		case FbxGeometryElement::eByPolygonVertex:
+		{
+			switch (vertexTangent->GetReferenceMode())
+			{
+			case FbxGeometryElement::eDirect:
+			{
+				int iTangentIndex = dwVertexIndex;
+				ret[0] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(iTangentIndex).mData[0]);
+				ret[1] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(iTangentIndex).mData[1]);
+				ret[2] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(iTangentIndex).mData[2]);
+			} break;
+			case FbxGeometryElement::eIndexToDirect:
+			{
+				int iTangentIndex = vertexTangent->GetIndexArray().GetAt(dwVertexIndex);
+				ret[0] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(iTangentIndex).mData[0]);
+				ret[1] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(iTangentIndex).mData[1]);
+				ret[2] = static_cast<float>(vertexTangent->GetDirectArray().GetAt(iTangentIndex).mData[2]);
+			} break;
+			default:
+			{
+				assert(0);
+			}
+			} break;
+		}
+		}
+	}
+	return ret;
 }

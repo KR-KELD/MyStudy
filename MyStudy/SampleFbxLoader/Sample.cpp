@@ -22,11 +22,14 @@ bool Sample::Init()
 	m_Map->m_isRender = false;
 	m_QuadTree.CreateQuadTree(m_Map);
 
-
-	m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
+	m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
+	//m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
+	//m_pFbxObj = g_FbxLoader.Load("../../data/object/SM_Barrel.fbx");
+	
 	m_pModelObj = m_pFbxObj->m_pModelObject;
-	m_pFbxObj->CuttingAnimScene(L"0", 0, 60);
-	m_pFbxObj->CuttingAnimScene(L"1", 61, 91);
+	m_pFbxObj->CuttingAnimScene(L"0", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
+	//m_pFbxObj->CuttingAnimScene(L"0", 0, 60);
+	//m_pFbxObj->CuttingAnimScene(L"1", 61, 91);
 	//m_pFbxObj->CuttingAnimScene(L"2", 92, 116);
 	//m_pFbxObj->CuttingAnimScene(L"3", 117, 167);
 	//m_pFbxObj->CuttingAnimScene(L"4", 168, 208);
@@ -34,7 +37,7 @@ bool Sample::Init()
 	//m_pFbxObj->CuttingAnimScene(L"5", 209, 239);
 	//m_pFbxObj->CuttingAnimScene(L"6", 240, 287);
 	//m_pFbxObj->CuttingAnimScene(L"7", 288, 319);
-	m_pModelObj->m_pAnim->ChangeAnim(L"1");
+	m_pModelObj->m_pAnim->ChangeAnim(L"0");
 
 	return true;
 }
@@ -75,6 +78,10 @@ bool Sample::Frame()
 	if (bUpdate)
 	{
 		//오브젝트 띄우기
+		myModelInstance ins;
+		ins.vPos = vPick;
+		ins.fTick = 0.0f;
+		m_ModelList.push_back(ins);
 	}
 
 
@@ -112,6 +119,11 @@ bool Sample::Frame()
 	//	m_pModelObj->m_pAnim->ChangeAnim(L"7");
 	//}
 
+	//for (int i=0;i< m_ModelList.size();i++)
+	//{
+
+	//}
+
 	return true;
 }
 
@@ -130,21 +142,30 @@ bool Sample::Render()
 			myDxState::g_RasterizerDesc);
 	}
 
+	for (int i = 0; i < m_ModelList.size(); i++)
+	{
+		m_pModelObj->m_pAnim->m_fTick = m_ModelList[i].fTick;
+		m_pModelObj->Frame();
+		m_ModelList[i].fTick = m_pModelObj->m_pAnim->m_fTick;
+		m_pModelObj->m_pTransform->m_vPos = m_ModelList[i].vPos;
+		m_pModelObj->Render();
+	}
+
 	m_Map->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
-	//m_QuadTree.Render(g_pImmediateContext);
+	m_QuadTree.Render(g_pImmediateContext);
 
 	//셀렉트노드 드로우
-	m_Map->Update(g_pImmediateContext);
-	m_Map->SettingPipeLine(g_pImmediateContext);
-	g_pImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-	for (myNode* pNode : m_SelectNodeList)
-	{
-		g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
+	//m_Map->Update(g_pImmediateContext);
+	//m_Map->SettingPipeLine(g_pImmediateContext);
+	//g_pImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+	//for (myNode* pNode : m_SelectNodeList)
+	//{
+	//	g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	//	g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
 
-	}
+	//}
 
 	//최종적으로는 모든 함수는 각자의 Render에서 돌아가게끔 해야함
 	//그걸 호출하는건 obj매니저에 있는 메인gameobject

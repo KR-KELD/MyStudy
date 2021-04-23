@@ -32,9 +32,11 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	p = mul(p, g_matWorld);
 	vOut.wp = p;
 	p = mul(p, g_matView);
-	float4 fPos = mul(p, g_matProj);
-	vOut.p = fPos.xyww;
+	float4 fProj = mul(p, g_matProj);
+	vOut.p = fProj.xyww;
 	// dot
+	float fDot = dot(-vColor.xyz,vIn.n);
+	vOut.c = float4(fDot,fDot,fDot,1.0f);
 	vOut.t = vIn.t;	
 	vOut.tex = normalize(vIn.p);
 	return vOut;

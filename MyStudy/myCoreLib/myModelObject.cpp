@@ -184,36 +184,32 @@ bool myModelObject::Render()
 		Matrix matWorld = Matrix::Identity;
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
 
-		//바인드포즈가 없으면 상수버퍼를 넘기지마라
-		//if (pGraphics->m_nodeMatBindPoseMap.size() > 0)
+		Matrix* pMatrices;
+		D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
+		if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)m_pBoneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedFaceDest)))
 		{
-			Matrix* pMatrices;
-			D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
-			if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)m_pBoneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedFaceDest)))
+			pMatrices = (Matrix*)MappedFaceDest.pData;
+			//바인드포즈가 있는(메시) 노드를 찾아서 크루스터(영향을 주는 노드)
+			//의 매트릭스를 채워서 상수버퍼로 전달해준다
+			//뼈대 가져올때 이부분을 참고
+			for (int dwObject = 0; dwObject < m_myNodeList.size(); dwObject++)
 			{
-				pMatrices = (Matrix*)MappedFaceDest.pData;
-				//바인드포즈가 있는(메시) 노드를 찾아서 크루스터(영향을 주는 노드)
-				//의 매트릭스를 채워서 상수버퍼로 전달해준다
-				//뼈대 가져올때 이부분을 참고
-				for (int dwObject = 0; dwObject < m_myNodeList.size(); dwObject++)
+				Matrix matBiped = Matrix::Identity;
+				string szName = to_wm(m_myNodeList[dwObject]->m_strName);
+
+				auto data = pGraphics->m_nodeMatBindPoseMap.find(szName);
+				if (data != pGraphics->m_nodeMatBindPoseMap.end())
 				{
-					Matrix matBiped = Matrix::Identity;
-					string szName = to_wm(m_myNodeList[dwObject]->m_strName);
-
-					auto data = pGraphics->m_nodeMatBindPoseMap.find(szName);
-					if (data != pGraphics->m_nodeMatBindPoseMap.end())
-					{
-						matBiped = data->second;
-					}
-
-					//전치 (내적하려고)
-					Matrix matAnim = matBiped * m_nodeMatList[dwObject];
-					pMatrices[dwObject] = matAnim.Transpose();
+					matBiped = data->second;
 				}
-				g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
-			}
-		}
 
+				//전치 (내적하려고)
+				Matrix matAnim = matBiped * m_nodeMatList[dwObject];
+				pMatrices[dwObject] = matAnim.Transpose();
+			}
+			g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
+		}
+	
 		for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
 		{
 			mySubMesh* pMesh = &pGraphics->m_SubMeshList[iSub];

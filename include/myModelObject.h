@@ -2,21 +2,11 @@
 #include "myModelGraphics.h"
 #include "myAnimation.h"
 
-//임시
-struct myModelInstance
-{
-	Vector3 vPos;
-	wstring strTrackName;
-	float fTick;
-};
-
 class myModelObject : public myGameObject
 {
 public:
 	DEFINE_COMPONENT(myModelObject, myGameObject, true);
 public:
-	//임시
-	myModelInstance*				m_pInstance;
 
 	myAnimation*					m_pAnim;
 	shared_ptr<myModelGraphics>		m_pGraphics;
