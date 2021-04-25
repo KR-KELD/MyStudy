@@ -1,6 +1,7 @@
 #pragma once
-#include "myGraphics.h"
+#include "myModelGraphics.h"
 //보류
+//트라이앵글리스트도 다 바꿔야하나
 struct PNCT2_VERTEX
 {
 	Vector3 p;
@@ -28,15 +29,20 @@ struct PNCT2_VERTEX
 	}
 };
 
-class myGraphicsEx : public myGraphics
+class myGraphicsEx : public myModelGraphics
 {
 public:
-	DEFINE_COMPONENT(myGraphicsEx, myGraphics, true);
+	DEFINE_COMPONENT(myGraphicsEx, myModelGraphics, true);
 public:
 	vector<PNCT2_VERTEX>	m_VertexList2;
 public:
 	virtual bool    CreateVertexBuffer() override;
 	virtual bool	CreateInputLayout() override;
+public:
+	virtual void CreateTangent(PNCT2_VERTEX *v1, PNCT2_VERTEX *v2, PNCT2_VERTEX *v3,
+		Vector3 *vTangent, Vector3 *vBiNormal, Vector3 *vNormal);
+	virtual bool	MultiDraw(ID3D11DeviceContext*	pd3dContext) override;
+	//virtual void SetTangent();
 public:
 	myGraphicsEx();
 	virtual ~myGraphicsEx();
