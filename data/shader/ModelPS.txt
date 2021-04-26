@@ -1,5 +1,6 @@
 // HLSL
-Texture2D g_txDiffuse;// : register(t0);
+Texture2D g_txDiffuse : register(t0);
+Texture2D g_txNormalMap : register(t1);
 SamplerState g_Sample;// : register(s0);
 cbuffer myDataCB
 {
@@ -17,7 +18,7 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
-	//float4 v : TEXCOORD1;
+	float3 light : TEXCOORD1;
 };
 struct PS_OUTPUT
 {
@@ -29,12 +30,18 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
 	float4 vFinalColor;
 	vFinalColor = vTexture * vIn.c;
-	float3 Light = normalize(vColor.xyz);
-	float c = dot(-Light,vIn.n);
-	float4 vLightColor = float4(c,c,c,1);
-	float4 vAmbientLight = float4(0.3f, 0.3f, 0.3f,1.0f);
-	vTexture.a = 1.0f;
-	vOut.c = vFinalColor * (vAmbientLight + vLightColor);
+
+	float4 normal		=	g_txNormalMap.Sample( g_Sample, vIn.t * 10);
+		   normal		=	normalize( (normal - 0.5f) * 2.0f );			
+
+	float  fDot			=	saturate( dot( normal.xyz, -vIn.light ));
+
+	//float3 Light = normalize(vColor.xyz);
+	//float c = dot(-Light,vIn.n);
+	//float4 vLightColor = float4(c,c,c,1);
+	//float4 vAmbientLight = float4(0.3f, 0.3f, 0.3f,1.0f);
+	//vTexture.a = 1.0f;
+	vOut.c = vTexture * fDot; // vFinalColor * (vAmbientLight + vLightColor);
 	return vOut;
 }
 PS_OUTPUT PSLine( VS_OUTPUT vIn)

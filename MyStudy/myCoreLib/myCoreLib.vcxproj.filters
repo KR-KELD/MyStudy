@@ -213,9 +213,6 @@
     <ClCompile Include="mySkyBox.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="myGraphicsEx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mySoundManager.h">
@@ -397,9 +394,6 @@
     </ClInclude>
     <ClInclude Include="mySkyBox.h">
       <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="myGraphicsEx.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="myGraphicsStruct.h">
       <Filter>Component</Filter>

@@ -6,7 +6,7 @@ cbuffer myDataCB : register(b0)
 	float4x4  g_matWorld: packoffset(c0);
 	float4x4  g_matView: packoffset(c4);
 	float4x4  g_matProj: packoffset(c8);
-	float4 vColor : packoffset(c12.x);
+	float4 vColor : packoffset(c12);
 	float  fTime  : packoffset(c13.x);
 	float  fGameTime  : packoffset(c13.y);
 };
@@ -38,8 +38,7 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
-	//float3 v : TEXCOORD1;
-	float3 vLightDir : TEXCOORD1;
+	float3 light : TEXCOORD1;
 };
 VS_OUTPUT VS( VS_INPUT vIn)
 {
@@ -75,6 +74,14 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	vOut.p = mul(vOut.p, g_matView);
 	vOut.p = mul(vOut.p, g_matProj);
 	vOut.n = normalize(mul(vOut.n, (float3x3)g_matWorld)); // g_matWorldInvTrans));
+
+	float3 T = normalize( mul( vIn.tangent, (float3x3)g_matWorld ));
+	float3 B = normalize( cross( vOut.n, T ));
+
+	float3x3 tanMatrix = {T.x, B.x, vOut.n.x,
+						  T.y, B.y, vOut.n.y,
+						  T.z, B.z, vOut.n.z};
+	vOut.light = normalize(mul(vColor.xyz, tanMatrix));
 
 	vOut.c = vIn.c;
 	vOut.t = vIn.t;	

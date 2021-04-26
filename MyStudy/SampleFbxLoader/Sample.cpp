@@ -27,8 +27,9 @@ bool Sample::Init()
 	//m_pFbxObj = g_FbxLoader.Load("../../data/object/SM_Barrel.fbx");
 	
 	m_pModelObj = m_pFbxObj->m_pModelObject;
-	m_pFbxObj->CuttingAnimScene(L"0", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
-	//m_pFbxObj->CuttingAnimScene(L"0", 0, 60);
+	m_pModelObj->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/test_normal_map.bmp");
+	//m_pFbxObj->CuttingAnimScene(L"0", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
+	m_pFbxObj->CuttingAnimScene(L"0", 0, 60);
 	//m_pFbxObj->CuttingAnimScene(L"1", 61, 91);
 	//m_pFbxObj->CuttingAnimScene(L"2", 92, 116);
 	//m_pFbxObj->CuttingAnimScene(L"3", 117, 167);

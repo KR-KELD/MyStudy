@@ -48,6 +48,7 @@ public:
 	DEFINE_COMPONENT(myModelGraphics, myGraphics, true);
 public:
 	//주의 인덱스가 순서대로 안쌓이면 애님씬의 인덱스와 틀어진다
+	myTexture*					m_pNormalTex;
 	vector<AnimTrackList>		m_AnimTrackList;
 	int							m_iNextTrackIndex;
 	int							m_iTrackIndex;
@@ -64,6 +65,9 @@ public:
 	virtual void	CreateTangentData(Vector3 *v1, Vector3 *v2, Vector3 *v3,
 		Vector2 uv1, Vector2 uv2, Vector2 uv3,
 		Vector3 *vTangent, Vector3 *vBiNormal, Vector3 *vNormal);
+	virtual void	CreateTangentData(Vector3 *v1, Vector3 *v2, Vector3 *v3,
+		Vector2 uv1, Vector2 uv2, Vector2 uv3,Vector3 *vNormal,
+		Vector3 *vTangent);
 public:
 	virtual bool	CreateInputLayout() override;
 	virtual bool	MultiDraw(ID3D11DeviceContext*	pd3dContext) override;

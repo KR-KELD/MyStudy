@@ -4,7 +4,7 @@ cbuffer myDataCB : register(b0)
 	float4x4  g_matWorld: packoffset(c0);
 	float4x4  g_matView: packoffset(c4);
 	float4x4  g_matProj: packoffset(c8);
-	float4 vColor : packoffset(c12.x);
+	float4 vColor : packoffset(c12);
 	float  fTime  : packoffset(c13.x);
 	float  fGameTime  : packoffset(c13.y);
 };

@@ -164,6 +164,13 @@ bool myModelObject::Frame()
 }
 bool myModelObject::Render()
 {
+	//юс╫ц
+	if (m_pNormalTex != nullptr)
+	{
+		g_pImmediateContext->PSSetShaderResources(1, 1,
+			m_pNormalTex->m_pTextureSRV.GetAddressOf());
+	}
+
 	g_pImmediateContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
 	m_pTransform->SetMatrix(NULL, 
 		&g_pMainCamTransform->m_matView, 

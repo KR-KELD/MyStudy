@@ -86,6 +86,12 @@ bool myModelGraphics::MultiDraw(ID3D11DeviceContext*	pd3dContext)
 			pd3dContext->PSSetShaderResources(0, 1,
 				pMesh->m_pTexture->m_pTextureSRV.GetAddressOf());
 		}
+		//잠시주석
+		//if (m_pNormalTex != nullptr)
+		//{
+		//	pd3dContext->PSSetShaderResources(1, 1,
+		//		m_pNormalTex->m_pTextureSRV.GetAddressOf());
+		//}
 		if (pMesh->m_pIndexBuffer.Get() == nullptr)
 		{
 			pd3dContext->Draw(pMesh->m_iNumVertex, 0);
@@ -103,6 +109,7 @@ myModelGraphics::myModelGraphics()
 	m_iNextTrackIndex = 0;
 	m_iTrackIndex = 0;
 	m_iVertexSize = sizeof(PNCT2_VERTEX);
+	m_pNormalTex = nullptr;
 }
 
 myModelGraphics::~myModelGraphics()
@@ -146,4 +153,35 @@ void myModelGraphics::CreateTangentData(Vector3 *v1, Vector3 *v2, Vector3 *v3,
 		*vBiNormal = (vEdge2 * fUV1.x - vEdge1 * fUV2.x) * fScale1;
 		*vNormal = vTangent->Cross(*vBiNormal);
 	}
+}
+
+void myModelGraphics::CreateTangentData(Vector3 * v1, Vector3 * v2, Vector3 * v3, Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector3 * vNormal, Vector3 * vTangent)
+{
+	Vector3 vEdge1 = *v2 - *v1;
+	Vector3 vEdge2 = *v3 - *v1;
+	vEdge1.Normalize();
+	vEdge2.Normalize();
+
+	Vector2 fUV1 = uv2 - uv1;
+	Vector2 fUV2 = uv3 - uv1;
+	fUV1.Normalize();
+	fUV2.Normalize();
+
+	float fDenominator = fUV1.x * fUV2.y - fUV2.x * fUV1.y;
+	Vector3 vBiNormal;
+	if (fDenominator < 0.0001f && fDenominator > -0.0001f)
+	{
+		*vTangent = Vector3(1.0f, 0.0f, 0.0f);
+		vBiNormal = Vector3(0.0f, 0.0f, 1.0f);
+	}
+	else
+	{
+		//역행렬식
+		float fScale1 = 1.0f / fDenominator;
+
+		*vTangent = (vEdge1 * fUV2.y - vEdge2 * fUV1.y) * fScale1;
+		vBiNormal = (vEdge2 * fUV1.x - vEdge1 * fUV2.x) * fScale1;
+	}
+	vTangent->Normalize();
+	//vBiNormal.Normalize();
 }

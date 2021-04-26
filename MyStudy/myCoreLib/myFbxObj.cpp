@@ -596,6 +596,24 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 				tri.vVertex[iIndex] = v;
 				tri.vVertexIW[iIndex] = iw;
 			}
+			if (LayerVertexTangents.size() <= 0)
+			{
+				pGraphics->CreateTangentData(
+					&tri.vVertex[0].p, &tri.vVertex[1].p, &tri.vVertex[2].p,
+					tri.vVertex[0].t, tri.vVertex[1].t, tri.vVertex[2].t,
+					&tri.vVertex[0].n, &tri.vVertex[0].tangent);
+
+				pGraphics->CreateTangentData(
+					&tri.vVertex[1].p, &tri.vVertex[2].p, &tri.vVertex[0].p,
+					tri.vVertex[1].t, tri.vVertex[2].t, tri.vVertex[0].t,
+					&tri.vVertex[1].n, &tri.vVertex[1].tangent);
+
+				pGraphics->CreateTangentData(
+					&tri.vVertex[2].p, &tri.vVertex[0].p, &tri.vVertex[1].p,
+					tri.vVertex[2].t, tri.vVertex[0].t, tri.vVertex[1].t,
+					&tri.vVertex[2].n, &tri.vVertex[2].tangent);
+			}
+
 			//서브메테리얼이 존재하면
 			//서브메쉬의 트라이앵글리스트에 삼각형을 등록하고
 			//존재하지 않는다면 바로 기존 오브젝트의 

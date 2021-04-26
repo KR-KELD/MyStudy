@@ -7,6 +7,8 @@ class myModelObject : public myGameObject
 public:
 	DEFINE_COMPONENT(myModelObject, myGameObject, true);
 public:
+	//юс╫ц
+	myTexture*						m_pNormalTex;
 
 	myAnimation*					m_pAnim;
 	shared_ptr<myModelGraphics>		m_pGraphics;
