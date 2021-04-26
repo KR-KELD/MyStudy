@@ -39,6 +39,7 @@ struct VS_OUTPUT
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
 	//float3 v : TEXCOORD1;
+	float3 vLightDir : TEXCOORD1;
 };
 VS_OUTPUT VS( VS_INPUT vIn)
 {
@@ -74,6 +75,7 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	vOut.p = mul(vOut.p, g_matView);
 	vOut.p = mul(vOut.p, g_matProj);
 	vOut.n = normalize(mul(vOut.n, (float3x3)g_matWorld)); // g_matWorldInvTrans));
+
 	vOut.c = vIn.c;
 	vOut.t = vIn.t;	
 
