@@ -269,6 +269,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myGameObject.h" />
     <ClInclude Include="myGraphics.h" />
     <ClInclude Include="myGraphicsEx.h" />
+    <ClInclude Include="myGraphicsStruct.h" />
     <ClInclude Include="myInput.h" />
     <ClInclude Include="myLight.h" />
     <ClInclude Include="myLog.h" />

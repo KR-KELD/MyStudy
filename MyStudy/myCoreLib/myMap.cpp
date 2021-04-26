@@ -24,6 +24,8 @@ bool    myMap::CreateVertexData()
 			m_VertexList[iIndex].c = { 1,1,1,1 };
 		}
 	}
+	m_iNumVertex = m_VertexList.size();
+	m_iVertexSize = sizeof(PNCT_VERTEX);
 	return true;
 }
 bool    myMap::CreateIndexData()
@@ -45,7 +47,8 @@ bool    myMap::CreateIndexData()
 			iIndex += 6;
 		}
 	}
-	m_iNumFaces = m_IndexList.size() / 3;
+	m_iNumIndex = m_IndexList.size();
+	m_iNumFaces = m_iNumIndex / 3;
 	return true;
 }
 

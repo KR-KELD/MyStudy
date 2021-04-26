@@ -210,30 +210,7 @@ bool myModelObject::Render()
 			g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
 		}
 	
-		for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
-		{
-			mySubMesh* pMesh = &pGraphics->m_SubMeshList[iSub];
-			if (pMesh->m_iFaceCount <= 0) continue;
-
-			ID3D11Buffer* vb[2] = { pMesh->m_pVertexBuffer.Get(), pMesh->m_pVertexBufferIW.Get() };
-			UINT iStride[2] = { sizeof(PNCT_VERTEX) ,sizeof(IW_VERTEX) };
-			UINT iOffset[2] = { 0,0 };
-			g_pImmediateContext->IASetVertexBuffers(0, 2, vb, iStride, iOffset);
-			g_pImmediateContext->IASetIndexBuffer(pMesh->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-			if (pMesh->m_pTexture != nullptr)
-			{
-				g_pImmediateContext->PSSetShaderResources(0, 1,
-					pMesh->m_pTexture->m_pTextureSRV.GetAddressOf());
-			}
-			if (pMesh->m_pIndexBuffer.Get() == nullptr)
-			{
-				g_pImmediateContext->Draw(pMesh->m_VertexList.size(), 0);
-			}
-			else
-			{
-				g_pImmediateContext->DrawIndexed(pMesh->m_IndexList.size(), 0, 0);
-			}
-		}
+		pGraphics->MultiDraw(g_pImmediateContext);
 	}
 
 	myGameObject::Render();

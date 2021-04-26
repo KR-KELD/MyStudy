@@ -74,6 +74,9 @@ public:
 	FbxColor	ReadColor(const FbxMesh* mesh, DWORD dwVertexColorCount, 
 						FbxLayerElementVertexColor* pVertexColorSet, DWORD dwDCCIndex,
 						DWORD dwVertexIndex);
+	FbxVector4  ReadTangent(const FbxMesh* mesh,
+		DWORD dwVertexTangentCount, FbxGeometryElementTangent* VertexTangentSets,
+		DWORD dwDCCIndex, DWORD dwVertexIndex);
 
 	void		ParseAnimation(FbxScene* pFbxScene);
 	void		ParseAnimStack(FbxScene* pFbxScene, FbxString* strAnimStackName);

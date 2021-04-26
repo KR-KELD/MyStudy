@@ -92,6 +92,8 @@ bool myShapeBox::CreateVertexData(Vector3 vCenter, float fRange)
 	m_VertexList[23] = { Vector3(m_fRange + vCenter.x,-m_fRange + vCenter.y, m_fRange + vCenter.z),
 						Vector3(0.0f, -1.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(1.0f, 1.0f) };
 
+	m_iNumVertex = m_VertexList.size();
+	m_iVertexSize = sizeof(PNCT_VERTEX);
 	return true;
 }
 bool    myShapeBox::CreateIndexData()
@@ -107,6 +109,7 @@ bool    myShapeBox::CreateIndexData()
 		m_IndexList[4 + i * 6] = 1 + i * 4;
 		m_IndexList[5 + i * 6] = 3 + i * 4;
 	}
+	m_iNumIndex = m_IndexList.size();
 	return true;
 }
 myShapeBox::myShapeBox()
@@ -151,6 +154,8 @@ bool myShapePlane::CreateVertexData(Vector3 vCenter, float fRange)
 		Vector4(1,1,1,1),
 		Vector2(1,1)
 	};
+	m_iNumVertex = m_VertexList.size();
+	m_iVertexSize = sizeof(PNCT_VERTEX);
 	return true;
 }
 
@@ -164,6 +169,7 @@ bool myShapePlane::CreateIndexData()
 	m_IndexList[iIndex++] = 2;
 	m_IndexList[iIndex++] = 1;
 	m_IndexList[iIndex++] = 3;
+	m_iNumIndex = m_IndexList.size();
 	return true;
 }
 
@@ -189,6 +195,8 @@ bool myShapeLine::CreateVertexData()
 	m_VertexList.resize(2);
 	m_VertexList[0] = PNCT_VERTEX(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, -1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f), Vector2(0.0f, 0.0f));
 	m_VertexList[1] = PNCT_VERTEX(Vector3(100.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, -1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f), Vector2(1.0f, 0.0f));
+	m_iNumVertex = m_VertexList.size();
+	m_iVertexSize = sizeof(PNCT_VERTEX);
 	return true;
 }
 
@@ -198,6 +206,7 @@ bool myShapeLine::CreateIndexData()
 	int iIndex = 0;
 	m_IndexList[iIndex++] = 0;
 	m_IndexList[iIndex++] = 1;
+	m_iNumIndex = m_IndexList.size();
 	return true;
 }
 

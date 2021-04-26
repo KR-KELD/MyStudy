@@ -625,36 +625,6 @@ bool CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList,
 
 #pragma endregion
 
-void mySubMesh::SetUniqueBuffer(myTriangle& tri)
-{
-	//비어있는 인덱스 버퍼와 버텍스 버퍼를 만들어놓고
-	//트라이앵글 리스트를 돌리면서
-	//버텍스 리스트에 들어있으면 인덱스리스트에만 푸시
-	//버텍스 리스트에 들어있지않으면
-	//버텍스,인덱스리스트 모두 푸시
-	for (int iVertex = 0; iVertex < 3; iVertex++)
-	{
-		bool bAdd = true;
-		int iPosReturn = -1;
-		for (int iIndex = 0; iIndex < m_VertexList.size(); iIndex++)
-		{
-			if (m_VertexList[iIndex] == tri.vVertex[iVertex])
-			{
-				m_IndexList.push_back(iIndex);
-				bAdd = false;
-				break;
-			}
-		}
-		if (bAdd)
-		{
-			m_VertexList.push_back(tri.vVertex[iVertex]);
-			m_VertexListIW.push_back(tri.vVertexIW[iVertex]);
-			m_IndexList.push_back(m_VertexList.size() - 1);
-		}
-	}
-	m_iFaceCount++;
-}
-
 void myGraphics::CompilerCheck(ID3DBlob* pErrorMsgs)
 {
 	C_STR szMsg = (char*)pErrorMsgs->GetBufferPointer();
@@ -731,7 +701,7 @@ bool	myGraphics::Release()
 
 bool myGraphics::SettingPipeLine(ID3D11DeviceContext*	pd3dContext)
 {
-	UINT iStride = sizeof(PNCT_VERTEX);
+	UINT iStride = m_iVertexSize;
 	UINT iOffset = 0;
 	pd3dContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	pd3dContext->IASetInputLayout(m_pInputLayout.Get());
@@ -751,7 +721,8 @@ bool myGraphics::SettingPipeLine(ID3D11DeviceContext*	pd3dContext)
 
 bool myGraphics::MultiDraw(ID3D11DeviceContext*	pd3dContext)
 {
-	UINT iStride = sizeof(PNCT_VERTEX);
+	//pnct2
+	UINT iStride = m_iVertexSize;
 	UINT iOffset = 0;
 	pd3dContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	pd3dContext->IASetInputLayout(m_pInputLayout.Get());
@@ -770,14 +741,14 @@ bool myGraphics::MultiDraw(ID3D11DeviceContext*	pd3dContext)
 			pd3dContext->PSSetShaderResources(0, 1,
 				m_SubMeshList[iSub].m_pTexture->m_pTextureSRV.GetAddressOf());
 		}
-		if (m_pIndexBuffer.Get() == nullptr)
+		if (m_SubMeshList[iSub].m_pIndexBuffer.Get() == nullptr)
 		{
-			pd3dContext->Draw(m_SubMeshList[iSub].m_VertexList.size(), 0);
+			pd3dContext->Draw(m_SubMeshList[iSub].m_iNumVertex, 0);
 		}
-		//else
-		//{
-		//	g_pImmediateContext->DrawIndexed(m_IndexList.size(), 0, 0);
-		//}
+		else
+		{
+			pd3dContext->DrawIndexed(m_SubMeshList[iSub].m_iNumIndex, 0, 0);
+		}
 	}
 	return true;
 }
@@ -786,11 +757,12 @@ bool myGraphics::Draw(ID3D11DeviceContext*	pd3dContext)
 {
 	if (m_IndexList.size())
 	{
-		pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
+		pd3dContext->DrawIndexed(m_iNumIndex, 0, 0);
 	}
 	else
 	{
-		pd3dContext->Draw(m_VertexList.size(), 0);
+		pd3dContext->Draw(m_iNumVertex, 0);
+		//pd3dContext->Draw(m_VertexList.size(), 0);
 	}
 	return true;
 }
@@ -802,9 +774,12 @@ bool myGraphics::CreateVertexData(Vector3 vCenter, float fRange)
 
 myGraphics::myGraphics()
 {
+	m_iVertexSize = sizeof(PNCT_VERTEX);
 	m_szVertexShader = "VS";
 	m_szPixelShader = "PS";
 	m_iTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_iNumVertex = 0;
+	m_iNumIndex = 0;
 }
 myGraphics::~myGraphics()
 {
@@ -813,12 +788,13 @@ myGraphics::~myGraphics()
 bool    myGraphics::CreateVertexData()
 {
 	return true;
-};
+}
+
 
 bool    myGraphics::CreateIndexData()
 {
 	return true;
-};
+}
 bool    myGraphics::CreateConstantBuffer()
 {
 	// constant buffer
@@ -841,10 +817,11 @@ bool    myGraphics::CreateConstantBuffer()
 }
 bool	myGraphics::CreateVertexBuffer()
 {
-	if (m_VertexList.size() <= 0) return true;
+	if (m_iNumVertex <= 0) return true;
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-	bd.ByteWidth = sizeof(PNCT_VERTEX) * m_VertexList.size();
+	//pnct2로 변환
+	bd.ByteWidth = m_iVertexSize * m_VertexList.size();
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -860,7 +837,7 @@ bool	myGraphics::CreateVertexBuffer()
 }
 bool	myGraphics::CreateIndexBuffer()
 {
-	if (m_IndexList.size() <= 0) return true;
+	if (m_iNumIndex <= 0) return true;
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
 	bd.ByteWidth = sizeof(DWORD) * m_IndexList.size();
@@ -913,6 +890,7 @@ bool	myGraphics::LoadTexture(T_STR szTex)
 }
 bool	myGraphics::CreateInputLayout()
 {
+	//탄젠트추가
 	const D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },

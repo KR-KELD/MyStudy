@@ -47,16 +47,16 @@ bool myFbxObj::ModelInit()
 	{
 		myModelGraphics* pGraphics = data->GetComponent<myModelGraphics>();
 		//서브메쉬마다 버텍스리스트,버퍼,텍스쳐를 각각 세팅해준다
-		for (int iSub = 0; iSub < pGraphics->m_SubMeshList.size(); iSub++)
+		for (int iSub = 0; iSub < pGraphics->m_SubMeshList2.size(); iSub++)
 		{
-			mySubMesh* pSub = &pGraphics->m_SubMeshList[iSub];
+			mySubMesh2* pSub = &pGraphics->m_SubMeshList2[iSub];
 			if (pSub->m_iFaceCount <= 0) continue;
 			// vb
 			ID3D11Buffer* vb =
 				CreateVertexBuffer(g_pd3dDevice,
-					&pSub->m_VertexList.at(0),
-					pSub->m_VertexList.size(),
-					sizeof(PNCT_VERTEX));
+					&pSub->m_VertexList2.at(0),
+					pSub->m_VertexList2.size(),
+					sizeof(PNCT2_VERTEX));
 			pSub->m_pVertexBuffer.Attach(vb);
 			// vbiw
 			ID3D11Buffer* vbiw =
@@ -399,13 +399,13 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 	//서브메시 리스트를 리사이즈 해준다
 	if (iNumMtrl > 1)
 	{
-		pGraphics->m_SubMeshList.resize(iNumMtrl);
+		pGraphics->m_SubMeshList2.resize(iNumMtrl);
 	}
 	else
 	{
-		pGraphics->m_SubMeshList.resize(1);
+		pGraphics->m_SubMeshList2.resize(1);
 		//트라이앵글의 갯수x3만큼 정점의 공간을 예약해둔다
-		pGraphics->m_SubMeshList[0].m_VertexList.reserve(iMaxTriangleCount * 3);
+		pGraphics->m_SubMeshList2[0].m_VertexList.reserve(iMaxTriangleCount * 3);
 	}
 
 
@@ -418,7 +418,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 		}
 		//지금은 메테리얼의 이름만 리스트에 저장
 		pGraphics->m_MaterialList.push_back(to_mw(ParseMaterial(pMtrl)));
-		pGraphics->m_SubMeshList[iMtrl].m_VertexList.reserve(iMaxTriangleCount * 3);
+		pGraphics->m_SubMeshList2[iMtrl].m_VertexList.reserve(iMaxTriangleCount * 3);
 	}
 
 	//지오메트리 매트릭스(해당 메쉬의 좌표를 로컬에서 본좌표(뼈대의 월드상 위치))
@@ -454,7 +454,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 		int iPolySize = pFbxMesh->GetPolygonSize(iPoly);
 		int iTriangleCount = iPolySize - 2;
 		int iCornerIndices[3];
-		myTriangle tri;
+		myTriangle2 tri;
 
 		//서브 메테리얼의 종류
 		int iSubMtrl = 0;
@@ -510,7 +510,7 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 
 			for (int iIndex = 0; iIndex < 3; iIndex++)
 			{
-				PNCT_VERTEX v;
+				PNCT2_VERTEX v;
 				//삼각형 정점에 지오매트릭 매트릭스를 곱해줘서 해당 위치로 보내준다
 				auto finalPos = geom.MultT(pVertexPositions[iCornerIndices[iIndex]]);
 				//Dx 좌표로 바꿔서 넣어준다
@@ -568,10 +568,10 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 								tangentElement,
 								iCornerIndices[iIndex],
 								iBasePolyIndex + iVertIndex[iIndex]);
-						/*vertex.tangent.x = (FLOAT)tangent.mData[0];
-						vertex.tangent.y = (FLOAT)tangent.mData[2];
-						vertex.tangent.z = (FLOAT)tangent.mData[1];
-						vertex.tangent.w = (FLOAT)tangent.mData[3];*/
+						v.tangent.x = (FLOAT)tangent.mData[0];
+						v.tangent.y = (FLOAT)tangent.mData[2];
+						v.tangent.z = (FLOAT)tangent.mData[1];
+						//vertex.tangent.w = (FLOAT)tangent.mData[3];
 					}
 				}
 
@@ -603,13 +603,13 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 			if (iNumMtrl > 1)
 			{
 				//트라이앵글 리스트가 필요할때 주석 풀기
-				//pGraphics->m_SubMeshList[iSubMtrl].m_TriangleList.push_back(tri);
-				pGraphics->m_SubMeshList[iSubMtrl].SetUniqueBuffer(tri);
+				//pGraphics->m_SubMeshList2[iSubMtrl].m_TriangleList.push_back(tri);
+				pGraphics->m_SubMeshList2[iSubMtrl].SetUniqueBuffer(tri);
 			}
 			else
 			{
-				//pGraphics->m_SubMeshList[0].m_TriangleList.push_back(tri);
-				pGraphics->m_SubMeshList[0].SetUniqueBuffer(tri);
+				//pGraphics->m_SubMeshList2[0].m_TriangleList.push_back(tri);
+				pGraphics->m_SubMeshList2[0].SetUniqueBuffer(tri);
 			}
 		}
 		iBasePolyIndex += iPolySize;

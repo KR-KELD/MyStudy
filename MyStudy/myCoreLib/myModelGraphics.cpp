@@ -51,6 +51,7 @@ bool myModelGraphics::CreateInputLayout()
 		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXTURE", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT,	 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
 		{ "INDEX", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "WEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -69,36 +70,29 @@ bool myModelGraphics::CreateInputLayout()
 
 bool myModelGraphics::MultiDraw(ID3D11DeviceContext*	pd3dContext)
 {
-	pd3dContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	pd3dContext->IASetInputLayout(m_pInputLayout.Get());
-	pd3dContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
-	pd3dContext->PSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
-	pd3dContext->VSSetShader(m_pVertexShader.Get(), NULL, 0);
-	pd3dContext->PSSetShader(m_pPixelShader.Get(), NULL, 0);
-	pd3dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_iTopology);
-
-	for (int iSub = 0; iSub < m_SubMeshList.size(); iSub++)
+	for (int iSub = 0; iSub < m_SubMeshList2.size(); iSub++)
 	{
-		mySubMesh* pMesh = &m_SubMeshList[iSub];
-		if (pMesh->m_TriangleList.size() <= 0) continue;
+		mySubMesh2* pMesh = &m_SubMeshList2[iSub];
+		if (pMesh->m_iFaceCount <= 0) continue;
 
 		ID3D11Buffer* vb[2] = { pMesh->m_pVertexBuffer.Get(), pMesh->m_pVertexBufferIW.Get() };
-		UINT iStride[2] = { sizeof(PNCT_VERTEX) ,sizeof(IW_VERTEX) };
+		//pnct2
+		UINT iStride[2] = { m_iVertexSize ,sizeof(IW_VERTEX) };
 		UINT iOffset[2] = { 0,0 };
 		pd3dContext->IASetVertexBuffers(0, 2, vb, iStride, iOffset);
-
-		if (m_SubMeshList[iSub].m_pTexture != nullptr)
+		pd3dContext->IASetIndexBuffer(pMesh->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		if (pMesh->m_pTexture != nullptr)
 		{
 			pd3dContext->PSSetShaderResources(0, 1,
-				m_SubMeshList[iSub].m_pTexture->m_pTextureSRV.GetAddressOf());
+				pMesh->m_pTexture->m_pTextureSRV.GetAddressOf());
 		}
-		if (m_pIndexBuffer.Get() == nullptr)
+		if (pMesh->m_pIndexBuffer.Get() == nullptr)
 		{
-			pd3dContext->Draw(m_SubMeshList[iSub].m_VertexList.size(), 0);
+			pd3dContext->Draw(pMesh->m_iNumVertex, 0);
 		}
 		else
 		{
-			pd3dContext->DrawIndexed(m_IndexList.size(), 0, 0);
+			pd3dContext->DrawIndexed(pMesh->m_iNumIndex, 0, 0);
 		}
 	}
 	return true;
@@ -108,8 +102,48 @@ myModelGraphics::myModelGraphics()
 {
 	m_iNextTrackIndex = 0;
 	m_iTrackIndex = 0;
+	m_iVertexSize = sizeof(PNCT2_VERTEX);
 }
 
 myModelGraphics::~myModelGraphics()
 {
+}
+
+
+//시계방향으로 돌리면서 각 정점의 탄젠트를 채우기
+//간소화하면 노말과 uv만써서 바이노말만 구해도 됨
+//012면 012 120 201 순
+void myModelGraphics::CreateTangentData(Vector3 *v1, Vector3 *v2, Vector3 *v3,
+	Vector2 uv1, Vector2 uv2, Vector2 uv3,
+	Vector3 *vTangent, Vector3 *vBiNormal, Vector3 *vNormal)
+{
+	//삼각형의 엣지 두개
+	Vector3 vEdge1 = *v2 - *v1;
+	Vector3 vEdge2 = *v3 - *v1;
+	//vEdge1.Normalize();
+	//vEdge2.Normalize();
+	//그 엣지의 uv비율좌표
+
+	Vector2 fUV1 = uv2 - uv1;
+	Vector2 fUV2 = uv3 - uv1;
+	//fUV1.Normalize();
+	//fUV2.Normalize();
+	//판별식
+	float fDenominator = fUV1.x * fUV2.y - fUV2.x * fUV1.y;
+	//분모가 0이면 안되기때문에
+	if (fDenominator < 0.0001f && fDenominator > -0.0001f)
+	{
+		*vTangent = Vector3(1.0f, 0.0f, 0.0f);
+		*vBiNormal = Vector3(0.0f, 1.0f, 0.0f);
+		*vNormal = Vector3(0.0f, 0.0f, 1.0f);
+	}
+	else
+	{
+		//역행렬식
+		float fScale1 = 1.0f / fDenominator;
+
+		*vTangent = (vEdge1 * fUV2.y - vEdge2 * fUV1.y) * fScale1;
+		*vBiNormal = (vEdge2 * fUV1.x - vEdge1 * fUV2.x) * fScale1;
+		*vNormal = vTangent->Cross(*vBiNormal);
+	}
 }

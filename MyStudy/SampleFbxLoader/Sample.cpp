@@ -22,8 +22,8 @@ bool Sample::Init()
 	m_Map->m_isRender = false;
 	m_QuadTree.CreateQuadTree(m_Map);
 
-	m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
-	//m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
+	//m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
+	m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
 	//m_pFbxObj = g_FbxLoader.Load("../../data/object/SM_Barrel.fbx");
 	
 	m_pModelObj = m_pFbxObj->m_pModelObject;
