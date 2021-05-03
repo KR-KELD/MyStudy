@@ -70,7 +70,6 @@ bool myCore::GameInit()
 
 	Init();
 	PostInit();
-	ShowWindow(m_hWnd, SW_SHOWNORMAL);
 	return true;
 }
 
@@ -148,7 +147,10 @@ bool myCore::Run()
 	HRESULT hr = S_OK;
 	//CoInitializeEx 는 COM 라이브러리를 사용하는 각 스레드에 대해 한 번 이상 호출해야  한다.
 	hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-	GameInit();
+	if (GameInit())
+	{
+		ShowWindow(m_hWnd, SW_SHOWNORMAL);
+	}
 	while (m_isGameRun)
 	{
 		if (MsgProcess() == true)
@@ -187,5 +189,33 @@ bool myCore::GameRelease()
 	g_ObjMgr.Release();
 	g_SoundMgr.Release();
 	myDevice::Release();
+	return true;
+}
+
+bool myCore::InitTool(HWND hWnd, HINSTANCE hInstance)
+{
+	HRESULT hr = S_OK;
+	g_hWnd = m_hWnd = hWnd;					//전역 핸들에 전달
+	GetClientRect(m_hWnd, &m_rtClient);		//클라이언트의 크기를 클라이언트 렉트에 담는다
+	GetWindowRect(m_hWnd, &m_rtWindow);
+	g_rtClient = m_rtClient;
+	g_hInstance = hInstance;
+	hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	GameInit();
+	return true;
+}
+
+bool myCore::ReleaseTool()
+{
+	GameRelease();
+	//이니셜라이즈 해제
+	CoUninitialize();
+	return true;
+}
+
+bool myCore::RunTool()
+{
+	if (GameFrame() == false) return false;
+	if (GameRender() == false) return false;
 	return true;
 }

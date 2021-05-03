@@ -286,21 +286,29 @@ void myDevice::ResizeDevice(UINT w, UINT h)
 	if (m_pd3dDevice.Get() == NULL)  return;
 	//기존 리소스를 제거
 	DeleteDXResource();
+	HRESULT hr = S_OK;
 	//랜더타겟 초기화
 	m_pd3dContext->OMSetRenderTargets(0, NULL, NULL);
 	//랜더타겟 릴리즈
 	if (m_pRednerTargetView.Get()) m_pRednerTargetView->Release();
 	if (m_pDSV.Get()) m_pDSV->Release();
-	DXGI_SWAP_CHAIN_DESC pSwapChainDesc;
+
 	//스왑체인 설정 가져오기
-	m_pSwapChain->GetDesc(&pSwapChainDesc);
+	m_pSwapChain->GetDesc(&m_pSwapChainDesc);
 	//버퍼 사이즈 조절
-	m_pSwapChain->ResizeBuffers(
-		pSwapChainDesc.BufferCount,
+	if (FAILED(m_pSwapChain->ResizeBuffers(
+		m_pSwapChainDesc.BufferCount,
 		w,
 		h,
-		pSwapChainDesc.BufferDesc.Format,
-		pSwapChainDesc.Flags);
+		m_pSwapChainDesc.BufferDesc.Format,
+		m_pSwapChainDesc.Flags)))
+	{
+
+	}
+	m_pSwapChain->GetDesc(&m_pSwapChainDesc);
+	m_rtClient.right = m_pSwapChainDesc.BufferDesc.Width;
+	m_rtClient.bottom = m_pSwapChainDesc.BufferDesc.Height;
+	g_rtClient = m_rtClient;
 	//랜더타겟 세팅
 	SetRenderTargetView();
 	SetDepthStencilView();

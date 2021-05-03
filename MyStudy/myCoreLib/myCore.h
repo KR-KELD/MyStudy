@@ -37,6 +37,10 @@ private:
 	bool				GameRun();
 	bool				GameRelease();
 public:
+	bool				InitTool(HWND hWnd, HINSTANCE hInstance);
+	bool				ReleaseTool();
+	bool				RunTool();
+public:
 	bool				Run();
 public:
 	myCore();
