@@ -55,16 +55,36 @@ int myOutputWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
+	CRect rectDummy;
+	rectDummy.SetRectEmpty();
+	if (!m_wndTabs.Create(CMFCTabCtrl::STYLE_FLAT, rectDummy, this, 1))
+	{
+		TRACE0("출력 탭 창을 만들지 못했습니다.\n");
+		return -1;      // 만들지 못했습니다.
+	}
 
-	return 0;
+	// 출력 창을 만듭니다.
+	const DWORD dwStyle = LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
+
+	if (!m_wndOutputBuild.Create(dwStyle, rectDummy, &m_wndTabs, 2) ||
+		!m_wndOutputDebug.Create(dwStyle, rectDummy, &m_wndTabs, 3) ||
+		!m_wndOutputFind.Create(dwStyle, rectDummy, &m_wndTabs, 4))
+	{
+		TRACE0("출력 창을 만들지 못했습니다.\n");
+		return -1;      // 만들지 못했습니다.
+	}
+	m_wndTabs.AddTab(&m_wndOutputBuild, L"Build", 0);
+	m_wndTabs.AddTab(&m_wndOutputDebug, L"Debug", 1);
+	m_wndTabs.AddTab(&m_wndOutputFind, L"Find", 2);
+
+	return TRUE;
 }
 
 
 void myOutputWnd::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
-
+	m_wndTabs.SetWindowPos(nullptr, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 }
 
