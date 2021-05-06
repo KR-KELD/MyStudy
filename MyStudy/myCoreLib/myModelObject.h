@@ -2,11 +2,14 @@
 #include "myModelGraphics.h"
 #include "myAnimation.h"
 
+
+
 class myModelObject : public myGameObject
 {
 public:
 	DEFINE_COMPONENT(myModelObject, myGameObject, true);
 public:
+	//const int						m_iNumInstance = 100;
 	//юс╫ц
 	myTexture*						m_pNormalTex;
 

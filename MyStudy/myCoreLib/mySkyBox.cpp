@@ -8,7 +8,7 @@ bool mySkyBox::Create(T_STR szVS, T_STR szPS, T_STR szTex)
 		MessageBox(0, _T("m_pDirectionLIne ½ÇÆÐ"), _T("Fatal error"), MB_OK);
 		return 0;
 	}
-	m_pPSTextureIndex.Attach(LoadPixelShaderFile(g_pd3dDevice, szPS.c_str(), "PS_TextureIndex"));
+	m_pPSTextureIndex.Attach(StaticGraphics::LoadPixelShaderFile(g_pd3dDevice, szPS.c_str(), "PS_TextureIndex"));
 	return true;
 }
 
@@ -53,11 +53,11 @@ bool mySkyBox::LoadTexture(T_STR szTex)
 
 	for (int iTex = 0; iTex < iNumTexture; iTex++)
 	{
-		m_pTexSRV[iTex].Attach(CreateShaderResourceView(
+		m_pTexSRV[iTex].Attach(StaticGraphics::CreateShaderResourceView(
 			g_pd3dDevice,
 			g_pImmediateContext, g_szSkyTextures[iTex]));
 	}
-	m_pTexCubeSRV.Attach(CreateShaderResourceView(
+	m_pTexCubeSRV.Attach(StaticGraphics::CreateShaderResourceView(
 		g_pd3dDevice,
 		g_pImmediateContext, L"..\\..\\data\\sky\\grassenvmap1024.dds"));
 	return true;

@@ -53,21 +53,21 @@ bool myFbxObj::ModelInit()
 			if (pSub->m_iFaceCount <= 0) continue;
 			// vb
 			ID3D11Buffer* vb =
-				CreateVertexBuffer(g_pd3dDevice,
+				StaticGraphics::CreateVertexBuffer(g_pd3dDevice,
 					&pSub->m_VertexList2.at(0),
 					pSub->m_VertexList2.size(),
 					sizeof(PNCT2_VERTEX));
 			pSub->m_pVertexBuffer.Attach(vb);
 			// vbiw
 			ID3D11Buffer* vbiw =
-				CreateVertexBuffer(g_pd3dDevice,
+				StaticGraphics::CreateVertexBuffer(g_pd3dDevice,
 					&pSub->m_VertexListIW.at(0),
 					pSub->m_VertexListIW.size(),
 					sizeof(IW_VERTEX));
 			pSub->m_pVertexBufferIW.Attach(vbiw);
 			// ib
 			ID3D11Buffer* ib =
-				CreateIndexBuffer(g_pd3dDevice,
+				StaticGraphics::CreateIndexBuffer(g_pd3dDevice,
 					&pSub->m_IndexList.at(0),
 					pSub->m_IndexList.size(),
 					sizeof(DWORD));

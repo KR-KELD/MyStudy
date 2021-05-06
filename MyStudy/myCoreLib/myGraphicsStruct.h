@@ -137,7 +137,7 @@ struct myTriangle2
 };
 
 //Å×½ºÆ®
-struct myInstance
+struct myBaseInstance
 {
 	Matrix matWorld;
 };
