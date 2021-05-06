@@ -29,9 +29,9 @@
 #define ID_VIEW_APPLOOK_OFF_2007_AQUA   218
 #define ID_VIEW_APPLOOK_WINDOWS_7       219
 #define IDS_EDIT_MENU                   306
-#define ID_Menu                         32771
+#define IDD_myMapToolForm               310
+#define IDD_myEffectToolForm            311
 #define ID_TOOL_CARACTERTOOL            32772
-#define ID_MapTool                      32773
 #define ID_TOOL_MAPTOOL                 32774
 
 // Next default values for new objects
@@ -41,6 +41,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        314
 #define _APS_NEXT_COMMAND_VALUE         32775
 #define _APS_NEXT_CONTROL_VALUE         1001
-#define _APS_NEXT_SYMED_VALUE           310
+#define _APS_NEXT_SYMED_VALUE           312
 #endif
 #endif

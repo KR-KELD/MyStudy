@@ -197,6 +197,11 @@
     <ClInclude Include="DemoMFCView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="myEffectToolForm.h" />
+    <ClInclude Include="myEffectToolPane.h" />
+    <ClInclude Include="myMapToolForm.h" />
+    <ClInclude Include="myMapToolPane.h" />
+    <ClInclude Include="myPropertiesWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sample.h" />
@@ -207,6 +212,11 @@
     <ClCompile Include="DemoMFCDoc.cpp" />
     <ClCompile Include="DemoMFCView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="myEffectToolForm.cpp" />
+    <ClCompile Include="myEffectToolPane.cpp" />
+    <ClCompile Include="myMapToolForm.cpp" />
+    <ClCompile Include="myMapToolPane.cpp" />
+    <ClCompile Include="myPropertiesWnd.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

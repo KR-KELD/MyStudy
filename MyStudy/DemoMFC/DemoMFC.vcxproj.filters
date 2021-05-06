@@ -16,6 +16,18 @@
     <Filter Include="myCore">
       <UniqueIdentifier>{d37ba4ed-5e53-496c-b675-5c3c37cc0d00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PaneWindow">
+      <UniqueIdentifier>{db4dfe30-a787-43c7-9257-9e6adb9c3fb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaneWindow\MapTool">
+      <UniqueIdentifier>{8554ded5-7800-4a63-97dc-a79542c81f95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaneWindow\EffectTool">
+      <UniqueIdentifier>{3ace0422-fd74-4c28-a42d-9544db1b8488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaneWindow\Property">
+      <UniqueIdentifier>{bd7559c2-ca17-49ec-825d-05b783558aa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DemoMFC.h">
@@ -45,6 +57,21 @@
     <ClInclude Include="Sample.h">
       <Filter>myCore</Filter>
     </ClInclude>
+    <ClInclude Include="myMapToolPane.h">
+      <Filter>PaneWindow\MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="myMapToolForm.h">
+      <Filter>PaneWindow\MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="myEffectToolPane.h">
+      <Filter>PaneWindow\EffectTool</Filter>
+    </ClInclude>
+    <ClInclude Include="myEffectToolForm.h">
+      <Filter>PaneWindow\EffectTool</Filter>
+    </ClInclude>
+    <ClInclude Include="myPropertiesWnd.h">
+      <Filter>PaneWindow\Property</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DemoMFC.cpp">
@@ -64,6 +91,21 @@
     </ClCompile>
     <ClCompile Include="Sample.cpp">
       <Filter>myCore</Filter>
+    </ClCompile>
+    <ClCompile Include="myMapToolForm.cpp">
+      <Filter>PaneWindow\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="myMapToolPane.cpp">
+      <Filter>PaneWindow\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="myEffectToolPane.cpp">
+      <Filter>PaneWindow\EffectTool</Filter>
+    </ClCompile>
+    <ClCompile Include="myEffectToolForm.cpp">
+      <Filter>PaneWindow\EffectTool</Filter>
+    </ClCompile>
+    <ClCompile Include="myPropertiesWnd.cpp">
+      <Filter>PaneWindow\Property</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

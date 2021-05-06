@@ -3,6 +3,9 @@
 //
 
 #pragma once
+#include "myMapToolPane.h"
+#include "myEffectToolPane.h"
+#include "myPropertiesWnd.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -14,6 +17,9 @@ protected: // serialization에서만 만들어집니다.
 // 특성입니다.
 public:
 
+	myMapToolPane	  m_wndMapToolPane;
+	myEffectToolPane  m_wndEffectToolPane;
+	myPropertiesWnd   m_wndPropertiesPane;
 // 작업입니다.
 public:
 

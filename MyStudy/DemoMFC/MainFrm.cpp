@@ -148,6 +148,27 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE |
+		WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
+		CBRS_LEFT | CBRS_FLOAT_MULTI;
+	m_wndMapToolPane.CreateEx(NULL, L"maptool", this,
+		CRect(0, 0, 100, 100), TRUE,
+		1234, dwStyle);
+	m_wndMapToolPane.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndMapToolPane);
+
+	m_wndEffectToolPane.CreateEx(NULL, L"effecttool", this,
+		CRect(0, 0, 100, 100), TRUE,
+		1235, dwStyle);
+	m_wndEffectToolPane.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndEffectToolPane);
+
+	m_wndPropertiesPane.CreateEx(NULL, L"propertiestool", this,
+		CRect(0, 0, 100, 100), TRUE,
+		1236, dwStyle);
+	m_wndPropertiesPane.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndPropertiesPane);
+
 	return 0;
 }
 
