@@ -201,6 +201,7 @@
     <ClInclude Include="myEffectToolPane.h" />
     <ClInclude Include="myMapToolForm.h" />
     <ClInclude Include="myMapToolPane.h" />
+    <ClInclude Include="myOutputWnd.h" />
     <ClInclude Include="myPropertiesWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="myEffectToolPane.cpp" />
     <ClCompile Include="myMapToolForm.cpp" />
     <ClCompile Include="myMapToolPane.cpp" />
+    <ClCompile Include="myOutputWnd.cpp" />
     <ClCompile Include="myPropertiesWnd.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

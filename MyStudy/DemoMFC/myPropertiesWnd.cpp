@@ -54,6 +54,7 @@ BEGIN_MESSAGE_MAP(myPropertiesWnd, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_MOUSEACTIVATE()
+	ON_REGISTERED_MESSAGE(AFX_WM_PROPERTY_CHANGED, OnPropertyChanged)
 END_MESSAGE_MAP()
 
 
@@ -106,3 +107,12 @@ int myPropertiesWnd::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT mess
 	}
 	return MA_NOACTIVATE;
 }
+
+LRESULT myPropertiesWnd::OnPropertyChanged(WPARAM wParam, LPARAM lParam)
+{
+	CMFCPropertyGridProperty* pProp = (CMFCPropertyGridProperty*)lParam;
+	COleVariant rVariant = pProp->GetValue();
+	VARIANT var = rVariant.Detach();
+	return 0;
+}
+

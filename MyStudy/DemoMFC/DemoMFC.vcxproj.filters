@@ -28,6 +28,9 @@
     <Filter Include="PaneWindow\Property">
       <UniqueIdentifier>{bd7559c2-ca17-49ec-825d-05b783558aa3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PaneWindow\OutputWnd">
+      <UniqueIdentifier>{72af24b1-2c23-417a-94e1-ba251cb8a975}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DemoMFC.h">
@@ -72,6 +75,9 @@
     <ClInclude Include="myPropertiesWnd.h">
       <Filter>PaneWindow\Property</Filter>
     </ClInclude>
+    <ClInclude Include="myOutputWnd.h">
+      <Filter>PaneWindow\OutputWnd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DemoMFC.cpp">
@@ -106,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="myPropertiesWnd.cpp">
       <Filter>PaneWindow\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="myOutputWnd.cpp">
+      <Filter>PaneWindow\OutputWnd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

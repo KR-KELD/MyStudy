@@ -6,6 +6,7 @@
 #include "myMapToolPane.h"
 #include "myEffectToolPane.h"
 #include "myPropertiesWnd.h"
+#include "myOutputWnd.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -20,6 +21,7 @@ public:
 	myMapToolPane	  m_wndMapToolPane;
 	myEffectToolPane  m_wndEffectToolPane;
 	myPropertiesWnd   m_wndPropertiesPane;
+	myOutputWnd		  m_wndOutputWnd;
 // 작업입니다.
 public:
 
