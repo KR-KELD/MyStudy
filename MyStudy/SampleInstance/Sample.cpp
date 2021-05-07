@@ -157,6 +157,8 @@ bool Sample::Render()
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
 	m_pIns->InstancingRender(g_pImmediateContext, m_iNum);
+	//m_pIns->Render(g_pImmediateContext);
+
 	//셀렉트노드 드로우
 	//m_Map->Update(g_pImmediateContext);
 	//m_Map->SettingPipeLine(g_pImmediateContext);

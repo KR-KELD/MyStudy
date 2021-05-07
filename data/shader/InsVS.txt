@@ -14,7 +14,7 @@ struct VS_INPUT
 	float3 n : NORMAL;
 	float4 c : COLOR;
 	float2 t : TEXTURE;
-	float4x4 mTransform : mTransform;
+	row_major float4x4 mTransform : TRANSFORM;
 	uint IntanceID : SV_InstanceID;
 };
 struct VS_OUTPUT

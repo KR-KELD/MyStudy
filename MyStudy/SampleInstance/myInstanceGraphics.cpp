@@ -98,10 +98,10 @@ bool myInstanceGraphics::CreateInputLayout()
 		{ "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXTURE",  0, DXGI_FORMAT_R32G32_FLOAT, 0, 40,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-		{"mTransform", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,1,0,D3D11_INPUT_PER_INSTANCE_DATA,1},
-		{"mTransform", 1, DXGI_FORMAT_R32G32B32A32_FLOAT,1,16,D3D11_INPUT_PER_INSTANCE_DATA,1},
-		{"mTransform", 2, DXGI_FORMAT_R32G32B32A32_FLOAT,1,32,D3D11_INPUT_PER_INSTANCE_DATA,1},
-		{"mTransform", 3, DXGI_FORMAT_R32G32B32A32_FLOAT,1,48,D3D11_INPUT_PER_INSTANCE_DATA,1},
+		{"TRANSFORM", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,1,0,D3D11_INPUT_PER_INSTANCE_DATA,1},
+		{"TRANSFORM", 1, DXGI_FORMAT_R32G32B32A32_FLOAT,1,16,D3D11_INPUT_PER_INSTANCE_DATA,1},
+		{"TRANSFORM", 2, DXGI_FORMAT_R32G32B32A32_FLOAT,1,32,D3D11_INPUT_PER_INSTANCE_DATA,1},
+		{"TRANSFORM", 3, DXGI_FORMAT_R32G32B32A32_FLOAT,1,48,D3D11_INPUT_PER_INSTANCE_DATA,1},
 	};
 	UINT iNumElement = sizeof(layout) / sizeof(layout[0]);
 	HRESULT hr = g_pd3dDevice->CreateInputLayout(
@@ -120,11 +120,12 @@ bool myInstanceGraphics::CreateInstanceBuffer()
 	ID3D11Buffer* isb = StaticGraphics::CreateVertexBuffer(g_pd3dDevice,
 		&m_InstanceList.at(0), m_InstanceList.size(), sizeof(myBaseInstance),true);
 	m_pInstanceBuffer.Attach(isb);
-	return false;
+	return true;
 }
 
 bool myInstanceGraphics::InstancingRender(ID3D11DeviceContext * pd3dContext, int i)
 {
+	Update(pd3dContext);
 	ID3D11Buffer* vb[2] = { m_pVertexBuffer.Get(), m_pInstanceBuffer.Get() };
 	//pnct2
 	UINT iStride[2] = { m_iVertexSize ,sizeof(myBaseInstance) };
@@ -146,7 +147,8 @@ bool myInstanceGraphics::InstancingRender(ID3D11DeviceContext * pd3dContext, int
 
 	pd3dContext->DrawIndexedInstanced(m_iNumIndex, i, 0, 0, 0);
 	//pd3dContext->DrawIndexed(m_iNumIndex, 0, 0);
-	return false;
+
+	return true;
 }
 
 myInstanceGraphics::myInstanceGraphics()
