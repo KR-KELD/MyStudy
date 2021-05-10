@@ -28,6 +28,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnCbnSelchangeComboCell();
+	afx_msg void OnCbnSelchangeComboTile();
+	CComboBox m_TileCount;
+	CComboBox m_CellCount;
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
 
 

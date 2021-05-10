@@ -10,6 +10,7 @@ public:
 	myMouse			m_Mouse;
 	myMap*			m_Map;
 	vector<myNode*> m_SelectNodeList;
+	bool			m_isCreate;
 public:
 	bool Init() override;
 	bool Frame() override;

@@ -31,6 +31,13 @@
 #define IDS_EDIT_MENU                   306
 #define IDD_myMapToolForm               310
 #define IDD_myEffectToolForm            311
+#define IDD_myMapDlg                    312
+#define IDC_BUTTON1                     1001
+#define IDC_COMBOCELL                   1004
+#define IDC_COMBOTILE                   1005
+#define IDC_COMBO1                      1006
+#define IDC_COMBO2                      1007
+#define IDC_EDIT1                       1008
 #define ID_TOOL_CARACTERTOOL            32772
 #define ID_TOOL_MAPTOOL                 32774
 
@@ -38,9 +45,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        314
+#define _APS_NEXT_RESOURCE_VALUE        319
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1001
-#define _APS_NEXT_SYMED_VALUE           312
+#define _APS_NEXT_CONTROL_VALUE         1009
+#define _APS_NEXT_SYMED_VALUE           313
 #endif
 #endif

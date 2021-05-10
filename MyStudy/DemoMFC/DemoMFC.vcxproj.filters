@@ -78,6 +78,9 @@
     <ClInclude Include="myOutputWnd.h">
       <Filter>PaneWindow\OutputWnd</Filter>
     </ClInclude>
+    <ClInclude Include="myMapDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DemoMFC.cpp">
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="myOutputWnd.cpp">
       <Filter>PaneWindow\OutputWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="myMapDlg.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

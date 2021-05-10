@@ -40,6 +40,7 @@ int myMapToolPane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
 	m_wndForm = myMapToolForm::CreateOnce(this);
+
 	return 0;
 }
 
