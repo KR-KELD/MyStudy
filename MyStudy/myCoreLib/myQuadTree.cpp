@@ -281,7 +281,7 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_myBox.vPos[6] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
 	newNode->m_myBox.vPos[7] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
 
-	newNode->m_pIndexBuffer.Attach(CreateIndexBuffer(
+	newNode->m_pIndexBuffer.Attach(StaticGraphics::CreateIndexBuffer(
 		g_pd3dDevice, &newNode->m_IndexList.at(0),
 		newNode->m_IndexList.size(),
 		sizeof(DWORD)));
@@ -292,7 +292,7 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 myQuadTree::myQuadTree(void)
 {
 	m_pRootNode = NULL;
-	m_iMaxdepth = 3;
+	m_iMaxdepth = 3; // ÄõµåÆ®¸® µª½º 1 = ¾ÈÂÉ°· 2 = 2¹øÂÉ°·
 }
 
 myQuadTree::~myQuadTree(void)

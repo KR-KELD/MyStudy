@@ -8,7 +8,7 @@ public:
 	ComPtr<ID3D11Device>			m_pd3dDevice;
 	ComPtr<ID3D11DeviceContext>		m_pd3dContext;
 	ComPtr<IDXGISwapChain>			m_pSwapChain;
-	ComPtr<ID3D11RenderTargetView>	m_pRednerTargetView;
+	ComPtr<ID3D11RenderTargetView>	m_pRenderTargetView;
 	ComPtr<ID3D11DepthStencilView>	m_pDSV;
 	DXGI_SWAP_CHAIN_DESC			m_pSwapChainDesc;
 	D3D11_VIEWPORT					m_Viewport;

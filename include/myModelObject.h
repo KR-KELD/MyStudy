@@ -20,6 +20,9 @@ public:
 	vector<myGameObject*>			m_myNodeList;
 	vector<Matrix>					m_nodeMatList;
 	//unordered_map<string, Matrix>	m_nodeMatBindPoseMap;
+	//¿ŒΩ∫≈œΩÃ
+	//ComPtr<ID3D11Buffer>			m_pInstanceBuffer;
+	//vector<myBaseInstance>			m_InstanceList;
 public:
 	//bool				SetAnimScene(wstring strSceneName, myAnimScene& anim);
 	int					SetAnimTrack(vector<myGameObject*>& nodeList);

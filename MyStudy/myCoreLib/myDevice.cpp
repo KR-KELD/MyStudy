@@ -118,7 +118,7 @@ HRESULT myDevice::SetRenderTargetView()
 		(LPVOID*)pBackBuffer.GetAddressOf());
 	//랜더 타겟을 백버퍼를 사용해서 만들어준다
 	HRESULT hr = m_pd3dDevice->CreateRenderTargetView(pBackBuffer.Get(), NULL,
-		m_pRednerTargetView.GetAddressOf());
+		m_pRenderTargetView.GetAddressOf());
 	//백버퍼를 사용한 뒤 릴리즈 해준다
 	return hr;
 }
@@ -212,9 +212,9 @@ bool myDevice::Frame()
 	//if (m_pd3dContext.Get())
 	//{
 	//	m_pd3dContext->RSSetViewports(1, &m_Viewport);
-	//	m_pd3dContext->OMSetRenderTargets(1, m_pRednerTargetView.GetAddressOf(), m_pDSV.Get());
+	//	m_pd3dContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDSV.Get());
 	//	float clearColor[] = { 0,0,0,1 };
-	//	m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView.Get(), clearColor);
+	//	m_pd3dContext->ClearRenderTargetView(m_pRenderTargetView.Get(), clearColor);
 	//	m_pd3dContext->ClearDepthStencilView(m_pDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 	//}
 	return true;
@@ -226,10 +226,10 @@ bool myDevice::PreRender()
 	{
 		m_pd3dContext->RSSetViewports(1, &m_Viewport);
 		//랜더링 파이프라인 아웃풋 병합에 랜더타겟을 설정해준다
-		m_pd3dContext->OMSetRenderTargets(1, m_pRednerTargetView.GetAddressOf(), m_pDSV.Get());
+		m_pd3dContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDSV.Get());
 		float clearColor[] = { 0.1f,0.1f,0.1f,1 };
 		//랜더타겟을 초기화해준다
-		m_pd3dContext->ClearRenderTargetView(m_pRednerTargetView.Get(), clearColor);
+		m_pd3dContext->ClearRenderTargetView(m_pRenderTargetView.Get(), clearColor);
 		m_pd3dContext->ClearDepthStencilView(m_pDSV.Get(), D3D10_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 		//화면 좌표로 변환해준다
 
@@ -241,7 +241,7 @@ bool myDevice::PreRender()
 
 bool myDevice::Render()
 {
-	return false;
+	return true;
 }
 
 bool myDevice::PostRender()
@@ -259,7 +259,7 @@ bool myDevice::Release()
 	myDxState::Release();
 
 	//m_pDSV->Release();
-	//m_pRednerTargetView->Release();
+	//m_pRenderTargetView->Release();
 	//m_pSwapChain->Release();
 	//m_pd3dContext->Release();
 	//m_pd3dDevice.Get()->Release();
@@ -290,7 +290,7 @@ void myDevice::ResizeDevice(UINT w, UINT h)
 	//랜더타겟 초기화
 	m_pd3dContext->OMSetRenderTargets(0, NULL, NULL);
 	//랜더타겟 릴리즈
-	if (m_pRednerTargetView.Get()) m_pRednerTargetView->Release();
+	if (m_pRenderTargetView.Get()) m_pRenderTargetView->Release();
 	if (m_pDSV.Get()) m_pDSV->Release();
 
 	//스왑체인 설정 가져오기
@@ -334,7 +334,7 @@ myDevice::myDevice()
 	m_pd3dDevice = nullptr;
 	m_pd3dContext = nullptr;
 	m_pSwapChain = nullptr;
-	m_pRednerTargetView = nullptr;
+	m_pRenderTargetView = nullptr;
 }
 
 myDevice::~myDevice()

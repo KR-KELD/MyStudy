@@ -1,7 +1,5 @@
 #pragma once
 #include "myGameObject.h"
-#include "dxtk/WICTextureLoader.h"
-#include "dxtk/DDSTextureLoader.h"
 class myTexture : myComponent
 {
 public:
