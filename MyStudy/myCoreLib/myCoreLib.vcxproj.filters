@@ -465,5 +465,11 @@
     <Text Include="..\..\data\shader\SkyBoxVS.txt">
       <Filter>Shader</Filter>
     </Text>
+    <Text Include="..\..\data\shader\MapPS.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\MapVS.txt">
+      <Filter>Shader</Filter>
+    </Text>
   </ItemGroup>
 </Project>

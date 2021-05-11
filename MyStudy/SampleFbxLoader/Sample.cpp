@@ -26,12 +26,12 @@ bool Sample::Init()
 	m_QuadTree.CreateQuadTree(m_Map);
 
 	//m_pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
-	//m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
+	m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
 	//m_pFbxObj = g_FbxLoader.Load("../../data/object/SM_Barrel.fbx");
 	
-	//m_pModelObj = m_pFbxObj->m_pModelObject;
-	//m_pModelObj->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/test_normal_map.bmp");
-	//m_pFbxObj->CuttingAnimScene(L"0", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
+	m_pModelObj = m_pFbxObj->m_pModelObject;
+	m_pModelObj->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/test_normal_map.bmp");
+	m_pFbxObj->CuttingAnimScene(L"0", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
 	//m_pFbxObj->CuttingAnimScene(L"0", 0, 60);
 	//m_pFbxObj->CuttingAnimScene(L"1", 61, 91);
 	//m_pFbxObj->CuttingAnimScene(L"2", 92, 116);
@@ -41,14 +41,14 @@ bool Sample::Init()
 	//m_pFbxObj->CuttingAnimScene(L"5", 209, 239);
 	//m_pFbxObj->CuttingAnimScene(L"6", 240, 287);
 	//m_pFbxObj->CuttingAnimScene(L"7", 288, 319);
-	//m_pModelObj->m_pAnim->ChangeAnim(L"0");
+	m_pModelObj->m_pAnim->ChangeAnim(L"0");
 
 	return true;
 }
 
 bool Sample::Frame()
 {
-	//m_SelectNodeList.clear();
+	m_SelectNodeList.clear();
 	if (g_Input.GetKey(VK_RBUTTON) == KEY_PUSH)
 	{
 		m_Mouse.ScreenToRay();
@@ -62,31 +62,31 @@ bool Sample::Frame()
 		}
 	}
 
-	//Vector3 vPick;
-	//float fMaxDist = 99999.0f;
-	//bool bUpdate = false;
+	Vector3 vPick;
+	float fMaxDist = 99999.0f;
+	bool bUpdate = false;
 
-	//for (myNode* pNode : m_SelectNodeList)
-	//{
-	//	if (m_Mouse.PickingFace(pNode))
-	//	{
-	//		float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
-	//		if (fDist < fMaxDist)
-	//		{
-	//			vPick = m_Mouse.m_vIntersectionPos;
-	//			fMaxDist = fDist;
-	//			bUpdate = true;
-	//		}
-	//	}
-	//}
-	//if (bUpdate)
-	//{
-	//	//오브젝트 띄우기
-	//	//myModelInstance ins;
-	//	//ins.vPos = vPick;
-	//	//ins.fTick = 0.0f;
-	//	//m_ModelList.push_back(ins);
-	//}
+	for (myNode* pNode : m_SelectNodeList)
+	{
+		if (m_Mouse.PickingFace(pNode))
+		{
+			float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
+			if (fDist < fMaxDist)
+			{
+				vPick = m_Mouse.m_vIntersectionPos;
+				fMaxDist = fDist;
+				bUpdate = true;
+			}
+		}
+	}
+	if (bUpdate)
+	{
+		//오브젝트 띄우기
+		myModelInstance ins;
+		ins.vPos = vPick;
+		ins.fTick = 0.0f;
+		m_ModelList.push_back(ins);
+	}
 
 
 	//m_pModelObj->Frame();
@@ -146,30 +146,30 @@ bool Sample::Render()
 			myDxState::g_RasterizerDesc);
 	}
 
-	//for (int i = 0; i < m_ModelList.size(); i++)
-	//{
-	//	m_pModelObj->m_pAnim->m_fTick = m_ModelList[i].fTick;
-	//	m_pModelObj->Frame();
-	//	m_ModelList[i].fTick = m_pModelObj->m_pAnim->m_fTick;
-	//	m_pModelObj->m_pTransform->m_vPos = m_ModelList[i].vPos;
-	//	m_pModelObj->Render();
-	//}
+	for (int i = 0; i < m_ModelList.size(); i++)
+	{
+		m_pModelObj->m_pAnim->m_fTick = m_ModelList[i].fTick;
+		m_pModelObj->Frame();
+		m_ModelList[i].fTick = m_pModelObj->m_pAnim->m_fTick;
+		m_pModelObj->m_pTransform->m_vPos = m_ModelList[i].vPos;
+		m_pModelObj->Render();
+	}
 
 	m_Map->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
-	//m_QuadTree.Render(g_pImmediateContext);
+	m_QuadTree.Render(g_pImmediateContext);
 
 	//셀렉트노드 드로우
-	m_Map->Update(g_pImmediateContext);
-	m_Map->SettingPipeLine(g_pImmediateContext);
-	g_pImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-	for (myNode* pNode : m_SelectNodeList)
-	{
-		g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
+	//m_Map->Update(g_pImmediateContext);
+	//m_Map->SettingPipeLine(g_pImmediateContext);
+	//g_pImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+	//for (myNode* pNode : m_SelectNodeList)
+	//{
+	//	g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	//	g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
 
-	}
+	//}
 
 	return true;
 }

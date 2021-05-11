@@ -43,6 +43,7 @@ myFbxObj::~myFbxObj()
 
 bool myFbxObj::ModelInit()
 {
+	m_pModelObject->Init();
 	for (auto data : m_pModelObject->m_myNodeList)
 	{
 		myModelGraphics* pGraphics = data->GetComponent<myModelGraphics>();

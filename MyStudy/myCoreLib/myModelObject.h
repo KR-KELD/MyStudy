@@ -2,7 +2,11 @@
 #include "myModelGraphics.h"
 #include "myAnimation.h"
 
-
+struct SampleIns
+{
+	float fTick;
+	Matrix matWorld;
+};
 
 class myModelObject : public myGameObject
 {
@@ -22,12 +26,16 @@ public:
 	//unordered_map<string, Matrix>	m_nodeMatBindPoseMap;
 	//¿ŒΩ∫≈œΩÃ
 	//ComPtr<ID3D11Buffer>			m_pInstanceBuffer;
-	//vector<myBaseInstance>			m_InstanceList;
+	//vector<myBaseInstance>		m_InstanceList;
+
+	//ª˘«√
+	vector<SampleIns>				m_InstanceList;
 public:
 	//bool				SetAnimScene(wstring strSceneName, myAnimScene& anim);
 	int					SetAnimTrack(vector<myGameObject*>& nodeList);
 	bool				SetAnim(wstring strSceneName, myAnimScene& scene, vector<myGameObject*>& nodeList);
 public:					
+	virtual bool		Init()	override;
 	virtual bool		Frame() override;
 	virtual bool		Render() override;
 public:

@@ -58,6 +58,26 @@ bool myRenderTarget::CreateShaderResourceView(D3D11_SHADER_RESOURCE_VIEW_DESC* d
 	return true;
 }
 
+bool myRenderTarget::CreateDepthStencilView(D3D11_DEPTH_STENCIL_VIEW_DESC * desc)
+{
+	HRESULT hr = S_OK;
+	if (desc == nullptr)
+	{
+		hr = g_pd3dDevice->CreateDepthStencilView(m_pTexture2D.Get(),
+			&m_DSVDesc, m_pDSV.GetAddressOf());
+	}
+	else
+	{
+		hr = g_pd3dDevice->CreateDepthStencilView(m_pTexture2D.Get(),
+			desc, m_pDSV.GetAddressOf());
+	}
+	if (FAILED(hr))
+	{
+		return false;
+	}
+	return true;
+}
+
 bool myRenderTarget::Set()
 {
 	m_TexDesc.Width = g_rtClient.right;

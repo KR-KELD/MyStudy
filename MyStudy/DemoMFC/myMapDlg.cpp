@@ -55,8 +55,8 @@ BOOL myMapDlg::OnInitDialog()
 	m_CellCount.InsertString(3, L"8");
 	m_CellCount.InsertString(4, L"16");
 	m_CellCount.SetCurSel(0);
-	UpdateData(FALSE);
 	m_CellSize.SetWindowTextW(L"1");
+	UpdateData(FALSE);
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 
 	return TRUE;  // return TRUE unless you set the focus to a control

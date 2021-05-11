@@ -52,6 +52,32 @@ bool    myMap::CreateIndexData()
 	return true;
 }
 
+void myMap::Update(ID3D11DeviceContext * pd3dContext)
+{
+	myGraphics::Update(pd3dContext);
+
+	D3D11_MAPPED_SUBRESOURCE mr;
+	HRESULT hr = pd3dContext->Map(m_pMapCB.Get(), 0,
+		D3D11_MAP_WRITE_DISCARD, 0, &mr);
+	if (SUCCEEDED(hr))
+	{
+		myMapCB* pData = (myMapCB*)mr.pData;
+
+		pData->MapData[0] = m_cbMapData.MapData[0];
+		pData->MapData[1] = m_cbMapData.MapData[1];
+		pData->MapData[2] = m_cbMapData.MapData[2];
+		pData->MapData[3] = 1.0f;
+		pd3dContext->Unmap(m_pMapCB.Get(), 0);
+	}
+
+}
+
+bool myMap::PreRender(ID3D11DeviceContext * pd3dContext)
+{
+	pd3dContext->VSSetConstantBuffers(1, 1, m_pMapCB.GetAddressOf());
+	return true;
+}
+
 bool myMap::Frame()
 {
 	return true;
@@ -65,10 +91,30 @@ bool myMap::Draw(ID3D11DeviceContext*	pd3dContext)
 
 myMap::myMap()
 {
+
 }
 
 myMap::~myMap()
 {
+}
+
+void myMap::SetMapCBData(int iNumCell, int iNumTile, int iCellSize)
+{
+	m_cbMapData.MapData[0] = iNumTile;
+	m_cbMapData.MapData[1] = iNumCell;
+	m_cbMapData.MapData[2] = iCellSize;
+}
+
+void myMap::CreateTexMatrix(int iNumCell, int iNumTile, int iCellSize)
+{
+	matTexCoord = Matrix::Identity;
+	matTexCoord._11 = 1.0f / iCellSize;
+	matTexCoord._22 = 0.0f;
+	matTexCoord._33 = 0.0f;
+	matTexCoord._32 = 1.0f / iCellSize;
+	matTexCoord._41 = iNumCell * iNumTile / 2.0f;
+	matTexCoord._42 = iNumCell * iNumTile / 2.0f;
+	matTexCoord *= 1.0f / iNumCell * iNumTile;
 }
 
 bool myMap::CreateMap(myMapDesc  desc)
@@ -86,6 +132,24 @@ bool myMap::CreateMap(myMapDesc  desc)
 		desc.szVS,
 		desc.szPS,
 		desc.szTexFile);
+	return true;
+}
+
+bool myMap::Create(T_STR szVS, T_STR szPS, T_STR szTex)
+{
+	myGraphics::Create(szVS, szPS, szTex);
+
+	D3D11_BUFFER_DESC vbdesc;
+	ZeroMemory(&vbdesc, sizeof(D3D11_BUFFER_DESC));
+	vbdesc.ByteWidth = sizeof(myMapCB);
+	vbdesc.Usage = D3D11_USAGE_DYNAMIC;
+	vbdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vbdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA sd;
+	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
+	sd.pSysMem = &m_cbMapData;
+	HRESULT hr = g_pd3dDevice->CreateBuffer(&vbdesc, NULL, m_pMapCB.GetAddressOf());
 	return true;
 }
 

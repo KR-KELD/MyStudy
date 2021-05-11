@@ -27,8 +27,7 @@ public:
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
 public:
-	//vector<myAnimTrack>			m_AnimTrackList;
-	//int							m_iTick = 0;
+
 public:
 	UINT						m_iNumVertex;
 	UINT						m_iVertexSize;

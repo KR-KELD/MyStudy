@@ -256,6 +256,7 @@ public:
 	multimap<wstring, myGameObject*>::iterator		m_ObjIter;
 	unordered_map<size_t, myComponent*>				m_ComponentList;
 	unordered_map<size_t, myComponent*>::iterator	m_ComIter;
+
 public:
 	static myGameObject* CreateGameObject()
 	{

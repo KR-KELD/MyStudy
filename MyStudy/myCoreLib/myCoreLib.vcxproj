@@ -318,6 +318,8 @@ copy "*.h" "..\\..\\include"</Command>
   <ItemGroup>
     <Text Include="..\..\data\shader\BasisPS.txt" />
     <Text Include="..\..\data\shader\BasisVS.txt" />
+    <Text Include="..\..\data\shader\MapPS.txt" />
+    <Text Include="..\..\data\shader\MapVS.txt" />
     <Text Include="..\..\data\shader\ModelPS.txt" />
     <Text Include="..\..\data\shader\ModelVS.txt" />
     <Text Include="..\..\data\shader\PS.txt" />

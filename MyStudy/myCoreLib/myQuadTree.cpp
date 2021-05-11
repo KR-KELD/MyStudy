@@ -67,6 +67,7 @@ bool myQuadTree::Frame()
 bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	m_pMap->Update(g_pImmediateContext);
+	m_pMap->PreRender(pd3dContext);
 	m_pMap->SettingPipeLine(g_pImmediateContext);
 	pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
 	DrawCulling(pd3dContext);

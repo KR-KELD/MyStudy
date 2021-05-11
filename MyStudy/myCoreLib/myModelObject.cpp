@@ -50,6 +50,28 @@ bool myModelObject::SetAnim(wstring strSceneName, myAnimScene & scene, vector<my
 	return true;
 }
 
+bool myModelObject::Init()
+{
+	InsertComponent(new myAnimation);
+	//InsertComponent(new myController);
+	m_pGraphics = make_shared<myModelGraphics>();
+	m_pGraphics->m_pTransform = this->m_pTransform;
+	m_pGraphics->m_pGameObject = this;
+	m_pAnim = GetComponent<myAnimation>();
+	D3D11_BUFFER_DESC vbdesc =
+	{
+		MAX_BONE_MATRICES * sizeof(Matrix),
+		D3D11_USAGE_DYNAMIC,
+		D3D11_BIND_CONSTANT_BUFFER, //D3D11_BIND_SHADER_RESOURCE,
+		D3D11_CPU_ACCESS_WRITE,
+		0
+	};
+	HRESULT hr = g_pd3dDevice->CreateBuffer(&vbdesc, NULL, m_pBoneBuffer.GetAddressOf());
+
+	m_pNormalTex = g_TextureMgr.m_pWhiteTexture;
+	return true;
+}
+
 bool myModelObject::Frame()
 {
 	//myGameObject::PreFrame();
@@ -165,14 +187,11 @@ bool myModelObject::Frame()
 bool myModelObject::Render()
 {
 	//юс╫ц
-	if (m_pNormalTex != nullptr)
-	{
-		g_pImmediateContext->PSSetShaderResources(1, 1,
-			m_pNormalTex->m_pTextureSRV.GetAddressOf());
-	}
+	g_pImmediateContext->PSSetShaderResources(1, 1,
+		m_pNormalTex->m_pTextureSRV.GetAddressOf());
 
 	g_pImmediateContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
-	m_pTransform->SetMatrix(NULL, 
+	m_pTransform->SetMatrix(&m_pTransform->m_matWorld, 
 		&g_pMainCamTransform->m_matView, 
 		&g_pMainCamTransform->m_matProj);
 	m_pGraphics->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
@@ -225,21 +244,7 @@ bool myModelObject::Render()
 }
 myModelObject::myModelObject()
 {
-	InsertComponent(new myAnimation);
-	//InsertComponent(new myController);
-	m_pGraphics = make_shared<myModelGraphics>();
-	m_pGraphics->m_pTransform = this->m_pTransform;
-	m_pGraphics->m_pGameObject = this;
-	m_pAnim = GetComponent<myAnimation>();
-	D3D11_BUFFER_DESC vbdesc =
-	{
-		MAX_BONE_MATRICES * sizeof(Matrix),
-		D3D11_USAGE_DYNAMIC,
-		D3D11_BIND_CONSTANT_BUFFER, //D3D11_BIND_SHADER_RESOURCE,
-		D3D11_CPU_ACCESS_WRITE,
-		0
-	};
-	g_pd3dDevice->CreateBuffer(&vbdesc, NULL, m_pBoneBuffer.GetAddressOf());
+
 }
 
 myModelObject::~myModelObject()

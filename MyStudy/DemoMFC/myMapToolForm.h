@@ -30,11 +30,16 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
-	afx_msg void OnCbnSelchangeComboCell();
-	afx_msg void OnCbnSelchangeComboTile();
 	CComboBox m_TileCount;
 	CComboBox m_CellCount;
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	virtual void OnInitialUpdate();
+	int m_iCellSize;
+	afx_msg void OnBnClickedButton2();
+
+	CString m_strTexName;
+	afx_msg void OnBnClickedTurret();
+	afx_msg void OnBnClickedBarrel();
 };
 
 

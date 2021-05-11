@@ -26,6 +26,12 @@ struct myNormalLookupTable
 	}
 };
 
+struct myMapCB
+{
+	//0 NumTile,1 NumCell,2 CellSize;
+	float MapData[4];
+};
+
 class myMap : public myGraphics
 {
 public:
@@ -40,6 +46,9 @@ public:
 	UINT m_iNumFaces;
 	float m_fCellDistance;
 	std::vector<float> m_fHeightList;
+	Matrix matTexCoord;
+	myMapCB m_cbMapData;
+	ComPtr<ID3D11Buffer> m_pMapCB;
 public:
 	std::vector<Vector3> m_FaceNormals;
 	std::vector<myNormalLookupTable> m_LookupTabel;
@@ -50,7 +59,10 @@ public:
 	void GenNormalLookupTable();
 	void CalcPerVertexNormalsFastLookup();
 public:
+	void			SetMapCBData(int iNumCell, int iNumTile, int iCellSize);
+	void			CreateTexMatrix(int iNumCell, int iNumTile, int iCellSize);
 	bool			CreateMap(myMapDesc  desc);
+	virtual bool	Create(T_STR szVS, T_STR szPS, T_STR	szTex)override;
 	//virtual bool	CalNormal();
 	virtual float   Lerp(float fStart, float fEnd, float fTangent);
 	virtual float	GetHeight(float fPosX, float fPosZ);
@@ -58,6 +70,8 @@ public:
 	virtual float   GetHeightMap(int row, int col);
 	virtual bool    CreateVertexData() override;
 	virtual bool    CreateIndexData()override;
+	virtual void	Update(ID3D11DeviceContext*	pd3dContext)override;
+	virtual bool	PreRender(ID3D11DeviceContext*	pd3dContext) override;
 	virtual bool	Frame() override;
 	virtual bool	Draw(ID3D11DeviceContext*	pd3dContext) override;
 public:

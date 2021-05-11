@@ -31,10 +31,10 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	float4 vFinalColor;
 	vFinalColor = vTexture * vIn.c;
 
-	float4 normal		=	g_txNormalMap.Sample( g_Sample, vIn.t * 10);
-		   normal		=	normalize( (normal - 0.5f) * 2.0f );			
+	float4 normal =	g_txNormalMap.Sample( g_Sample, vIn.t * 10);
+		   normal =	normalize( (normal - 0.5f) * 2.0f );			
 
-	float  fDot			=	saturate( dot( normal.xyz, -vIn.light ));
+	float  fDot	= saturate( dot( normal.xyz, -vIn.light ));
 
 	//float3 Light = normalize(vColor.xyz);
 	//float c = dot(-Light,vIn.n);
