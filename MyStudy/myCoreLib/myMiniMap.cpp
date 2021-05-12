@@ -5,20 +5,23 @@ bool	myMiniMap::Create(T_STR szVS, T_STR szPS, T_STR	szTex)
 	m_DxRT.SetRenderTargetView();
 	m_DxRT.SetDepthStencilView();
 	m_DxRT.SetViewport();
-	myGraphics::Create(szVS, szPS, szTex);
+	myGraphics::Create(szVS, szPS, L"../../data/object/white.png");
 	return true;
+}
+void myMiniMap::SetRect(Vector3 vCenter, float fRange)
+{
+	m_pTransform->m_vPos = vCenter;
+	m_fRange = fRange;
 }
 bool    myMiniMap::CreateVertexData()
 {
-	myShapePlane::CreateVertexData(Vector3(-0.75f,0.75f,0.0f),0.25f);
+	myShapePlane::CreateVertexData(m_pTransform->m_vPos, m_fRange);
 	m_pTransform->m_vPos = Vector3(0.0f, 0.0f, 0.0f);
 	//m_VertexList.resize(4);
 	//m_VertexList[0] = PNCT_VERTEX(Vector3(-1.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, -1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 0.0f));
 	//m_VertexList[1] = PNCT_VERTEX(Vector3(-0.5f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, -1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(1.0f, 0.0f));
 	//m_VertexList[2] = PNCT_VERTEX(Vector3(-0.5f, 0.5f, 0.0f), Vector3(0.0f, 0.0f, -1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(1.0f, 1.0f));
 	//m_VertexList[3] = PNCT_VERTEX(Vector3(-1.0f, 0.5f, 0.0f), Vector3(0.0f, 0.0f, -1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 1.0f));
-	m_iNumVertex = m_VertexList.size();
-	m_iVertexSize = sizeof(PNCT_VERTEX);
 	return true;
 }
 bool    myMiniMap::CreateIndexData()
@@ -46,7 +49,7 @@ bool myMiniMap::End()
 bool myMiniMap::Draw(ID3D11DeviceContext*	pd3dContext)
 {
 	pd3dContext->PSSetShaderResources(0, 1, m_DxRT.m_pSRV.GetAddressOf());
-	myGraphics::PostRender(pd3dContext);
+	myGraphics::Draw(pd3dContext);
 	m_DxRT.ClearShaderResources();
 	return true;
 }

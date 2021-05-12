@@ -13,11 +13,13 @@ public:
 	D3D11_SHADER_RESOURCE_VIEW_DESC m_SRVDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC m_DSVDesc;
 public:
+	bool Set();
 	bool CreateTexture2D(D3D11_TEXTURE2D_DESC* desc = nullptr);
 	bool CreateRenderTargetView(D3D11_RENDER_TARGET_VIEW_DESC* desc = nullptr);
 	bool CreateShaderResourceView(D3D11_SHADER_RESOURCE_VIEW_DESC* desc = nullptr);
 	bool CreateDepthStencilView(D3D11_DEPTH_STENCIL_VIEW_DESC* desc = nullptr);
-	bool Set();
+	bool SetDesc();
+	bool Release();
 public:
 	myRenderTarget();
 	virtual ~myRenderTarget();

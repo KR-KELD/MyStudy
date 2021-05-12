@@ -10,8 +10,20 @@ bool Sample::SetTargetObject(string strName)
 bool Sample::Init()
 {
 	g_FbxLoader.Init();
-	m_Map = new myMap;
-	g_ObjMgr.CreateObjComponent(L"Map", m_Map);
+	m_pMap = new myMap;
+	m_pMapObj = myGameObject::CreateComponentObj(m_pMap);
+
+	m_pMiniMap = new myMiniMap;
+	m_pMiniMapObj = myGameObject::CreateComponentObj(m_pMiniMap);
+	m_pMiniMap->SetRect(Vector3(-0.75f, 0.75f, 0.0f), 0.25f);
+	m_pMiniMap->Create(L"../../data/shader/BasisVS.txt", L"../../data/shader/BasisPS.txt", L"");
+
+	m_pTopCamera = new myCamera;
+	g_CamMgr.CreateCameraObj(L"TopCamera", m_pTopCamera);
+
+	m_pTopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
+	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
+	m_pTopCamera->CreateOrthographic(100, 100, 1.0f, 1000);
 
 	
 	myFbxObj* pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
@@ -85,29 +97,58 @@ bool Sample::Frame()
 
 			if (m_pTargetObject)
 			{
+				if (m_pTargetObject->m_strName == L"../../data/object/SM_Barrel.fbx")
+				{
+					temp.matWorld._11 = 0.2f;
+					temp.matWorld._22 = 0.2f;
+					temp.matWorld._33 = 0.2f;
+				}
 				m_pTargetObject->m_InstanceList.push_back(temp);
 			}
 
 		}
-
 	}
 	return true;
 }
 
 bool Sample::Render()
 {
-	//if (g_Input.GetKey('8') == KEY_PUSH)
-	//{
-	//	myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-	//	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-	//		myDxState::g_RasterizerDesc);
-	//}
-	//if (g_Input.GetKey('9') == KEY_PUSH)
-	//{
-	//	myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	//	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-	//		myDxState::g_RasterizerDesc);
-	//}
+	if (g_Input.GetKey('8') == KEY_PUSH)
+	{
+		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+			myDxState::g_RasterizerDesc);
+	}
+	if (g_Input.GetKey('9') == KEY_PUSH)
+	{
+		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
+		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+			myDxState::g_RasterizerDesc);
+	}
+	if (m_pMiniMap->Begin())
+	{
+		if (m_isCreate)
+		{
+			m_pMap->m_pTransform->SetMatrix(NULL,
+				&m_pTopCamera->m_pTransform->m_matView,
+				&m_pTopCamera->m_pTransform->m_matProj);
+			m_QuadTree.Render(g_pImmediateContext);
+
+			for (int i = 0; i < m_DrawList.size(); i++)
+			{
+				for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
+				{
+					m_DrawList[i]->m_pTransform->SetMatrix(&m_DrawList[i]->m_InstanceList[j].matWorld,
+						&m_pTopCamera->m_pTransform->m_matView,
+						&m_pTopCamera->m_pTransform->m_matProj);
+					m_DrawList[i]->Render();
+				}
+			}
+		}
+		m_pMiniMap->End();
+	}
+
+
 
 	if (m_isCreate)
 	{
@@ -115,7 +156,7 @@ bool Sample::Render()
 		//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 		//	myDxState::g_RasterizerDesc);
 
-		m_Map->m_pTransform->SetMatrix(NULL,
+		m_pMap->m_pTransform->SetMatrix(NULL,
 			&g_pMainCamTransform->m_matView,
 			&g_pMainCamTransform->m_matProj);
 		m_QuadTree.Render(g_pImmediateContext);
@@ -127,7 +168,9 @@ bool Sample::Render()
 				m_DrawList[i]->m_pAnim->m_fTick = m_DrawList[i]->m_InstanceList[j].fTick;
 				m_DrawList[i]->Frame();
 				m_DrawList[i]->m_InstanceList[j].fTick = m_DrawList[i]->m_pAnim->m_fTick;
-				m_DrawList[i]->m_pTransform->m_matWorld = m_DrawList[i]->m_InstanceList[j].matWorld;
+				m_DrawList[i]->m_pTransform->SetMatrix(&m_DrawList[i]->m_InstanceList[j].matWorld,
+					&g_pMainCamTransform->m_matView,
+					&g_pMainCamTransform->m_matProj);
 				m_DrawList[i]->Render();
 			}
 		}
@@ -137,9 +180,9 @@ bool Sample::Render()
 		//	myDxState::g_RasterizerDesc);
 
 		////셀렉트노드 드로우
-		//m_Map->Update(g_pImmediateContext);
-		//m_Map->PreRender(g_pImmediateContext);
-		//m_Map->SettingPipeLine(g_pImmediateContext);
+		//m_pMap->Update(g_pImmediateContext);
+		//m_pMap->PreRender(g_pImmediateContext);
+		//m_pMap->SettingPipeLine(g_pImmediateContext);
 		//g_pImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
 		//for (myNode* pNode : m_SelectNodeList)
 		//{
@@ -148,6 +191,11 @@ bool Sample::Render()
 
 		//}
 	}
+
+	m_pMiniMap->m_pTransform->SetMatrix(NULL,
+		NULL,
+		NULL);
+	m_pMiniMap->Render(g_pImmediateContext);
 	return true;
 }
 

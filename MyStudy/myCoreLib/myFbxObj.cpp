@@ -101,6 +101,7 @@ bool myFbxObj::Load(string strFileName)
 {
 	if (LoadFBX(strFileName))
 	{
+		m_pModelObject->m_strName = to_mw(strFileName);
 		return true;
 	}
 	return false;

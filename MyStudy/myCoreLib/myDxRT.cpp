@@ -1,32 +1,39 @@
 #include "myDxRT.h"
 
-HRESULT		myDxRT::SetRenderTargetView()
+HRESULT		myDxRT::SetRenderTargetView(D3D11_TEXTURE2D_DESC* texDesc)
 {
 	HRESULT hr;
 	ComPtr<ID3D11Texture2D> pTexture = nullptr;
-	D3D11_TEXTURE2D_DESC texDesc;
-	ZeroMemory(&texDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	texDesc.Width = 512;
-	texDesc.Height = 512;
-	texDesc.MipLevels = 1;
-	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.SampleDesc.Quality = 0;
-	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET |
+
+	D3D11_TEXTURE2D_DESC desc;
+	ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
+	desc.Width = 512;
+	desc.Height = 512;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_RENDER_TARGET |
 		D3D11_BIND_SHADER_RESOURCE;
-	hr = g_pd3dDevice->CreateTexture2D(&texDesc, NULL, pTexture.GetAddressOf());
+	if (texDesc == nullptr)
+	{
+		hr = g_pd3dDevice->CreateTexture2D(&desc, NULL, m_pTexture2D.GetAddressOf());
+	}
+	else
+	{
+		hr = g_pd3dDevice->CreateTexture2D(texDesc, NULL, m_pTexture2D.GetAddressOf());
+	}
 	if (FAILED(hr))
 	{
 		return false;
 	}
-
 	hr = g_pd3dDevice->CreateRenderTargetView(
-		pTexture.Get(), NULL,
+		m_pTexture2D.Get(), NULL,
 		m_pRTV.GetAddressOf());
 
-	hr = g_pd3dDevice->CreateShaderResourceView(pTexture.Get(),
+	hr = g_pd3dDevice->CreateShaderResourceView(m_pTexture2D.Get(),
 		NULL,
 		m_pSRV.GetAddressOf());
 	return hr;
@@ -35,35 +42,55 @@ bool  myDxRT::Release()
 {
 	return true;
 }
-HRESULT myDxRT::SetDepthStencilView()
+HRESULT myDxRT::SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc,
+	D3D11_DEPTH_STENCIL_VIEW_DESC* dsvDesc)
 {
 	// create depth texture
+	HRESULT hr;
 	ComPtr<ID3D11Texture2D> pTexture = nullptr;
-	D3D11_TEXTURE2D_DESC texDesc;
-	ZeroMemory(&texDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	texDesc.Width = 512;
-	texDesc.Height = 512;
-	texDesc.MipLevels = 1;
-	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.SampleDesc.Quality = 0;
-	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	HRESULT hr = g_pd3dDevice->CreateTexture2D(&texDesc, NULL, pTexture.GetAddressOf());
+	D3D11_TEXTURE2D_DESC tdesc;
+	ZeroMemory(&tdesc, sizeof(D3D11_TEXTURE2D_DESC));
+	tdesc.Width = 512;
+	tdesc.Height = 512;
+	tdesc.MipLevels = 1;
+	tdesc.ArraySize = 1;
+	tdesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	tdesc.SampleDesc.Count = 1;
+	tdesc.SampleDesc.Quality = 0;
+	tdesc.Usage = D3D11_USAGE_DEFAULT;
+	tdesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	if (texDesc == nullptr)
+	{
+		hr = g_pd3dDevice->CreateTexture2D(&tdesc, NULL, pTexture.GetAddressOf());
+	}
+	else
+	{
+		hr = g_pd3dDevice->CreateTexture2D(texDesc, NULL, pTexture.GetAddressOf());
+	}
 	if (FAILED(hr))
 	{
 		return false;
 	}
-	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
-	ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	dsvDesc.Texture2D.MipSlice = 0;
-	hr = g_pd3dDevice->CreateDepthStencilView(
-		pTexture.Get(),
-		&dsvDesc,
-		m_pDSV.GetAddressOf());
+	D3D11_DEPTH_STENCIL_VIEW_DESC ddesc;
+	ZeroMemory(&ddesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+	ddesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	ddesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	ddesc.Texture2D.MipSlice = 0;
+	if (dsvDesc == nullptr)
+	{
+		hr = g_pd3dDevice->CreateDepthStencilView(
+			pTexture.Get(),
+			&ddesc,
+			m_pDSV.GetAddressOf());
+	}
+	else
+	{
+		hr = g_pd3dDevice->CreateDepthStencilView(
+			pTexture.Get(),
+			dsvDesc,
+			m_pDSV.GetAddressOf());
+	}
+
 	if (FAILED(hr))
 	{
 		return false;

@@ -92,11 +92,11 @@ void myMapDlg::OnBnClickedOk()
 		desc.szTexFile = L"../../data/castle.jpg";
 		desc.szVS = L"../../data/shader/BasisVS.txt";
 		desc.szPS = L"../../data/shader/BasisPS.txt";
-		pApp->m_Sample.m_Map->CreateMap(desc);
-		pApp->m_Sample.m_Map->m_isRender = false;
+		pApp->m_Sample.m_pMap->CreateMap(desc);
+		pApp->m_Sample.m_pMap->m_isRender = false;
 
 
-		pApp->m_Sample.m_QuadTree.CreateQuadTree(pApp->m_Sample.m_Map);
+		pApp->m_Sample.m_QuadTree.CreateQuadTree(pApp->m_Sample.m_pMap);
 		pApp->m_Sample.m_isCreate = true;
 	}
 

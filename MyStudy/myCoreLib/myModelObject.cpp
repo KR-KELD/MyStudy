@@ -191,9 +191,6 @@ bool myModelObject::Render()
 		m_pNormalTex->m_pTextureSRV.GetAddressOf());
 
 	g_pImmediateContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
-	m_pTransform->SetMatrix(&m_pTransform->m_matWorld, 
-		&g_pMainCamTransform->m_matView, 
-		&g_pMainCamTransform->m_matProj);
 	m_pGraphics->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
 	m_pGraphics->m_cbData.vColor[1] = g_pMainCamTransform->m_vLook.y;
 	m_pGraphics->m_cbData.vColor[2] = g_pMainCamTransform->m_vLook.z;

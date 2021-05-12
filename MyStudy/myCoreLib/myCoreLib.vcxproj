@@ -229,7 +229,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myParsingScript.cpp" />
     <ClCompile Include="myProjectile.cpp" />
     <ClCompile Include="myQuadTree.cpp" />
-    <ClCompile Include="myRenderTarget.cpp" />
     <ClCompile Include="myScene.cpp" />
     <ClCompile Include="myShape.cpp" />
     <ClCompile Include="mySkyBox.cpp" />
@@ -296,7 +295,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myProjectile.h" />
     <ClInclude Include="myProtocol.h" />
     <ClInclude Include="myQuadTree.h" />
-    <ClInclude Include="myRenderTarget.h" />
     <ClInclude Include="myScene.h" />
     <ClInclude Include="myShape.h" />
     <ClInclude Include="mySkyBox.h" />
@@ -318,6 +316,7 @@ copy "*.h" "..\\..\\include"</Command>
   <ItemGroup>
     <Text Include="..\..\data\shader\BasisPS.txt" />
     <Text Include="..\..\data\shader\BasisVS.txt" />
+    <Text Include="..\..\data\shader\HeightMapPS.txt" />
     <Text Include="..\..\data\shader\MapPS.txt" />
     <Text Include="..\..\data\shader\MapVS.txt" />
     <Text Include="..\..\data\shader\ModelPS.txt" />

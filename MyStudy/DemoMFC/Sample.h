@@ -4,6 +4,7 @@
 #include "myQuadTree.h"
 #include "myMouse.h"
 #include "myFbxLoader.h"
+#include "myMiniMap.h"
 
 
 
@@ -12,9 +13,18 @@ class Sample : public myCore
 public:
 	shared_ptr<myModelObject>	m_pTargetObject;
 	vector<shared_ptr<myModelObject>> m_DrawList;
+
+	myCamera*		m_pTopCamera;
+
+	myMiniMap*		m_pMiniMap;
+	myGameObject*	m_pMiniMapObj;
+
+	myMap*			m_pMap;
+	myGameObject*	m_pMapObj;
+
 	myQuadTree		m_QuadTree;
 	myMouse			m_Mouse;
-	myMap*			m_Map;
+
 	vector<myNode*> m_SelectNodeList;
 	bool			m_isCreate;
 public:

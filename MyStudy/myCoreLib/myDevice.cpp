@@ -111,6 +111,7 @@ HRESULT myDevice::CreateSwapChain()
 
 HRESULT myDevice::SetRenderTargetView()
 {
+
 	//백버퍼를 비워준다
 	ComPtr<ID3D11Texture2D> pBackBuffer = nullptr;
 	//스왑체인에서 백버퍼를 가져온다
@@ -119,6 +120,7 @@ HRESULT myDevice::SetRenderTargetView()
 	//랜더 타겟을 백버퍼를 사용해서 만들어준다
 	HRESULT hr = m_pd3dDevice->CreateRenderTargetView(pBackBuffer.Get(), NULL,
 		m_pRenderTargetView.GetAddressOf());
+
 	//백버퍼를 사용한 뒤 릴리즈 해준다
 	return hr;
 }
@@ -257,7 +259,6 @@ bool myDevice::PostRender()
 bool myDevice::Release()
 {
 	myDxState::Release();
-
 	//m_pDSV->Release();
 	//m_pRenderTargetView->Release();
 	//m_pSwapChain->Release();
@@ -290,6 +291,7 @@ void myDevice::ResizeDevice(UINT w, UINT h)
 	//랜더타겟 초기화
 	m_pd3dContext->OMSetRenderTargets(0, NULL, NULL);
 	//랜더타겟 릴리즈
+
 	if (m_pRenderTargetView.Get()) m_pRenderTargetView->Release();
 	if (m_pDSV.Get()) m_pDSV->Release();
 

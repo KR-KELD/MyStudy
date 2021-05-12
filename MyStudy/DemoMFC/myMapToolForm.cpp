@@ -91,21 +91,21 @@ void myMapToolForm::OnBnClickedButton1()
 		// 0-1  1-2 2-4  3-8
 		pApp->m_Sample.m_QuadTree.m_iMaxdepth = iSelTile;
 		int iNumTile = pow(2, iSelTile);
-		desc.iNumCols = iNumCell * iNumTile + 1;//m_Map->m_iNumCols;
-		desc.iNumRows = iNumCell * iNumTile + 1;//m_Map->m_iNumRows;
+		desc.iNumCols = iNumCell * iNumTile + 1;//m_pMap->m_iNumCols;
+		desc.iNumRows = iNumCell * iNumTile + 1;//m_pMap->m_iNumRows;
 		desc.fCellDistance = m_iCellSize;
 		desc.fScaleHeight = 10.0f;
 		//desc.szTexFile = L"../../data/castle.jpg";
 		desc.szTexFile = m_strTexName;
 		desc.szVS = L"../../data/shader/MapVS.txt";
 		desc.szPS = L"../../data/shader/MapPS.txt";
-		pApp->m_Sample.m_Map->CreateMap(desc);
-		pApp->m_Sample.m_Map->m_isRender = false;
+		pApp->m_Sample.m_pMap->CreateMap(desc);
+		pApp->m_Sample.m_pMap->m_isRender = false;
 
-		pApp->m_Sample.m_QuadTree.CreateQuadTree(pApp->m_Sample.m_Map);
+		pApp->m_Sample.m_QuadTree.CreateQuadTree(pApp->m_Sample.m_pMap);
 		pApp->m_Sample.m_isCreate = true;
-		pApp->m_Sample.m_Map->SetMapCBData(iNumCell, iNumTile, m_iCellSize);
-		//pApp->m_Sample.m_Map->CreateTexMatrix(iNumCell, iNumTile, m_iCellSize);
+		pApp->m_Sample.m_pMap->SetMapCBData(iNumCell, iNumTile, m_iCellSize);
+		//pApp->m_Sample.m_pMap->CreateTexMatrix(iNumCell, iNumTile, m_iCellSize);
 		//pApp->m_Sample.m_matTex._11 = 1.0f / m_iCellSize;
 		//pApp->m_Sample.m_matTex._22 = 0.0f;
 		//pApp->m_Sample.m_matTex._33 = 0.0f;
@@ -113,6 +113,8 @@ void myMapToolForm::OnBnClickedButton1()
 		//pApp->m_Sample.m_matTex._41 = iNumCell * iNumTile / 2.0f;
 		//pApp->m_Sample.m_matTex._42 = iNumCell * iNumTile / 2.0f;
 		//pApp->m_Sample.m_matTex *= 1.0f / iNumCell;
+
+		pApp->m_Sample.m_pTopCamera->CreateOrthographic(desc.iNumCols * desc.fCellDistance, desc.iNumRows * desc.fCellDistance, 1.0f, 1000);
 
 	}
 	UpdateData(FALSE);

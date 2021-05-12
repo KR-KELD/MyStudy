@@ -8,6 +8,7 @@ public:
 public:
 	myDxRT			m_DxRT;
 public:
+	void			SetRect(Vector3 vCenter, float fRange);
 	virtual bool    CreateVertexData()override;
 	virtual bool    CreateIndexData()override;
 	virtual bool	Create(T_STR szVS, T_STR szPS, T_STR szTex);
