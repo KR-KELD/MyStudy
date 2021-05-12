@@ -8,11 +8,7 @@ bool	myMiniMap::Create(T_STR szVS, T_STR szPS, T_STR	szTex)
 	myGraphics::Create(szVS, szPS, L"../../data/object/white.png");
 	return true;
 }
-void myMiniMap::SetRect(Vector3 vCenter, float fRange)
-{
-	m_pTransform->m_vPos = vCenter;
-	m_fRange = fRange;
-}
+
 bool    myMiniMap::CreateVertexData()
 {
 	myShapePlane::CreateVertexData(m_pTransform->m_vPos, m_fRange);

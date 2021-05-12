@@ -8,6 +8,7 @@ public:
 public:
 	float			m_fRange;
 public:
+	virtual bool	SetInfo(Vector3 vCenter, float fRange);
 	virtual bool	Init();
 	virtual bool    CreateVertexData()override;
 	virtual bool    CreateVertexData(Vector3 vCenter, float fRange)override;

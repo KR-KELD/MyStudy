@@ -14,6 +14,8 @@ myNode::myNode()
 	m_myBox.fExtent[1] = 1;
 	m_myBox.fExtent[2] = 1;
 	m_dwFaceNum = 0;
+	m_mySphere.fRadius = 1.0f;
+	m_mySphere.vCenter = Vector3::Zero;
 }
 myNode::~myNode()
 {

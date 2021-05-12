@@ -5,11 +5,17 @@ DECLARE_COMPONENT(myShapePlane);
 DECLARE_COMPONENT(myShapeLine);
 myShape::myShape()
 {
-
+	m_fRange = 1.0f;
 }
 myShape::~myShape()
 {
 
+}
+bool myShape::SetInfo(Vector3 vCenter, float fRange)
+{
+	m_pTransform->m_vPos = vCenter;
+	m_fRange = fRange;
+	return true;
 }
 bool myShape::Init()
 {
@@ -17,9 +23,7 @@ bool myShape::Init()
 }
 bool    myShape::CreateVertexData()
 {
-	Vector3 vCenter = { 0.0f, 0.0f ,0.0f };
-	float fRange = 1.0f;
-	CreateVertexData(vCenter, fRange);
+	CreateVertexData(m_pTransform->m_vPos, m_fRange);
 	return true;
 }
 
@@ -35,8 +39,6 @@ bool    myShape::CreateIndexData()
 
 bool myShapeBox::CreateVertexData(Vector3 vCenter, float fRange)
 {
-	m_pTransform->m_vPos = vCenter;
-	m_fRange = fRange;
 	m_VertexList.resize(24);
 	m_VertexList[0] = { Vector3(-m_fRange + vCenter.x, m_fRange + vCenter.y, -m_fRange + vCenter.z),
 						Vector3(0.0f, 0.0f, -1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.0f, 0.0f) };
@@ -123,8 +125,6 @@ myShapeBox::~myShapeBox()
 
 bool myShapePlane::CreateVertexData(Vector3 vCenter, float fRange)
 {
-	m_pTransform->m_vPos = vCenter;
-	m_fRange = fRange;
 	m_VertexList.resize(4);
 	m_VertexList[0] =
 	{

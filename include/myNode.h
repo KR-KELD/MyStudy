@@ -11,6 +11,7 @@ public:
 	bool					m_isLeaf;
 	// 바운딩 박스
 	MY_BOX					m_myBox;
+	MY_SPHERE				m_mySphere;
 	vector<myNode*>			m_ChildList;
 	vector<PNCT_VERTEX>		m_CornerList;
 	vector<DWORD>			m_CornerIndexList;

@@ -269,7 +269,10 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 		}
 	}
 	newNode->m_myBox.vCenter = (newNode->m_myBox.vMax + newNode->m_myBox.vMin) / 2;
+
 	Vector3 range = newNode->m_myBox.vMax - newNode->m_myBox.vCenter;
+	newNode->m_mySphere.vCenter = newNode->m_myBox.vCenter;
+	newNode->m_mySphere.fRadius = range.Length();
 	newNode->m_myBox.fExtent[0] = range.x;
 	newNode->m_myBox.fExtent[1] = range.y;
 	newNode->m_myBox.fExtent[2] = range.z;

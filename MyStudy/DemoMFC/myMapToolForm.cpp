@@ -116,6 +116,15 @@ void myMapToolForm::OnBnClickedButton1()
 
 		pApp->m_Sample.m_pTopCamera->CreateOrthographic(desc.iNumCols * desc.fCellDistance, desc.iNumRows * desc.fCellDistance, 1.0f, 1000);
 
+
+		//pApp->m_Sample.SetHeightTex(g_pImmediateContext, pApp->m_Sample.m_pStaging.Get());
+
+		//g_pImmediateContext->CopyResource(pApp->m_Sample.m_pHeight.Get(), pApp->m_Sample.m_pStaging.Get());
+
+
+
+
+
 	}
 	UpdateData(FALSE);
 }
