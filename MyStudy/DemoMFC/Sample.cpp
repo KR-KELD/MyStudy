@@ -35,7 +35,7 @@ bool Sample::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture
 	return true;
 }
 
-bool Sample::SetHeightTex(ID3D11Texture2D * pTexDest, Vector2 & vLT, Vector2 & vRB)
+bool Sample::SetHeightTex(ID3D11Texture2D * pTexDest, Vector3 & vLT, Vector3 & vRB)
 {
 	D3D11_TEXTURE2D_DESC desc;
 	pTexDest->GetDesc(&desc);
@@ -146,81 +146,70 @@ bool Sample::Init()
 
 bool Sample::Frame()
 {
-#pragma region Picking
-	m_SelectNodeList.clear();
-	if (m_isCreate)
-	{
-		if (g_Input.GetKey(VK_LBUTTON) == KEY_PUSH)
-		{
-			m_Mouse.ScreenToRay();
-			for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
-			{
-				myNode* pNode = m_QuadTree.m_LeafNodeList[i];
-				if (myCollision::IntersectRayToBox(m_Mouse.m_myRay, pNode->m_myBox/*,&m_Mouse.m_vIntersectionPos*/))
-				{
-
-					//임시
-					//bool isSelected = false;
-					//for (myNode* sNode : m_SelectNodeList)
-					//{
-					//	if (sNode == pNode)
-					//	{
-					//		isSelected = true;
-					//	}
-					//}
-					//if (!isSelected)
-					//	m_SelectNodeList.push_back(pNode);
-					m_SelectNodeList.push_back(pNode);
-					m_isPicking = true;
-				}
-			}
-		}
-		if (g_Input.GetKey(VK_LBUTTON) == KEY_UP)
-		{
-			m_isPicking = false;
-		}
-
-		Vector3 vPick;
-		float fMaxDist = 99999.0f;
-		bool bUpdate = false;
-
-		for (int iNode = 0; iNode < m_SelectNodeList.size(); iNode++)
-		{
-			myNode* pNode = m_SelectNodeList[iNode];
-			if (m_Mouse.PickingFace(pNode, m_pMap))
-			{
-				float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
-				if (fDist < fMaxDist)
-				{
-					vPick = m_Mouse.m_vIntersectionPos;
-					fMaxDist = fDist;
-					bUpdate = true;
-				}
-			}
-		}
-		if (bUpdate)
-		{
-			if (m_pTargetObject)
-			{
-				//오브젝트 띄우기
-				SampleIns temp;
-				temp.matWorld._41 = vPick.x;
-				temp.matWorld._42 = vPick.y;
-				temp.matWorld._43 = vPick.z;
-				temp.fTick = 0.0f;
-
-				if (m_pTargetObject->m_strName == L"../../data/object/SM_Barrel.fbx")
-				{
-					temp.matWorld._11 = 0.2f;
-					temp.matWorld._22 = 0.2f;
-					temp.matWorld._33 = 0.2f;
-				}
-				m_pTargetObject->m_InstanceList.push_back(temp);
-			}
-
-		}
-	}
-#pragma endregion
+//#pragma region Picking
+//	m_SelectNodeList.clear();
+//	if (m_isCreate)
+//	{
+//		if (g_Input.GetKey(VK_LBUTTON) == KEY_PUSH)
+//		{
+//			m_Mouse.ScreenToRay();
+//			for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
+//			{
+//				myNode* pNode = m_QuadTree.m_LeafNodeList[i];
+//				if (myCollision::IntersectRayToBox(m_Mouse.m_myRay, pNode->m_myBox/*,&m_Mouse.m_vIntersectionPos*/))
+//				{
+//					m_SelectNodeList.push_back(pNode);
+//					m_isPicking = true;
+//				}
+//			}
+//		}
+//		if (g_Input.GetKey(VK_LBUTTON) == KEY_UP)
+//		{
+//			m_isPicking = false;
+//		}
+//
+//		Vector3 vPick;
+//		float fMaxDist = 99999.0f;
+//		bool bUpdate = false;
+//
+//		for (int iNode = 0; iNode < m_SelectNodeList.size(); iNode++)
+//		{
+//			myNode* pNode = m_SelectNodeList[iNode];
+//			if (m_Mouse.PickingFace(pNode, m_pMap))
+//			{
+//				float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
+//				if (fDist < fMaxDist)
+//				{
+//					vPick = m_Mouse.m_vIntersectionPos;
+//					fMaxDist = fDist;
+//					bUpdate = true;
+//				}
+//			}
+//		}
+//		if (bUpdate)
+//		{
+//			if (m_pTargetObject)
+//			{
+//				//오브젝트 띄우기
+//				SampleIns temp;
+//				temp.matWorld._41 = vPick.x;
+//				temp.matWorld._42 = vPick.y;
+//				temp.matWorld._43 = vPick.z;
+//				temp.fTick = 0.0f;
+//
+//				if (m_pTargetObject->m_strName == L"../../data/object/SM_Barrel.fbx")
+//				{
+//					temp.matWorld._11 = 0.2f;
+//					temp.matWorld._22 = 0.2f;
+//					temp.matWorld._33 = 0.2f;
+//				}
+//				m_pTargetObject->m_InstanceList.push_back(temp);
+//			}
+//
+//		}
+//	}
+//#pragma endregion
+	if (m_pMapTool) m_pMapTool->Frame();
 	return true;
 }
 
@@ -312,93 +301,93 @@ bool Sample::Render()
 		//}
 #pragma endregion
 
-#pragma region TerrainTool
-
-		if (m_isPicking)
-		{
-			bool isControl = false;
-
-			float fRadius = 50.0f;
-			m_ControlNodeList.clear();
-			MY_SPHERE pickSphere;
-			pickSphere.vCenter = m_Mouse.m_vIntersectionPos;
-			pickSphere.fRadius = 20.0f;
-			for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
-			{
-				myNode* pNode = m_QuadTree.m_LeafNodeList[i];
-				if (myCollision::IntersectSphereToSphere(pNode->m_mySphere, pickSphere))
-				{
-					m_ControlNodeList.push_back(pNode);
-				}
-			}
-			Vector3 vLeftTop = Vector3(-99999.0f, 0.0f, 99999.0f);
-			Vector3 vRightBottom = Vector3(99999.0f, 0.0f, -99999.0f);
-			Vector2 uvLT, uvRB;
-			float fLeft = pickSphere.vCenter.x - pickSphere.fRadius;
-			float fBottom = pickSphere.vCenter.z - pickSphere.fRadius;
-			float fTop = pickSphere.vCenter.x + pickSphere.fRadius;
-			float fRight = pickSphere.vCenter.z + pickSphere.fRadius;
-
-
-			for (int iNode = 0; iNode < m_ControlNodeList.size(); iNode++)
-			{
-				for (int v = 0; v < m_ControlNodeList[iNode]->m_IndexList.size(); v++)
-				{
-					int iID = m_ControlNodeList[iNode]->m_IndexList[v];
-					if (m_pMap->m_VertexList[iID].p.x > vLeftTop.x
-						&& fLeft > m_pMap->m_VertexList[iID].p.x)
-					{
-						vLeftTop.x = m_pMap->m_VertexList[iID].p.x;
-						uvLT.x = m_pMap->m_VertexList[iID].t.x;
-					}
-					if (m_pMap->m_VertexList[iID].p.z < vLeftTop.z
-						&& fTop < m_pMap->m_VertexList[iID].p.z)
-					{
-						vLeftTop.z = m_pMap->m_VertexList[iID].p.z;
-						uvLT.y = m_pMap->m_VertexList[iID].t.y;
-					}
-
-					if (m_pMap->m_VertexList[iID].p.x < vRightBottom.x
-						&& fBottom < m_pMap->m_VertexList[iID].p.x)
-					{
-						vRightBottom.x = m_pMap->m_VertexList[iID].p.x;
-						uvRB.x = m_pMap->m_VertexList[iID].t.x;
-					}
-					if (m_pMap->m_VertexList[iID].p.z > vRightBottom.z
-						&& fTop > m_pMap->m_VertexList[iID].p.z)
-					{
-						vRightBottom.z = m_pMap->m_VertexList[iID].p.z;
-						uvRB.y = m_pMap->m_VertexList[iID].t.y;
-					}
-
-
-					float fDist = (m_pMap->m_VertexList[iID].p - m_Mouse.m_vIntersectionPos).Length();
-					if (fDist < fRadius)
-					{
-						Vector3 vp = m_pMap->m_VertexList[iID].p;
-						m_pMap->m_VertexList[iID].p.y = vp.y + 0.1f;
-						if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
-						isControl = true;
-					}
-
-
-				}
-				//m_Map.CalcPerVertexNormalsFastLookup();
-				m_QuadTree.RepreshBindingObj(m_ControlNodeList[iNode]);
-			}
-			g_pImmediateContext->UpdateSubresource(
-				m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
-
-			if (isControl)
-			{
-				SetHeightTex(m_HeightTex.m_pStaging.Get(), uvLT, uvRB);
-				g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
-			}
-		}
-
-
-
-#pragma endregion
+//#pragma region TerrainTool
+//
+//		if (m_isPicking)
+//		{
+//			bool isControl = false;
+//
+//			float fRadius = 50.0f;
+//			m_ControlNodeList.clear();
+//			MY_SPHERE pickSphere;
+//			pickSphere.vCenter = m_Mouse.m_vIntersectionPos;
+//			pickSphere.fRadius = 20.0f;
+//			for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
+//			{
+//				myNode* pNode = m_QuadTree.m_LeafNodeList[i];
+//				if (myCollision::IntersectSphereToSphere(pNode->m_mySphere, pickSphere))
+//				{
+//					m_ControlNodeList.push_back(pNode);
+//				}
+//			}
+//			Vector3 vLeftTop = Vector3(-99999.0f, 0.0f, 99999.0f);
+//			Vector3 vRightBottom = Vector3(99999.0f, 0.0f, -99999.0f);
+//			Vector2 uvLT, uvRB;
+//			float fLeft = pickSphere.vCenter.x - pickSphere.fRadius;
+//			float fBottom = pickSphere.vCenter.z - pickSphere.fRadius;
+//			float fTop = pickSphere.vCenter.x + pickSphere.fRadius;
+//			float fRight = pickSphere.vCenter.z + pickSphere.fRadius;
+//
+//
+//			for (int iNode = 0; iNode < m_ControlNodeList.size(); iNode++)
+//			{
+//				for (int v = 0; v < m_ControlNodeList[iNode]->m_IndexList.size(); v++)
+//				{
+//					int iID = m_ControlNodeList[iNode]->m_IndexList[v];
+//					if (m_pMap->m_VertexList[iID].p.x > vLeftTop.x
+//						&& fLeft > m_pMap->m_VertexList[iID].p.x)
+//					{
+//						vLeftTop.x = m_pMap->m_VertexList[iID].p.x;
+//						uvLT.x = m_pMap->m_VertexList[iID].t.x;
+//					}
+//					if (m_pMap->m_VertexList[iID].p.z < vLeftTop.z
+//						&& fTop < m_pMap->m_VertexList[iID].p.z)
+//					{
+//						vLeftTop.z = m_pMap->m_VertexList[iID].p.z;
+//						uvLT.y = m_pMap->m_VertexList[iID].t.y;
+//					}
+//
+//					if (m_pMap->m_VertexList[iID].p.x < vRightBottom.x
+//						&& fBottom < m_pMap->m_VertexList[iID].p.x)
+//					{
+//						vRightBottom.x = m_pMap->m_VertexList[iID].p.x;
+//						uvRB.x = m_pMap->m_VertexList[iID].t.x;
+//					}
+//					if (m_pMap->m_VertexList[iID].p.z > vRightBottom.z
+//						&& fTop > m_pMap->m_VertexList[iID].p.z)
+//					{
+//						vRightBottom.z = m_pMap->m_VertexList[iID].p.z;
+//						uvRB.y = m_pMap->m_VertexList[iID].t.y;
+//					}
+//
+//
+//					float fDist = (m_pMap->m_VertexList[iID].p - m_Mouse.m_vIntersectionPos).Length();
+//					if (fDist < fRadius)
+//					{
+//						Vector3 vp = m_pMap->m_VertexList[iID].p;
+//						m_pMap->m_VertexList[iID].p.y = vp.y + 0.1f;
+//						if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
+//						isControl = true;
+//					}
+//
+//
+//				}
+//				//m_Map.CalcPerVertexNormalsFastLookup();
+//				m_QuadTree.RepreshBindingObj(m_ControlNodeList[iNode]);
+//			}
+//			g_pImmediateContext->UpdateSubresource(
+//				m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
+//
+//			if (isControl)
+//			{
+//				SetHeightTex(m_HeightTex.m_pStaging.Get(), uvLT, uvRB);
+//				g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
+//			}
+//		}
+//
+//
+//
+//#pragma endregion
 
 #pragma region HeightMapTex
 
@@ -433,6 +422,7 @@ bool Sample::Release()
 	SAFE_DEL(m_pHeightMiniObj);
 	SAFE_DEL(m_pMiniMapObj);
 	SAFE_DEL(m_pMapObj);
+	SAFE_DEL(m_pMapTool);
 
 	g_FbxLoader.Release();
 	return true;

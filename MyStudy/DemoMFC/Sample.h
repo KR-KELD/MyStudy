@@ -6,6 +6,7 @@
 #include "myFbxLoader.h"
 #include "myMiniMap.h"
 #include "myStagingTex.h"
+#include "myMapTool.h"
 
 
 class Sample : public myCore
@@ -28,6 +29,8 @@ public:
 	myMap*	m_pMap;
 	myGameObject*	m_pMapObj;
 
+	myMapTool*		m_pMapTool;
+
 	myQuadTree		m_QuadTree;
 	myMouse			m_Mouse;
 
@@ -37,7 +40,7 @@ public:
 	bool			m_isPicking;
 public:
 	bool SetHeightTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
-	bool SetHeightTex(ID3D11Texture2D* pTexDest, Vector2& vLT, Vector2& vRB);
+	bool SetHeightTex(ID3D11Texture2D* pTexDest, Vector3& vLT, Vector3& vRB);
 	bool SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
 	bool Init() override;
 	bool Frame() override;

@@ -234,6 +234,9 @@
     <ClCompile Include="myStagingTex.cpp">
       <Filter>Texture</Filter>
     </ClCompile>
+    <ClCompile Include="myMapTool.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mySoundManager.h">
@@ -436,6 +439,9 @@
     </ClInclude>
     <ClInclude Include="myStagingTex.h">
       <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="myMapTool.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

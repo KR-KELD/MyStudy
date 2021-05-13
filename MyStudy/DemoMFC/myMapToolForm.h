@@ -40,6 +40,11 @@ public:
 	CString m_strTexName;
 	afx_msg void OnBnClickedTurret();
 	afx_msg void OnBnClickedBarrel();
+	afx_msg void OnBnClickedButton6();
+	afx_msg void OnBnClickedButton7();
+	afx_msg void OnBnClickedButton5();
+	float m_iRadius;
+	float m_iSpeed;
 };
 
 

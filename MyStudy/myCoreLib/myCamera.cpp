@@ -81,7 +81,7 @@ int myCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
 	{
 		m_bDrag = true;
 		m_ptClick.x = LOWORD(lParam);
@@ -99,7 +99,7 @@ int myCamera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			m_ptClick.y = HIWORD(lParam);
 		}
 	}return 0;
-	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
 	{
 		m_bDrag = false;
 		m_rtOffset.left = 0;

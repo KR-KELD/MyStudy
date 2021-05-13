@@ -42,6 +42,11 @@
 #define IDC_EDIT2                       1010
 #define IDC_BUTTON3                     1011
 #define IDC_BUTTON4                     1012
+#define IDC_BUTTON5                     1013
+#define IDC_BUTTON6                     1014
+#define IDC_BUTTON7                     1015
+#define IDC_EDIT3                       1016
+#define IDC_EDIT4                       1017
 #define ID_TOOL_CARACTERTOOL            32772
 #define ID_TOOL_MAPTOOL                 32774
 
@@ -51,7 +56,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        321
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1013
+#define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           313
 #endif
 #endif

@@ -14,6 +14,8 @@ myMapToolForm::myMapToolForm()
 	: CFormView(IDD_myMapToolForm)
 	, m_iCellSize(0)
 	, m_strTexName(_T(""))
+	, m_iRadius(0)
+	, m_iSpeed(0)
 {
 
 }
@@ -39,6 +41,8 @@ void myMapToolForm::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT1, m_iCellSize);
 
 	DDX_Text(pDX, IDC_EDIT2, m_strTexName);
+	DDX_Text(pDX, IDC_EDIT3, m_iRadius);
+	DDX_Text(pDX, IDC_EDIT4, m_iSpeed);
 }
 
 BEGIN_MESSAGE_MAP(myMapToolForm, CFormView)
@@ -47,6 +51,9 @@ BEGIN_MESSAGE_MAP(myMapToolForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON2, &myMapToolForm::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &myMapToolForm::OnBnClickedTurret)
 	ON_BN_CLICKED(IDC_BUTTON4, &myMapToolForm::OnBnClickedBarrel)
+	ON_BN_CLICKED(IDC_BUTTON5, &myMapToolForm::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON6, &myMapToolForm::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON7, &myMapToolForm::OnBnClickedButton7)
 END_MESSAGE_MAP()
 
 
@@ -115,6 +122,9 @@ void myMapToolForm::OnBnClickedButton1()
 		//pApp->m_Sample.m_matTex._42 = iNumCell * iNumTile / 2.0f;
 		//pApp->m_Sample.m_matTex *= 1.0f / iNumCell;
 
+		pApp->m_Sample.m_pMapTool = new myMapTool(pApp->m_Sample.m_pMap, &pApp->m_Sample.m_QuadTree);
+		pApp->m_Sample.m_pMapTool->Init();
+
 		pApp->m_Sample.m_pTopCamera->CreateOrthographic(desc.iNumCols * desc.fCellDistance, desc.iNumRows * desc.fCellDistance, 1.0f, 10000);
 	}
 	UpdateData(FALSE);
@@ -147,6 +157,8 @@ void myMapToolForm::OnInitialUpdate()
 	m_CellCount.InsertString(4, L"16");
 	m_CellCount.SetCurSel(3);
 	m_iCellSize = 5;
+	m_iRadius = 20.0f;
+	m_iSpeed = 0.1f;
 	UpdateData(FALSE);
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 }
@@ -186,3 +198,49 @@ void myMapToolForm::OnBnClickedBarrel()
 		pApp->m_Sample.m_pTargetObject = g_FbxLoader.GetPtr("SM_Barrel.fbx")->m_pModelObject;
 	}
 }
+
+void myMapToolForm::OnBnClickedButton5()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//올림
+	UpdateData(TRUE);
+	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
+	if (pApp->m_Sample.m_isCreate)
+	{
+		pApp->m_Sample.m_pMapTool->SetMode(0);
+		pApp->m_Sample.m_pMapTool->m_fSpeed = m_iSpeed;
+		pApp->m_Sample.m_pMapTool->m_fRadius = m_iRadius;
+	}
+}
+
+void myMapToolForm::OnBnClickedButton6()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//내림
+	UpdateData(TRUE);
+	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
+	if (pApp->m_Sample.m_isCreate)
+	{
+		pApp->m_Sample.m_pMapTool->SetMode(1);
+		pApp->m_Sample.m_pMapTool->m_fSpeed = m_iSpeed;
+		pApp->m_Sample.m_pMapTool->m_fRadius = m_iRadius;
+	}
+}
+
+
+void myMapToolForm::OnBnClickedButton7()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//평지
+	UpdateData(TRUE);
+
+	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
+	if (pApp->m_Sample.m_isCreate)
+	{
+		pApp->m_Sample.m_pMapTool->SetMode(2);
+		pApp->m_Sample.m_pMapTool->m_fSpeed = m_iSpeed;
+		pApp->m_Sample.m_pMapTool->m_fRadius = m_iRadius;
+	}
+}
+
+
