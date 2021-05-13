@@ -34,7 +34,7 @@ bool myDebugCamera::Frame()
 	HWND hWnd = WindowFromPoint(point);
 	ScreenToClient(g_hWnd, &point);
 
-	if (hWnd == g_hWnd && g_Input.GetKey(VK_LBUTTON))
+	if (hWnd == g_hWnd && g_Input.GetKey(VK_RBUTTON))
 	{
 		float fAngleX = (point.x - m_ptPrePosition.x);
 		float fAngleY = (point.y - m_ptPrePosition.y);

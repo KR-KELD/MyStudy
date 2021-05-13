@@ -132,6 +132,8 @@ bool myMap::CreateMap(myMapDesc  desc)
 		desc.szVS,
 		desc.szPS,
 		desc.szTexFile);
+
+	GetVertexNormal();
 	return true;
 }
 

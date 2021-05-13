@@ -34,7 +34,7 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	Light = normalize(Light);
 	float ratio = saturate(dot(-Light,vIn.n));
 	float4 vFinal = float4(vFinalColor,1.0f);
-	vOut.c = vFinal;
+	vOut.c = vFinal * ratio;
 	//vOut.c = vTexture;// *vIn.c * ratio;
 	return vOut;
 }

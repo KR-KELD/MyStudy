@@ -1,11 +1,7 @@
 #pragma once
 #include "myCore.h"
-#include "myHeightMap.h"
-#include "myQuadTree.h"
-#include "myMouse.h"
 #include "myFbxLoader.h"
 #include "myMiniMap.h"
-#include "myStagingTex.h"
 #include "myMapTool.h"
 
 
@@ -23,9 +19,6 @@ public:
 	myMiniMap*		m_pHeightMini;
 	myGameObject*	m_pHeightMiniObj;
 
-	myStagingTex	m_HeightTex;
-	myStagingTex	m_NormalTex;
-
 	myMap*	m_pMap;
 	myGameObject*	m_pMapObj;
 
@@ -39,9 +32,6 @@ public:
 	bool			m_isCreate;
 	bool			m_isPicking;
 public:
-	bool SetHeightTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
-	bool SetHeightTex(ID3D11Texture2D* pTexDest, Vector3& vLT, Vector3& vRB);
-	bool SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
 	bool Init() override;
 	bool Frame() override;
 	bool Render() override;
