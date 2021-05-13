@@ -15,6 +15,7 @@ public:
 public:
 	void ScreenToRay();
 	bool PickingFace(myNode* pNode);
+	bool PickingFace(myNode* pNode, myMap* pMap);
 	bool PickingAABBBox(myNode* pNode);
 
 public:

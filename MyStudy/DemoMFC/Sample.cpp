@@ -3,7 +3,6 @@
 
 bool Sample::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest)
 {
-	HRESULT hr;
 	D3D11_TEXTURE2D_DESC desc;
 	pTexDest->GetDesc(&desc);
 
@@ -15,7 +14,6 @@ bool Sample::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture
 		//텍스쳐 크기랑 맵크기 비율
 		float fWidthRatio = m_pMap->m_iNumCellCols / (float)desc.Width;
 		float fHeightRatio = m_pMap->m_iNumCellRows / (float)desc.Height;
-		int a = 0;
 		for (UINT y = 0; y < desc.Height; y++)
 		{
 			for (UINT x = 0; x < desc.Width; x++)
@@ -25,18 +23,11 @@ bool Sample::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture
 				int iRow = y * fHeightRatio;
 
 				float h = m_pMap->GetHeightMap(iRow, iCol);
-				h = (h + 100.0f) * 255.0f / 200.0f;
+				
 				*pDestBytes++ = h;
 				*pDestBytes++ = h;
 				*pDestBytes++ = h;
 				*pDestBytes++ = 255;
-
-				//*pDestBytes++ = a;
-				//*pDestBytes++ = a;
-				//*pDestBytes++ = a;
-				//*pDestBytes++ = 255;
-				//a++;
-				//if (a > 200) a = 0;
 			}
 		}
 		pImmediateContext->Unmap(pTexDest, 0);
@@ -44,9 +35,75 @@ bool Sample::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture
 	return true;
 }
 
-bool Sample::SetTargetObject(string strName)
+bool Sample::SetHeightTex(ID3D11Texture2D * pTexDest, Vector2 & vLT, Vector2 & vRB)
 {
-	//g_FbxLoader
+	D3D11_TEXTURE2D_DESC desc;
+	pTexDest->GetDesc(&desc);
+
+	UINT iL = vLT.x * desc.Width;
+	UINT iT = vLT.y * desc.Height;
+	//UINT iR = vRB.x * desc.Width;
+	//UINT iB = vRB.y * desc.Height;
+
+	D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
+	if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)pTexDest,
+		0, D3D11_MAP_READ_WRITE, 0, &MappedFaceDest)))
+	{
+
+		BYTE* pDestBytes = (BYTE*)MappedFaceDest.pData;
+		pDestBytes += iT * MappedFaceDest.RowPitch;
+		for (UINT y = 0; y < desc.Height; y++)
+		{
+			pDestBytes += iL * 4;
+			for (UINT x = iL; x < desc.Width; x++)
+			{
+				//if (y < iB)
+				//{
+				//	if (x < iR)
+				//	{
+				//		*pDestBytes++ = 255;
+				//		*pDestBytes++ = 255;
+				//		*pDestBytes++ = 255;
+				//		*pDestBytes++ = 255;
+				//		continue;
+				//	}
+				//}
+				//pDestBytes += 4;
+
+				*pDestBytes++ = 255;
+				*pDestBytes++ = 255;
+				*pDestBytes++ = 255;
+				*pDestBytes++ = 255;
+			}
+		}
+		g_pImmediateContext->Unmap(pTexDest, 0);
+	}
+	return true;
+}
+
+bool Sample::SetNormalTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest)
+{
+	D3D11_TEXTURE2D_DESC desc;
+	pTexDest->GetDesc(&desc);
+
+	D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
+	if (SUCCEEDED(pImmediateContext->Map((ID3D11Resource*)pTexDest,
+		0, D3D11_MAP_READ_WRITE, 0, &MappedFaceDest)))
+	{
+		BYTE* pDestBytes = (BYTE*)MappedFaceDest.pData;
+		for (UINT y = 0; y < desc.Height; y++)
+		{
+			for (UINT x = 0; x < desc.Width; x++)
+			{
+
+				*pDestBytes++ = 0;
+				*pDestBytes++ = 0;
+				*pDestBytes++ = 0;
+				*pDestBytes++ = 0;
+			}
+		}
+		pImmediateContext->Unmap(pTexDest, 0);
+	}
 	return true;
 }
 
@@ -65,56 +122,19 @@ bool Sample::Init()
 	m_pHeightMiniObj = myGameObject::CreateComponentObj(m_pHeightMini);
 	m_pHeightMini->SetInfo(Vector3(0.75f, 0.75f, 0.0f), 0.25f);
 	m_pHeightMini->Create(L"../../data/shader/BasisVS.txt", L"../../data/shader/BasisPS.txt", L"");
-	//껍데기
 
-	HRESULT hr;
-	//1 스테이징 텍스쳐 생성
-	D3D11_TEXTURE2D_DESC desc;
-	ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
-	desc.Width = 1024;
-	desc.Height = 1024;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_STAGING;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
-	desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
-	desc.BindFlags = 0;
-	desc.MiscFlags = 0;
-	hr = g_pd3dDevice->CreateTexture2D(&desc, NULL, m_pStaging.GetAddressOf());
-	// 새로 만든 텍스쳐(스테이징)빈거
+	m_HeightTex.SetDesc();
+	m_HeightTex.Create();
 
-	// 중요! 쉐이더 리소스 뷰가 되려면 반드시 D3D11_USAGE_DEFAULT이어야 한다.
+	m_NormalTex.SetDesc();
+	m_NormalTex.Create();
+	SetNormalTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get());
+	g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
 
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.CPUAccessFlags = 0;
-
-	// 원본 이미지에 대한 밉맵 생성 되도록 설정한다.이때 
-	//( 중요! 단, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET을 함께 사용하여야 한다.
-	// 이렇게 하고 pImmediateContext->GenerateMips( pTextureRV )를 호출하면 밉맵이 생성된다.
-
-	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	//2.쉐이더리소스랑 연결할 텍스쳐
-	//새로 만든 쉐이더 리소스랑 연결할 텍스쳐
-	hr = g_pd3dDevice->CreateTexture2D(&desc, NULL, m_pHeight.GetAddressOf());
-
-	//쉐이더 리소스랑 연결
-	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
-	ZeroMemory(&SRVDesc, sizeof(SRVDesc));
-	SRVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	SRVDesc.Texture2D.MipLevels = 1;
-	hr = g_pd3dDevice->CreateShaderResourceView(m_pHeight.Get(), &SRVDesc, m_pSRVHeight.GetAddressOf());
-	   	  
 	m_pTopCamera = new myCamera;
 	g_CamMgr.CreateCameraObj(L"TopCamera", m_pTopCamera);
 
-	m_pTopCamera->CreateViewMatrix({ 0,30.0f,-0.1f }, { 0,0,0 });
-	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
-	m_pTopCamera->CreateOrthographic(100, 100, 1.0f, 1000);
-
+	m_pTopCamera->CreateViewMatrix({ 0,500.0f,-0.1f }, { 0,0,0 });
 	
 	myFbxObj* pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
 	pFbxObj->CuttingAnimScene(L"0", pFbxObj->m_AnimScene.iFirstFrame, pFbxObj->m_AnimScene.iLastFrame);
@@ -131,6 +151,7 @@ bool Sample::Init()
 
 bool Sample::Frame()
 {
+#pragma region Picking
 	m_SelectNodeList.clear();
 	if (m_isCreate)
 	{
@@ -158,14 +179,13 @@ bool Sample::Frame()
 				}
 			}
 		}
-
 		Vector3 vPick;
 		float fMaxDist = 99999.0f;
 		bool bUpdate = false;
 
 		for (myNode* pNode : m_SelectNodeList)
 		{
-			if (m_Mouse.PickingFace(pNode))
+			if (m_Mouse.PickingFace(pNode, m_pMap))
 			{
 				float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
 				if (fDist < fMaxDist)
@@ -198,11 +218,13 @@ bool Sample::Frame()
 
 		}
 	}
+#pragma endregion
 	return true;
 }
 
 bool Sample::Render()
 {
+#pragma region KeyControl
 	if (g_Input.GetKey('8') == KEY_PUSH)
 	{
 		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
@@ -218,10 +240,13 @@ bool Sample::Render()
 	if (g_Input.GetKey('0') == KEY_PUSH)
 	{
 		//스테이징 텍스쳐를 바꾸는 함수
-		SetHeightTex(g_pImmediateContext, m_pStaging.Get());
+		SetHeightTex(g_pImmediateContext, m_HeightTex.m_pStaging.Get());
 		//사용할 텍스쳐를 스테이징으로 카피
-		g_pImmediateContext->CopyResource(m_pHeight.Get(), m_pStaging.Get());
+		g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
 	}
+#pragma endregion
+
+#pragma region MiniMap
 	if (m_pMiniMap->Begin())
 	{
 		if (m_isCreate)
@@ -229,8 +254,8 @@ bool Sample::Render()
 			m_pMap->m_pTransform->SetMatrix(NULL,
 				&m_pTopCamera->m_pTransform->m_matView,
 				&m_pTopCamera->m_pTransform->m_matProj);
+			g_pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
 			m_QuadTree.Render(g_pImmediateContext);
-
 			for (int i = 0; i < m_DrawList.size(); i++)
 			{
 				for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
@@ -244,18 +269,14 @@ bool Sample::Render()
 		}
 		m_pMiniMap->End();
 	}
-
-
-
+#pragma endregion
 	if (m_isCreate)
 	{
-		//myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-		//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-		//	myDxState::g_RasterizerDesc);
-
+#pragma region Map&ObjectRender
 		m_pMap->m_pTransform->SetMatrix(NULL,
 			&g_pMainCamTransform->m_matView,
 			&g_pMainCamTransform->m_matProj);
+		g_pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
 		m_QuadTree.Render(g_pImmediateContext);
 
 		for (int i = 0; i < m_DrawList.size(); i++)
@@ -272,9 +293,9 @@ bool Sample::Render()
 			}
 		}
 
-		//myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
-		//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-		//	myDxState::g_RasterizerDesc);
+#pragma endregion
+
+#pragma region SelectDraw
 
 		////셀렉트노드 드로우
 		//m_pMap->Update(g_pImmediateContext);
@@ -287,20 +308,11 @@ bool Sample::Render()
 		//	g_pImmediateContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
 
 		//}
+#pragma endregion
 
-		m_pHeightMini->m_pTransform->SetMatrix(NULL,
-			NULL,
-			NULL);
-		m_pHeightMini->Update(g_pImmediateContext);
-		m_pHeightMini->PreRender(g_pImmediateContext);
-		m_pHeightMini->SettingPipeLine(g_pImmediateContext);
+#pragma region TerrainTool
 
-		g_pImmediateContext->PSSetShaderResources(0, 1,
-			m_pSRVHeight.GetAddressOf());
-
-		m_pHeightMini->myGraphics::Draw(g_pImmediateContext);
-
-
+		bool isControl = false;
 
 		float fRadius = 20.0f;
 		m_ControlNodeList.clear();
@@ -315,25 +327,67 @@ bool Sample::Render()
 				m_ControlNodeList.push_back(pNode);
 			}
 		}
+		Vector3 vLeftTop = Vector3(-99999.0f, 0.0f, 99999.0f);
+		Vector3 vRightBottom = Vector3(99999.0f, 0.0f, -99999.0f);
+		Vector2 uvLT, uvRB;
+		float fLeft = pickSphere.vCenter.x - pickSphere.fRadius;
+		float fBottom = pickSphere.vCenter.y - pickSphere.fRadius;
+		float fTop = pickSphere.vCenter.x + pickSphere.fRadius;
+		float fRight = pickSphere.vCenter.y + pickSphere.fRadius;
+
+
 		for (auto node : m_ControlNodeList)
 		{
-
 			for (int v = 0; v < node->m_IndexList.size(); v++)
 			{
 				int iID = node->m_IndexList[v];
+				if (m_pMap->m_VertexList[iID].p.x > vLeftTop.x
+					&& fLeft > m_pMap->m_VertexList[iID].p.x)
+				{
+					vLeftTop.x = m_pMap->m_VertexList[iID].p.x;
+					uvLT.x = m_pMap->m_VertexList[iID].t.x;
+				}
+				if (m_pMap->m_VertexList[iID].p.z < vLeftTop.z
+					&& fTop < m_pMap->m_VertexList[iID].p.z)
+				{
+					vLeftTop.z = m_pMap->m_VertexList[iID].p.z;
+					uvLT.y = m_pMap->m_VertexList[iID].t.y;
+				}
 				float fDist = (m_pMap->m_VertexList[iID].p - m_Mouse.m_vIntersectionPos).Length();
 				if (fDist < fRadius)
 				{
 					Vector3 v = m_pMap->m_VertexList[iID].p;
-					m_pMap->m_VertexList[iID].p.y = v.y + 1.0f - sinf((fDist / fRadius));
+					m_pMap->m_VertexList[iID].p.y = v.y + 5.0f;
+					if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
+					isControl = true;
 				}
 			}
 			//m_Map.CalcPerVertexNormalsFastLookup();
 		}
+		if (isControl)
+		{
+			SetHeightTex(m_HeightTex.m_pStaging.Get(), uvLT, uvRB);
+			g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
+		}
+
 		g_pImmediateContext->UpdateSubresource(
 			m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
+#pragma endregion
 
-	
+#pragma region HeightMapTex
+
+		m_pHeightMini->Begin();
+		m_pHeightMini->End();
+		m_pHeightMini->m_pTransform->SetMatrix(NULL, NULL, NULL);
+		m_pHeightMini->Update(g_pImmediateContext);
+		m_pHeightMini->PreRender(g_pImmediateContext);
+		m_pHeightMini->SettingPipeLine(g_pImmediateContext);
+
+		g_pImmediateContext->PSSetShaderResources(0, 1,
+			m_HeightTex.m_pSRV.GetAddressOf());
+
+		m_pHeightMini->myGraphics::Draw(g_pImmediateContext);
+#pragma endregion
 
 	}
 
@@ -341,9 +395,6 @@ bool Sample::Render()
 		NULL,
 		NULL);
 	m_pMiniMap->Render(g_pImmediateContext);
-
-
-
 
 	return true;
 }

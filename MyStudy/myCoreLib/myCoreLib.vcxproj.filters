@@ -64,6 +64,9 @@
     <Filter Include="Model">
       <UniqueIdentifier>{bce041a5-3e43-4857-9d8a-432bfb233e59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{8e1fa8f3-8e64-45c0-baea-c9294a8bd5a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -139,9 +142,6 @@
       <Filter>DX</Filter>
     </ClCompile>
     <ClCompile Include="myDxState.cpp">
-      <Filter>DX</Filter>
-    </ClCompile>
-    <ClCompile Include="myTexture.cpp">
       <Filter>DX</Filter>
     </ClCompile>
     <ClCompile Include="myTextureManager.cpp">
@@ -227,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="myQuadTree.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myTexture.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="myStagingTex.cpp">
+      <Filter>Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -341,9 +347,6 @@
     <ClInclude Include="myDevice.h">
       <Filter>DX</Filter>
     </ClInclude>
-    <ClInclude Include="myTexture.h">
-      <Filter>DX</Filter>
-    </ClInclude>
     <ClInclude Include="myTextureManager.h">
       <Filter>Mgr</Filter>
     </ClInclude>
@@ -427,6 +430,12 @@
     </ClInclude>
     <ClInclude Include="myQuadTree.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myTexture.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="myStagingTex.h">
+      <Filter>Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

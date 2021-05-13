@@ -17,11 +17,6 @@ bool myTexture::Render()
 
 bool myTexture::Release()
 {
-	//if (m_pTextureSRV)
-	//{
-	//	m_pTextureSRV->Release();
-	//	m_pTextureSRV = nullptr;
-	//}
 	return true;
 }
 
@@ -43,7 +38,7 @@ bool myTexture::Load(T_STR strTex)
 
 myTexture::myTexture()
 {
-	m_pTextureSRV = nullptr;
+
 }
 
 myTexture::~myTexture()

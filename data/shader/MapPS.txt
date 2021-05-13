@@ -1,5 +1,6 @@
 // HLSL
-Texture2D g_txDiffuse;// : register(t0);
+Texture2D g_txDiffuse : register(t0);
+Texture2D g_txNormal : register(t1);
 SamplerState g_Sample;// : register(s0);
 
 cbuffer myDataCB
@@ -27,10 +28,14 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
+	float4 vNormalTex = g_txNormal.Sample(g_Sample, vIn.t);
+	float3 vFinalColor = vTexture.xyz * (1.0f - vNormalTex.w) + vNormalTex.xyz * vNormalTex.w;
 	float3 Light = float3(-1.0f,-1.0f,-1.0f);
 	Light = normalize(Light);
 	float ratio = saturate(dot(-Light,vIn.n));
-	vOut.c = vTexture;// *vIn.c * ratio;
+	float4 vFinal = float4(vFinalColor,1.0f);
+	vOut.c = vFinal;
+	//vOut.c = vTexture;// *vIn.c * ratio;
 	return vOut;
 }
 

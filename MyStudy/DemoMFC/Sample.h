@@ -5,7 +5,7 @@
 #include "myMouse.h"
 #include "myFbxLoader.h"
 #include "myMiniMap.h"
-
+#include "myStagingTex.h"
 
 
 class Sample : public myCore
@@ -22,9 +22,8 @@ public:
 	myMiniMap*		m_pHeightMini;
 	myGameObject*	m_pHeightMiniObj;
 
-	ComPtr<ID3D11Texture2D>			m_pStaging;
-	ComPtr<ID3D11Texture2D>			m_pHeight;
-	ComPtr<ID3D11ShaderResourceView> m_pSRVHeight;
+	myStagingTex	m_HeightTex;
+	myStagingTex	m_NormalTex;
 
 	myMap*	m_pMap;
 	myGameObject*	m_pMapObj;
@@ -37,8 +36,8 @@ public:
 	bool			m_isCreate;
 public:
 	bool SetHeightTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
-
-	bool SetTargetObject(string strName);
+	bool SetHeightTex(ID3D11Texture2D* pTexDest, Vector2& vLT, Vector2& vRB);
+	bool SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
 	bool Init() override;
 	bool Frame() override;
 	bool Render() override;
