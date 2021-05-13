@@ -225,40 +225,25 @@ bool myMapTool::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Text
 	return true;
 }
 
-bool myMapTool::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest, Vector3 & vLT, Vector3 & vRB)
+bool myMapTool::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest, Vector3& vPick)
 {
 	D3D11_TEXTURE2D_DESC desc;
 	pTexDest->GetDesc(&desc);
-
-	UINT iL = vLT.x * desc.Width;
-	UINT iT = vLT.y * desc.Height;
-	UINT iR = vRB.x * desc.Width;
-	UINT iB = vRB.y * desc.Height;
+	float fL = vPick.x - m_fRadius;
+	float fT = vPick.z + m_fRadius;
+	float fR = vPick.x + m_fRadius;
+	float fB = vPick.z - m_fRadius;
 
 	D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
 	if (SUCCEEDED(pImmediateContext->Map((ID3D11Resource*)pTexDest,
 		0, D3D11_MAP_READ_WRITE, 0, &MappedFaceDest)))
 	{
-
 		BYTE* pDestBytes = (BYTE*)MappedFaceDest.pData;
-		pDestBytes += iT * MappedFaceDest.RowPitch;
-		for (UINT y = iT; y < desc.Height; y++)
+		for (UINT y = 0; y < desc.Height; y++)
 		{
-			pDestBytes += iL * 4;
-			for (UINT x = iL; x < desc.Width; x++)
+			for (UINT x = 0; x < desc.Width; x++)
 			{
-				if (y < iB)
-				{
-					if (x < iR)
-					{
-						*pDestBytes++ = 255;
-						*pDestBytes++ = 255;
-						*pDestBytes++ = 255;
-						*pDestBytes++ = 255;
-						continue;
-					}
-				}
-				pDestBytes += 4;
+
 			}
 		}
 		pImmediateContext->Unmap(pTexDest, 0);

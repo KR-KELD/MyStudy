@@ -38,7 +38,7 @@ public:
 	void	SetMode(int iMode);
 	void	EditTerrain();
 	bool	SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest);
-	bool	SetHeightTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vLT, Vector3& vRB);
+	bool	SetHeightTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vPick);
 	bool	SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
 public:
 	myMapTool(myMap* pMap, myQuadTree* pQuadTree);
