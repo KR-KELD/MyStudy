@@ -1,5 +1,6 @@
 #include "myNode.h"
 
+
 myNode::myNode()
 {
 	m_iDepth = 0;

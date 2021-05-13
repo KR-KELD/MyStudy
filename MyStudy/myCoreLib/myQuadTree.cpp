@@ -158,6 +158,59 @@ bool myQuadTree::CullingVertex(ID3D11DeviceContext*	pd3dContext, myNode * pNode)
 	return true;
 }
 
+void myQuadTree::RepreshBindingObj(myNode * pNode)
+{
+	pNode->m_myBox.vMax = { -10000.0f,-10000.0f ,-10000.0f };
+	pNode->m_myBox.vMin = { 10000.0f,10000.0f ,10000.0f };
+	//юс╫ц
+	for (DWORD dwIndex = 0; dwIndex < pNode->m_IndexList.size(); dwIndex++)
+	{
+		Vector3 v = m_pMap->m_VertexList[pNode->m_IndexList[dwIndex]].p;
+		if (v.x > pNode->m_myBox.vMax.x)
+		{
+			pNode->m_myBox.vMax.x = v.x;
+		}
+		if (v.y > pNode->m_myBox.vMax.y)
+		{
+			pNode->m_myBox.vMax.y = v.y;
+		}
+		if (v.z > pNode->m_myBox.vMax.z)
+		{
+			pNode->m_myBox.vMax.z = v.z;
+		}
+
+		if (v.x < pNode->m_myBox.vMin.x)
+		{
+			pNode->m_myBox.vMin.x = v.x;
+		}
+		if (v.y < pNode->m_myBox.vMin.y)
+		{
+			pNode->m_myBox.vMin.y = v.y;
+		}
+		if (v.z < pNode->m_myBox.vMin.z)
+		{
+			pNode->m_myBox.vMin.z = v.z;
+		}
+	}
+	pNode->m_myBox.vCenter = (pNode->m_myBox.vMax + pNode->m_myBox.vMin) / 2;
+
+	Vector3 range = pNode->m_myBox.vMax - pNode->m_myBox.vCenter;
+	pNode->m_mySphere.vCenter = pNode->m_myBox.vCenter;
+	pNode->m_mySphere.fRadius = range.Length();
+	pNode->m_myBox.fExtent[0] = range.x;
+	pNode->m_myBox.fExtent[1] = range.y;
+	pNode->m_myBox.fExtent[2] = range.z;
+	pNode->m_myBox.vPos[0] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
+	pNode->m_myBox.vPos[1] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
+	pNode->m_myBox.vPos[2] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMin.z);
+	pNode->m_myBox.vPos[3] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMin.z);
+	pNode->m_myBox.vPos[4] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
+	pNode->m_myBox.vPos[5] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
+	pNode->m_myBox.vPos[6] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMax.z);
+	pNode->m_myBox.vPos[7] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMax.z);
+
+}
+
 myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD RightTop, DWORD LeftBottom, DWORD RightBottom)
 {
 	if (m_pMap == nullptr) return nullptr;

@@ -42,8 +42,8 @@ bool Sample::SetHeightTex(ID3D11Texture2D * pTexDest, Vector2 & vLT, Vector2 & v
 
 	UINT iL = vLT.x * desc.Width;
 	UINT iT = vLT.y * desc.Height;
-	//UINT iR = vRB.x * desc.Width;
-	//UINT iB = vRB.y * desc.Height;
+	UINT iR = vRB.x * desc.Width;
+	UINT iB = vRB.y * desc.Height;
 
 	D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
 	if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)pTexDest,
@@ -52,28 +52,23 @@ bool Sample::SetHeightTex(ID3D11Texture2D * pTexDest, Vector2 & vLT, Vector2 & v
 
 		BYTE* pDestBytes = (BYTE*)MappedFaceDest.pData;
 		pDestBytes += iT * MappedFaceDest.RowPitch;
-		for (UINT y = 0; y < desc.Height; y++)
+		for (UINT y = iT; y < desc.Height; y++)
 		{
 			pDestBytes += iL * 4;
 			for (UINT x = iL; x < desc.Width; x++)
 			{
-				//if (y < iB)
-				//{
-				//	if (x < iR)
-				//	{
-				//		*pDestBytes++ = 255;
-				//		*pDestBytes++ = 255;
-				//		*pDestBytes++ = 255;
-				//		*pDestBytes++ = 255;
-				//		continue;
-				//	}
-				//}
-				//pDestBytes += 4;
-
-				*pDestBytes++ = 255;
-				*pDestBytes++ = 255;
-				*pDestBytes++ = 255;
-				*pDestBytes++ = 255;
+				if (y < iB)
+				{
+					if (x < iR)
+					{
+						*pDestBytes++ = 255;
+						*pDestBytes++ = 255;
+						*pDestBytes++ = 255;
+						*pDestBytes++ = 255;
+						continue;
+					}
+				}
+				pDestBytes += 4;
 			}
 		}
 		g_pImmediateContext->Unmap(pTexDest, 0);
@@ -145,7 +140,7 @@ bool Sample::Init()
 	m_DrawList.push_back(pFbxObj->m_pModelObject);
 
 	m_isCreate = false;
-
+	m_isPicking = false;
 	return true;
 }
 
@@ -176,15 +171,22 @@ bool Sample::Frame()
 					//if (!isSelected)
 					//	m_SelectNodeList.push_back(pNode);
 					m_SelectNodeList.push_back(pNode);
+					m_isPicking = true;
 				}
 			}
 		}
+		if (g_Input.GetKey(VK_LBUTTON) == KEY_UP)
+		{
+			m_isPicking = false;
+		}
+
 		Vector3 vPick;
 		float fMaxDist = 99999.0f;
 		bool bUpdate = false;
 
-		for (myNode* pNode : m_SelectNodeList)
+		for (int iNode = 0; iNode < m_SelectNodeList.size(); iNode++)
 		{
+			myNode* pNode = m_SelectNodeList[iNode];
 			if (m_Mouse.PickingFace(pNode, m_pMap))
 			{
 				float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
@@ -312,66 +314,90 @@ bool Sample::Render()
 
 #pragma region TerrainTool
 
-		bool isControl = false;
-
-		float fRadius = 20.0f;
-		m_ControlNodeList.clear();
-		MY_SPHERE pickSphere;
-		pickSphere.vCenter = m_Mouse.m_vIntersectionPos;
-		pickSphere.fRadius = 20.0f;
-		for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
+		if (m_isPicking)
 		{
-			myNode* pNode = m_QuadTree.m_LeafNodeList[i];
-			if (myCollision::IntersectSphereToSphere(pNode->m_mySphere, pickSphere))
-			{
-				m_ControlNodeList.push_back(pNode);
-			}
-		}
-		Vector3 vLeftTop = Vector3(-99999.0f, 0.0f, 99999.0f);
-		Vector3 vRightBottom = Vector3(99999.0f, 0.0f, -99999.0f);
-		Vector2 uvLT, uvRB;
-		float fLeft = pickSphere.vCenter.x - pickSphere.fRadius;
-		float fBottom = pickSphere.vCenter.y - pickSphere.fRadius;
-		float fTop = pickSphere.vCenter.x + pickSphere.fRadius;
-		float fRight = pickSphere.vCenter.y + pickSphere.fRadius;
+			bool isControl = false;
 
-
-		for (auto node : m_ControlNodeList)
-		{
-			for (int v = 0; v < node->m_IndexList.size(); v++)
+			float fRadius = 50.0f;
+			m_ControlNodeList.clear();
+			MY_SPHERE pickSphere;
+			pickSphere.vCenter = m_Mouse.m_vIntersectionPos;
+			pickSphere.fRadius = 20.0f;
+			for (int i = 0; i < m_QuadTree.m_LeafNodeList.size(); i++)
 			{
-				int iID = node->m_IndexList[v];
-				if (m_pMap->m_VertexList[iID].p.x > vLeftTop.x
-					&& fLeft > m_pMap->m_VertexList[iID].p.x)
+				myNode* pNode = m_QuadTree.m_LeafNodeList[i];
+				if (myCollision::IntersectSphereToSphere(pNode->m_mySphere, pickSphere))
 				{
-					vLeftTop.x = m_pMap->m_VertexList[iID].p.x;
-					uvLT.x = m_pMap->m_VertexList[iID].t.x;
-				}
-				if (m_pMap->m_VertexList[iID].p.z < vLeftTop.z
-					&& fTop < m_pMap->m_VertexList[iID].p.z)
-				{
-					vLeftTop.z = m_pMap->m_VertexList[iID].p.z;
-					uvLT.y = m_pMap->m_VertexList[iID].t.y;
-				}
-				float fDist = (m_pMap->m_VertexList[iID].p - m_Mouse.m_vIntersectionPos).Length();
-				if (fDist < fRadius)
-				{
-					Vector3 v = m_pMap->m_VertexList[iID].p;
-					m_pMap->m_VertexList[iID].p.y = v.y + 5.0f;
-					if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
-					isControl = true;
+					m_ControlNodeList.push_back(pNode);
 				}
 			}
-			//m_Map.CalcPerVertexNormalsFastLookup();
-		}
-		if (isControl)
-		{
-			SetHeightTex(m_HeightTex.m_pStaging.Get(), uvLT, uvRB);
-			g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
+			Vector3 vLeftTop = Vector3(-99999.0f, 0.0f, 99999.0f);
+			Vector3 vRightBottom = Vector3(99999.0f, 0.0f, -99999.0f);
+			Vector2 uvLT, uvRB;
+			float fLeft = pickSphere.vCenter.x - pickSphere.fRadius;
+			float fBottom = pickSphere.vCenter.z - pickSphere.fRadius;
+			float fTop = pickSphere.vCenter.x + pickSphere.fRadius;
+			float fRight = pickSphere.vCenter.z + pickSphere.fRadius;
+
+
+			for (int iNode = 0; iNode < m_ControlNodeList.size(); iNode++)
+			{
+				for (int v = 0; v < m_ControlNodeList[iNode]->m_IndexList.size(); v++)
+				{
+					int iID = m_ControlNodeList[iNode]->m_IndexList[v];
+					if (m_pMap->m_VertexList[iID].p.x > vLeftTop.x
+						&& fLeft > m_pMap->m_VertexList[iID].p.x)
+					{
+						vLeftTop.x = m_pMap->m_VertexList[iID].p.x;
+						uvLT.x = m_pMap->m_VertexList[iID].t.x;
+					}
+					if (m_pMap->m_VertexList[iID].p.z < vLeftTop.z
+						&& fTop < m_pMap->m_VertexList[iID].p.z)
+					{
+						vLeftTop.z = m_pMap->m_VertexList[iID].p.z;
+						uvLT.y = m_pMap->m_VertexList[iID].t.y;
+					}
+
+					if (m_pMap->m_VertexList[iID].p.x < vRightBottom.x
+						&& fBottom < m_pMap->m_VertexList[iID].p.x)
+					{
+						vRightBottom.x = m_pMap->m_VertexList[iID].p.x;
+						uvRB.x = m_pMap->m_VertexList[iID].t.x;
+					}
+					if (m_pMap->m_VertexList[iID].p.z > vRightBottom.z
+						&& fTop > m_pMap->m_VertexList[iID].p.z)
+					{
+						vRightBottom.z = m_pMap->m_VertexList[iID].p.z;
+						uvRB.y = m_pMap->m_VertexList[iID].t.y;
+					}
+
+
+					float fDist = (m_pMap->m_VertexList[iID].p - m_Mouse.m_vIntersectionPos).Length();
+					if (fDist < fRadius)
+					{
+						Vector3 vp = m_pMap->m_VertexList[iID].p;
+						m_pMap->m_VertexList[iID].p.y = vp.y + 0.1f;
+						if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
+						isControl = true;
+					}
+
+
+				}
+				//m_Map.CalcPerVertexNormalsFastLookup();
+				m_QuadTree.RepreshBindingObj(m_ControlNodeList[iNode]);
+			}
+			g_pImmediateContext->UpdateSubresource(
+				m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
+
+			if (isControl)
+			{
+				SetHeightTex(m_HeightTex.m_pStaging.Get(), uvLT, uvRB);
+				g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
+			}
 		}
 
-		g_pImmediateContext->UpdateSubresource(
-			m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
+
+
 #pragma endregion
 
 #pragma region HeightMapTex

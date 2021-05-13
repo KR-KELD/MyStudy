@@ -34,6 +34,7 @@ public:
 	vector<myNode*> m_SelectNodeList;
 	vector<myNode*> m_ControlNodeList;
 	bool			m_isCreate;
+	bool			m_isPicking;
 public:
 	bool SetHeightTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
 	bool SetHeightTex(ID3D11Texture2D* pTexDest, Vector2& vLT, Vector2& vRB);

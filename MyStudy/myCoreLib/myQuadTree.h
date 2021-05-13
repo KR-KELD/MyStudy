@@ -27,7 +27,7 @@ public:
 	virtual bool	DrawCulling(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	CullingNode();
 	virtual bool	CullingVertex(ID3D11DeviceContext*	pd3dContext, myNode* pNode);
-
+	void			RepreshBindingObj(myNode* pNode);
 	myNode*			CreateNode(myNode* pParentNode, DWORD LeftTop, DWORD RightTop, DWORD LeftBottom, DWORD RightBottom);
 public:
 	myQuadTree();
