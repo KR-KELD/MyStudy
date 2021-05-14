@@ -12,20 +12,11 @@ public:
 	vector<shared_ptr<myModelObject>> m_DrawList;
 
 	myCamera*		m_pTopCamera;
-
 	myMiniMap*		m_pMiniMap;
-	myGameObject*	m_pMiniMapObj;
-
 	myMiniMap*		m_pHeightMini;
-	myGameObject*	m_pHeightMiniObj;
-
-	myMap*	m_pMap;
-	myGameObject*	m_pMapObj;
-
+	myMap*			m_pMap;
 	myMapTool*		m_pMapTool;
-
 	myQuadTree		m_QuadTree;
-	myMouse			m_Mouse;
 
 	vector<myNode*> m_SelectNodeList;
 	vector<myNode*> m_ControlNodeList;

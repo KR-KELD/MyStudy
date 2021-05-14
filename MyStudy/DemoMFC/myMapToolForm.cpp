@@ -207,7 +207,7 @@ void myMapToolForm::OnBnClickedButton5()
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
-		pApp->m_Sample.m_pMapTool->SetMode(0);
+		pApp->m_Sample.m_pMapTool->SetMode(100);
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_iSpeed;
 		pApp->m_Sample.m_pMapTool->m_fRadius = m_iRadius;
 	}
@@ -221,7 +221,7 @@ void myMapToolForm::OnBnClickedButton6()
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
-		pApp->m_Sample.m_pMapTool->SetMode(1);
+		pApp->m_Sample.m_pMapTool->SetMode(101);
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_iSpeed;
 		pApp->m_Sample.m_pMapTool->m_fRadius = m_iRadius;
 	}
@@ -237,7 +237,7 @@ void myMapToolForm::OnBnClickedButton7()
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
-		pApp->m_Sample.m_pMapTool->SetMode(2);
+		pApp->m_Sample.m_pMapTool->SetMode(102);
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_iSpeed;
 		pApp->m_Sample.m_pMapTool->m_fRadius = m_iRadius;
 	}

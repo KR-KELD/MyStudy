@@ -11,7 +11,7 @@ public:
 	POINT					m_ptClick;
 	RECT					m_rtOffset;
 	RECT					m_rtPreOffset;
-	int						m_fWheelDelta;
+	float					m_fWheelDelta;
 	POINT					m_ptPrePosition;
 public:
 	virtual void Update(Vector4 d);

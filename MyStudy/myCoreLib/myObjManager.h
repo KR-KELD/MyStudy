@@ -1,34 +1,62 @@
 #pragma once
 #include "myGameObject.h"
 
+enum myObjectType
+{
+	OBJECT_SCENE = 0,
+	OBJECT_SUB,
+
+};
+
 class myObjManager : public SingleTon<myObjManager>
 {
 	friend class SingleTon<myObjManager>;
 public:
-	myGameObject	m_ObjectContainer;
+	myGameObject	m_SceneObj;
+	myGameObject	m_SubObj;
 public:
 	template <class Component_T>
-	myGameObject*	CreateObjComponent(wstring strObjName, Component_T* pComponent)
+	myGameObject*	CreateObjComponent(wstring strObjName, Component_T* pComponent, myObjectType eObjType)
 	{
-		myGameObject* obj = m_ObjectContainer.Add(strObjName);
+		myGameObject* obj = nullptr;
+		switch (eObjType)
+		{
+		case OBJECT_SCENE:
+		{
+			obj = m_SceneObj.Add(strObjName);
+		}
+			break;
+		case OBJECT_SUB:
+		{
+			obj = m_SubObj.Add(strObjName);
+		}
+			break;
+		default:
+			break;
+		}
 		obj->InsertComponent(pComponent);
 		pComponent->Init();
 		return obj;
 	}
 	template <class Component_T>
-	myGameObject*	InsertComponentInObj(wstring strObjName, Component_T* pComponent)
+	myGameObject*	InsertComponentInObj(wstring strObjName, Component_T* pComponent, myObjectType eObjType)
 	{
-		myGameObject* obj = m_ObjectContainer.GetGameObject(strObjName);
-		if (obj == nullptr)
+		myGameObject* obj = nullptr;
+		switch (eObjType)
 		{
-			return nullptr;
+		case OBJECT_SCENE:
+		{
+			obj = m_SceneObj.GetGameObject(strObjName);
 		}
-		obj->InsertComponent(pComponent);
-	}
-	template <class Component_T>
-	myGameObject*	PushFrontComponentInObj(wstring strObjName, Component_T* pComponent)
-	{
-		myGameObject* obj = m_ObjectContainer.GetGameObject(strObjName);
+		break;
+		case OBJECT_SUB:
+		{
+			obj = m_SubObj.GetGameObject(strObjName);
+		}
+		break;
+		default:
+			break;
+		}
 		if (obj == nullptr)
 		{
 			return nullptr;
@@ -50,4 +78,5 @@ public:
 	~myObjManager();
 };
 #define g_ObjMgr myObjManager::GetInstance()
-#define g_GameObject myObjManager::GetInstance().m_ObjectContainer
+#define g_RunGameObject myObjManager::GetInstance().m_SceneObj
+#define g_SubGameObject myObjManager::GetInstance().m_SubObj

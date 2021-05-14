@@ -7,9 +7,22 @@
 #include "myStagingTex.h"
 enum ToolType
 {
-	TERRAIN_UP = 0,
+	TOOL_TOPOLOGY = 0,
+	TOOL_SPLAT,
+};
+
+enum TopologyType
+{
+	TERRAIN_UP = 100,
 	TERRAIN_DOWN,
 	TERRAIN_FLAT,
+};
+enum SplatType
+{
+	SPLAT_TEX_01 = 200,
+	SPLAT_TEX_02,
+	SPLAT_TEX_03,
+	SPLAT_TEX_04,
 };
 
 class myMapTool : public myComponent
@@ -21,10 +34,16 @@ public:
 	myStagingTex	m_HeightTex;
 	myStagingTex	m_NormalTex;
 public:
+	ID3D11ShaderResourceView* m_pSplatTex[4];
+public:
 	vector<myNode*> m_SelectNodeList;
 	vector<myNode*> m_ControlNodeList;
 public:
-	ToolType	m_eMakingMode;
+	ToolType		m_eMakingMode;
+	TopologyType	m_eTopologyType;
+	SplatType		m_eSplatType;
+public:
+
 	MY_SPHERE	m_PickSphere;
 	float		m_fRadius;
 	float		m_fSpeed;
@@ -38,8 +57,8 @@ public:
 	void	SetMode(int iMode);
 	void	EditTerrain();
 	bool	SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest);
-	bool	SetHeightTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vPick);
-	bool	SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
+	bool	SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vPick);
+	bool	ResetTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
 public:
 	myMapTool(myMap* pMap, myQuadTree* pQuadTree);
 	virtual ~myMapTool();

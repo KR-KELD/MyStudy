@@ -1,6 +1,7 @@
 // HLSL
 Texture2D g_txDiffuse : register(t0);
 Texture2D g_txNormal : register(t1);
+Texture2D g_txSplat[4] : register(t2);
 SamplerState g_Sample;// : register(s0);
 
 cbuffer myDataCB
@@ -18,6 +19,7 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
+	float2 nt : TEXCORRD1;
 };
 struct PS_OUTPUT
 {
@@ -29,12 +31,17 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	PS_OUTPUT vOut;
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
 	float4 vNormalTex = g_txNormal.Sample(g_Sample, vIn.t);
-	float3 vFinalColor = vTexture.xyz * (1.0f - vNormalTex.w) + vNormalTex.xyz * vNormalTex.w;
+	float4 aa = g_txSplat[0].Sample(g_Sample, vIn.t);
+	float4 vFinalColor = g_txSplat[0].SampleLevel(g_Sample,vIn.t,0) * vNormalTex.r;
+	vFinalColor = mul(vFinalColor,g_txSplat[1].SampleLevel(g_Sample,vIn.t,0) * vNormalTex.g);
+	vFinalColor = mul(vFinalColor,g_txSplat[2].SampleLevel(g_Sample,vIn.t,0) * vNormalTex.b);
+	vFinalColor = mul(vFinalColor,g_txSplat[3].SampleLevel(g_Sample,vIn.t,0) * vNormalTex.a);
+
+	//float3 vFinalColor = vTexture.xyz * (1.0f - vNormalTex.w) + vNormalTex.xyz * vNormalTex.w;
 	float3 Light = float3(-1.0f,-1.0f,-1.0f);
 	Light = normalize(Light);
 	float ratio = saturate(dot(-Light,vIn.n));
-	float4 vFinal = float4(vFinalColor,1.0f);
-	vOut.c = vFinal * ratio;
+	vOut.c = aa * ratio;
 	//vOut.c = vTexture;// *vIn.c * ratio;
 	return vOut;
 }

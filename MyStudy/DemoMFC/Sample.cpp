@@ -5,27 +5,27 @@ bool Sample::Init()
 {
 	g_FbxLoader.Init();
 	m_pMap = new myMap;
-	m_pMapObj = myGameObject::CreateComponentObj(m_pMap);
+	g_ObjMgr.CreateObjComponent(L"Map", m_pMap, OBJECT_SUB);
 
 	m_pMiniMap = new myMiniMap;
-	m_pMiniMapObj = myGameObject::CreateComponentObj(m_pMiniMap);
+	g_ObjMgr.CreateObjComponent(L"MiniMap", m_pMiniMap, OBJECT_SUB);
 	m_pMiniMap->SetInfo(Vector3(-0.75f, 0.75f, 0.0f), 0.25f);
 	m_pMiniMap->Create(L"../../data/shader/BasisVS.txt", L"../../data/shader/BasisPS.txt", L"");
 
 	m_pHeightMini = new myMiniMap;
-	m_pHeightMiniObj = myGameObject::CreateComponentObj(m_pHeightMini);
+	g_ObjMgr.CreateObjComponent(L"HeightMap", m_pHeightMini, OBJECT_SUB);
 	m_pHeightMini->SetInfo(Vector3(0.75f, 0.75f, 0.0f), 0.25f);
 	m_pHeightMini->Create(L"../../data/shader/BasisVS.txt", L"../../data/shader/BasisPS.txt", L"");
 
 	m_pTopCamera = new myCamera;
 	g_CamMgr.CreateCameraObj(L"TopCamera", m_pTopCamera);
-
 	m_pTopCamera->CreateViewMatrix({ 0,500.0f,-0.1f }, { 0,0,0 });
 	
 	myFbxObj* pFbxObj = g_FbxLoader.Load("../../data/object/Turret_Deploy1.fbx");
 	pFbxObj->CuttingAnimScene(L"0", pFbxObj->m_AnimScene.iFirstFrame, pFbxObj->m_AnimScene.iLastFrame);
 	pFbxObj->m_pModelObject->m_pAnim->ChangeAnim(L"0");
 	m_DrawList.push_back(pFbxObj->m_pModelObject);
+
 	pFbxObj = g_FbxLoader.Load("../../data/object/SM_Barrel.fbx");
 	//pFbxObj->CuttingAnimScene(L"0", pFbxObj->m_AnimScene.iFirstFrame, pFbxObj->m_AnimScene.iLastFrame);
 	m_DrawList.push_back(pFbxObj->m_pModelObject);
@@ -56,6 +56,10 @@ bool Sample::Render()
 		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 			myDxState::g_RasterizerDesc);
 	}
+	if (g_Input.GetKey('1') == KEY_PUSH)
+	{
+		m_pMapTool->m_eMakingMode = TOOL_SPLAT;
+	}
 #pragma endregion
 
 #pragma region MiniMap
@@ -67,6 +71,7 @@ bool Sample::Render()
 				&m_pTopCamera->m_pTransform->m_matView,
 				&m_pTopCamera->m_pTransform->m_matProj);
 			g_pImmediateContext->PSSetShaderResources(1, 1, m_pMapTool->m_NormalTex.m_pSRV.GetAddressOf());
+			g_pImmediateContext->PSSetShaderResources(2, 4, m_pMapTool->m_pSplatTex);
 			m_QuadTree.Render(g_pImmediateContext);
 			for (int i = 0; i < m_DrawList.size(); i++)
 			{
@@ -89,6 +94,7 @@ bool Sample::Render()
 			&g_pMainCamTransform->m_matView,
 			&g_pMainCamTransform->m_matProj);
 		g_pImmediateContext->PSSetShaderResources(1, 1, m_pMapTool->m_NormalTex.m_pSRV.GetAddressOf());
+		g_pImmediateContext->PSSetShaderResources(2, 4, m_pMapTool->m_pSplatTex);
 		m_QuadTree.Render(g_pImmediateContext);
 
 		for (int i = 0; i < m_DrawList.size(); i++)
@@ -148,14 +154,7 @@ bool Sample::Render()
 
 bool Sample::Release()
 {
-	m_pMiniMapObj->Release();
-	m_pMapObj->Release();
-	m_pHeightMiniObj->Release();
-	SAFE_DEL(m_pHeightMiniObj);
-	SAFE_DEL(m_pMiniMapObj);
-	SAFE_DEL(m_pMapObj);
 	SAFE_DEL(m_pMapTool);
-
 	g_FbxLoader.Release();
 	return true;
 }

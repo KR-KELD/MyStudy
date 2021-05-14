@@ -34,12 +34,14 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
+	float2 nt : TEXCORRD1;
 };
 VS_OUTPUT VS( VS_INPUT vIn)
 {
 	VS_OUTPUT vOut;
 	float4 p = float4(vIn.p,1.0f);
 	p = mul(p, g_matWorld);
+	vOut.nt = vIn.t;
 	vOut.t.x = ((p.x / g_iCellSize) + (g_iNumTile * g_iNumCell) / 2.0f) / g_iNumCell;
 	vOut.t.y = 1.0f - ((p.z / g_iCellSize) + (g_iNumTile * g_iNumCell) / 2.0f) / g_iNumCell;
 
