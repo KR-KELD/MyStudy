@@ -23,6 +23,7 @@ enum SplatType
 	SPLAT_TEX_02,
 	SPLAT_TEX_03,
 	SPLAT_TEX_04,
+	SPLAT_TEX_NONE = 299,
 };
 
 class myMapTool : public myComponent
@@ -50,6 +51,7 @@ public:
 	bool		m_isPicking;
 	bool		m_isChangeData;
 public:
+	bool	SetTexture(int iTexSize = 1024);
 	bool	Init();
 	bool	Frame() override;
 	bool	Render() override;

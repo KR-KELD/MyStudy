@@ -159,21 +159,27 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndMapToolPane.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndMapToolPane);
 
-	m_wndEffectToolPane.CreateEx(NULL, L"EffectTool", this,
+	m_wndMapControlPane.CreateEx(NULL, L"MapControl", this,
 		CRect(0, 0, 100, 100), TRUE,
 		1235, dwStyle);
+	m_wndMapControlPane.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndMapControlPane);
+
+	m_wndEffectToolPane.CreateEx(NULL, L"EffectTool", this,
+		CRect(0, 0, 100, 100), TRUE,
+		1236, dwStyle);
 	m_wndEffectToolPane.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndEffectToolPane);
 
 	m_wndPropertiesPane.CreateEx(NULL, L"PropertiesTool", this,
 		CRect(0, 0, 100, 100), TRUE,
-		1236, dwStyle);
+		1237, dwStyle);
 	m_wndPropertiesPane.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndPropertiesPane);
 
 	m_wndOutputWnd.CreateEx(NULL, L"OutputWnd", this,
 		CRect(0, 0, 100, 100), TRUE,
-		1237, dwStyle);
+		1238, dwStyle);
 	m_wndOutputWnd.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndOutputWnd);
 	return 0;

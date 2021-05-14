@@ -81,6 +81,12 @@
     <ClInclude Include="myMapDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="myMapControlPane.h">
+      <Filter>PaneWindow\MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="myMapControlForm.h">
+      <Filter>PaneWindow\MapTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DemoMFC.cpp">
@@ -121,6 +127,12 @@
     </ClCompile>
     <ClCompile Include="myMapDlg.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myMapControlPane.cpp">
+      <Filter>PaneWindow\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="myMapControlForm.cpp">
+      <Filter>PaneWindow\MapTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

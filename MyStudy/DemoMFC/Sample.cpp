@@ -30,6 +30,8 @@ bool Sample::Init()
 	//pFbxObj->CuttingAnimScene(L"0", pFbxObj->m_AnimScene.iFirstFrame, pFbxObj->m_AnimScene.iLastFrame);
 	m_DrawList.push_back(pFbxObj->m_pModelObject);
 
+
+
 	m_isCreate = false;
 	m_isPicking = false;
 	return true;
@@ -56,10 +58,26 @@ bool Sample::Render()
 		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 			myDxState::g_RasterizerDesc);
 	}
-	if (g_Input.GetKey('1') == KEY_PUSH)
-	{
-		m_pMapTool->m_eMakingMode = TOOL_SPLAT;
-	}
+	//if (g_Input.GetKey(VK+) == KEY_PUSH)
+	//{
+	//	m_pMapTool->m_eMakingMode = TOOL_SPLAT;
+	//	m_pMapTool->m_eSplatType = SPLAT_TEX_01;
+	//}
+	//if (g_Input.GetKey('w') == KEY_PUSH)
+	//{
+	//	m_pMapTool->m_eMakingMode = TOOL_SPLAT;
+	//	m_pMapTool->m_eSplatType = SPLAT_TEX_02;
+	//}
+	//if (g_Input.GetKey('e') == KEY_PUSH)
+	//{
+	//	m_pMapTool->m_eMakingMode = TOOL_SPLAT;
+	//	m_pMapTool->m_eSplatType = SPLAT_TEX_03;
+	//}
+	//if (g_Input.GetKey('r') == KEY_PUSH)
+	//{
+	//	m_pMapTool->m_eMakingMode = TOOL_SPLAT;
+	//	m_pMapTool->m_eSplatType = SPLAT_TEX_04;
+	//}
 #pragma endregion
 
 #pragma region MiniMap

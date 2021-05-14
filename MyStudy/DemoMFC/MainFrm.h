@@ -4,6 +4,7 @@
 
 #pragma once
 #include "myMapToolPane.h"
+#include "myMapControlPane.h"
 #include "myEffectToolPane.h"
 #include "myPropertiesWnd.h"
 #include "myOutputWnd.h"
@@ -19,6 +20,7 @@ protected: // serialization에서만 만들어집니다.
 public:
 
 	myMapToolPane	  m_wndMapToolPane;
+	myMapControlPane  m_wndMapControlPane;
 	myEffectToolPane  m_wndEffectToolPane;
 	myPropertiesWnd   m_wndPropertiesPane;
 	myOutputWnd		  m_wndOutputWnd;

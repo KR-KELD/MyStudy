@@ -199,6 +199,8 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="myEffectToolForm.h" />
     <ClInclude Include="myEffectToolPane.h" />
+    <ClInclude Include="myMapControlForm.h" />
+    <ClInclude Include="myMapControlPane.h" />
     <ClInclude Include="myMapDlg.h" />
     <ClInclude Include="myMapToolForm.h" />
     <ClInclude Include="myMapToolPane.h" />
@@ -216,6 +218,8 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="myEffectToolForm.cpp" />
     <ClCompile Include="myEffectToolPane.cpp" />
+    <ClCompile Include="myMapControlForm.cpp" />
+    <ClCompile Include="myMapControlPane.cpp" />
     <ClCompile Include="myMapDlg.cpp" />
     <ClCompile Include="myMapToolForm.cpp" />
     <ClCompile Include="myMapToolPane.cpp" />

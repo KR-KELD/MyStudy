@@ -9,7 +9,7 @@ public:
 public:
 	D3D11_TEXTURE2D_DESC			 m_texDesc;
 public:
-	void		SetDesc();
+	void		SetDesc(int iTexSize);
 	bool		Create(D3D11_TEXTURE2D_DESC* pDesc = nullptr);
 };
 

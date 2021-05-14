@@ -1,10 +1,10 @@
 #include "myStagingTex.h"
 
-void myStagingTex::SetDesc()
+void myStagingTex::SetDesc(int iTexSize)
 {
 	ZeroMemory(&m_texDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	m_texDesc.Width = 1024;
-	m_texDesc.Height = 1024;
+	m_texDesc.Width = iTexSize;
+	m_texDesc.Height = iTexSize;
 	m_texDesc.MipLevels = 1;
 	m_texDesc.ArraySize = 1;
 	m_texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;

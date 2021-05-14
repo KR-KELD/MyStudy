@@ -1,25 +1,32 @@
 #include "myMapTool.h"
 
+bool myMapTool::SetTexture(int iTexSize)
+{
+	m_HeightTex.SetDesc(iTexSize);
+	m_NormalTex.SetDesc(iTexSize);
+	m_HeightTex.Create();
+	m_NormalTex.Create();
+
+	m_pSplatTex[0] = g_TextureMgr.Load(L"cncr21S.bmp")->m_pTextureSRV.Get();
+	m_pSplatTex[1] = g_TextureMgr.Load(L"kgca08.bmp")->m_pTextureSRV.Get();
+	m_pSplatTex[2] = g_TextureMgr.Load(L"metal.bmp")->m_pTextureSRV.Get();
+	m_pSplatTex[3] = g_TextureMgr.Load(L"flagstone.bmp")->m_pTextureSRV.Get();
+
+	ResetTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get());
+	g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
+	return false;
+}
+
 bool myMapTool::Init()
 {
-	m_fRadius = 20.0f;
+	m_fOutRad = 20.0f;
 	m_fSpeed = 0.1f;
 	m_eMakingMode = TOOL_TOPOLOGY;
 	m_eTopologyType = TERRAIN_UP;
 	m_eSplatType = SPLAT_TEX_01;
 	m_isPicking = false;
 	m_isChangeData = false;
-	m_pSplatTex[0] = g_TextureMgr.Load(L"cncr21S.bmp")->m_pTextureSRV.Get();
-	m_pSplatTex[1] = g_TextureMgr.Load(L"kgca08.bmp")->m_pTextureSRV.Get();
-	m_pSplatTex[2] = g_TextureMgr.Load(L"metal.bmp")->m_pTextureSRV.Get();
-	m_pSplatTex[3] = g_TextureMgr.Load(L"flagstone.bmp")->m_pTextureSRV.Get();
-	m_HeightTex.SetDesc();
-	m_HeightTex.Create();
 
-	m_NormalTex.SetDesc();
-	m_NormalTex.Create();
-	ResetTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get());
-	g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
 	return true;
 }
 
@@ -41,6 +48,10 @@ bool myMapTool::Frame()
 	}
 	if (g_Input.GetKey(VK_LBUTTON) == KEY_UP)
 	{
+		if (m_isPicking)
+		{
+			m_isChangeData = true;
+		}
 		m_isPicking = false;
 	}
 	Vector3 vPick;
@@ -101,7 +112,7 @@ void myMapTool::EditTerrain()
 		if (m_eMakingMode == TOOL_TOPOLOGY)
 		{
 			m_PickSphere.vCenter = m_Mouse.m_vIntersectionPos;
-			m_PickSphere.fRadius = m_fRadius;
+			m_PickSphere.fRadius = 30.0f;
 			for (int i = 0; i < m_pQuadTree->m_LeafNodeList.size(); i++)
 			{
 				myNode* pNode = m_pQuadTree->m_LeafNodeList[i];
@@ -119,9 +130,8 @@ void myMapTool::EditTerrain()
 					Vector3 mPos = m_Mouse.m_vIntersectionPos;
 					vPos.y = mPos.y = 0.0f;
 					float fDist = (vPos - mPos).Length();
-					if (fDist < m_fRadius)
+					if (fDist < m_fOutRad)
 					{
-						m_isChangeData = true;
 						Vector3 vp = m_pMap->m_VertexList[iID].p;
 						switch (m_eTopologyType)
 						{
@@ -172,20 +182,24 @@ void myMapTool::EditTerrain()
 	}
 	else
 	{
-		if (m_isChangeData && m_eMakingMode == TOOL_TOPOLOGY)
+		if (m_isChangeData)
 		{
-			m_pMap->CalcPerVertexNormalsFastLookup();
-			g_pImmediateContext->UpdateSubresource(
-				m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
+			if (m_eMakingMode == TOOL_TOPOLOGY)
+			{
+				m_pMap->CalcPerVertexNormalsFastLookup();
+				g_pImmediateContext->UpdateSubresource(
+					m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
 
-			SetHeightTex(g_pImmediateContext, m_HeightTex.m_pStaging.Get());
-			g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
-			m_isChangeData = false;
-		}
-		if (m_eMakingMode == TOOL_SPLAT)
-		{
-			SetNormalTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get(), m_Mouse.m_vIntersectionPos);
-			g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
+				SetHeightTex(g_pImmediateContext, m_HeightTex.m_pStaging.Get());
+				g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
+				m_isChangeData = false;
+			}
+			if (m_eMakingMode == TOOL_SPLAT)
+			{
+				SetNormalTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get(), m_Mouse.m_vIntersectionPos);
+				g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
+				m_isChangeData = false;
+			}
 		}
 	}
 }
@@ -225,62 +239,71 @@ bool myMapTool::SetNormalTex(ID3D11DeviceContext * pImmediateContext, ID3D11Text
 {
 	D3D11_TEXTURE2D_DESC desc;
 	pTexDest->GetDesc(&desc);
-	Vector3 vCenter = Vector3(vPick.x, 0.0f, vPick.z);
+
 	D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
 	if (SUCCEEDED(pImmediateContext->Map((ID3D11Resource*)pTexDest,
 		0, D3D11_MAP_READ_WRITE, 0, &MappedFaceDest)))
 	{
 		BYTE* pDestBytes = (BYTE*)MappedFaceDest.pData;
-		float fWidthRatio = m_pMap->m_iNumCellCols / (float)desc.Width;
-		float fHeightRatio = m_pMap->m_iNumCellRows / (float)desc.Height;
+		float fMapWidth = m_pMap->m_iNumCellCols * m_pMap->m_fCellDistance;
+		float fWidthRatio =  (float)desc.Width / fMapWidth;
+		Vector2 vCenter = Vector2((vPick.x + (fMapWidth / 2.0f)) * fWidthRatio,
+								(-(vPick.z - (fMapWidth / 2.0f))) * fWidthRatio);
+		float fRadius = m_fOutRad * fWidthRatio;
 
 		for (UINT y = 0; y < desc.Height; y++)
 		{
-			int iRow = y * fHeightRatio;
 			for (UINT x = 0; x < desc.Width; x++)
 			{
-				int iCol = x * fWidthRatio;
-				Vector3 p = m_pMap->m_VertexList[iRow * m_pMap->m_iNumRows + iCol].p;
-				p.y = 0.0f;
+				Vector2 p = Vector2(x, y);
 				float fDist = (p - vCenter).Length();
-				if (fDist < m_fRadius)
+				if (fDist < fRadius)
 				{
-					float iRatio;
-					if (fDist < m_fRadius / 2.0f)
+					float iRatio = 0.0f;
+					int iTemp = 0;
+					if (fDist < fRadius / 2.0f)
 					{
 						iRatio = 255;
 					}
 					else
-					{				//		0.5				127 = 255
-										//10	//20		
-						iRatio = (1.0f - fDist / m_fRadius * 2.0f) * 255;
+					{	
+						iRatio = ((1.0f - fDist / fRadius) * 2.0f) * 255;
 					}
 					switch (m_eSplatType)
 					{
 					case SPLAT_TEX_01:
 					{
-						*pDestBytes++ = (int)iRatio;
-						pDestBytes += 3;
+						iTemp = *pDestBytes + (int)iRatio;
+						if (iTemp > 255) iTemp = 255;
+						*pDestBytes = iTemp;
+						pDestBytes += 4;
 					}
 						break;
 					case SPLAT_TEX_02:
 					{
 						pDestBytes++;
-						*pDestBytes++ = (int)iRatio;
-						pDestBytes += 2;
+						iTemp = *pDestBytes + (int)iRatio;
+						if (iTemp > 255) iTemp = 255;
+						*pDestBytes = iTemp;
+						pDestBytes += 3;
 					}
 						break;
 					case SPLAT_TEX_03:
 					{
 						pDestBytes += 2;
-						*pDestBytes++ = (int)iRatio;
-						pDestBytes++;
+						iTemp = *pDestBytes + (int)iRatio;
+						if (iTemp > 255) iTemp = 255;
+						*pDestBytes = iTemp;
+						pDestBytes += 2;
 					}
 						break;
 					case SPLAT_TEX_04:
 					{
 						pDestBytes += 3;
-						*pDestBytes++ = (int)iRatio;
+						iTemp = *pDestBytes + (int)iRatio;
+						if (iTemp > 255) iTemp = 255;
+						*pDestBytes = iTemp;
+						pDestBytes++;
 					}
 						break;
 					default:

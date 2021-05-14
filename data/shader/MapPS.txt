@@ -31,17 +31,27 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	PS_OUTPUT vOut;
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
 	float4 vNormalTex = g_txNormal.Sample(g_Sample, vIn.nt);
-	float4 vFinalColor = g_txSplat[0].Sample(g_Sample, vIn.nt) * vNormalTex.r;
-	//vFinalColor += g_txSplat[1].Sample(g_Sample, vIn.nt) * vNormalTex.g;
-	//vFinalColor += g_txSplat[2].Sample(g_Sample, vIn.nt) * vNormalTex.b;
-	//vFinalColor += g_txSplat[3].Sample(g_Sample, vIn.nt) * vNormalTex.a;
 
-	//float3 vFinalColor = vTexture.xyz * (1.0f - vNormalTex.w) + vNormalTex.xyz * vNormalTex.w;
+	float4 vTex[4];
+	vTex[0] = g_txSplat[0].Sample(g_Sample, vIn.t);
+	vTex[1] = g_txSplat[1].Sample(g_Sample, vIn.t);
+	vTex[2] = g_txSplat[2].Sample(g_Sample, vIn.t);
+	vTex[3] = g_txSplat[3].Sample(g_Sample, vIn.t);
+	
+	float3 vColor = vTexture.xyz * (1.0f - vNormalTex.r) + vTex[0].xyz * vNormalTex.r;
+	vColor = vColor * (1.0f - vNormalTex.g) + vTex[1].xyz * vNormalTex.g;
+	vColor = vColor * (1.0f - vNormalTex.b) + vTex[2].xyz * vNormalTex.b;
+	vColor = vColor * (1.0f - vNormalTex.a) + vTex[3].xyz * vNormalTex.a;
+
+
+
+
 	float3 Light = float3(-1.0f,-1.0f,-1.0f);
 	Light = normalize(Light);
 	float ratio = saturate(dot(-Light,vIn.n));
-	vOut.c = vTexture * vFinalColor * ratio;
-	//vOut.c = vTexture;// *vIn.c * ratio;
+
+
+	vOut.c = float4(vColor,1.0f) * ratio;
 	return vOut;
 }
 
