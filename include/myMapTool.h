@@ -46,7 +46,8 @@ public:
 public:
 
 	MY_SPHERE	m_PickSphere;
-	float		m_fRadius;
+	float		m_fOutRad;
+	float		m_fInnerRad;
 	float		m_fSpeed;
 	bool		m_isPicking;
 	bool		m_isChangeData;

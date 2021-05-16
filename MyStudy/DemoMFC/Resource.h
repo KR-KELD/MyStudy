@@ -37,7 +37,6 @@
 #define IDC_COMBOCELL                   1004
 #define IDC_COMBOTILE                   1005
 #define IDC_COMBOTEXSIZE                1006
-#define IDC_COMBO1			            1023
 #define IDC_COMBO2                      1007
 #define IDC_EDIT1                       1008
 #define IDC_BUTTON2                     1009
@@ -55,6 +54,7 @@
 #define IDC_BUTTON10                    1020
 #define IDC_BUTTON11                    1021
 #define IDC_BUTTON12                    1022
+#define IDC_COMBO1                      1023
 #define ID_TOOL_CARACTERTOOL            32772
 #define ID_TOOL_MAPTOOL                 32774
 

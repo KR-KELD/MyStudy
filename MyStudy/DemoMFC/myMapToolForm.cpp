@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(myMapToolForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON2, &myMapToolForm::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &myMapToolForm::OnBnClickedTurret)
 	ON_BN_CLICKED(IDC_BUTTON4, &myMapToolForm::OnBnClickedBarrel)
+	ON_BN_CLICKED(IDC_BUTTON5, &myMapToolForm::OnBnClickedSave)
 END_MESSAGE_MAP()
 
 
@@ -75,7 +76,7 @@ void myMapToolForm::Dump(CDumpContext& dc) const
 void myMapToolForm::OnBnClickedButton1()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(TRUE);
+	UpdateData(FALSE);
 	CString strCellCount, strTileCount;
 	int iSelTile = m_TileCount.GetCurSel();
 	//m_TileCount.GetLBText(iSelTile, strTileCount);
@@ -118,7 +119,6 @@ void myMapToolForm::OnBnClickedButton1()
 
 		pApp->m_Sample.m_pTopCamera->CreateOrthographic(desc.iNumCols * desc.fCellDistance, desc.iNumRows * desc.fCellDistance, 1.0f, 10000);
 	}
-	UpdateData(FALSE);
 }
 
 int myMapToolForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -170,11 +170,12 @@ void myMapToolForm::OnBnClickedButton2()
 	static TCHAR BASED_CODE szFilter[] =
 		_T("이미지 파일(*.BMP, *.JPEG, *.JPG) | *.bmp;*.jpeg;*.jpg | 모든파일(*.*)|*.*||");
 	CFileDialog dlg(TRUE, _T("*.jpg"), _T("image"), OFN_HIDEREADONLY, szFilter);
-	if (IDOK == dlg.DoModal())
+	if (dlg.DoModal() == IDOK)
 	{
 		m_strTexName = dlg.GetPathName();
 		UpdateData(FALSE);
 	}
+
 }
 
 
@@ -197,4 +198,47 @@ void myMapToolForm::OnBnClickedBarrel()
 	{
 		pApp->m_Sample.m_pTargetObject = g_FbxLoader.GetPtr("SM_Barrel.fbx")->m_pModelObject;
 	}
+}
+
+
+void myMapToolForm::OnBnClickedSave()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//static TCHAR BASED_CODE szFilter[] =
+	//	_T("이미지 파일(*.BMP, *.JPEG, *.JPG) | *.bmp;*.jpeg;*.jpg | 모든파일(*.*)|*.*||");
+	//CFileDialog dlg(TRUE, _T("*.jpg"), _T("image"), OFN_HIDEREADONLY, szFilter);
+	//if (dlg.DoModal() == IDOK)
+	//{
+	//	m_strTexName = dlg.GetPathName();
+	//	UpdateData(FALSE);
+	//}
+
+	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
+	if (pApp->m_Sample.m_isCreate)
+	{
+		CFile file;
+		vector<CString> vDesc;
+		wstring wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[0]);
+		wstrTemp += L"\n";
+		CString cstrTemp = wstrTemp.c_str();
+		vDesc.push_back(cstrTemp);
+
+		wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[1]);
+		wstrTemp += L"\n";
+		cstrTemp = wstrTemp.c_str();
+		vDesc.push_back(cstrTemp);
+
+		wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[2]);
+		wstrTemp += L"\n";
+		cstrTemp = wstrTemp.c_str();
+		vDesc.push_back(cstrTemp);
+
+		file.Open(_T("../../data/test.txt"), CFile::modeCreate | CFile::modeWrite, NULL);
+		for (int i = 0; i < vDesc.size(); i++)
+		{
+			file.Write(vDesc.at(i), vDesc.at(i).GetLength() * sizeof(TCHAR));
+		}
+		file.Close();
+	}
+
 }
