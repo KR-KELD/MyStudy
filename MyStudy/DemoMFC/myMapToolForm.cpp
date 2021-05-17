@@ -102,10 +102,10 @@ void myMapToolForm::OnBnClickedButton1()
 		desc.iNumRows = iNumCell * iNumTile + 1;//m_pMap->m_iNumRows;
 		desc.fCellDistance = m_iCellSize;
 		desc.fScaleHeight = 10.0f;
-		if (m_strTexName.IsEmpty()) m_strTexName = L"../../data/castle.jpg";
+		if (m_strTexName.IsEmpty()) m_strTexName = L"castle.jpg";
 		desc.szTexFile = m_strTexName;
-		desc.szVS = L"../../data/shader/MapVS.txt";
-		desc.szPS = L"../../data/shader/MapPS.txt";
+		desc.szVS = L"MapVS.txt";
+		desc.szPS = L"MapPS.txt";
 		pApp->m_Sample.m_pMap->CreateMap(desc);
 		pApp->m_Sample.m_pMap->m_isRender = false;
 
@@ -185,7 +185,7 @@ void myMapToolForm::OnBnClickedTurret()
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
-		pApp->m_Sample.m_pTargetObject = g_FbxLoader.GetPtr("Turret_Deploy1.fbx")->m_pModelObject;
+		pApp->m_Sample.m_pMapTool->m_pTargetObject = g_FbxLoader.GetPtr("Turret_Deploy1.fbx")->m_pModelObject;
 	}
 }
 
@@ -196,7 +196,7 @@ void myMapToolForm::OnBnClickedBarrel()
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
-		pApp->m_Sample.m_pTargetObject = g_FbxLoader.GetPtr("SM_Barrel.fbx")->m_pModelObject;
+		pApp->m_Sample.m_pMapTool->m_pTargetObject = g_FbxLoader.GetPtr("SM_Barrel.fbx")->m_pModelObject;
 	}
 }
 
@@ -218,16 +218,20 @@ void myMapToolForm::OnBnClickedSave()
 	{
 		CFile file;
 		vector<CString> vDesc;
-		wstring wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[0]);
+		wstring wstrTemp = L"";
+		wstrTemp += L" NumTile ";
+		wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[0]);
 		wstrTemp += L"\n";
 		CString cstrTemp = wstrTemp.c_str();
 		vDesc.push_back(cstrTemp);
 
+		wstrTemp += L" NumCell ";
 		wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[1]);
 		wstrTemp += L"\n";
 		cstrTemp = wstrTemp.c_str();
 		vDesc.push_back(cstrTemp);
 
+		wstrTemp += L" CellSize ";
 		wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[2]);
 		wstrTemp += L"\n";
 		cstrTemp = wstrTemp.c_str();

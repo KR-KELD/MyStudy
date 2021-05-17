@@ -13,16 +13,16 @@ mySound * mySoundManager::Load(const char * filename)
 	std::string loadfile;
 	if (Dir.empty())
 	{
+		loadfile = to_wm(DataFolderPath) + m_szDefaultPath;
+		loadfile += filename;
 		key = filename;
 	}
 	else
 	{
+		loadfile = filename;
 		key = name;
 		key += ext;
 	}
-	loadfile = SOUNDPATH;
-	loadfile += key;
-
 	mySound* pData = GetPtr(key);
 	if (pData != nullptr)
 	{
@@ -173,6 +173,7 @@ bool mySoundManager::Release()
 
 mySoundManager::mySoundManager()
 {
+	m_szDefaultPath = "sound/";
 }
 
 mySoundManager::~mySoundManager()

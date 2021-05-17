@@ -5,7 +5,7 @@ bool	myMiniMap::Create(T_STR szVS, T_STR szPS, T_STR	szTex)
 	m_DxRT.SetRenderTargetView();
 	m_DxRT.SetDepthStencilView();
 	m_DxRT.SetViewport();
-	myGraphics::Create(szVS, szPS, L"../../data/object/white.png");
+	myGraphics::Create(szVS, szPS, L"white.png");
 	return true;
 }
 

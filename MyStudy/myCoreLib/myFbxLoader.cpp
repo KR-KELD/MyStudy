@@ -13,7 +13,7 @@ myFbxObj * myFbxLoader::Load(const char* szFileName)
 	std::string loadfile;
 	if (Dir.empty())
 	{
-		loadfile = m_szDefaultPath;
+		loadfile = to_wm(DataFolderPath) + m_szDefaultPath;
 		loadfile += szFileName;
 		key = szFileName;
 	}
@@ -73,7 +73,7 @@ bool myFbxLoader::Release()
 
 myFbxLoader::myFbxLoader()
 {
-	m_szDefaultPath = "../../data/object/";
+	m_szDefaultPath = "object/";
 }
 
 myFbxLoader::~myFbxLoader()

@@ -5,6 +5,9 @@
 #include "myQuadTree.h"
 #include "myMouse.h"
 #include "myStagingTex.h"
+#include "myFbxLoader.h"
+#include "myCamera.h"
+
 enum ToolType
 {
 	TOOL_TOPOLOGY = 0,
@@ -44,7 +47,9 @@ public:
 	TopologyType	m_eTopologyType;
 	SplatType		m_eSplatType;
 public:
-
+	shared_ptr<myModelObject>	m_pTargetObject;
+	vector<shared_ptr<myModelObject>> m_DrawList;
+public:
 	MY_SPHERE	m_PickSphere;
 	float		m_fOutRad;
 	float		m_fInnerRad;
@@ -58,7 +63,10 @@ public:
 	bool	Render() override;
 	bool	Release() override;
 	void	SetMode(int iMode);
+	void	TerrainRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera);
 	void	EditTerrain();
+	void	EditObject();
+	void	ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera);
 	bool	SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest);
 	bool	SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vPick);
 	bool	ResetTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);

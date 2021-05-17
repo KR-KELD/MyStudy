@@ -13,6 +13,7 @@ using namespace Microsoft::WRL;
 #define WINDOWSIZEX 720
 #define WINDOWSIZEY 480
 #define BKCOLOR RGB(125,125,125)
+static const TCHAR* DataFolderPath = L"../../data/";
 
 struct myKeyMap
 {

@@ -8,9 +8,6 @@
 class Sample : public myCore
 {
 public:
-	shared_ptr<myModelObject>	m_pTargetObject;
-	vector<shared_ptr<myModelObject>> m_DrawList;
-
 	myCamera*		m_pTopCamera;
 	myMiniMap*		m_pMiniMap;
 	myMiniMap*		m_pHeightMini;

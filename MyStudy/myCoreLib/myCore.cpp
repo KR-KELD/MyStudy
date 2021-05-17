@@ -45,16 +45,12 @@ bool myCore::GameInit()
 
 	m_pSkyBoxObj = myGameObject::CreateComponentObj(new mySkyBox);
 	m_pSkyBox = m_pSkyBoxObj->GetComponent<mySkyBox>(); 
-	m_pSkyBox->Create(
-		L"../../data/shader/SkyBoxVS.txt", L"../../data/shader/SkyBoxPS.txt", L"");
-
-
+	m_pSkyBox->Create(L"SkyBoxVS.txt", L"SkyBoxPS.txt", L"");
 
 	m_pBasisLine = new myShapeLine;
 	g_RunGameObject.InsertComponent(m_pBasisLine);
 	m_pBasisLine->Init();
-	if (!m_pBasisLine->Create(L"../../data/shader/BasisVS.txt", L"../../data/shader/BasisPS.txt",
-		L""))
+	if (!m_pBasisLine->Create(L"BasisVS.txt", L"BasisPS.txt", L""))
 	{
 		return false;
 	}
@@ -67,6 +63,7 @@ bool myCore::GameInit()
 	pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
 
 	g_CamMgr.SetMainCamera(obj);
+	g_FbxLoader.Init();
 
 	Init();
 	PostInit();
@@ -182,6 +179,7 @@ bool myCore::GameRelease()
 	m_pSkyBoxObj->Release();
 	SAFE_DELETE(m_pSkyBoxObj);
 	Release();
+	g_FbxLoader.Release();
 	g_CamMgr.Release();
 	g_Draw.Release();
 	g_Timer.Release();

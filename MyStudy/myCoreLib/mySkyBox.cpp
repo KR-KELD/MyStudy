@@ -8,7 +8,10 @@ bool mySkyBox::Create(T_STR szVS, T_STR szPS, T_STR szTex)
 		MessageBox(0, _T("m_pDirectionLIne 실패"), _T("Fatal error"), MB_OK);
 		return 0;
 	}
-	m_pPSTextureIndex.Attach(StaticGraphics::LoadPixelShaderFile(g_pd3dDevice, szPS.c_str(), "PS_TextureIndex"));
+	wstring strPath = DataFolderPath;
+	strPath += L"shader/";
+	strPath += szPS;
+	m_pPSTextureIndex.Attach(StaticGraphics::LoadPixelShaderFile(g_pd3dDevice, strPath.c_str(), "PS_TextureIndex"));
 	return true;
 }
 
@@ -40,26 +43,44 @@ bool mySkyBox::LoadTexture(T_STR szTex)
 {
 	HRESULT hr = S_OK;
 	//텍스쳐방향이 다르다
-	const TCHAR* g_szSkyTextures[] =
-	{
-		L"..\\..\\data\\sky\\st00_cm_front.bmp",
-		L"..\\..\\data\\sky\\st00_cm_back.bmp",
-		L"..\\..\\data\\sky\\st00_cm_left.bmp",
-		L"..\\..\\data\\sky\\st00_cm_right.bmp",
-		L"..\\..\\data\\sky\\st00_cm_up.bmp",
-		L"..\\..\\data\\sky\\st00_cm_down.bmp"
-	};
-	int iNumTexture = sizeof(g_szSkyTextures) / sizeof(g_szSkyTextures[0]);
 
-	for (int iTex = 0; iTex < iNumTexture; iTex++)
+	vector<wstring> szSkyTex;
+	wstring strTemp = L"";
+	strTemp = DataFolderPath;
+	strTemp += L"sky/st00_cm_front.bmp";
+	szSkyTex.push_back(strTemp);
+
+	strTemp = DataFolderPath;
+	strTemp += L"sky/st00_cm_back.bmp";
+	szSkyTex.push_back(strTemp);
+
+	strTemp = DataFolderPath;
+	strTemp += L"sky/st00_cm_left.bmp";
+	szSkyTex.push_back(strTemp);
+
+	strTemp = DataFolderPath;
+	strTemp += L"sky/st00_cm_right.bmp";
+	szSkyTex.push_back(strTemp);
+
+	strTemp = DataFolderPath;
+	strTemp += L"sky/st00_cm_up.bmp";
+	szSkyTex.push_back(strTemp);
+
+	strTemp = DataFolderPath;
+	strTemp += L"sky/st00_cm_down.bmp";
+	szSkyTex.push_back(strTemp);
+
+	for (int iTex = 0; iTex < szSkyTex.size(); iTex++)
 	{
 		m_pTexSRV[iTex].Attach(StaticGraphics::CreateShaderResourceView(
 			g_pd3dDevice,
-			g_pImmediateContext, g_szSkyTextures[iTex]));
+			g_pImmediateContext, szSkyTex[iTex].c_str()));
 	}
+	strTemp = DataFolderPath;
+	strTemp += L"sky/grassenvmap1024.dds";
 	m_pTexCubeSRV.Attach(StaticGraphics::CreateShaderResourceView(
 		g_pd3dDevice,
-		g_pImmediateContext, L"..\\..\\data\\sky\\grassenvmap1024.dds"));
+		g_pImmediateContext, strTemp.c_str()));
 	return true;
 }
 

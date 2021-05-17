@@ -13,7 +13,7 @@ myTexture * myTextureManager::Load(const TCHAR* filename)
 	std::wstring loadfile;
 	if (Dir.empty())
 	{
-		loadfile = m_szDefaultPath;
+		loadfile = DataFolderPath + m_szDefaultPath;
 		loadfile += filename;
 		key = filename;
 	}
@@ -81,7 +81,7 @@ bool myTextureManager::Release()
 
 myTextureManager::myTextureManager()
 {
-	m_szDefaultPath = L"../../data/object/";
+	m_szDefaultPath = L"object/";
 }
 
 myTextureManager::~myTextureManager()

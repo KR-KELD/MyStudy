@@ -27,6 +27,14 @@ bool myMapTool::Init()
 	m_isPicking = false;
 	m_isChangeData = false;
 
+	myFbxObj* pFbxObj = g_FbxLoader.Load("Turret_Deploy1.fbx");
+	pFbxObj->CuttingAnimScene(L"0", pFbxObj->m_AnimScene.iFirstFrame, pFbxObj->m_AnimScene.iLastFrame);
+	pFbxObj->m_pModelObject->m_pAnim->ChangeAnim(L"0");
+	m_DrawList.push_back(pFbxObj->m_pModelObject);
+
+	pFbxObj = g_FbxLoader.Load("SM_Barrel.fbx");
+	m_DrawList.push_back(pFbxObj->m_pModelObject);
+
 	return true;
 }
 
@@ -101,6 +109,16 @@ void myMapTool::SetMode(int iMode)
 		m_eMakingMode = TOOL_SPLAT;
 		m_eSplatType = (SplatType)iMode;
 	}
+}
+
+void myMapTool::TerrainRender(ID3D11DeviceContext * pImmediateContext, myCamera * pTargetCamera)
+{
+	m_pMap->m_pTransform->SetMatrix(NULL,
+		&pTargetCamera->m_pTransform->m_matView,
+		&pTargetCamera->m_pTransform->m_matProj);
+	pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
+	pImmediateContext->PSSetShaderResources(2, 4, m_pSplatTex);
+	m_pQuadTree->Render(pImmediateContext);
 }
 
 void myMapTool::EditTerrain()
@@ -200,6 +218,24 @@ void myMapTool::EditTerrain()
 				g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
 				m_isChangeData = false;
 			}
+		}
+	}
+}
+
+void myMapTool::EditObject()
+{
+}
+
+void myMapTool::ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera)
+{
+	for (int i = 0; i < m_DrawList.size(); i++)
+	{
+		for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
+		{
+			m_DrawList[i]->m_pTransform->SetMatrix(&m_DrawList[i]->m_InstanceList[j].matWorld,
+				&pTargetCamera->m_pTransform->m_matView,
+				&pTargetCamera->m_pTransform->m_matProj);
+			m_DrawList[i]->Render();
 		}
 	}
 }

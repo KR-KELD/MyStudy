@@ -1,7 +1,7 @@
 #include "myHeightMap.h"
 DECLARE_COMPONENT(myHeightMap);
 
-bool myHeightMap::CreateHeightMap(const TCHAR* pszFileName)
+bool myHeightMap::CreateHeightMap(const TCHAR* pszFileName, myMapDesc& mapDesc)
 {
 	HRESULT hr;
 	ComPtr<ID3D11Resource> pTexture;

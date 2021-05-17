@@ -305,12 +305,14 @@ bool	myGraphics::CreateInputLayout()
 }
 bool	myGraphics::Create(T_STR szVS, T_STR szPS, T_STR szTex)
 {
+	T_STR strPath = DataFolderPath;
+	strPath += L"shader/";
 	CreateVertexData();
 	CreateConstantBuffer();
 	CreateVertexBuffer();
 	CreateIndexData();
 	CreateIndexBuffer();
-	LoadShader(szVS, szPS);
+	LoadShader(strPath + szVS, strPath + szPS);
 	CreateInputLayout();
 	LoadTexture(szTex);
 	return true;

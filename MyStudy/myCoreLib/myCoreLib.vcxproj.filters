@@ -216,16 +216,7 @@
     <ClCompile Include="myStaticFunc.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="myHeightMap.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="myMouse.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="myNode.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="myQuadTree.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="myTexture.cpp">
@@ -236,6 +227,15 @@
     </ClCompile>
     <ClCompile Include="myMapTool.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="myHeightMap.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="myQuadTree.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="myNode.cpp">
+      <Filter>Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -422,16 +422,7 @@
     <ClInclude Include="myStaticFunc.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="myHeightMap.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="myMouse.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="myNode.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="myQuadTree.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="myTexture.h">
@@ -442,6 +433,15 @@
     </ClInclude>
     <ClInclude Include="myMapTool.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="myHeightMap.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="myQuadTree.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="myNode.h">
+      <Filter>Map</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

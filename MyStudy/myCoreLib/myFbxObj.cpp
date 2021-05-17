@@ -81,7 +81,7 @@ bool myFbxObj::ModelInit()
 		}
 	}
 	if (!m_pModelObject->m_pGraphics->
-		Create(L"../../data/shader/modelvs.txt", L"../../data/shader/modelps.txt", L""))
+		Create(L"modelvs.txt", L"modelps.txt", L""))
 	{
 		return false;
 	}

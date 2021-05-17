@@ -1,6 +1,5 @@
 #pragma once
 #include "mySound.h"
-#define SOUNDPATH "../../data/sound/"
 //#define SOUNDPATH ""
 class mySoundManager : public SingleTon<mySoundManager>
 {
@@ -9,6 +8,7 @@ private:
 	FMOD::System*							m_pSystem;
 	std::map<string, mySound*>				m_List;
 	std::map<string, mySound*>::iterator	m_iter;
+	std::string								m_szDefaultPath;
 public:
 	mySound*    Load(const char* filename);
 	mySound*    GetPtr(string filename);

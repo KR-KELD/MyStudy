@@ -9,6 +9,7 @@
 #include "myCameraManager.h"
 #include "myController.h"
 #include "mySkyBox.h"
+#include "myFbxLoader.h"
 
 class myCore : public myDevice
 {
