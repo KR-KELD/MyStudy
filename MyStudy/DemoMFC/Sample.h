@@ -11,7 +11,7 @@ public:
 	myCamera*		m_pTopCamera;
 	myMiniMap*		m_pMiniMap;
 	myMiniMap*		m_pHeightMini;
-	myMap*			m_pMap;
+	myHeightMap*	m_pMap;
 	myMapTool*		m_pMapTool;
 	myQuadTree		m_QuadTree;
 

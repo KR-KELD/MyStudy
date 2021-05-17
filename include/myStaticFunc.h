@@ -2,6 +2,7 @@
 #include "myStd.h"
 #include "dxtk/WICTextureLoader.h"
 #include "dxtk/DDSTextureLoader.h"
+#include "dxtk/ScreenGrab.h"
 
 namespace StaticGraphics
 {

@@ -6,10 +6,10 @@ public:
 	ComPtr<ID3D11Texture2D>			 m_pStaging;
 	ComPtr<ID3D11Texture2D>			 m_pTexture;
 	ComPtr<ID3D11ShaderResourceView> m_pSRV;
+
 public:
-	D3D11_TEXTURE2D_DESC			 m_texDesc;
-public:
-	void		SetDesc(int iTexSize);
-	bool		Create(D3D11_TEXTURE2D_DESC* pDesc = nullptr);
+	bool		CopyCreate(ID3D11Texture2D* pTex = nullptr);
+	bool		LoadTexture(const TCHAR* szFileName);
+	bool		Create(int iTexSize = 1024);
 };
 

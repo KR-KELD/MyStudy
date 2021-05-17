@@ -237,6 +237,9 @@
     <ClCompile Include="myNode.cpp">
       <Filter>Map</Filter>
     </ClCompile>
+    <ClCompile Include="dxtk\ScreenGrab.cpp">
+      <Filter>DXTK</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mySoundManager.h">
@@ -442,6 +445,9 @@
     </ClInclude>
     <ClInclude Include="myNode.h">
       <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtk\ScreenGrab.h">
+      <Filter>DXTK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

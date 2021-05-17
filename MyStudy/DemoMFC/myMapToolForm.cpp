@@ -50,6 +50,7 @@ BEGIN_MESSAGE_MAP(myMapToolForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON3, &myMapToolForm::OnBnClickedTurret)
 	ON_BN_CLICKED(IDC_BUTTON4, &myMapToolForm::OnBnClickedBarrel)
 	ON_BN_CLICKED(IDC_BUTTON5, &myMapToolForm::OnBnClickedSave)
+	ON_BN_CLICKED(IDC_BUTTON6, &myMapToolForm::OnBnClickedLoad)
 END_MESSAGE_MAP()
 
 
@@ -92,12 +93,12 @@ void myMapToolForm::OnBnClickedButton1()
 	{
 		myMapDesc desc;
 		//int iNumCell = _ttoi(strCellCount);
-		int iNumCell = pow(2, iSelTile);
-		// 0-1  1-2 2-4  3-8
-		if (iSelTile > 4) iSelTile = 4;
-		pApp->m_Sample.m_QuadTree.m_iMaxdepth = iSelTile;
 		int iNumTile = pow(2, iSelTile);
+		int iNumCell = pow(2, iSelTile);
 		int iTexSize = 128 * pow(2, iSelTex);
+		int iSpaceDivision = iSelTile > 4 ? 4 : iSelTile;
+		// 0-1  1-2 2-4  3-8
+		pApp->m_Sample.m_QuadTree.m_iMaxdepth = iSpaceDivision;
 		desc.iNumCols = iNumCell * iNumTile + 1;//m_pMap->m_iNumCols;
 		desc.iNumRows = iNumCell * iNumTile + 1;//m_pMap->m_iNumRows;
 		desc.fCellDistance = m_iCellSize;
@@ -111,13 +112,19 @@ void myMapToolForm::OnBnClickedButton1()
 
 		pApp->m_Sample.m_QuadTree.CreateQuadTree(pApp->m_Sample.m_pMap);
 		pApp->m_Sample.m_isCreate = true;
-		pApp->m_Sample.m_pMap->SetMapCBData(iNumCell, iNumTile, m_iCellSize);
+		pApp->m_Sample.m_pMap->SetMapCBData(iNumCell, iNumTile, m_iCellSize, iSpaceDivision);
 
-		pApp->m_Sample.m_pMapTool = new myMapTool(pApp->m_Sample.m_pMap, &pApp->m_Sample.m_QuadTree);
+		pApp->m_Sample.m_pMapTool = new myMapTool(
+			pApp->m_Sample.m_pMap,
+			&pApp->m_Sample.m_QuadTree);
 		pApp->m_Sample.m_pMapTool->Init();
-		pApp->m_Sample.m_pMapTool->SetTexture(iTexSize);
 
-		pApp->m_Sample.m_pTopCamera->CreateOrthographic(desc.iNumCols * desc.fCellDistance, desc.iNumRows * desc.fCellDistance, 1.0f, 10000);
+		pApp->m_Sample.m_pMapTool->m_NormalTex.Create(iTexSize);
+		pApp->m_Sample.m_pMapTool->m_HeightTex.Create(iTexSize);
+
+		pApp->m_Sample.m_pTopCamera->CreateOrthographic(
+			desc.iNumCols * desc.fCellDistance, 
+			desc.iNumRows * desc.fCellDistance, 1.0f, 10000);
 	}
 }
 
@@ -170,6 +177,7 @@ void myMapToolForm::OnBnClickedButton2()
 	static TCHAR BASED_CODE szFilter[] =
 		_T("이미지 파일(*.BMP, *.JPEG, *.JPG) | *.bmp;*.jpeg;*.jpg | 모든파일(*.*)|*.*||");
 	CFileDialog dlg(TRUE, _T("*.jpg"), _T("image"), OFN_HIDEREADONLY, szFilter);
+
 	if (dlg.DoModal() == IDOK)
 	{
 		m_strTexName = dlg.GetPathName();
@@ -213,36 +221,184 @@ void myMapToolForm::OnBnClickedSave()
 	//	UpdateData(FALSE);
 	//}
 
+	BROWSEINFO BrInfo;
+	TCHAR szBuffer[512];                                      // 경로저장 버퍼 
+
+	::ZeroMemory(&BrInfo, sizeof(BROWSEINFO));
+	::ZeroMemory(szBuffer, 512);
+	BrInfo.hwndOwner = GetSafeHwnd();
+	BrInfo.lpszTitle = _T("파일이 저장될 폴더를 선택하세요");
+	BrInfo.ulFlags = BIF_NEWDIALOGSTYLE | BIF_EDITBOX | BIF_RETURNONLYFSDIRS;
+	LPITEMIDLIST pItemIdList = ::SHBrowseForFolder(&BrInfo);
+	::SHGetPathFromIDList(pItemIdList, szBuffer);				// 파일경로 읽어오기
+
+	wstring wstrFilePath;
+	wstrFilePath = szBuffer;
+	wstrFilePath += L"\\";
+
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
 		CFile file;
-		vector<CString> vDesc;
+		vector<CString> vecDesc;
 		wstring wstrTemp = L"";
-		wstrTemp += L" NumTile ";
-		wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[0]);
+		wstring wstrFileName = L"SaveMap";
+
+		//wstrTemp = L"NumTile ";
+		int iNumTemp = FLOAT_TO_INT(pApp->m_Sample.m_pMap->m_cbMapData.MapData[0]);
+		wstrTemp += to_wstring(iNumTemp);
 		wstrTemp += L"\n";
 		CString cstrTemp = wstrTemp.c_str();
-		vDesc.push_back(cstrTemp);
+		vecDesc.push_back(cstrTemp);
 
-		wstrTemp += L" NumCell ";
-		wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[1]);
+		wstrTemp.clear();
+		//wstrTemp = L"NumCell ";
+		iNumTemp = FLOAT_TO_INT(pApp->m_Sample.m_pMap->m_cbMapData.MapData[1]);
+		wstrTemp += to_wstring(iNumTemp);
 		wstrTemp += L"\n";
 		cstrTemp = wstrTemp.c_str();
-		vDesc.push_back(cstrTemp);
+		vecDesc.push_back(cstrTemp);
 
-		wstrTemp += L" CellSize ";
-		wstrTemp = to_wstring(pApp->m_Sample.m_pMap->m_cbMapData.MapData[2]);
+		wstrTemp.clear();
+		//wstrTemp = L"CellSize ";
+		iNumTemp = FLOAT_TO_INT(pApp->m_Sample.m_pMap->m_cbMapData.MapData[2]);
+		wstrTemp += to_wstring(iNumTemp);
 		wstrTemp += L"\n";
 		cstrTemp = wstrTemp.c_str();
-		vDesc.push_back(cstrTemp);
+		vecDesc.push_back(cstrTemp);
 
-		file.Open(_T("../../data/test.txt"), CFile::modeCreate | CFile::modeWrite, NULL);
-		for (int i = 0; i < vDesc.size(); i++)
+		wstrTemp.clear();
+		//wstrTemp = L"CellSize ";
+		iNumTemp = FLOAT_TO_INT(pApp->m_Sample.m_pMap->m_cbMapData.MapData[3]);
+		wstrTemp += to_wstring(iNumTemp);
+		wstrTemp += L"\n";
+		cstrTemp = wstrTemp.c_str();
+		vecDesc.push_back(cstrTemp);
+
+		wstrTemp.clear();
+		//wstrTemp = L"CellSize ";
+		wstrTemp += pApp->m_Sample.m_pMap->m_MapDesc.szTexFile;
+		wstrTemp += L"\n";
+		cstrTemp = wstrTemp.c_str();
+		vecDesc.push_back(cstrTemp);
+
+		wstrTemp.clear();
+		//wstrTemp = L"HeightMapPath ";
+		wstrTemp += wstrFilePath;
+		wstrTemp += wstrFileName;
+		wstrTemp += L"_HeightMap.dds";
+		DirectX::SaveDDSTextureToFile(g_pImmediateContext,
+			pApp->m_Sample.m_pMapTool->m_HeightTex.m_pTexture.Get(),
+			wstrTemp.c_str());
+		wstrTemp += L"\n";
+		cstrTemp = wstrTemp.c_str();
+		vecDesc.push_back(cstrTemp);
+
+		wstrTemp.clear();
+		//wstrTemp = L"AlphaMaskMapPath ";
+		wstrTemp += wstrFilePath;
+		wstrTemp += wstrFileName;
+		wstrTemp += L"_AlphaMask.dds";
+		DirectX::SaveDDSTextureToFile(g_pImmediateContext,
+			pApp->m_Sample.m_pMapTool->m_NormalTex.m_pTexture.Get(),
+			wstrTemp.c_str());
+		wstrTemp += L"\n";
+		cstrTemp = wstrTemp.c_str();
+		vecDesc.push_back(cstrTemp);
+
+		//wstrTemp = DataFolderPath;
+		//wstrTemp += L"save/";
+
+		wstrTemp = wstrFilePath;
+		wstrTemp += wstrFileName;
+		wstrTemp += L".txt";
+		file.Open(wstrTemp.c_str(), CFile::modeCreate | CFile::modeWrite, NULL);
+		for (int i = 0; i < vecDesc.size(); i++)
 		{
-			file.Write(vDesc.at(i), vDesc.at(i).GetLength() * sizeof(TCHAR));
+			file.Write(vecDesc.at(i), vecDesc.at(i).GetLength() * sizeof(TCHAR));
 		}
 		file.Close();
+	}
+
+}
+
+
+void myMapToolForm::OnBnClickedLoad()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString strSaveFile = L"";
+	static TCHAR BASED_CODE szFilter[] =
+		_T("텍스트 파일(*.txt)|*.txt|모든파일(*.*)|*.*|");
+	CFileDialog dlg(TRUE, _T("(*.txt)"),NULL , 
+		OFN_FILEMUSTEXIST |
+		OFN_PATHMUSTEXIST | 
+		OFN_HIDEREADONLY
+		, szFilter);
+	if (dlg.DoModal() == IDOK)
+	{
+		strSaveFile = dlg.GetPathName();
+
+
+		CFile file;
+		std::vector<CString> vecDesc;
+		file.Open(strSaveFile, CFile::modeRead);
+		CArchive ar(&file, CArchive::load);
+		CString cstrTemp;
+		while (ar.ReadString(cstrTemp))
+		{
+			vecDesc.push_back(cstrTemp);
+		}
+		ar.Close();
+		file.Close();
+
+
+		CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
+		if (!pApp->m_Sample.m_isCreate)
+		{
+
+
+
+			myMapDesc desc;
+			//int iNumCell = _ttoi(strCellCount);
+			int iNumTile = _ttoi(vecDesc[0]);
+			int iNumCell = _ttoi(vecDesc[1]);
+			int iCellSize = _ttoi(vecDesc[2]);
+			int iSpaceDivision = _ttoi(vecDesc[3]);
+			// 0-1  1-2 2-4  3-8
+			pApp->m_Sample.m_QuadTree.m_iMaxdepth = iSpaceDivision;
+			desc.iNumCols = iNumCell * iNumTile + 1;//m_pMap->m_iNumCols;
+			desc.iNumRows = iNumCell * iNumTile + 1;//m_pMap->m_iNumRows;
+			desc.fCellDistance = iCellSize;
+			desc.fScaleHeight = 1.0f;
+			if (m_strTexName.IsEmpty()) m_strTexName = L"castle.jpg";
+			desc.szTexFile = vecDesc[4];
+			desc.szVS = L"MapVS.txt";
+			desc.szPS = L"MapPS.txt";
+
+			pApp->m_Sample.m_pMapTool = new myMapTool(pApp->m_Sample.m_pMap,
+				&pApp->m_Sample.m_QuadTree);
+
+			pApp->m_Sample.m_pMapTool->Init();
+			TCHAR* szTexPath = (TCHAR*)(LPCTSTR)vecDesc[5];
+			pApp->m_Sample.m_pMapTool->m_HeightTex.LoadTexture(szTexPath);
+			szTexPath = (TCHAR*)(LPCTSTR)vecDesc[6];
+			pApp->m_Sample.m_pMapTool->m_NormalTex.LoadTexture(szTexPath);
+
+			pApp->m_Sample.m_pMap->SetMapCBData(iNumCell, iNumTile, m_iCellSize, iSpaceDivision);
+			//높이맵
+			pApp->m_Sample.m_pMap->CreateHeightMap(
+				pApp->m_Sample.m_pMapTool->m_HeightTex.m_pStaging.Get(), desc,
+				pApp->m_Sample.m_pMap->m_cbMapData);
+
+			pApp->m_Sample.m_pMap->m_isRender = false;
+			pApp->m_Sample.m_QuadTree.CreateQuadTree(pApp->m_Sample.m_pMap);
+			pApp->m_Sample.m_isCreate = true;
+
+
+			pApp->m_Sample.m_pTopCamera->CreateOrthographic(
+				desc.iNumCols * desc.fCellDistance,
+				desc.iNumRows * desc.fCellDistance, 1.0f, 10000);
+		}
 	}
 
 }

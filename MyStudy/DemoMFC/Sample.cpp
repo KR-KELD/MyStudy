@@ -4,7 +4,7 @@
 bool Sample::Init()
 {
 
-	m_pMap = new myMap;
+	m_pMap = new myHeightMap;
 	g_ObjMgr.CreateObjComponent(L"Map", m_pMap, OBJECT_SUB);
 
 	m_pMiniMap = new myMiniMap;
@@ -46,6 +46,10 @@ bool Sample::Render()
 		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
 		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 			myDxState::g_RasterizerDesc);
+	}
+	if (g_Input.GetKey('0') == KEY_PUSH)
+	{
+		DirectX::SaveDDSTextureToFile(g_pImmediateContext, m_pMapTool->m_HeightTex.m_pTexture.Get(), L"123.dds");
 	}
 
 #pragma endregion

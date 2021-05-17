@@ -41,6 +41,7 @@ public:
 	afx_msg void OnBnClickedBarrel();
 	CComboBox m_TexSize;
 	afx_msg void OnBnClickedSave();
+	afx_msg void OnBnClickedLoad();
 };
 
 

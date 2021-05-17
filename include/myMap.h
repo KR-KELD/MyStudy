@@ -28,7 +28,7 @@ struct myNormalLookupTable
 
 struct myMapCB
 {
-	//0 NumTile,1 NumCell,2 CellSize;
+	//0 NumTile,1 NumCell,2 CellSize, 3 SpaceDivision
 	float MapData[4];
 };
 
@@ -50,6 +50,9 @@ public:
 	myMapCB m_cbMapData;
 	ComPtr<ID3D11Buffer> m_pMapCB;
 public:
+	//юс╫ц
+	ComPtr<ID3D11ShaderResourceView> m_pMaskSRV;
+public:
 	std::vector<Vector3> m_FaceNormals;
 	std::vector<myNormalLookupTable> m_LookupTabel;
 	Vector3 ComputeFaceNormal(DWORD i0, DWORD i1, DWORD i2);
@@ -59,7 +62,7 @@ public:
 	void GenNormalLookupTable();
 	void CalcPerVertexNormalsFastLookup();
 public:
-	void			SetMapCBData(int iNumCell, int iNumTile, int iCellSize);
+	void			SetMapCBData(int iNumCell, int iNumTile, int iCellSize, int iSpaceDivision);
 	void			CreateTexMatrix(int iNumCell, int iNumTile, int iCellSize);
 	bool			CreateMap(myMapDesc  desc);
 	virtual bool	Create(T_STR szVS, T_STR szPS, T_STR	szTex)override;

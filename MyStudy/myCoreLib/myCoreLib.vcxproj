@@ -188,6 +188,7 @@ copy "*.h" "..\\..\\include"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dxtk\DDSTextureLoader.cpp" />
+    <ClCompile Include="dxtk\ScreenGrab.cpp" />
     <ClCompile Include="dxtk\WICTextureLoader.cpp" />
     <ClCompile Include="myAnimation.cpp" />
     <ClCompile Include="myBaseObject.cpp" />
@@ -251,6 +252,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="dxtk\LoaderHelpers.h" />
     <ClInclude Include="dxtk\pch.h" />
     <ClInclude Include="dxtk\PlatformHelpers.h" />
+    <ClInclude Include="dxtk\ScreenGrab.h" />
     <ClInclude Include="dxtk\WICTextureLoader.h" />
     <ClInclude Include="myAnimation.h" />
     <ClInclude Include="myBaseObject.h" />

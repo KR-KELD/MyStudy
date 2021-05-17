@@ -98,11 +98,12 @@ myMap::~myMap()
 {
 }
 
-void myMap::SetMapCBData(int iNumCell, int iNumTile, int iCellSize)
+void myMap::SetMapCBData(int iNumCell, int iNumTile, int iCellSize, int iSpaceDivision)
 {
 	m_cbMapData.MapData[0] = iNumTile;
 	m_cbMapData.MapData[1] = iNumCell;
 	m_cbMapData.MapData[2] = iCellSize;
+	m_cbMapData.MapData[3] = iSpaceDivision;
 }
 
 void myMap::CreateTexMatrix(int iNumCell, int iNumTile, int iCellSize)
@@ -134,6 +135,9 @@ bool myMap::CreateMap(myMapDesc  desc)
 		desc.szTexFile);
 
 	GetVertexNormal();
+
+	g_pImmediateContext->UpdateSubresource(
+		m_pVertexBuffer.Get(), 0, NULL, &m_VertexList.at(0), 0, 0);
 	return true;
 }
 

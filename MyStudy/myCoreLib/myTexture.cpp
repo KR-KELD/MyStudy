@@ -22,11 +22,13 @@ bool myTexture::Release()
 
 bool myTexture::Load(T_STR strTex)
 {
-	//ID3D11Resource* texture;
+	ID3D11Resource* texture;
+
 	HRESULT hr = CreateWICTextureFromFile(
 		g_pd3dDevice, strTex.c_str(),
 		NULL,
 		m_pTextureSRV.GetAddressOf());
+
 
 	if (FAILED(hr))
 	{

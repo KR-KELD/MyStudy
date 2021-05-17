@@ -32,7 +32,7 @@ enum SplatType
 class myMapTool : public myComponent
 {
 public:
-	myMap*			m_pMap;
+	myHeightMap*	m_pMap;
 	myQuadTree*		m_pQuadTree;
 	myMouse			m_Mouse;
 	myStagingTex	m_HeightTex;
@@ -57,7 +57,6 @@ public:
 	bool		m_isPicking;
 	bool		m_isChangeData;
 public:
-	bool	SetTexture(int iTexSize = 1024);
 	bool	Init();
 	bool	Frame() override;
 	bool	Render() override;
@@ -71,7 +70,7 @@ public:
 	bool	SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vPick);
 	bool	ResetTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
 public:
-	myMapTool(myMap* pMap, myQuadTree* pQuadTree);
+	myMapTool(myHeightMap* pMap, myQuadTree* pQuadTree);
 	virtual ~myMapTool();
 };
 

@@ -1,22 +1,5 @@
 #include "myMapTool.h"
 
-bool myMapTool::SetTexture(int iTexSize)
-{
-	m_HeightTex.SetDesc(iTexSize);
-	m_NormalTex.SetDesc(iTexSize);
-	m_HeightTex.Create();
-	m_NormalTex.Create();
-
-	m_pSplatTex[0] = g_TextureMgr.Load(L"cncr21S.bmp")->m_pTextureSRV.Get();
-	m_pSplatTex[1] = g_TextureMgr.Load(L"kgca08.bmp")->m_pTextureSRV.Get();
-	m_pSplatTex[2] = g_TextureMgr.Load(L"metal.bmp")->m_pTextureSRV.Get();
-	m_pSplatTex[3] = g_TextureMgr.Load(L"flagstone.bmp")->m_pTextureSRV.Get();
-
-	ResetTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get());
-	g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
-	return false;
-}
-
 bool myMapTool::Init()
 {
 	m_fOutRad = 20.0f;
@@ -34,6 +17,11 @@ bool myMapTool::Init()
 
 	pFbxObj = g_FbxLoader.Load("SM_Barrel.fbx");
 	m_DrawList.push_back(pFbxObj->m_pModelObject);
+
+	m_pSplatTex[0] = g_TextureMgr.Load(L"cncr21S.bmp")->m_pTextureSRV.Get();
+	m_pSplatTex[1] = g_TextureMgr.Load(L"kgca08.bmp")->m_pTextureSRV.Get();
+	m_pSplatTex[2] = g_TextureMgr.Load(L"metal.bmp")->m_pTextureSRV.Get();
+	m_pSplatTex[3] = g_TextureMgr.Load(L"flagstone.bmp")->m_pTextureSRV.Get();
 
 	return true;
 }
@@ -116,7 +104,11 @@ void myMapTool::TerrainRender(ID3D11DeviceContext * pImmediateContext, myCamera 
 	m_pMap->m_pTransform->SetMatrix(NULL,
 		&pTargetCamera->m_pTransform->m_matView,
 		&pTargetCamera->m_pTransform->m_matProj);
-	pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
+	if (m_NormalTex.m_pSRV.Get())
+	{
+		pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
+	}
+
 	pImmediateContext->PSSetShaderResources(2, 4, m_pSplatTex);
 	m_pQuadTree->Render(pImmediateContext);
 }
@@ -380,7 +372,7 @@ bool myMapTool::ResetTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2
 	return true;
 }
 
-myMapTool::myMapTool(myMap* pMap, myQuadTree* pQuadTree)
+myMapTool::myMapTool(myHeightMap* pMap, myQuadTree* pQuadTree)
 {
 	m_pMap = pMap;
 	m_pQuadTree = pQuadTree;
