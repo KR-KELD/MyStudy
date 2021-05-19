@@ -19,15 +19,14 @@ class myGraphics : public myComponent
 public:
 	DEFINE_COMPONENT(myGraphics, myComponent, true);
 public:
-	//�浹ü
-	MY_BOX						m_BindingBox;
-public:
 	ID3DBlob*					m_pVSObj;
 	UINT						m_iTopology;
 	C_STR						m_szVertexShader;
 	C_STR						m_szPixelShader;
 public:
-
+	Vector3						m_vMin;
+	Vector3						m_vMax;
+	Vector3						m_vCenter;
 public:
 	UINT						m_iNumVertex;
 	UINT						m_iVertexSize;

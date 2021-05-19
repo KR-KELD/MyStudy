@@ -15,10 +15,7 @@ public:
 	myMapTool*		m_pMapTool;
 	myQuadTree		m_QuadTree;
 
-	vector<myNode*> m_SelectNodeList;
-	vector<myNode*> m_ControlNodeList;
 	bool			m_isCreate;
-	bool			m_isPicking;
 public:
 	bool Init() override;
 	bool Frame() override;

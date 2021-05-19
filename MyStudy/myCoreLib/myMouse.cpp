@@ -32,6 +32,7 @@ bool myMouse::PickingFace(myNode* pNode)
 		vFaceNormal.Normalize();
 		if (myCollision::IntersectSegToFace(m_myRay, v[0], v[1], v[2],&fT,&fU,&fV))
 		{
+			m_vPrevPos = m_vIntersectionPos;
 			m_vIntersectionPos = m_myRay.vOrigin + m_myRay.vDir * fT;
 			return true;
 		}
@@ -54,6 +55,7 @@ bool myMouse::PickingFace(myNode * pNode, myMap * pMap)
 		vFaceNormal.Normalize();
 		if (myCollision::IntersectSegToFace(m_myRay, v[0], v[1], v[2], &fT, &fU, &fV))
 		{
+			m_vPrevPos = m_vIntersectionPos;
 			m_vIntersectionPos = m_myRay.vOrigin + m_myRay.vDir * fT;
 			return true;
 		}

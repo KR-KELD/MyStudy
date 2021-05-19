@@ -1,12 +1,9 @@
 #include "myModelObject.h"
 #include "myCameraManager.h"
+#include "myObjManager.h"
 #define MAX_BONE_MATRICES 255
 DECLARE_COMPONENT(myModelObject);
-//bool myModelObject::SetAnimScene(wstring strSceneName, myAnimScene & anim)
-//{
-//	m_pAnim->m_AnimSceneMap.insert(make_pair(strSceneName, myAnimScene(anim)));
-//	return true;
-//}
+
 int myModelObject::SetAnimTrack(vector<myGameObject*>& nodeList)
 {
 	//뼈대를 검색해서 추가하거나
@@ -67,8 +64,9 @@ bool myModelObject::Init()
 		0
 	};
 	HRESULT hr = g_pd3dDevice->CreateBuffer(&vbdesc, NULL, m_pBoneBuffer.GetAddressOf());
-
+	m_iObjectID = g_ObjMgr.SetObjectList(this);
 	m_pNormalTex = g_TextureMgr.m_pWhiteTexture;
+	
 	return true;
 }
 

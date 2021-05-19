@@ -194,6 +194,7 @@ void myMapToolForm::OnBnClickedTurret()
 	if (pApp->m_Sample.m_isCreate)
 	{
 		pApp->m_Sample.m_pMapTool->m_pTargetObject = g_FbxLoader.GetPtr("Turret_Deploy1.fbx")->m_pModelObject;
+		pApp->m_Sample.m_pMapTool->SetMode(303);
 	}
 }
 
@@ -205,6 +206,7 @@ void myMapToolForm::OnBnClickedBarrel()
 	if (pApp->m_Sample.m_isCreate)
 	{
 		pApp->m_Sample.m_pMapTool->m_pTargetObject = g_FbxLoader.GetPtr("SM_Barrel.fbx")->m_pModelObject;
+		pApp->m_Sample.m_pMapTool->SetMode(303);
 	}
 }
 

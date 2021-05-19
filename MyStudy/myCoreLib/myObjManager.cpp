@@ -2,6 +2,7 @@
 
 bool myObjManager::Init()
 {
+	m_iObjectID = 0;
 	m_SceneObj.Init();
 	m_SubObj.Init();
 	return true;

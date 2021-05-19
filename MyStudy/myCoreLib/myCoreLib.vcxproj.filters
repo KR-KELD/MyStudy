@@ -67,6 +67,9 @@
     <Filter Include="Texture">
       <UniqueIdentifier>{8e1fa8f3-8e64-45c0-baea-c9294a8bd5a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Collider">
+      <UniqueIdentifier>{7e3042df-8a78-495d-8226-2d9e568085d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myObject.cpp">
@@ -239,6 +242,9 @@
     </ClCompile>
     <ClCompile Include="dxtk\ScreenGrab.cpp">
       <Filter>DXTK</Filter>
+    </ClCompile>
+    <ClCompile Include="myCollider.cpp">
+      <Filter>Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +454,9 @@
     </ClInclude>
     <ClInclude Include="dxtk\ScreenGrab.h">
       <Filter>DXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="myCollider.h">
+      <Filter>Collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

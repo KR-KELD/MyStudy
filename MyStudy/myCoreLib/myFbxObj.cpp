@@ -44,6 +44,10 @@ myFbxObj::~myFbxObj()
 bool myFbxObj::ModelInit()
 {
 	m_pModelObject->Init();
+	
+	Vector3 vMax = Vector3(-9999.0f, -9999.0f, -9999.0f);
+	Vector3 vMin = Vector3(9999.0f, 9999.0f, 9999.0f);
+
 	for (auto data : m_pModelObject->m_myNodeList)
 	{
 		myModelGraphics* pGraphics = data->GetComponent<myModelGraphics>();
@@ -52,6 +56,15 @@ bool myFbxObj::ModelInit()
 		{
 			mySubMesh2* pSub = &pGraphics->m_SubMeshList2[iSub];
 			if (pSub->m_iFaceCount <= 0) continue;
+
+			if (pGraphics->m_vMin.x < vMin.x) vMin.x = pGraphics->m_vMin.x;
+			if (pGraphics->m_vMin.y < vMin.y) vMin.y = pGraphics->m_vMin.y;
+			if (pGraphics->m_vMin.z < vMin.z) vMin.z = pGraphics->m_vMin.z;
+			if (pGraphics->m_vMax.x > vMax.x) vMax.x = pGraphics->m_vMax.x;
+			if (pGraphics->m_vMax.y > vMax.y) vMax.y = pGraphics->m_vMax.y;
+			if (pGraphics->m_vMax.z > vMax.z) vMax.z = pGraphics->m_vMax.z;
+
+
 			// vb
 			ID3D11Buffer* vb =
 				StaticGraphics::CreateVertexBuffer(g_pd3dDevice,
@@ -85,6 +98,9 @@ bool myFbxObj::ModelInit()
 	{
 		return false;
 	}
+
+	m_pModelObject->m_myBoxCollider.SetBox(vMin, vMax);
+
 	return true;
 }
 
@@ -449,6 +465,9 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 	bool bSkinnedMesh = ParseMeshSkinningMap(pFbxMesh, pGraphics->m_WeightList, pGraphics);
 	pGraphics->m_bSkinnedMesh = bSkinnedMesh;
 
+	Vector3 vMax = Vector3(-9999.0f, -9999.0f, -9999.0f);
+	Vector3 vMin = Vector3(9999.0f, 9999.0f, 9999.0f);
+
 	//폴리곤의 누적 인덱스
 	int iBasePolyIndex = 0;
 	for (int iPoly = 0; iPoly < iPolyCount; iPoly++)
@@ -519,6 +538,13 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 				v.p.x = finalPos.mData[0]; // x
 				v.p.y = finalPos.mData[2]; // z
 				v.p.z = finalPos.mData[1]; // y
+
+				if (v.p.x < vMin.x) vMin.x = v.p.x;
+				if (v.p.y < vMin.y) vMin.y = v.p.y;
+				if (v.p.z < vMin.z) vMin.z = v.p.z;
+				if (v.p.x > vMax.x) vMax.x = v.p.x;
+				if (v.p.y > vMax.y) vMax.y = v.p.y;
+				if (v.p.z > vMax.z) vMax.z = v.p.z;
 
 				FbxColor color = FbxColor(1, 1, 1, 1);
 				//컬러 정보를 변환해서 pnct버텍스에 넣어준다
@@ -634,6 +660,11 @@ void myFbxObj::ParseMesh(FbxNode * pFbxNode, FbxMesh * pFbxMesh, myModelGraphics
 		}
 		iBasePolyIndex += iPolySize;
 	}
+
+	pGraphics->m_vMax = vMax;
+	pGraphics->m_vMin = vMin;
+	pGraphics->m_vCenter = (vMax + vMin) / 2;
+
 }
 
 Matrix myFbxObj::ParseTransform(FbxNode * pFbxNode, Matrix & matParentWorld)

@@ -11,6 +11,7 @@ class myMouse
 public:
 	MY_RAY		m_myRay;
 	Vector3		m_vIntersectionPos;
+	Vector3		m_vPrevPos;
 	float		m_fRange;
 public:
 	void ScreenToRay();

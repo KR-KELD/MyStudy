@@ -297,6 +297,7 @@ public:
 	virtual void	Reset();
 	virtual bool	Action();
 	virtual bool	Release();
+	//virtual bool	On
 public:
 	myGameObject*			Add(wstring strName = L"");
 	myGameObject*			Add(myGameObject* pGameObj);

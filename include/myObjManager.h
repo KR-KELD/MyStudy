@@ -1,7 +1,7 @@
 #pragma once
 #include "myGameObject.h"
 
-enum myObjectType
+enum myContainerType
 {
 	OBJECT_SCENE = 0,
 	OBJECT_SUB,
@@ -15,8 +15,31 @@ public:
 	myGameObject	m_SceneObj;
 	myGameObject	m_SubObj;
 public:
+	int				m_iObjectID;
+public:
+	map<int, myGameObject*> m_ObjectList;
+	map<int, myGameObject*>::iterator m_ObjIter;
+	int SetObjectList(myGameObject* pObj)
+	{
+		if (pObj != nullptr)
+		{
+			m_ObjectList.insert(make_pair(m_iObjectID, pObj));
+			return m_iObjectID++;
+		}
+		return -1;
+	}
+	myGameObject* GetGameObject(int iID)
+	{
+		m_ObjIter = m_ObjectList.find(iID);
+		if (m_ObjIter != m_ObjectList.end())
+		{
+			return m_ObjIter->second;
+		}
+		return nullptr;
+	}
+public:
 	template <class Component_T>
-	myGameObject*	CreateObjComponent(wstring strObjName, Component_T* pComponent, myObjectType eObjType)
+	myGameObject*	CreateObjComponent(wstring strObjName, Component_T* pComponent, myContainerType eObjType)
 	{
 		myGameObject* obj = nullptr;
 		switch (eObjType)
@@ -39,7 +62,7 @@ public:
 		return obj;
 	}
 	template <class Component_T>
-	myGameObject*	InsertComponentInObj(wstring strObjName, Component_T* pComponent, myObjectType eObjType)
+	myGameObject*	InsertComponentInObj(wstring strObjName, Component_T* pComponent, myContainerType eObjType)
 	{
 		myGameObject* obj = nullptr;
 		switch (eObjType)

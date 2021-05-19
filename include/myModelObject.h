@@ -4,8 +4,24 @@
 
 struct SampleIns
 {
+	int iID;
+	bool isActive;
 	float fTick;
-	Matrix matWorld;
+	Vector3 vPos;
+	Vector3 vScale;
+	Quaternion qRot;
+	MY_BOX	myBoxCollider;
+	Matrix GetWorld()
+	{
+		Matrix matWorld = Matrix::Identity;
+		Matrix scale = Matrix::CreateScale(vScale);
+		Matrix rot = Matrix::CreateFromQuaternion(qRot);
+		matWorld = scale * rot;
+		matWorld._41 = vPos.x;
+		matWorld._42 = vPos.y;
+		matWorld._43 = vPos.z;
+		return matWorld;
+	}
 };
 
 class myModelObject : public myGameObject
@@ -13,7 +29,10 @@ class myModelObject : public myGameObject
 public:
 	DEFINE_COMPONENT(myModelObject, myGameObject, true);
 public:
-	//const int						m_iNumInstance = 100;
+	//임시
+	MY_BOX							m_myBoxCollider;
+public:
+	int								m_iObjectID;
 	//임시
 	myTexture*						m_pNormalTex;
 
@@ -31,7 +50,6 @@ public:
 	//샘플
 	vector<SampleIns>				m_InstanceList;
 public:
-	//bool				SetAnimScene(wstring strSceneName, myAnimScene& anim);
 	int					SetAnimTrack(vector<myGameObject*>& nodeList);
 	bool				SetAnim(wstring strSceneName, myAnimScene& scene, vector<myGameObject*>& nodeList);
 public:					

@@ -1,14 +1,21 @@
 #include "myMapTool.h"
+#include "myObjManager.h"
 
 bool myMapTool::Init()
 {
 	m_fOutRad = 20.0f;
+	m_fInnerRad = 10.0f;
 	m_fSpeed = 0.1f;
 	m_eMakingMode = TOOL_TOPOLOGY;
 	m_eTopologyType = TERRAIN_UP;
 	m_eSplatType = SPLAT_TEX_01;
+	m_eObjEditType = OBJECT_CREATE;
 	m_isPicking = false;
-	m_isChangeData = false;
+	m_isUpdateData = false;
+	m_isUpdatePick = false;
+	m_pTargetIns = nullptr;
+	m_pTargetObject = nullptr;
+	m_isSelectObject = false;
 
 	myFbxObj* pFbxObj = g_FbxLoader.Load("Turret_Deploy1.fbx");
 	pFbxObj->CuttingAnimScene(L"0", pFbxObj->m_AnimScene.iFirstFrame, pFbxObj->m_AnimScene.iLastFrame);
@@ -29,7 +36,8 @@ bool myMapTool::Init()
 bool myMapTool::Frame()
 {
 #pragma region PickingMouse
-	if (g_Input.GetKey(VK_LBUTTON) == KEY_PUSH)
+	m_SelectNodeList.clear();
+	if (g_Input.GetKey(VK_LBUTTON) == KEY_HOLD)
 	{
 		m_Mouse.ScreenToRay();
 		for (int i = 0; i < m_pQuadTree->m_LeafNodeList.size(); i++)
@@ -46,13 +54,13 @@ bool myMapTool::Frame()
 	{
 		if (m_isPicking)
 		{
-			m_isChangeData = true;
+			m_isUpdateData = true;
 		}
 		m_isPicking = false;
 	}
 	Vector3 vPick;
 	float fMaxDist = 99999.0f;
-	bool bUpdate = false;
+	m_isUpdatePick = false;
 	for (int iNode = 0; iNode < m_SelectNodeList.size(); iNode++)
 	{
 		myNode* pNode = m_SelectNodeList[iNode];
@@ -63,13 +71,18 @@ bool myMapTool::Frame()
 			{
 				vPick = m_Mouse.m_vIntersectionPos;
 				fMaxDist = fDist;
-				bUpdate = true;
+				m_isUpdatePick = true;
 			}
 		}
 	}
-#pragma endregion
 
-	EditTerrain();
+#pragma endregion
+	if (m_eMakingMode == TOOL_OBJECT)
+	{
+		EditObject(vPick);
+	}
+
+	EditTerrain(vPick);
 	return true;
 }
 
@@ -85,6 +98,103 @@ bool myMapTool::Release()
 	return true;
 }
 
+void myMapTool::EditTopology(Vector3& vPick)
+{
+	Vector3 mPos = vPick;
+	mPos.y = 0.0f;
+	for (int iNode = 0; iNode < m_ControlNodeList.size(); iNode++)
+	{
+		for (int v = 0; v < m_ControlNodeList[iNode]->m_IndexList.size(); v++)
+		{
+			int iID = m_ControlNodeList[iNode]->m_IndexList[v];
+			Vector3 vPos = m_pMap->m_VertexList[iID].p;
+			vPos.y = 0.0f;
+			
+			float fDist = (vPos - mPos).Length();
+			if (fDist < m_fOutRad)
+			{
+				Vector3 vp = m_pMap->m_VertexList[iID].p;
+				switch (m_eTopologyType)
+				{
+				case TERRAIN_UP:
+				{
+					m_pMap->m_VertexList[iID].p.y = vp.y + m_fSpeed;
+					if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
+				}
+				break;
+				case TERRAIN_DOWN:
+				{
+					m_pMap->m_VertexList[iID].p.y = vp.y - m_fSpeed;
+					if (m_pMap->m_VertexList[iID].p.y < 0.0f) m_pMap->m_VertexList[iID].p.y = 0.0f;
+				}
+				break;
+				case TERRAIN_FLAT:
+				{
+					if (m_pMap->m_VertexList[iID].p.y < m_PickSphere.vCenter.y + m_fSpeed + 0.1f
+						&& m_pMap->m_VertexList[iID].p.y > m_PickSphere.vCenter.y - m_fSpeed - 0.1f)
+					{
+						m_pMap->m_VertexList[iID].p.y = m_PickSphere.vCenter.y;
+						break;
+					}
+					if (m_pMap->m_VertexList[iID].p.y < m_PickSphere.vCenter.y)
+					{
+						m_pMap->m_VertexList[iID].p.y = vp.y + m_fSpeed;
+						if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
+					}
+					if (m_pMap->m_VertexList[iID].p.y > m_PickSphere.vCenter.y)
+					{
+						m_pMap->m_VertexList[iID].p.y = vp.y - m_fSpeed;
+						if (m_pMap->m_VertexList[iID].p.y < 0.0f) m_pMap->m_VertexList[iID].p.y = 0.0f;
+					}
+				}
+				break;
+				default:
+					break;
+				}
+			}
+		}
+		m_pQuadTree->RepreshBindingObj(m_ControlNodeList[iNode]);
+	}
+	g_pImmediateContext->UpdateSubresource(
+		m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
+}
+
+void myMapTool::EditSplatting(Vector3& vPick)
+{
+	int iLastIndex = m_pMap->m_iNumCols * m_pMap->m_iNumRows - 1;
+	Vector2 LT = Vector2(m_pMap->m_VertexList[0].p.x, m_pMap->m_VertexList[0].p.z);
+	Vector2 RB = Vector2(m_pMap->m_VertexList[iLastIndex].p.x,
+						m_pMap->m_VertexList[iLastIndex].p.z);
+	for (int iNode = 0; iNode < m_ControlNodeList.size(); iNode++)
+	{
+		for (int v = 0; v < m_ControlNodeList[iNode]->m_IndexList.size(); v++)
+		{
+			int iID = m_ControlNodeList[iNode]->m_IndexList[v];
+			Vector3 vPos = m_pMap->m_VertexList[iID].p;
+			vPos.y = 0.0f;
+			if (vPos.x > LT.x && vPos.x < vPick.x - m_fOutRad)
+			{
+				LT.x = vPos.x;
+			}
+			if (vPos.z < LT.y && vPos.z > vPick.z + m_fOutRad)
+			{
+				LT.y = vPos.z;
+			}
+			if (vPos.x < RB.x && vPos.x > vPick.x + m_fOutRad)
+			{
+				RB.x = vPos.x;
+			}
+			if (vPos.z > RB.y && vPos.z < vPick.z - m_fOutRad)
+			{
+				RB.y = vPos.z;
+			}
+		}
+	}
+	
+	SetNormalTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get(), vPick, LT, RB);
+	g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
+}
+
 void myMapTool::SetMode(int iMode)
 {
 	if (iMode >= 100 && iMode < 200)
@@ -96,6 +206,11 @@ void myMapTool::SetMode(int iMode)
 	{
 		m_eMakingMode = TOOL_SPLAT;
 		m_eSplatType = (SplatType)iMode;
+	}
+	if (iMode >= 300 && iMode < 400)
+	{
+		m_eMakingMode = TOOL_OBJECT;
+		m_eObjEditType = (ObjectEditType)iMode;
 	}
 }
 
@@ -113,86 +228,37 @@ void myMapTool::TerrainRender(ID3D11DeviceContext * pImmediateContext, myCamera 
 	m_pQuadTree->Render(pImmediateContext);
 }
 
-void myMapTool::EditTerrain()
+void myMapTool::EditTerrain(Vector3& vPick)
 {
 	if (m_isPicking)
 	{
 		m_ControlNodeList.clear();
 #pragma region Terrain_Topology
+
+		m_PickSphere.vCenter = m_Mouse.m_vIntersectionPos;
+		m_PickSphere.fRadius = 30.0f;
+		for (int i = 0; i < m_pQuadTree->m_LeafNodeList.size(); i++)
+		{
+			myNode* pNode = m_pQuadTree->m_LeafNodeList[i];
+			if (myCollision::IntersectSphereToSphere(pNode->m_mySphere, m_PickSphere))
+			{
+				m_ControlNodeList.push_back(pNode);
+			}
+		}
 		if (m_eMakingMode == TOOL_TOPOLOGY)
 		{
-			m_PickSphere.vCenter = m_Mouse.m_vIntersectionPos;
-			m_PickSphere.fRadius = 30.0f;
-			for (int i = 0; i < m_pQuadTree->m_LeafNodeList.size(); i++)
-			{
-				myNode* pNode = m_pQuadTree->m_LeafNodeList[i];
-				if (myCollision::IntersectSphereToSphere(pNode->m_mySphere, m_PickSphere))
-				{
-					m_ControlNodeList.push_back(pNode);
-				}
-			}
-			for (int iNode = 0; iNode < m_ControlNodeList.size(); iNode++)
-			{
-				for (int v = 0; v < m_ControlNodeList[iNode]->m_IndexList.size(); v++)
-				{
-					int iID = m_ControlNodeList[iNode]->m_IndexList[v];
-					Vector3 vPos = m_pMap->m_VertexList[iID].p;
-					Vector3 mPos = m_Mouse.m_vIntersectionPos;
-					vPos.y = mPos.y = 0.0f;
-					float fDist = (vPos - mPos).Length();
-					if (fDist < m_fOutRad)
-					{
-						Vector3 vp = m_pMap->m_VertexList[iID].p;
-						switch (m_eTopologyType)
-						{
-						case TERRAIN_UP:
-						{
-							m_pMap->m_VertexList[iID].p.y = vp.y + m_fSpeed;
-							if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
-						}
-						break;
-						case TERRAIN_DOWN:
-						{
-							m_pMap->m_VertexList[iID].p.y = vp.y - m_fSpeed;
-							if (m_pMap->m_VertexList[iID].p.y < 0.0f) m_pMap->m_VertexList[iID].p.y = 0.0f;
-						}
-						break;
-						case TERRAIN_FLAT:
-						{
-							if (m_pMap->m_VertexList[iID].p.y < m_PickSphere.vCenter.y + m_fSpeed + 0.1f
-								&& m_pMap->m_VertexList[iID].p.y > m_PickSphere.vCenter.y - m_fSpeed - 0.1f)
-							{
-								m_pMap->m_VertexList[iID].p.y = m_PickSphere.vCenter.y;
-								break;
-							}
-							if (m_pMap->m_VertexList[iID].p.y < m_PickSphere.vCenter.y)
-							{
-								m_pMap->m_VertexList[iID].p.y = vp.y + m_fSpeed;
-								if (m_pMap->m_VertexList[iID].p.y > 255.0f) m_pMap->m_VertexList[iID].p.y = 255.0f;
-							}
-							if (m_pMap->m_VertexList[iID].p.y > m_PickSphere.vCenter.y)
-							{
-								m_pMap->m_VertexList[iID].p.y = vp.y - m_fSpeed;
-								if (m_pMap->m_VertexList[iID].p.y < 0.0f) m_pMap->m_VertexList[iID].p.y = 0.0f;
-							}
-						}
-						break;
-						default:
-							break;
-						}
-					}
-				}
-				m_pQuadTree->RepreshBindingObj(m_ControlNodeList[iNode]);
-			}
-			g_pImmediateContext->UpdateSubresource(
-				m_pMap->m_pVertexBuffer.Get(), 0, NULL, &m_pMap->m_VertexList.at(0), 0, 0);
+			EditTopology(vPick);
+		}
+		if (m_eMakingMode == TOOL_SPLAT && m_isUpdatePick)
+		{
+			EditSplatting(vPick);
 		}
 #pragma endregion
 
 	}
 	else
 	{
-		if (m_isChangeData)
+		if (m_isUpdateData)
 		{
 			if (m_eMakingMode == TOOL_TOPOLOGY)
 			{
@@ -202,20 +268,104 @@ void myMapTool::EditTerrain()
 
 				SetHeightTex(g_pImmediateContext, m_HeightTex.m_pStaging.Get());
 				g_pImmediateContext->CopyResource(m_HeightTex.m_pTexture.Get(), m_HeightTex.m_pStaging.Get());
-				m_isChangeData = false;
-			}
-			if (m_eMakingMode == TOOL_SPLAT)
-			{
-				SetNormalTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get(), m_Mouse.m_vIntersectionPos);
-				g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
-				m_isChangeData = false;
+				m_isUpdateData = false;
 			}
 		}
 	}
 }
 
-void myMapTool::EditObject()
+void myMapTool::EditObject(Vector3& vPick)
 {
+	if (m_isPicking)
+	{
+		if (m_eObjEditType == OBJECT_CREATE)
+		{
+			if (m_pTargetObject != nullptr && m_isUpdateData)
+			{
+				SampleIns ins;
+				ins.fTick = 0.0f;
+				ins.vPos = vPick;
+				ins.vScale = Vector3::One;
+				ins.qRot = Quaternion::Identity;
+				if (m_pTargetObject->m_iObjectID == 1) ins.vScale = Vector3(0.2f, 0.2f, 0.2f);
+				ins.isActive = true;
+				ins.iID = m_pTargetObject->m_iObjectID;
+				Matrix mat = ins.GetWorld();
+				Vector3 vMin = Vector3::Transform(m_pTargetObject->m_myBoxCollider.vMin, mat);
+				Vector3 vMax = Vector3::Transform(m_pTargetObject->m_myBoxCollider.vMax, mat);
+				ins.myBoxCollider.SetBox(vMin, vMax);
+				m_pTargetObject->m_InstanceList.push_back(ins);
+				m_isUpdateData = false;
+			}
+		}
+		else
+		{
+			if (!m_isSelectObject)
+			{
+				float fMaxDist = 99999.0f;
+				for (int i = 0; i < m_DrawList.size(); i++)
+				{
+					for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
+					{
+						if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
+						if (myCollision::IntersectRayToBox(m_Mouse.m_myRay, m_DrawList[i]->m_InstanceList[j].myBoxCollider))
+						{
+							float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
+							if (fDist < fMaxDist)
+							{
+								m_pTargetIns = &m_DrawList[i]->m_InstanceList[j];
+								fMaxDist = fDist;
+								m_isSelectObject = true;
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				switch (m_eObjEditType)
+				{
+					break;
+				case OBJECT_TRANS:
+				{
+					m_pTargetIns->vPos = vPick;
+				}
+				break;
+				case OBJECT_SCALE:
+				{
+
+				}
+				break;
+				case OBJECT_ROTATE:
+				{
+
+				}
+				break;
+				case OBJECT_DELETE:
+				{
+					m_pTargetIns->isActive = false;
+				}
+				break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		if (m_isUpdateData && m_pTargetIns)
+		{
+			myModelObject* pObj = (myModelObject*)g_ObjMgr.GetGameObject(m_pTargetIns->iID);
+			Matrix mat = m_pTargetIns->GetWorld();
+			Vector3 vMin = pObj->m_myBoxCollider.vMin;
+			Vector3 vMax = pObj->m_myBoxCollider.vMax;
+			m_pTargetIns->myBoxCollider.SetBox(vMin, vMax);
+			m_pTargetIns = nullptr;
+			m_isUpdateData = false;
+			m_isSelectObject = false;
+		}
+	}
 }
 
 void myMapTool::ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera)
@@ -224,7 +374,11 @@ void myMapTool::ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* 
 	{
 		for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
 		{
-			m_DrawList[i]->m_pTransform->SetMatrix(&m_DrawList[i]->m_InstanceList[j].matWorld,
+			if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
+			m_DrawList[i]->m_pTransform->m_vPos = m_DrawList[i]->m_InstanceList[j].vPos;
+			m_DrawList[i]->m_pTransform->m_vScale = m_DrawList[i]->m_InstanceList[j].vScale;
+			m_DrawList[i]->m_pTransform->m_qRot = m_DrawList[i]->m_InstanceList[j].qRot;
+			m_DrawList[i]->m_pTransform->SetMatrix(NULL,
 				&pTargetCamera->m_pTransform->m_matView,
 				&pTargetCamera->m_pTransform->m_matProj);
 			m_DrawList[i]->Render();
@@ -263,7 +417,7 @@ bool myMapTool::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Text
 	return true;
 }
 
-bool myMapTool::SetNormalTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest, Vector3& vPick)
+bool myMapTool::SetNormalTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest, Vector3& vPick, Vector2 & vLT, Vector2 & vRB)
 {
 	D3D11_TEXTURE2D_DESC desc;
 	pTexDest->GetDesc(&desc);
@@ -274,72 +428,45 @@ bool myMapTool::SetNormalTex(ID3D11DeviceContext * pImmediateContext, ID3D11Text
 	{
 		BYTE* pDestBytes = (BYTE*)MappedFaceDest.pData;
 		float fMapWidth = m_pMap->m_iNumCellCols * m_pMap->m_fCellDistance;
-		float fWidthRatio =  (float)desc.Width / fMapWidth;
+		float fWidthRatio = (float)desc.Width / fMapWidth;
+		UINT L = (vLT.x + (fMapWidth / 2.0f)) * fWidthRatio;
+		UINT R = (vRB.x + (fMapWidth / 2.0f)) * fWidthRatio;
+		UINT T = (-(vLT.y - (fMapWidth / 2.0f))) * fWidthRatio;
+		UINT B = (-(vRB.y - (fMapWidth / 2.0f))) * fWidthRatio;
 		Vector2 vCenter = Vector2((vPick.x + (fMapWidth / 2.0f)) * fWidthRatio,
-								(-(vPick.z - (fMapWidth / 2.0f))) * fWidthRatio);
+			(-(vPick.z - (fMapWidth / 2.0f))) * fWidthRatio);
 		float fRadius = m_fOutRad * fWidthRatio;
 
-		for (UINT y = 0; y < desc.Height; y++)
+		for (UINT y = T; y < B; y++)
 		{
-			for (UINT x = 0; x < desc.Width; x++)
+			UINT rowStart = y * MappedFaceDest.RowPitch;
+			for (UINT x = L; x < R; x++)
 			{
+				UINT colStart = x * 4;
 				Vector2 p = Vector2(x, y);
 				float fDist = (p - vCenter).Length();
 				if (fDist < fRadius)
 				{
-					float iRatio = 0.0f;
-					int iTemp = 0;
-					if (fDist < fRadius / 2.0f)
+					UINT iIndex = rowStart + colStart + m_eSplatType - 200;
+
+					float Lerf = 0.0f;
+					if (fDist < m_fInnerRad)
 					{
-						iRatio = 255;
+						Lerf = 255.0f;
 					}
 					else
-					{	
-						iRatio = ((1.0f - fDist / fRadius) * 2.0f) * 255;
-					}
-					switch (m_eSplatType)
 					{
-					case SPLAT_TEX_01:
+						float fRatio = (fDist - m_fInnerRad) / (fRadius - m_fInnerRad);
+						Lerf = 255.0f * (1.0f - fRatio) + 0.0f * fRatio;
+					}
+					int iTemp = pDestBytes[iIndex];
+					if (iTemp > Lerf)
 					{
-						iTemp = *pDestBytes + (int)iRatio;
-						if (iTemp > 255) iTemp = 255;
-						*pDestBytes = iTemp;
-						pDestBytes += 4;
+						Lerf = Lerf / 20.0f;
 					}
-						break;
-					case SPLAT_TEX_02:
-					{
-						pDestBytes++;
-						iTemp = *pDestBytes + (int)iRatio;
-						if (iTemp > 255) iTemp = 255;
-						*pDestBytes = iTemp;
-						pDestBytes += 3;
-					}
-						break;
-					case SPLAT_TEX_03:
-					{
-						pDestBytes += 2;
-						iTemp = *pDestBytes + (int)iRatio;
-						if (iTemp > 255) iTemp = 255;
-						*pDestBytes = iTemp;
-						pDestBytes += 2;
-					}
-						break;
-					case SPLAT_TEX_04:
-					{
-						pDestBytes += 3;
-						iTemp = *pDestBytes + (int)iRatio;
-						if (iTemp > 255) iTemp = 255;
-						*pDestBytes = iTemp;
-						pDestBytes++;
-					}
-						break;
-					default:
-						break;
-					}
-					continue;
+					pDestBytes[iIndex] = pDestBytes[iIndex] + (int)Lerf > 255 ?
+						255 : pDestBytes[iIndex] + (int)Lerf;
 				}
-				pDestBytes += 4;
 			}
 		}
 		pImmediateContext->Unmap(pTexDest, 0);

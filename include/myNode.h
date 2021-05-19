@@ -4,6 +4,9 @@
 class myNode
 {
 public:
+	//¿”Ω√
+	vector<int>				m_iObjectList;
+public:
 	myNode*					m_pParent;
 	//±Ì¿Ã
 	int						m_iDepth;

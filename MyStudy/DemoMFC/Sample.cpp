@@ -22,7 +22,6 @@ bool Sample::Init()
 	m_pTopCamera->CreateViewMatrix({ 0,500.0f,-0.1f }, { 0,0,0 });
 	
 	m_isCreate = false;
-	m_isPicking = false;
 	return true;
 }
 
@@ -47,10 +46,16 @@ bool Sample::Render()
 		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 			myDxState::g_RasterizerDesc);
 	}
-	if (g_Input.GetKey('0') == KEY_PUSH)
+	if (g_Input.GetKey('5') == KEY_PUSH)
 	{
-		DirectX::SaveDDSTextureToFile(g_pImmediateContext, m_pMapTool->m_HeightTex.m_pTexture.Get(), L"123.dds");
+		m_pMapTool->SetMode(300);
 	}
+	//if (g_Input.GetKey('6') == KEY_PUSH)
+	//{
+	//	myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	//	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+	//		myDxState::g_RasterizerDesc);
+	//}
 
 #pragma endregion
 

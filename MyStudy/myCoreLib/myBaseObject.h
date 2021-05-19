@@ -7,6 +7,16 @@ public:
 	
 };
 
+enum myObjectType
+{
+	OBJECT_OBJECT = 0,
+	OBJECT_PLAYER,
+	OBJECT_ENEMY,
+	OBJECT_MAP,
+	OBJECT_UI,
+
+};
+
 struct MY_SPHERE
 {
 	Vector3		vCenter;
@@ -24,6 +34,25 @@ struct MY_BOX
 	// OBB
 	Vector3		vAxis[3];
 	float		fExtent[3];
+	void SetBox(Vector3& min, Vector3 max)
+	{
+		vMax = max;
+		vMin = min;
+		vCenter = (vMax + vMin) / 2.0f;
+		Vector3 range = vMax - vCenter;
+		fExtent[0] = range.x;
+		fExtent[1] = range.y;
+		fExtent[2] = range.z;
+		vPos[0] = Vector3(vMin.x,vMax.y, vMin.z);
+		vPos[1] = Vector3(vMax.x,vMax.y, vMin.z);
+		vPos[2] = Vector3(vMax.x,vMin.y, vMin.z);
+		vPos[3] = Vector3(vMin.x,vMin.y, vMin.z);
+		vPos[4] = Vector3(vMin.x,vMax.y, vMax.z);
+		vPos[5] = Vector3(vMax.x,vMax.y, vMax.z);
+		vPos[6] = Vector3(vMax.x,vMin.y, vMax.z);
+		vPos[7] = Vector3(vMin.x,vMin.y, vMax.z);
+	}
+
 };
 
 struct MY_PLANE
