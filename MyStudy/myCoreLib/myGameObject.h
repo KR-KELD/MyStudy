@@ -242,6 +242,37 @@ public:
 	~myTransform() {}
 };
 
+enum myColliderType
+{
+	COLLIDER_NONE = 0,
+	COLLIDER_BOX,
+	COLLIDER_SPHERE,
+
+};
+
+class myCollider :
+	public myComponent
+{
+public:
+	DEFINE_COMPONENT(myCollider, myComponent, true);
+public:
+	int					m_iSelectID = -1;
+	int					m_iCollisionID = -1;
+	DWORD				m_dwSelectState = 0;
+	DWORD				m_dwCollisionState = 0;
+	bool				m_isSelectEnable = true;
+	bool				m_isCollisionEnable = true;
+	myColliderType		m_eType;
+public:
+	virtual bool		Init();
+	virtual bool		Frame();
+	virtual bool		Render();
+	virtual bool		Release();
+public:
+	myCollider();
+	virtual ~myCollider();
+};
+
 class myGameObject : public myComponent
 {
 public:
@@ -251,6 +282,7 @@ public:
 	T_STR			m_strTag;
 public:
 	//게임오브젝트 언오더맵으로 바꿔보기
+	myCollider*										m_pCollider;
 	myGameObject*									m_pParent;
 	multimap<wstring, myGameObject*>				m_Childs;
 	multimap<wstring, myGameObject*>::iterator		m_ObjIter;
@@ -297,7 +329,11 @@ public:
 	virtual void	Reset();
 	virtual bool	Action();
 	virtual bool	Release();
-	//virtual bool	On
+	virtual void	OnMouseOverlap(Vector3 vPos, DWORD dwState);
+	virtual void	NoneCollision(myCollider* pObj, DWORD dwState);
+	virtual void	OnCollisionEnter(myCollider* pObj, DWORD dwState);
+	virtual void	OnCollisionStay(myCollider* pObj, DWORD dwState);
+	virtual void	OnCollisionEnd(myCollider* pObj, DWORD dwState);
 public:
 	myGameObject*			Add(wstring strName = L"");
 	myGameObject*			Add(myGameObject* pGameObj);

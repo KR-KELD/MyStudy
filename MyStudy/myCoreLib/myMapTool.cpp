@@ -287,13 +287,14 @@ void myMapTool::EditObject(Vector3& vPick)
 				ins.vPos = vPick;
 				ins.vScale = Vector3::One;
 				ins.qRot = Quaternion::Identity;
-				if (m_pTargetObject->m_iObjectID == 1) ins.vScale = Vector3(0.2f, 0.2f, 0.2f);
+				//if (m_pTargetObject->m_iObjectID == 1) ins.vScale = Vector3(0.2f, 0.2f, 0.2f);
 				ins.isActive = true;
 				ins.iID = m_pTargetObject->m_iObjectID;
-				Matrix mat = ins.GetWorld();
-				Vector3 vMin = Vector3::Transform(m_pTargetObject->m_myBoxCollider.vMin, mat);
-				Vector3 vMax = Vector3::Transform(m_pTargetObject->m_myBoxCollider.vMax, mat);
-				ins.myBoxCollider.SetBox(vMin, vMax);
+				float fScale = (ins.vScale.x + ins.vScale.y + ins.vScale.z) / 3.0f;
+				ins.SphereCollider = m_pTargetObject->m_SphereCollider;
+				ins.SphereCollider.fRadius *= fScale;
+				ins.SphereCollider.vCenter = ins.vPos;
+				ins.SphereCollider.vCenter.y += m_pTargetObject->m_SphereCollider.vCenter.y * ins.vScale.y;
 				m_pTargetObject->m_InstanceList.push_back(ins);
 				m_isUpdateData = false;
 			}
@@ -308,14 +309,26 @@ void myMapTool::EditObject(Vector3& vPick)
 					for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
 					{
 						if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
-						if (myCollision::IntersectRayToBox(m_Mouse.m_myRay, m_DrawList[i]->m_InstanceList[j].myBoxCollider))
+						//if (myCollision::IntersectRayToBox(m_Mouse.m_myRay, m_DrawList[i]->m_InstanceList[j].myBoxCollider))
+						//{
+						//	float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
+						//	if (fDist < fMaxDist)
+						//	{
+						//		m_pTargetIns = &m_DrawList[i]->m_InstanceList[j];
+						//		fMaxDist = fDist;
+						//		m_isSelectObject = true;
+						//	}
+						//}
+						if (myCollision::IntersectRayToSphere(m_Mouse.m_myRay, m_DrawList[i]->m_InstanceList[j].SphereCollider))
 						{
 							float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
 							if (fDist < fMaxDist)
 							{
+								m_Mouse.m_vPrevPos = m_Mouse.m_vIntersectionPos;
 								m_pTargetIns = &m_DrawList[i]->m_InstanceList[j];
 								fMaxDist = fDist;
 								m_isSelectObject = true;
+								m_vTemp = m_pTargetIns->vScale;
 							}
 						}
 					}
@@ -333,12 +346,38 @@ void myMapTool::EditObject(Vector3& vPick)
 				break;
 				case OBJECT_SCALE:
 				{
+					Matrix mat;
+					mat._41 = m_Mouse.m_vPrevPos.x; 
+					mat._42 = m_Mouse.m_vPrevPos.y;
+					mat._43 = m_Mouse.m_vPrevPos.z;
+					mat = mat * g_pMainCamTransform->m_matView * g_pMainCamTransform->m_matProj;
+					//Vector3 v1 = Vector3::Transform(m_Mouse.m_vPrevPos, mat);
+					Vector2 v1;
+					v1.x = ((mat._41 / mat._44) + 1.0f) * 0.5f * g_rtClient.right;
+					v1.y = (1.0f - ((mat._42 / mat._44) + 1.0f) * 0.5f) * g_rtClient.bottom;
+					//Vector3 v2 = Vector3::Transform(m_pTargetIns->vPos, mat);
+					Vector2 v2;
+					mat._41 = m_pTargetIns->vPos.x;
+					mat._42 = m_pTargetIns->vPos.y;
+					mat._43 = m_pTargetIns->vPos.z;
+					mat = mat * g_pMainCamTransform->m_matView * g_pMainCamTransform->m_matProj;
+					v2.x = ((mat._41 / mat._44) + 1.0f) * 0.5f * g_rtClient.right;
+					v2.y = (1.0f - ((mat._42 / mat._44) + 1.0f) * 0.5f) * g_rtClient.bottom;
+					float fOne = fabs(v1.x - v2.x);
+					float fRange = fabs(g_Input.GetMouse().x - v2.x);
+					//float fRange = (Vector2(g_Input.GetMouse().x, g_Input.GetMouse().y) - v2).Length();
 
+					float fRatio = fRange / fOne;
+
+					m_pTargetIns->vScale = m_vTemp * fRatio;
 				}
 				break;
 				case OBJECT_ROTATE:
 				{
+					//float fAngleX = (g_Input.GetMouse().x - g_CamMgr.m_pMainCamera->m_ptPrePosition.x);
+					float fAngleY = (g_Input.GetMouse().y - g_CamMgr.m_pMainCamera->m_ptPrePosition.y);
 
+					//m_pTargetIns->qRot.y += 10.0f;
 				}
 				break;
 				case OBJECT_DELETE:
@@ -349,6 +388,7 @@ void myMapTool::EditObject(Vector3& vPick)
 				default:
 					break;
 				}
+
 			}
 		}
 	}
@@ -357,10 +397,11 @@ void myMapTool::EditObject(Vector3& vPick)
 		if (m_isUpdateData && m_pTargetIns)
 		{
 			myModelObject* pObj = (myModelObject*)g_ObjMgr.GetGameObject(m_pTargetIns->iID);
-			Matrix mat = m_pTargetIns->GetWorld();
-			Vector3 vMin = pObj->m_myBoxCollider.vMin;
-			Vector3 vMax = pObj->m_myBoxCollider.vMax;
-			m_pTargetIns->myBoxCollider.SetBox(vMin, vMax);
+			float fScale = (m_pTargetIns->vScale.x + m_pTargetIns->vScale.y + m_pTargetIns->vScale.z) / 3.0f;
+			m_pTargetIns->SphereCollider = pObj->m_SphereCollider;
+			m_pTargetIns->SphereCollider.fRadius *= fScale;
+			m_pTargetIns->SphereCollider.vCenter = m_pTargetIns->vPos;
+			m_pTargetIns->SphereCollider.vCenter.y += pObj->m_SphereCollider.vCenter.y * m_pTargetIns->vScale.y;
 			m_pTargetIns = nullptr;
 			m_isUpdateData = false;
 			m_isSelectObject = false;

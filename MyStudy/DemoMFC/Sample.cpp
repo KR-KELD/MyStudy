@@ -50,12 +50,14 @@ bool Sample::Render()
 	{
 		m_pMapTool->SetMode(300);
 	}
-	//if (g_Input.GetKey('6') == KEY_PUSH)
-	//{
-	//	myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	//	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-	//		myDxState::g_RasterizerDesc);
-	//}
+	if (g_Input.GetKey('6') == KEY_PUSH)
+	{
+		m_pMapTool->SetMode(301);
+	}
+	if (g_Input.GetKey('7') == KEY_PUSH)
+	{
+		m_pMapTool->SetMode(302);
+	}
 
 #pragma endregion
 

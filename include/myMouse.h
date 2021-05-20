@@ -1,10 +1,9 @@
 #pragma once
-#include "myStd.h"
 #include "myCameraManager.h"
-#include "myInput.h"
-#include "myMap.h"
 #include "myCollision.h"
+#include "myInput.h"
 #include "myNode.h"
+#include "myMap.h"
 
 class myMouse
 {

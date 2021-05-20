@@ -67,7 +67,7 @@
     <Filter Include="Texture">
       <UniqueIdentifier>{8e1fa8f3-8e64-45c0-baea-c9294a8bd5a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Collider">
+    <Filter Include="Collision">
       <UniqueIdentifier>{7e3042df-8a78-495d-8226-2d9e568085d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -89,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="myEffect.cpp">
       <Filter>Obj</Filter>
-    </ClCompile>
-    <ClCompile Include="myCollision.cpp">
-      <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="myObjManager.cpp">
       <Filter>Mgr</Filter>
@@ -244,7 +241,13 @@
       <Filter>DXTK</Filter>
     </ClCompile>
     <ClCompile Include="myCollider.cpp">
-      <Filter>Collider</Filter>
+      <Filter>Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="myCollision.cpp">
+      <Filter>Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="myCollisionManager.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,9 +292,6 @@
     </ClInclude>
     <ClInclude Include="myProjectile.h">
       <Filter>Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="myCollision.h">
-      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="myParsingScript.h">
       <Filter>Util</Filter>
@@ -456,7 +456,13 @@
       <Filter>DXTK</Filter>
     </ClInclude>
     <ClInclude Include="myCollider.h">
-      <Filter>Collider</Filter>
+      <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="myCollision.h">
+      <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="myCollisionManager.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

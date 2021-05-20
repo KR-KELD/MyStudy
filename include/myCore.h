@@ -10,6 +10,7 @@
 #include "myController.h"
 #include "mySkyBox.h"
 #include "myFbxLoader.h"
+#include "myCollisionManager.h"
 
 class myCore : public myDevice
 {

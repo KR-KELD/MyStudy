@@ -1,7 +1,8 @@
 #include "myGameObject.h"
-
+#include "myCollisionManager.h"
 DECLARE_COMPONENT(myComponent);
 DECLARE_COMPONENT(myTransform);
+DECLARE_COMPONENT(myCollider);
 DECLARE_COMPONENT(myGameObject);
 myComponent * myComponent::Clone()
 {
@@ -218,6 +219,66 @@ bool myTransform::Action()
 bool myTransform::Release()
 {
 	return true;
+}
+
+bool myCollider::Init()
+{
+	if (m_pGameObject != nullptr)
+	{
+		m_pGameObject->m_pCollider = this;
+		if (m_isSelectEnable)
+		{
+			g_CollisionMgr.AddSelectExecute(this, 
+						std::bind(&myGameObject::OnMouseOverlap, m_pGameObject, 
+						std::placeholders::_1,
+						std::placeholders::_2));
+		}
+		if (m_isCollisionEnable)
+		{
+			g_CollisionMgr.AddCollisionExecute(this,
+				std::bind(&myGameObject::NoneCollision, m_pGameObject,
+					std::placeholders::_1,
+					std::placeholders::_2));
+			g_CollisionMgr.AddBeginExecute(this,
+				std::bind(&myGameObject::OnCollisionEnter, m_pGameObject,
+					std::placeholders::_1,
+					std::placeholders::_2));
+			g_CollisionMgr.AddStayExecute(this,
+				std::bind(&myGameObject::OnCollisionStay, m_pGameObject,
+					std::placeholders::_1,
+					std::placeholders::_2));
+			g_CollisionMgr.AddEndExecute(this,
+				std::bind(&myGameObject::OnCollisionEnd, m_pGameObject,
+					std::placeholders::_1,
+					std::placeholders::_2));
+		}
+
+	}
+	return true;
+}
+
+bool myCollider::Frame()
+{
+	return true;
+}
+
+bool myCollider::Render()
+{
+	return true;
+}
+
+bool myCollider::Release()
+{
+	return true;
+}
+
+myCollider::myCollider()
+{
+	m_eType = COLLIDER_NONE;
+}
+
+myCollider::~myCollider()
+{
 }
 
 
@@ -451,6 +512,46 @@ bool myGameObject::Release()
 	}
 	m_ComponentList.clear();
 	return true;
+}
+
+void myGameObject::OnMouseOverlap(Vector3 vPos, DWORD dwState)
+{
+	if (m_pCollider != nullptr)
+	{
+		m_pCollider->m_dwSelectState = dwState;
+	}
+}
+
+void myGameObject::NoneCollision(myCollider * pObj, DWORD dwState)
+{
+	if (m_pCollider != nullptr)
+	{
+		m_pCollider->m_dwCollisionState = dwState;
+	}
+}
+
+void myGameObject::OnCollisionEnter(myCollider * pObj, DWORD dwState)
+{
+	if (m_pCollider != nullptr)
+	{
+		m_pCollider->m_dwCollisionState = dwState;
+	}
+}
+
+void myGameObject::OnCollisionStay(myCollider * pObj, DWORD dwState)
+{
+	if (m_pCollider != nullptr)
+	{
+		m_pCollider->m_dwCollisionState = dwState;
+	}
+}
+
+void myGameObject::OnCollisionEnd(myCollider * pObj, DWORD dwState)
+{
+	if (m_pCollider != nullptr)
+	{
+		m_pCollider->m_dwCollisionState = dwState;
+	}
 }
 
 myGameObject* myGameObject::Add(wstring strName)

@@ -99,7 +99,29 @@ bool myFbxObj::ModelInit()
 		return false;
 	}
 
-	m_pModelObject->m_myBoxCollider.SetBox(vMin, vMax);
+	m_pModelObject->m_BoxCollider.vMin = vMin;
+	m_pModelObject->m_BoxCollider.vMax = vMax;
+
+	m_pModelObject->m_BoxCollider.vCenter = (vMax + vMin) / 2;
+
+	Vector3 range = vMax - m_pModelObject->m_BoxCollider.vCenter;
+	m_pModelObject->m_SphereCollider.vCenter = m_pModelObject->m_BoxCollider.vCenter;
+	m_pModelObject->m_SphereCollider.fRadius = range.Length();
+
+	m_pModelObject->m_BoxCollider.vAxis[0] = Vector3(1.0f, 0.0f, 0.0f);
+	m_pModelObject->m_BoxCollider.vAxis[1] = Vector3(0.0f, 1.0f, 0.0f);
+	m_pModelObject->m_BoxCollider.vAxis[2] = Vector3(0.0f, 0.0f, 1.0f);
+	m_pModelObject->m_BoxCollider.fExtent[0] = range.x;
+	m_pModelObject->m_BoxCollider.fExtent[1] = range.y;
+	m_pModelObject->m_BoxCollider.fExtent[2] = range.z;
+	m_pModelObject->m_BoxCollider.vPos[0] = Vector3(vMin.x, vMax.y, vMin.z);
+	m_pModelObject->m_BoxCollider.vPos[1] = Vector3(vMax.x, vMax.y, vMin.z);
+	m_pModelObject->m_BoxCollider.vPos[2] = Vector3(vMax.x, vMin.y, vMin.z);
+	m_pModelObject->m_BoxCollider.vPos[3] = Vector3(vMin.x, vMin.y, vMin.z);
+	m_pModelObject->m_BoxCollider.vPos[4] = Vector3(vMin.x, vMax.y, vMax.z);
+	m_pModelObject->m_BoxCollider.vPos[5] = Vector3(vMax.x, vMax.y, vMax.z);
+	m_pModelObject->m_BoxCollider.vPos[6] = Vector3(vMax.x, vMin.y, vMax.z);
+	m_pModelObject->m_BoxCollider.vPos[7] = Vector3(vMin.x, vMin.y, vMax.z);
 
 	return true;
 }

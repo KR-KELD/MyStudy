@@ -64,6 +64,7 @@ bool myCore::GameInit()
 
 	g_CamMgr.SetMainCamera(obj);
 	g_FbxLoader.Init();
+	g_CollisionMgr.Init();
 
 	Init();
 	PostInit();
@@ -81,6 +82,7 @@ bool myCore::GameFrame()
 	g_ObjMgr.PreFrame();
 	g_ObjMgr.Frame();
 	g_CamMgr.Frame();
+	g_CollisionMgr.Frame();
 	PostFrame();
 	return true;
 }

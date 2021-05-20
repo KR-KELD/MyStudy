@@ -71,6 +71,7 @@ public:
 	bool		m_isUpdateData;
 	bool		m_isUpdatePick;
 	bool		m_isSelectObject;
+	Vector3		m_vTemp;
 public:
 	bool	Init();
 	bool	Frame() override;

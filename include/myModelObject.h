@@ -10,7 +10,8 @@ struct SampleIns
 	Vector3 vPos;
 	Vector3 vScale;
 	Quaternion qRot;
-	MY_BOX	myBoxCollider;
+	MY_BOX	BoxCollider;
+	MY_SPHERE SphereCollider;
 	Matrix GetWorld()
 	{
 		Matrix matWorld = Matrix::Identity;
@@ -30,7 +31,8 @@ public:
 	DEFINE_COMPONENT(myModelObject, myGameObject, true);
 public:
 	//임시
-	MY_BOX							m_myBoxCollider;
+	MY_BOX							m_BoxCollider;
+	MY_SPHERE						m_SphereCollider;
 public:
 	int								m_iObjectID;
 	//임시
