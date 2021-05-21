@@ -58,6 +58,10 @@ bool Sample::Render()
 	{
 		m_pMapTool->SetMode(302);
 	}
+	if (g_Input.GetKey('4') == KEY_PUSH)
+	{
+		m_pMapTool->SetMode(304);
+	}
 
 #pragma endregion
 

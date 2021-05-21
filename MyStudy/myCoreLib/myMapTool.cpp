@@ -357,6 +357,7 @@ void myMapTool::EditObject(Vector3& vPick)
 					v1.y = (1.0f - ((mat._42 / mat._44) + 1.0f) * 0.5f) * g_rtClient.bottom;
 					//Vector3 v2 = Vector3::Transform(m_pTargetIns->vPos, mat);
 					Vector2 v2;
+					mat = Matrix::Identity;
 					mat._41 = m_pTargetIns->vPos.x;
 					mat._42 = m_pTargetIns->vPos.y;
 					mat._43 = m_pTargetIns->vPos.z;
@@ -374,10 +375,10 @@ void myMapTool::EditObject(Vector3& vPick)
 				break;
 				case OBJECT_ROTATE:
 				{
-					//float fAngleX = (g_Input.GetMouse().x - g_CamMgr.m_pMainCamera->m_ptPrePosition.x);
-					float fAngleY = (g_Input.GetMouse().y - g_CamMgr.m_pMainCamera->m_ptPrePosition.y);
+					float fAngleX = (g_Input.GetMouse().x - g_CamMgr.m_pMainCamera->m_ptPrePosition.x);
+					//float fAngleY = (g_Input.GetMouse().y - g_CamMgr.m_pMainCamera->m_ptPrePosition.y);
 
-					//m_pTargetIns->qRot.y += 10.0f;
+					m_pTargetIns->qRot.y -= XMConvertToRadians(fAngleX / 2.0f);
 				}
 				break;
 				case OBJECT_DELETE:

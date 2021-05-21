@@ -72,7 +72,8 @@ bool myTransform::SetMatrix(Matrix * pWorld, Matrix * pView, Matrix * pProj)
 	{
 		//필요할때 풀기
 		m_matScale = Matrix::CreateScale(m_vScale);
-		m_matRot = Matrix::CreateFromQuaternion(m_qRot);
+		//m_matRot = Matrix::CreateFromQuaternion(m_qRot);
+		m_matRot = Matrix::CreateFromYawPitchRoll(m_qRot.y, m_qRot.x, m_qRot.z);
 		m_matWorld = m_matScale * m_matRot;
 		m_matWorld._41 = m_vPos.x;
 		m_matWorld._42 = m_vPos.y;
@@ -340,15 +341,7 @@ bool myGameObject::PreFrame()
 
 	if (m_pParent)
 	{
-		//m_pTransform->m_vPos = m_pParent->m_pTransform->m_vPos + m_pTransform->m_vPos;
-		//m_pTransform->m_vRot = m_pParent->m_pTransform->m_vRot + m_pTransform->m_vRot;
-		//m_pTransform->m_vScale = m_pParent->m_pTransform->m_vPos + m_pTransform->m_vPos;
 
-		//m_pTransform->m_vLocalPos = m_pParent->m_pTransform->m_vLocalPos + m_pTransform->m_vLocalPos;
-		//m_pTransform->m_vLocalRot = m_pParent->m_pTransform->m_vLocalRot + m_pTransform->m_vLocalRot;
-		//m_pTransform->m_vLocalScale = m_pParent->m_pTransform->m_vLocalScale + m_pTransform->m_vLocalScale;
-
-		//m_pTransform->m_matWorld = m_pParent->m_pTransform->m_matWorld + m_pTransform->m_matWorld;
 	}
 	return true;
 }

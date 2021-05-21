@@ -7,6 +7,8 @@ public:
 	ComPtr<ID3D11Texture2D>			 m_pTexture;
 	ComPtr<ID3D11ShaderResourceView> m_pSRV;
 
+	ComPtr<ID3D11UnorderedAccessView> m_pUAV;
+
 public:
 	bool		CopyCreate(ID3D11Texture2D* pTex = nullptr);
 	bool		LoadTexture(const TCHAR* szFileName);
