@@ -1,5 +1,6 @@
 #include "myGameObject.h"
 #include "myCollisionManager.h"
+#include "myObjManager.h"
 DECLARE_COMPONENT(myComponent);
 DECLARE_COMPONENT(myTransform);
 DECLARE_COMPONENT(myCollider);
@@ -327,6 +328,7 @@ myGameObject * myGameObject::Clone()
 
 bool myGameObject::Init()
 {
+	m_iObjectID = g_ObjMgr.SetObjectList(this);
 	//for (m_ComIter = m_ComponentList.begin();
 	//	m_ComIter != m_ComponentList.end();
 	//	m_ComIter++)

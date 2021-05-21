@@ -284,6 +284,7 @@ public:
 public:
 	T_STR			m_strName;
 	T_STR			m_strTag;
+	int				m_iObjectID;
 public:
 	//게임오브젝트 언오더맵으로 바꿔보기
 	myCollider*										m_pCollider;

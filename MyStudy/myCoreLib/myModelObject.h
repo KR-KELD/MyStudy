@@ -34,7 +34,7 @@ public:
 	MY_BOX							m_BoxCollider;
 	MY_SPHERE						m_SphereCollider;
 public:
-	int								m_iObjectID;
+
 	//юс╫ц
 	myTexture*						m_pNormalTex;
 
