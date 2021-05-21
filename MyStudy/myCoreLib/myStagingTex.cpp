@@ -126,28 +126,38 @@ bool myStagingTex::Create(int iTexSize)
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
 	desc.BindFlags = 0;
 	desc.MiscFlags = 0;
-	hr = g_pd3dDevice->CreateTexture2D(&desc, NULL, m_pStaging.GetAddressOf());
-	if (FAILED(hr))
+	if (m_pStaging.Get() == nullptr)
 	{
-		return false;
+		hr = g_pd3dDevice->CreateTexture2D(&desc, NULL, m_pStaging.GetAddressOf());
+		if (FAILED(hr))
+		{
+			return false;
+		}
 	}
+
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.CPUAccessFlags = 0;
 	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	hr = g_pd3dDevice->CreateTexture2D(&desc, NULL, m_pTexture.GetAddressOf());
-	if (FAILED(hr))
+	if (m_pTexture.Get() == nullptr)
 	{
-		return false;
+		hr = g_pd3dDevice->CreateTexture2D(&desc, NULL, m_pTexture.GetAddressOf());
+		if (FAILED(hr))
+		{
+			return false;
+		}
 	}
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
 	ZeroMemory(&SRVDesc, sizeof(SRVDesc));
 	SRVDesc.Format = desc.Format;
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MipLevels = desc.MipLevels;
-	hr = g_pd3dDevice->CreateShaderResourceView(m_pTexture.Get(), &SRVDesc, m_pSRV.GetAddressOf());
-	if (FAILED(hr))
+	if (m_pSRV.Get() == nullptr)
 	{
-		return false;
+		hr = g_pd3dDevice->CreateShaderResourceView(m_pTexture.Get(), &SRVDesc, m_pSRV.GetAddressOf());
+		if (FAILED(hr))
+		{
+			return false;
+		}
 	}
 	return true;
 }

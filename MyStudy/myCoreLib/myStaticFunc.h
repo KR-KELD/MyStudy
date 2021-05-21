@@ -27,5 +27,6 @@ namespace StaticGraphics
 	ID3D11ShaderResourceView*	CreateShaderResourceView(ID3D11Device* pDevice, ID3D11DeviceContext*    pContext, const TCHAR* strFilePath);
 	ID3D11DepthStencilView*		CreateDepthStencilView(ID3D11Device* pDevice, DWORD dwWidth, DWORD dwHeight);
 
-
+	ID3D11Buffer* CreateStructuredBuffer(ID3D11Device* pDevice, UINT uElementSize, UINT uCount, void* pInitData);
+	ID3D11ShaderResourceView* CreateBufferSRV(ID3D11Device* pDevice, ID3D11Buffer* pBuffer);
 }

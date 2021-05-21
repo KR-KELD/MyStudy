@@ -118,9 +118,9 @@ void myMapToolForm::OnBnClickedButton1()
 			pApp->m_Sample.m_pMap,
 			&pApp->m_Sample.m_QuadTree);
 		pApp->m_Sample.m_pMapTool->Init();
-
-		pApp->m_Sample.m_pMapTool->m_NormalTex.Create(iTexSize);
-		pApp->m_Sample.m_pMapTool->m_HeightTex.Create(iTexSize);
+		pApp->m_Sample.m_pMapTool->CreateTex(iTexSize);
+		//pApp->m_Sample.m_pMapTool->m_NormalTex.Create(iTexSize);
+		//pApp->m_Sample.m_pMapTool->m_HeightTex.Create(iTexSize);
 
 		pApp->m_Sample.m_pTopCamera->CreateOrthographic(
 			desc.iNumCols * desc.fCellDistance, 
@@ -270,7 +270,7 @@ void myMapToolForm::OnBnClickedSave()
 		vecDesc.push_back(cstrTemp);
 
 		wstrTemp.clear();
-		//wstrTemp = L"CellSize ";
+		//wstrTemp = L"SpaceDivision ";
 		iNumTemp = FLOAT_TO_INT(pApp->m_Sample.m_pMap->m_cbMapData.MapData[3]);
 		wstrTemp += to_wstring(iNumTemp);
 		wstrTemp += L"\n";
@@ -278,8 +278,16 @@ void myMapToolForm::OnBnClickedSave()
 		vecDesc.push_back(cstrTemp);
 
 		wstrTemp.clear();
-		//wstrTemp = L"CellSize ";
+		//wstrTemp = L"MapTexName ";
 		wstrTemp += pApp->m_Sample.m_pMap->m_MapDesc.szTexFile;
+		wstrTemp += L"\n";
+		cstrTemp = wstrTemp.c_str();
+		vecDesc.push_back(cstrTemp);
+
+		wstrTemp.clear();
+		//wstrTemp = L"TexSize ";
+		iNumTemp = pApp->m_Sample.m_pMapTool->m_iTexSizeX;
+		wstrTemp += to_wstring(iNumTemp);
 		wstrTemp += L"\n";
 		cstrTemp = wstrTemp.c_str();
 		vecDesc.push_back(cstrTemp);
@@ -302,8 +310,11 @@ void myMapToolForm::OnBnClickedSave()
 		wstrTemp += wstrFileName;
 		wstrTemp += L"_AlphaMask.dds";
 		DirectX::SaveDDSTextureToFile(g_pImmediateContext,
-			pApp->m_Sample.m_pMapTool->m_NormalTex.m_pTexture.Get(),
+			pApp->m_Sample.m_pMapTool->m_SplatCS.m_pTexture.Get(),
 			wstrTemp.c_str());
+		//DirectX::SaveDDSTextureToFile(g_pImmediateContext,
+		//	pApp->m_Sample.m_pMapTool->m_NormalTex.m_pTexture.Get(),
+		//	wstrTemp.c_str());
 		wstrTemp += L"\n";
 		cstrTemp = wstrTemp.c_str();
 		vecDesc.push_back(cstrTemp);
@@ -357,15 +368,13 @@ void myMapToolForm::OnBnClickedLoad()
 		CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 		if (!pApp->m_Sample.m_isCreate)
 		{
-
-
-
 			myMapDesc desc;
 			//int iNumCell = _ttoi(strCellCount);
 			int iNumTile = _ttoi(vecDesc[0]);
 			int iNumCell = _ttoi(vecDesc[1]);
 			int iCellSize = _ttoi(vecDesc[2]);
 			int iSpaceDivision = _ttoi(vecDesc[3]);
+			int iTexSize = _ttoi(vecDesc[5]);
 			// 0-1  1-2 2-4  3-8
 			pApp->m_Sample.m_QuadTree.m_iMaxdepth = iSpaceDivision;
 			desc.iNumCols = iNumCell * iNumTile + 1;//m_pMap->m_iNumCols;
@@ -381,10 +390,12 @@ void myMapToolForm::OnBnClickedLoad()
 				&pApp->m_Sample.m_QuadTree);
 
 			pApp->m_Sample.m_pMapTool->Init();
-			TCHAR* szTexPath = (TCHAR*)(LPCTSTR)vecDesc[5];
+			TCHAR* szTexPath = (TCHAR*)(LPCTSTR)vecDesc[6];
 			pApp->m_Sample.m_pMapTool->m_HeightTex.LoadTexture(szTexPath);
-			szTexPath = (TCHAR*)(LPCTSTR)vecDesc[6];
-			pApp->m_Sample.m_pMapTool->m_NormalTex.LoadTexture(szTexPath);
+			szTexPath = (TCHAR*)(LPCTSTR)vecDesc[7];
+			//pApp->m_Sample.m_pMapTool->m_NormalTex.LoadTexture(szTexPath);
+			pApp->m_Sample.m_pMapTool->m_SplatCS.CreateFromTexFile(szTexPath);
+			pApp->m_Sample.m_pMapTool->CreateTex(iTexSize);
 
 			pApp->m_Sample.m_pMap->SetMapCBData(iNumCell, iNumTile, m_iCellSize, iSpaceDivision);
 			//높이맵

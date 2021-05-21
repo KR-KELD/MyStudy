@@ -249,6 +249,9 @@
     <ClCompile Include="myCollisionManager.cpp">
       <Filter>Mgr</Filter>
     </ClCompile>
+    <ClCompile Include="myComputeShader.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mySoundManager.h">
@@ -464,6 +467,9 @@
     <ClInclude Include="myCollisionManager.h">
       <Filter>Mgr</Filter>
     </ClInclude>
+    <ClInclude Include="myComputeShader.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -502,5 +508,8 @@
       <Filter>Shader</Filter>
     </Text>
     <Text Include="..\..\data\shader\HeightMapPS.txt" />
+    <Text Include="..\..\data\shader\SplatCS.txt">
+      <Filter>Shader</Filter>
+    </Text>
   </ItemGroup>
 </Project>

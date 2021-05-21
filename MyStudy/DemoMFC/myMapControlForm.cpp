@@ -79,7 +79,7 @@ void myMapControlForm::OnBnClickedTerrainUp()
 	{
 		pApp->m_Sample.m_pMapTool->SetMode(100);
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_fSpeed;
-		pApp->m_Sample.m_pMapTool->m_fOutRad = m_fRadius;
+		pApp->m_Sample.m_pMapTool->m_vBrushRad.x = m_fRadius;
 	}
 }
 
@@ -93,7 +93,7 @@ void myMapControlForm::OnBnClickedTerrainDown()
 	{
 		pApp->m_Sample.m_pMapTool->SetMode(101);
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_fSpeed;
-		pApp->m_Sample.m_pMapTool->m_fOutRad = m_fRadius;
+		pApp->m_Sample.m_pMapTool->m_vBrushRad.x = m_fRadius;
 	}
 }
 
@@ -108,7 +108,7 @@ void myMapControlForm::OnBnClickedTerrainFlat()
 	{
 		pApp->m_Sample.m_pMapTool->SetMode(102);
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_fSpeed;
-		pApp->m_Sample.m_pMapTool->m_fOutRad = m_fRadius;
+		pApp->m_Sample.m_pMapTool->m_vBrushRad.x = m_fRadius;
 	}
 }
 
@@ -121,7 +121,7 @@ void myMapControlForm::OnBnClickedUpdate()
 	if (pApp->m_Sample.m_isCreate)
 	{
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_fSpeed;
-		pApp->m_Sample.m_pMapTool->m_fOutRad = m_fRadius;
+		pApp->m_Sample.m_pMapTool->m_vBrushRad.x = m_fRadius;
 	}
 }
 

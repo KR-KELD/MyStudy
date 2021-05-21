@@ -27,7 +27,7 @@ bool Sample::Init()
 
 bool Sample::Frame()
 {
-	if (m_pMapTool) m_pMapTool->Frame();
+	if (m_isCreate) m_pMapTool->Frame();
 	return true;
 }
 

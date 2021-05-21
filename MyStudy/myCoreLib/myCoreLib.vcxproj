@@ -198,6 +198,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myCollider.cpp" />
     <ClCompile Include="myCollision.cpp" />
     <ClCompile Include="myCollisionManager.cpp" />
+    <ClCompile Include="myComputeShader.cpp" />
     <ClCompile Include="myController.cpp" />
     <ClCompile Include="myCore.cpp" />
     <ClCompile Include="myDebugCamera.cpp" />
@@ -265,6 +266,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myCollider.h" />
     <ClInclude Include="myCollision.h" />
     <ClInclude Include="myCollisionManager.h" />
+    <ClInclude Include="myComputeShader.h" />
     <ClInclude Include="myController.h" />
     <ClInclude Include="myCore.h" />
     <ClInclude Include="myCoreStd.h" />
@@ -334,6 +336,7 @@ copy "*.h" "..\\..\\include"</Command>
     <Text Include="..\..\data\shader\PS.txt" />
     <Text Include="..\..\data\shader\SkyBoxPS.txt" />
     <Text Include="..\..\data\shader\SkyBoxVS.txt" />
+    <Text Include="..\..\data\shader\SplatCS.txt" />
     <Text Include="..\..\data\shader\VS.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

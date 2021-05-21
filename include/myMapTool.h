@@ -7,6 +7,7 @@
 #include "myStagingTex.h"
 #include "myFbxLoader.h"
 #include "myCamera.h"
+#include "myComputeShader.h"
 
 enum ToolType
 {
@@ -40,14 +41,30 @@ enum ObjectEditType
 	OBJECT_DELETE,
 };
 
+struct SplatBuf
+{
+	Vector2 vPickPos;
+	Vector2 vRadius; //x Out y In
+	int    iIndex;// rgba
+	float  fTexWidth;
+	float  fTexHeight;
+};
+
+
 class myMapTool : public myComponent
 {
+public:
+	int m_iTexSizeX = 1024;
+	int m_iTexSizeY = 1024;
 public:
 	myHeightMap*	m_pMap;
 	myQuadTree*		m_pQuadTree;
 	myMouse			m_Mouse;
 	myStagingTex	m_HeightTex;
 	myStagingTex	m_NormalTex;
+
+	myComputeShader m_SplatCS;
+	SplatBuf		m_sbSplat[1];
 public:
 	ID3D11ShaderResourceView* m_pSplatTex[4];
 public:
@@ -64,8 +81,7 @@ public:
 	vector<shared_ptr<myModelObject>> m_DrawList;
 public:
 	MY_SPHERE	m_PickSphere;
-	float		m_fOutRad;
-	float		m_fInnerRad;
+	Vector2		m_vBrushRad; // x Out y In
 	float		m_fSpeed;
 	bool		m_isPicking;
 	bool		m_isUpdateData;
@@ -78,6 +94,7 @@ public:
 	bool	Render() override;
 	bool	Release() override;
 public:
+	void	CreateTex(int iTexSize = 1024);
 	void	EditTopology(Vector3& vPick);
 	void	EditSplatting(Vector3& vPick);
 	void	SetMode(int iMode);
@@ -86,7 +103,7 @@ public:
 	void	TerrainRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera);
 	void	ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera);
 	bool	SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest);
-	bool	SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vPick , Vector2& vLT, Vector2& vRB);
+	//bool	SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vPick , Vector2& vLT, Vector2& vRB);
 	bool	ResetTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);
 public:
 	myMapTool(myHeightMap* pMap, myQuadTree* pQuadTree);

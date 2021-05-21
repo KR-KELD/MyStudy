@@ -607,4 +607,46 @@ namespace StaticGraphics
 		return pDSV;
 	}
 
+	ID3D11Buffer * CreateStructuredBuffer(ID3D11Device * pDevice, UINT uElementSize, UINT uCount, void * pInitData)
+	{
+		ID3D11Buffer* pBuffer = nullptr;
+		D3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof(bd));
+		bd.BindFlags = D3D11_BIND_SHADER_RESOURCE
+			| D3D11_BIND_UNORDERED_ACCESS;
+		bd.ByteWidth = uElementSize * uCount;
+		bd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		bd.StructureByteStride = uElementSize;
+		D3D11_SUBRESOURCE_DATA initData;
+		initData.pSysMem = &pInitData;
+		HRESULT hr = pDevice->CreateBuffer(&bd, &initData, &pBuffer);
+		if (FAILED(hr))
+		{
+			return nullptr;
+		}
+		return pBuffer;
+	}
+
+	ID3D11ShaderResourceView* CreateBufferSRV(ID3D11Device * pDevice, ID3D11Buffer * pBuffer)
+	{
+		ID3D11ShaderResourceView* pSRV = nullptr;
+		HRESULT hr = S_OK;
+		D3D11_BUFFER_DESC desc;
+		pBuffer->GetDesc(&desc);
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
+		ZeroMemory(&srvd, sizeof(srvd));
+		srvd.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+		srvd.BufferEx.FirstElement = 0;
+		// ¹Ýµå½Ã
+		srvd.Format = DXGI_FORMAT_UNKNOWN;
+		srvd.BufferEx.NumElements = desc.ByteWidth / desc.StructureByteStride;
+		hr = pDevice->CreateShaderResourceView(pBuffer, &srvd, &pSRV);
+		if (FAILED(hr))
+		{
+			return nullptr;
+		}
+		return pSRV;
+	}
+
 }

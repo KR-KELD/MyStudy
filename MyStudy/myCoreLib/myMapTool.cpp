@@ -3,8 +3,8 @@
 
 bool myMapTool::Init()
 {
-	m_fOutRad = 20.0f;
-	m_fInnerRad = 10.0f;
+	m_vBrushRad.x = 20.0f;
+	m_vBrushRad.y = 10.0f;
 	m_fSpeed = 0.1f;
 	m_eMakingMode = TOOL_TOPOLOGY;
 	m_eTopologyType = TERRAIN_UP;
@@ -83,6 +83,8 @@ bool myMapTool::Frame()
 	}
 
 	EditTerrain(vPick);
+
+
 	return true;
 }
 
@@ -98,6 +100,34 @@ bool myMapTool::Release()
 	return true;
 }
 
+void myMapTool::CreateTex(int iTexSize)
+{
+	m_iTexSizeX = m_iTexSizeY = iTexSize;
+	m_sbSplat[0].vRadius = Vector2(0.0f, 0.0f);
+	m_sbSplat[0].iIndex = 0;
+	m_sbSplat[0].vPickPos = Vector2(0.0f, 0.0f);
+	m_sbSplat[0].fTexHeight = iTexSize;
+	m_sbSplat[0].fTexWidth = iTexSize;
+	m_SplatCS.CreateStructuredBuffer(g_pd3dDevice, sizeof(SplatBuf), 1, &m_sbSplat[0]);
+	m_SplatCS.CreateBufferSRV(g_pd3dDevice, m_SplatCS.m_pStBuff.Get());
+
+	m_SplatCS.CreateTextureUAV(g_pd3dDevice,NULL, iTexSize, iTexSize);
+	m_SplatCS.CreateComputeShader(g_pd3dDevice, L"SplatCS.txt", "CS");
+
+	m_NormalTex.Create(iTexSize);
+	m_HeightTex.Create(iTexSize);
+
+	ID3D11ShaderResourceView* arraySRV[2] = {
+	m_SplatCS.m_pSRVCopy.Get(),
+	m_SplatCS.m_pStBuffSRV.Get(),
+	};
+
+	m_SplatCS.RunComputeShader(g_pImmediateContext, arraySRV, 2,
+		m_iTexSizeX / 32, m_iTexSizeY / 32, 1);
+
+	g_pImmediateContext->CopyResource(m_SplatCS.m_pTextureCopy.Get(), m_SplatCS.m_pTexture.Get());
+}
+
 void myMapTool::EditTopology(Vector3& vPick)
 {
 	Vector3 mPos = vPick;
@@ -111,7 +141,7 @@ void myMapTool::EditTopology(Vector3& vPick)
 			vPos.y = 0.0f;
 			
 			float fDist = (vPos - mPos).Length();
-			if (fDist < m_fOutRad)
+			if (fDist < m_vBrushRad.x)
 			{
 				Vector3 vp = m_pMap->m_VertexList[iID].p;
 				switch (m_eTopologyType)
@@ -161,38 +191,63 @@ void myMapTool::EditTopology(Vector3& vPick)
 
 void myMapTool::EditSplatting(Vector3& vPick)
 {
-	int iLastIndex = m_pMap->m_iNumCols * m_pMap->m_iNumRows - 1;
-	Vector2 LT = Vector2(m_pMap->m_VertexList[0].p.x, m_pMap->m_VertexList[0].p.z);
-	Vector2 RB = Vector2(m_pMap->m_VertexList[iLastIndex].p.x,
-						m_pMap->m_VertexList[iLastIndex].p.z);
-	for (int iNode = 0; iNode < m_ControlNodeList.size(); iNode++)
-	{
-		for (int v = 0; v < m_ControlNodeList[iNode]->m_IndexList.size(); v++)
-		{
-			int iID = m_ControlNodeList[iNode]->m_IndexList[v];
-			Vector3 vPos = m_pMap->m_VertexList[iID].p;
-			vPos.y = 0.0f;
-			if (vPos.x > LT.x && vPos.x < vPick.x - m_fOutRad)
-			{
-				LT.x = vPos.x;
-			}
-			if (vPos.z < LT.y && vPos.z > vPick.z + m_fOutRad)
-			{
-				LT.y = vPos.z;
-			}
-			if (vPos.x < RB.x && vPos.x > vPick.x + m_fOutRad)
-			{
-				RB.x = vPos.x;
-			}
-			if (vPos.z > RB.y && vPos.z < vPick.z - m_fOutRad)
-			{
-				RB.y = vPos.z;
-			}
-		}
-	}
-	
-	SetNormalTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get(), vPick, LT, RB);
-	g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
+	float fMapWidth = m_pMap->m_iNumCellCols * m_pMap->m_fCellDistance;
+	float fWidthRatio = m_iTexSizeX / fMapWidth;
+	Vector2 vCenter = Vector2((vPick.x + (fMapWidth / 2.0f)) * fWidthRatio,
+		(-(vPick.z - (fMapWidth / 2.0f))) * fWidthRatio);
+
+	m_sbSplat[0].vRadius = m_vBrushRad * fWidthRatio;
+	m_sbSplat[0].iIndex = m_eSplatType - 200;
+
+	m_sbSplat[0].vPickPos = vCenter;
+	m_sbSplat[0].fTexHeight = m_iTexSizeX;
+	m_sbSplat[0].fTexWidth = m_iTexSizeY;
+	g_pImmediateContext->UpdateSubresource(m_SplatCS.m_pStBuff.Get(),
+		0, NULL, &m_sbSplat, 0, 0);
+
+	ID3D11ShaderResourceView* arraySRV[2] = {
+	m_SplatCS.m_pSRVCopy.Get(),
+	m_SplatCS.m_pStBuffSRV.Get(),
+	};
+
+	m_SplatCS.RunComputeShader(g_pImmediateContext, arraySRV,2,
+		m_iTexSizeX / 32, m_iTexSizeY / 32, 1);
+
+	g_pImmediateContext->CopyResource(m_SplatCS.m_pTextureCopy.Get(), m_SplatCS.m_pTexture.Get());
+
+
+	//int iLastIndex = m_pMap->m_iNumCols * m_pMap->m_iNumRows - 1;
+	//Vector2 LT = Vector2(m_pMap->m_VertexList[0].p.x, m_pMap->m_VertexList[0].p.z);
+	//Vector2 RB = Vector2(m_pMap->m_VertexList[iLastIndex].p.x,
+	//					m_pMap->m_VertexList[iLastIndex].p.z);
+	//for (int iNode = 0; iNode < m_ControlNodeList.size(); iNode++)
+	//{
+	//	for (int v = 0; v < m_ControlNodeList[iNode]->m_IndexList.size(); v++)
+	//	{
+	//		int iID = m_ControlNodeList[iNode]->m_IndexList[v];
+	//		Vector3 vPos = m_pMap->m_VertexList[iID].p;
+	//		vPos.y = 0.0f;
+	//		if (vPos.x > LT.x && vPos.x < vPick.x - m_fOutRad)
+	//		{
+	//			LT.x = vPos.x;
+	//		}
+	//		if (vPos.z < LT.y && vPos.z > vPick.z + m_fOutRad)
+	//		{
+	//			LT.y = vPos.z;
+	//		}
+	//		if (vPos.x < RB.x && vPos.x > vPick.x + m_fOutRad)
+	//		{
+	//			RB.x = vPos.x;
+	//		}
+	//		if (vPos.z > RB.y && vPos.z < vPick.z - m_fOutRad)
+	//		{
+	//			RB.y = vPos.z;
+	//		}
+	//	}
+	//}
+	//
+	//SetNormalTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get(), vPick, LT, RB);
+	//g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
 }
 
 void myMapTool::SetMode(int iMode)
@@ -219,11 +274,12 @@ void myMapTool::TerrainRender(ID3D11DeviceContext * pImmediateContext, myCamera 
 	m_pMap->m_pTransform->SetMatrix(NULL,
 		&pTargetCamera->m_pTransform->m_matView,
 		&pTargetCamera->m_pTransform->m_matProj);
-	if (m_NormalTex.m_pSRV.Get())
-	{
-		pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
-	}
+	//if (m_NormalTex.m_pSRV.Get())
+	//{
+	//	pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
+	//}
 
+	pImmediateContext->PSSetShaderResources(1, 1, m_SplatCS.m_pSRVCopy.GetAddressOf());
 	pImmediateContext->PSSetShaderResources(2, 4, m_pSplatTex);
 	m_pQuadTree->Render(pImmediateContext);
 }
@@ -459,62 +515,62 @@ bool myMapTool::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Text
 	return true;
 }
 
-bool myMapTool::SetNormalTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest, Vector3& vPick, Vector2 & vLT, Vector2 & vRB)
-{
-	D3D11_TEXTURE2D_DESC desc;
-	pTexDest->GetDesc(&desc);
-
-	D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
-	if (SUCCEEDED(pImmediateContext->Map((ID3D11Resource*)pTexDest,
-		0, D3D11_MAP_READ_WRITE, 0, &MappedFaceDest)))
-	{
-		BYTE* pDestBytes = (BYTE*)MappedFaceDest.pData;
-		float fMapWidth = m_pMap->m_iNumCellCols * m_pMap->m_fCellDistance;
-		float fWidthRatio = (float)desc.Width / fMapWidth;
-		UINT L = (vLT.x + (fMapWidth / 2.0f)) * fWidthRatio;
-		UINT R = (vRB.x + (fMapWidth / 2.0f)) * fWidthRatio;
-		UINT T = (-(vLT.y - (fMapWidth / 2.0f))) * fWidthRatio;
-		UINT B = (-(vRB.y - (fMapWidth / 2.0f))) * fWidthRatio;
-		Vector2 vCenter = Vector2((vPick.x + (fMapWidth / 2.0f)) * fWidthRatio,
-			(-(vPick.z - (fMapWidth / 2.0f))) * fWidthRatio);
-		float fRadius = m_fOutRad * fWidthRatio;
-
-		for (UINT y = T; y < B; y++)
-		{
-			UINT rowStart = y * MappedFaceDest.RowPitch;
-			for (UINT x = L; x < R; x++)
-			{
-				UINT colStart = x * 4;
-				Vector2 p = Vector2(x, y);
-				float fDist = (p - vCenter).Length();
-				if (fDist < fRadius)
-				{
-					UINT iIndex = rowStart + colStart + m_eSplatType - 200;
-
-					float Lerf = 0.0f;
-					if (fDist < m_fInnerRad)
-					{
-						Lerf = 255.0f;
-					}
-					else
-					{
-						float fRatio = (fDist - m_fInnerRad) / (fRadius - m_fInnerRad);
-						Lerf = 255.0f * (1.0f - fRatio) + 0.0f * fRatio;
-					}
-					int iTemp = pDestBytes[iIndex];
-					if (iTemp > Lerf)
-					{
-						Lerf = Lerf / 20.0f;
-					}
-					pDestBytes[iIndex] = pDestBytes[iIndex] + (int)Lerf > 255 ?
-						255 : pDestBytes[iIndex] + (int)Lerf;
-				}
-			}
-		}
-		pImmediateContext->Unmap(pTexDest, 0);
-	}
-	return true;
-}
+//bool myMapTool::SetNormalTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest, Vector3& vPick, Vector2 & vLT, Vector2 & vRB)
+//{
+//	D3D11_TEXTURE2D_DESC desc;
+//	pTexDest->GetDesc(&desc);
+//
+//	D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
+//	if (SUCCEEDED(pImmediateContext->Map((ID3D11Resource*)pTexDest,
+//		0, D3D11_MAP_READ_WRITE, 0, &MappedFaceDest)))
+//	{
+//		BYTE* pDestBytes = (BYTE*)MappedFaceDest.pData;
+//		float fMapWidth = m_pMap->m_iNumCellCols * m_pMap->m_fCellDistance;
+//		float fWidthRatio = (float)desc.Width / fMapWidth;
+//		UINT L = (vLT.x + (fMapWidth / 2.0f)) * fWidthRatio;
+//		UINT R = (vRB.x + (fMapWidth / 2.0f)) * fWidthRatio;
+//		UINT T = (-(vLT.y - (fMapWidth / 2.0f))) * fWidthRatio;
+//		UINT B = (-(vRB.y - (fMapWidth / 2.0f))) * fWidthRatio;
+//		Vector2 vCenter = Vector2((vPick.x + (fMapWidth / 2.0f)) * fWidthRatio,
+//			(-(vPick.z - (fMapWidth / 2.0f))) * fWidthRatio);
+//		float fRadius = m_vBrushRad.x * fWidthRatio;
+//
+//		for (UINT y = T; y < B; y++)
+//		{
+//			UINT rowStart = y * MappedFaceDest.RowPitch;
+//			for (UINT x = L; x < R; x++)
+//			{
+//				UINT colStart = x * 4;
+//				Vector2 p = Vector2(x, y);
+//				float fDist = (p - vCenter).Length();
+//				if (fDist < fRadius)
+//				{
+//					UINT iIndex = rowStart + colStart + m_eSplatType - 200;
+//
+//					float Lerf = 0.0f;
+//					if (fDist < m_vBrushRad.y)
+//					{
+//						Lerf = 255.0f;
+//					}
+//					else
+//					{
+//						float fRatio = (fDist - m_vBrushRad.y) / (fRadius - m_vBrushRad.y);
+//						Lerf = 255.0f * (1.0f - fRatio) + 0.0f * fRatio;
+//					}
+//					int iTemp = pDestBytes[iIndex];
+//					if (iTemp > Lerf)
+//					{
+//						Lerf = Lerf / 20.0f;
+//					}
+//					pDestBytes[iIndex] = pDestBytes[iIndex] + (int)Lerf > 255 ?
+//						255 : pDestBytes[iIndex] + (int)Lerf;
+//				}
+//			}
+//		}
+//		pImmediateContext->Unmap(pTexDest, 0);
+//	}
+//	return true;
+//}
 
 bool myMapTool::ResetTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest)
 {

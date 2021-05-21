@@ -49,6 +49,7 @@ bool myModelObject::SetAnim(wstring strSceneName, myAnimScene & scene, vector<my
 
 bool myModelObject::Init()
 {
+	myGameObject::Init();
 	InsertComponent(new myAnimation);
 	//InsertComponent(new myController);
 	m_pGraphics = make_shared<myModelGraphics>();
