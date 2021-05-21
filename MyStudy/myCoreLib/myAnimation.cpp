@@ -46,6 +46,7 @@ bool myAnimation::ChangeAnim(wstring strSceneName, bool isLerp, float fLerpTime)
 
 myAnimation::myAnimation()
 {
+	m_isUnique = false;
 	m_fTick = 0.0f;
 	m_fLerpTick = 0.0f;
 	m_fPrevTick = 0.0f;

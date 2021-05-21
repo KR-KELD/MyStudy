@@ -275,6 +275,7 @@ bool myCollider::Release()
 
 myCollider::myCollider()
 {
+	m_isUnique = false;
 	m_eType = COLLIDER_NONE;
 }
 
@@ -285,23 +286,43 @@ myCollider::~myCollider()
 
 myGameObject * myGameObject::Clone()
 {
-	//myGameObject* pObj = new myGameObject(*this);
+	myGameObject* pObj = new myGameObject(*this);
 
-	//for (m_ComIter = m_ComponentList.begin();
-	//	m_ComIter != m_ComponentList.end();
-	//	m_ComIter++)
-	//{
+	for (pObj->m_ComIter = pObj->m_ComponentList.begin();
+		pObj->m_ComIter != pObj->m_ComponentList.end();
+		pObj->m_ComIter++)
+	{
+		if (!pObj->m_ComIter->second->m_isUnique)
+		{
+			pObj->m_ComIter->second = pObj->m_ComIter->second->Clone();
+		}
+		pObj->m_ComIter->second->Set(pObj);
+	}
+	myTransform* pTrans = pObj->GetComponent<myTransform>();
+	pObj->m_pTransform = pTrans;
+	myCollider* pCollider = pObj->GetComponent<myCollider>();
+	if (pCollider != nullptr)
+	{
+		pObj->m_pCollider = pCollider;
+	}
 
-	//}
+	for (pObj->m_ComIter = pObj->m_ComponentList.begin();
+		pObj->m_ComIter != pObj->m_ComponentList.end();
+		pObj->m_ComIter++)
+	{
+		pObj->m_pTransform = pTrans;
+	}
 
-	//for (m_ObjIter = m_Childs.begin();
-	//	m_ObjIter != m_Childs.end();
-	//	m_ObjIter++)
-	//{
+	for (pObj->m_ObjIter = pObj->m_Childs.begin();
+		pObj->m_ObjIter != pObj->m_Childs.end();
+		pObj->m_ObjIter++)
+	{
+		pObj->m_ObjIter->second = pObj->m_ObjIter->second->Clone();
+		pObj->m_ObjIter->second->m_pParent = pObj;
+	}
 
-	//}
-	//return new myGameObject(*this);
-	return nullptr;
+	return pObj;
+	//return nullptr;
 }
 
 bool myGameObject::Init()

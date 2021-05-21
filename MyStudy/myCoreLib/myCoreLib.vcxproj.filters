@@ -247,7 +247,7 @@
       <Filter>Collision</Filter>
     </ClCompile>
     <ClCompile Include="myCollisionManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Mgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -462,7 +462,7 @@
       <Filter>Collision</Filter>
     </ClInclude>
     <ClInclude Include="myCollisionManager.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Mgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

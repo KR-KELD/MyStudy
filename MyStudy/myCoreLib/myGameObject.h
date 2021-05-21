@@ -119,6 +119,8 @@ public:
 	myTransform*	m_pTransform;
 	bool			m_isActive;
 	bool			m_isRender;
+	//공유해서 쓸 애들은 트루 아니면 펄스
+	bool			m_isUnique;
 	DEFINE_COMPONENT(myComponent, null_t, false);
 public:
 	virtual myComponent* Clone();
@@ -140,6 +142,7 @@ public:
 public:
 	myComponent()
 	{
+		m_isUnique = true;
 		m_isActive = true;
 		m_isRender = true;
 	};
@@ -210,6 +213,7 @@ public:
 	virtual bool	Release() override;
 	myTransform()
 	{
+		m_isUnique = false;
 		m_fSpeed = 30.0f;
 		m_vPos = Vector3(0.0f, 0.0f, 0.0f);
 		m_qRot = Quaternion::Identity;
