@@ -128,10 +128,10 @@ public:
 	virtual bool	PreFrame();
 	virtual bool	Frame();
 	virtual bool	PostFrame();
-	virtual bool	PreRender();
-	virtual bool	Render();
-	virtual bool	PostRender();
-	virtual void	Update();
+	virtual bool	PreRender(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	PostRender(ID3D11DeviceContext*	pd3dContext);
+	virtual void	Update(ID3D11DeviceContext*	pd3dContext);
 	virtual void	Reset();
 	virtual bool	Action();
 	virtual bool	Release();
@@ -204,10 +204,10 @@ public:
 	virtual bool	PreFrame() override;
 	virtual bool	Frame() override;
 	virtual bool	PostFrame() override;
-	virtual bool	PreRender() override;
-	virtual bool	Render() override;
-	virtual bool	PostRender() override;
-	virtual void	Update() override;
+	virtual bool	PreRender(ID3D11DeviceContext*	pd3dContext) override;
+	virtual bool	Render(ID3D11DeviceContext*	pd3dContext) override;
+	virtual bool	PostRender(ID3D11DeviceContext*	pd3dContext) override;
+	virtual void	Update(ID3D11DeviceContext*	pd3dContext) override;
 	virtual void	Reset() override;
 	virtual bool	Action() override;
 	virtual bool	Release() override;
@@ -270,7 +270,7 @@ public:
 public:
 	virtual bool		Init();
 	virtual bool		Frame();
-	virtual bool		Render();
+	virtual bool		Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool		Release();
 public:
 	myCollider();
@@ -322,15 +322,17 @@ public:
 		m_strName = szName;
 	}
 public:
-	virtual myGameObject* Clone();
+
+public:
+	virtual myGameObject* Clone(myGameObject* pBaseObj);
 	virtual bool	Init();
 	virtual bool	PreFrame();
 	virtual bool	Frame();
 	virtual bool	PostFrame();
-	virtual bool	PreRender();
-	virtual bool	Render();
-	virtual bool	PostRender();
-	virtual void	Update();
+	virtual bool	PreRender(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	PostRender(ID3D11DeviceContext*	pd3dContext);
+	virtual void	Update(ID3D11DeviceContext*	pd3dContext);
 	virtual void	Reset();
 	virtual bool	Action();
 	virtual bool	Release();

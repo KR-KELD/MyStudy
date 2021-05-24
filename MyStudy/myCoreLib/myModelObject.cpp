@@ -47,6 +47,37 @@ bool myModelObject::SetAnim(wstring strSceneName, myAnimScene & scene, vector<my
 	return true;
 }
 
+bool myModelObject::ChangeAnim(wstring strSceneName, bool isLerp, float fLerpTime)
+{
+	//여기에 나중에 보간추가
+	//보간 추가적으로 더 하기
+	myAnimScene* pScene = m_pAnim->GetAnim(strSceneName);
+	if (pScene == nullptr) return false;
+	m_isLerp = isLerp;
+	if (m_isLerp)
+	{
+		m_pPrevScene = m_pCurrentScene;
+		m_pCurrentScene = pScene;
+		//m_fPrevTick = 2.0f;
+		//m_fLerpTick = 2.0f;
+		//m_fLerpTick = min(m_pPrevScene->iLastFrame * m_pPrevScene->iTickPerFrame,
+		//	m_fPrevTick + fLerpTime * 
+		//	m_pPrevScene->iFrameSpeed * 
+		//	m_pPrevScene->iTickPerFrame +
+		//	m_pPrevScene->iFirstFrame *
+		//	m_pPrevScene->iTickPerFrame);
+	/*	m_fTick = m_pCurrentScene->iFirstFrame *m_pCurrentScene->iTickPerFrame +
+			(m_fPrevTick - m_pPrevScene->iFirstFrame * m_pPrevScene->iTickPerFrame);*/
+	}
+	else
+	{
+		m_pCurrentScene = pScene;
+		//m_fTick = m_pCurrentScene->iFirstFrame *m_pCurrentScene->iTickPerFrame;
+		m_fTick = 0.0f;
+	}
+	return true;
+}
+
 bool myModelObject::Init()
 {
 	myGameObject::Init();
@@ -56,6 +87,8 @@ bool myModelObject::Init()
 	m_pGraphics->m_pTransform = this->m_pTransform;
 	m_pGraphics->m_pGameObject = this;
 	m_pAnim = GetComponent<myAnimation>();
+
+	InsertComponent(new mySphereCollider);
 	D3D11_BUFFER_DESC vbdesc =
 	{
 		MAX_BONE_MATRICES * sizeof(Matrix),
@@ -67,6 +100,11 @@ bool myModelObject::Init()
 	HRESULT hr = g_pd3dDevice->CreateBuffer(&vbdesc, NULL, m_pBoneBuffer.GetAddressOf());
 	m_pNormalTex = g_TextureMgr.m_pWhiteTexture;
 	
+
+	m_fTick = 0.0f;
+	m_fLerpTick = 0.0f;
+	m_fPrevTick = 0.0f;
+	m_isLerp = false;
 	return true;
 }
 
@@ -75,12 +113,12 @@ bool myModelObject::Frame()
 	//myGameObject::PreFrame();
 	//myGameObject::Frame();
 
-	myAnimScene* pScene = m_pAnim->m_pCurrentScene;
-	if (pScene != nullptr)
+
+	if (m_pCurrentScene != nullptr)
 	{
-		m_pAnim->m_fTick += g_fSecondPerFrame *
-			pScene->iFrameSpeed *
-			pScene->iTickPerFrame;
+		m_fTick += g_fSecondPerFrame *
+			m_pCurrentScene->iFrameSpeed *
+			m_pCurrentScene->iTickPerFrame;
 
 		//보간 생각정리해보기 커런트랑 같이
 		//if (m_pAnim->m_fPrevTick > m_pAnim->m_fLerpTick)
@@ -108,11 +146,11 @@ bool myModelObject::Frame()
 		//	}
 		//}
 
-		float fTick = m_pAnim->m_fTick + (pScene->iFirstFrame * pScene->iTickPerFrame);
-		if (fTick >= (pScene->iLastFrame * pScene->iTickPerFrame))
+		float fTick = m_fTick + (m_pCurrentScene->iFirstFrame * m_pCurrentScene->iTickPerFrame);
+		if (fTick >= (m_pCurrentScene->iLastFrame * m_pCurrentScene->iTickPerFrame))
 		{
-			m_pAnim->m_fTick = 0.0f;
-			fTick = pScene->iFirstFrame * pScene->iTickPerFrame;
+			m_fTick = 0.0f;
+			fTick = m_pCurrentScene->iFirstFrame * m_pCurrentScene->iTickPerFrame;
 			//m_pAnim->m_fTick = pScene->iFirstFrame *
 			//	pScene->iTickPerFrame;
 		}
@@ -156,7 +194,7 @@ bool myModelObject::Frame()
 			//	vScale = (*pAnimTrackList)[0].vScale;
 			//	qRot = (*pAnimTrackList)[0].qRot;
 			//}
-			pGraphics->GetAnimSRT(pScene->iAnimTrackIndex, fTick
+			pGraphics->GetAnimSRT(m_pCurrentScene->iAnimTrackIndex, fTick
 			, vScale, qRot, vTrans);
 			//if (m_pAnim->m_isLerp)
 			//{
@@ -182,24 +220,24 @@ bool myModelObject::Frame()
 	}
 	return true;
 }
-bool myModelObject::Render()
+bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	//임시
-	g_pImmediateContext->PSSetShaderResources(1, 1,
+	pd3dContext->PSSetShaderResources(1, 1,
 		m_pNormalTex->m_pTextureSRV.GetAddressOf());
 
-	g_pImmediateContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
+	pd3dContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
 	m_pGraphics->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
 	m_pGraphics->m_cbData.vColor[1] = g_pMainCamTransform->m_vLook.y;
 	m_pGraphics->m_cbData.vColor[2] = g_pMainCamTransform->m_vLook.z;
-	m_pGraphics->Update(g_pImmediateContext);
-	m_pGraphics->PreRender(g_pImmediateContext);
-	g_pImmediateContext->IASetInputLayout(m_pGraphics->m_pInputLayout.Get());
-	g_pImmediateContext->VSSetConstantBuffers(0, 1, m_pGraphics->m_pConstantBuffer.GetAddressOf());
-	g_pImmediateContext->PSSetConstantBuffers(0, 1, m_pGraphics->m_pConstantBuffer.GetAddressOf());
-	g_pImmediateContext->VSSetShader(m_pGraphics->m_pVertexShader.Get(), NULL, 0);
-	g_pImmediateContext->PSSetShader(m_pGraphics->m_pPixelShader.Get(), NULL, 0);
-	g_pImmediateContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_pGraphics->m_iTopology);
+	m_pGraphics->Update(pd3dContext);
+	m_pGraphics->PreRender(pd3dContext);
+	pd3dContext->IASetInputLayout(m_pGraphics->m_pInputLayout.Get());
+	pd3dContext->VSSetConstantBuffers(0, 1, m_pGraphics->m_pConstantBuffer.GetAddressOf());
+	pd3dContext->PSSetConstantBuffers(0, 1, m_pGraphics->m_pConstantBuffer.GetAddressOf());
+	pd3dContext->VSSetShader(m_pGraphics->m_pVertexShader.Get(), NULL, 0);
+	pd3dContext->PSSetShader(m_pGraphics->m_pPixelShader.Get(), NULL, 0);
+	pd3dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_pGraphics->m_iTopology);
 	for (int iNode = 0; iNode < m_myNodeList.size() ; iNode++)
 	{
 		Matrix matWorld = Matrix::Identity;
@@ -207,7 +245,7 @@ bool myModelObject::Render()
 
 		Matrix* pMatrices;
 		D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
-		if (SUCCEEDED(g_pImmediateContext->Map((ID3D11Resource*)m_pBoneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedFaceDest)))
+		if (SUCCEEDED(pd3dContext->Map((ID3D11Resource*)m_pBoneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedFaceDest)))
 		{
 			pMatrices = (Matrix*)MappedFaceDest.pData;
 			//바인드포즈가 있는(메시) 노드를 찾아서 크루스터(영향을 주는 노드)
@@ -228,13 +266,13 @@ bool myModelObject::Render()
 				Matrix matAnim = matBiped * m_nodeMatList[dwObject];
 				pMatrices[dwObject] = matAnim.Transpose();
 			}
-			g_pImmediateContext->Unmap(m_pBoneBuffer.Get(), 0);
+			pd3dContext->Unmap(m_pBoneBuffer.Get(), 0);
 		}
 	
-		pGraphics->MultiDraw(g_pImmediateContext);
+		pGraphics->MultiDraw(pd3dContext);
 	}
 
-	myGameObject::Render();
+	myGameObject::Render(pd3dContext);
 	return true;
 }
 myModelObject::myModelObject()

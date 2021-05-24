@@ -28,19 +28,19 @@ bool myObjManager::PostFrame()
 
 bool myObjManager::PreRender()
 {
-	m_SceneObj.PreRender();
+	m_SceneObj.PreRender(g_pImmediateContext);
 	return true;
 }
 
 bool myObjManager::Render()
 {
-	m_SceneObj.Render();
+	m_SceneObj.Render(g_pImmediateContext);
 	return true;
 }
 
 bool myObjManager::PostRender()
 {
-	m_SceneObj.PostRender();
+	m_SceneObj.PostRender(g_pImmediateContext);
 	return true;
 }
 
@@ -48,6 +48,7 @@ bool myObjManager::Release()
 {
 	m_SceneObj.Release();
 	m_SubObj.Release();
+	m_ObjectList.clear();
 	return true;
 }
 

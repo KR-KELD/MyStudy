@@ -11,7 +11,7 @@ public:
 public:
 	virtual bool		Init();
 	virtual bool		Frame();
-	virtual bool		Render();
+	virtual bool		Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool		Release();
 public:
 	myBoxCollider();
@@ -28,7 +28,7 @@ public:
 public:
 	virtual bool		Init();
 	virtual bool		Frame();
-	virtual bool		Render();
+	virtual bool		Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool		Release();
 public:
 	mySphereCollider();

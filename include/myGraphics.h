@@ -4,7 +4,6 @@
 
 #pragma region staticFuncArea
 
-//
 //////////////////////////// 아래의 경고가 있을 경우 사용한다.
 //// 이와 같은 경고는 이미 쉐이더 파이프라인에 할당(리소스 및 상태값들이)되어 사용 중일 경우에 발생한다.
 ////D3D11 WARNING : ID3D11DeviceContext::SOSetTargets : Resource being set to SO buffer slot 0 is still bound on input![STATE_SETTING WARNING #10: DEVICE_SOSETTARGETS_HAZARD]

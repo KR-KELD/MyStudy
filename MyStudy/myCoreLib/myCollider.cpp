@@ -14,7 +14,7 @@ bool myBoxCollider::Frame()
 	return true;
 }
 
-bool myBoxCollider::Render()
+bool myBoxCollider::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
@@ -45,7 +45,7 @@ bool mySphereCollider::Frame()
 	return true;
 }
 
-bool mySphereCollider::Render()
+bool mySphereCollider::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }

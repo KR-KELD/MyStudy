@@ -29,22 +29,22 @@ bool myComponent::PostFrame()
 	return true;
 }
 
-bool myComponent::PreRender()
+bool myComponent::PreRender(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
 
-bool myComponent::Render()
+bool myComponent::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
 
-bool myComponent::PostRender()
+bool myComponent::PostRender(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
 
-void myComponent::Update()
+void myComponent::Update(ID3D11DeviceContext*	pd3dContext)
 {
 }
 
@@ -188,22 +188,22 @@ bool myTransform::PostFrame()
 	return true;
 }
 
-bool myTransform::PreRender()
+bool myTransform::PreRender(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
 
-bool myTransform::Render()
+bool myTransform::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
 
-bool myTransform::PostRender()
+bool myTransform::PostRender(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
 
-void myTransform::Update()
+void myTransform::Update(ID3D11DeviceContext*	pd3dContext)
 {
 
 }
@@ -264,7 +264,7 @@ bool myCollider::Frame()
 	return true;
 }
 
-bool myCollider::Render()
+bool myCollider::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	return true;
 }
@@ -285,9 +285,10 @@ myCollider::~myCollider()
 }
 
 
-myGameObject * myGameObject::Clone()
+myGameObject * myGameObject::Clone(myGameObject* pBaseObj)
 {
-	myGameObject* pObj = new myGameObject(*this);
+
+	myGameObject* pObj = new myGameObject(*pBaseObj);
 
 	for (pObj->m_ComIter = pObj->m_ComponentList.begin();
 		pObj->m_ComIter != pObj->m_ComponentList.end();
@@ -318,7 +319,7 @@ myGameObject * myGameObject::Clone()
 		pObj->m_ObjIter != pObj->m_Childs.end();
 		pObj->m_ObjIter++)
 	{
-		pObj->m_ObjIter->second = pObj->m_ObjIter->second->Clone();
+		pObj->m_ObjIter->second = pObj->m_ObjIter->second->Clone(pObj->m_ObjIter->second);
 		pObj->m_ObjIter->second->m_pParent = pObj;
 	}
 
@@ -409,7 +410,7 @@ bool myGameObject::PostFrame()
 	return true;
 }
 
-bool myGameObject::PreRender()
+bool myGameObject::PreRender(ID3D11DeviceContext*	pd3dContext)
 {
 	for (m_ComIter = m_ComponentList.begin();
 		m_ComIter != m_ComponentList.end();
@@ -417,7 +418,7 @@ bool myGameObject::PreRender()
 	{
 		if ((*m_ComIter).second->m_isActive && (*m_ComIter).second->m_isRender)
 		{
-			(*m_ComIter).second->PreRender();
+			(*m_ComIter).second->PreRender(pd3dContext);
 		}
 	}
 	for (m_ObjIter = m_Childs.begin();
@@ -426,13 +427,13 @@ bool myGameObject::PreRender()
 	{
 		if ((*m_ObjIter).second->m_isActive && (*m_ObjIter).second->m_isRender)
 		{
-			(*m_ObjIter).second->PreRender();
+			(*m_ObjIter).second->PreRender(pd3dContext);
 		}
 	}
 	return true;
 }
 
-bool myGameObject::Render()
+bool myGameObject::Render(ID3D11DeviceContext*	pd3dContext)
 {
 	//PreRender();
 	for (m_ComIter = m_ComponentList.begin();
@@ -441,7 +442,7 @@ bool myGameObject::Render()
 	{
 		if ((*m_ComIter).second->m_isActive && (*m_ComIter).second->m_isRender)
 		{
-			(*m_ComIter).second->Render();
+			(*m_ComIter).second->Render(pd3dContext);
 		}
 	}
 	for (m_ObjIter = m_Childs.begin();
@@ -450,14 +451,14 @@ bool myGameObject::Render()
 	{
 		if ((*m_ObjIter).second->m_isActive && (*m_ObjIter).second->m_isRender)
 		{
-			(*m_ObjIter).second->Render();
+			(*m_ObjIter).second->Render(pd3dContext);
 		}
 	}
 	//PostRender();
 	return true;
 }
 
-bool myGameObject::PostRender()
+bool myGameObject::PostRender(ID3D11DeviceContext*	pd3dContext)
 {
 	for (m_ComIter = m_ComponentList.begin();
 		m_ComIter != m_ComponentList.end();
@@ -465,7 +466,7 @@ bool myGameObject::PostRender()
 	{
 		if ((*m_ComIter).second->m_isActive && (*m_ComIter).second->m_isRender)
 		{
-			(*m_ComIter).second->PostRender();
+			(*m_ComIter).second->PostRender(pd3dContext);
 		}
 	}
 	for (m_ObjIter = m_Childs.begin();
@@ -474,20 +475,20 @@ bool myGameObject::PostRender()
 	{
 		if ((*m_ObjIter).second->m_isActive && (*m_ObjIter).second->m_isRender)
 		{
-			(*m_ObjIter).second->PostRender();
+			(*m_ObjIter).second->PostRender(pd3dContext);
 		}
 	}
 	return true;
 }
 
-void myGameObject::Update()
+void myGameObject::Update(ID3D11DeviceContext*	pd3dContext)
 {
 	for (m_ComIter = m_ComponentList.begin();
 		m_ComIter != m_ComponentList.end();
 		m_ComIter++)
 	{
 		if ((*m_ComIter).second->m_isActive)
-			(*m_ComIter).second->Update();
+			(*m_ComIter).second->Update(pd3dContext);
 	}
 
 	for (m_ObjIter = m_Childs.begin();
@@ -495,7 +496,7 @@ void myGameObject::Update()
 		m_ObjIter++)
 	{
 		if ((*m_ObjIter).second->m_isActive)
-			(*m_ObjIter).second->Update();
+			(*m_ObjIter).second->Update(pd3dContext);
 	}
 }
 

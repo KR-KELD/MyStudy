@@ -78,7 +78,8 @@ public:
 public:
 	shared_ptr<myModelObject>	m_pTargetObject;
 	SampleIns*		m_pTargetIns;
-	vector<shared_ptr<myModelObject>> m_DrawList;
+	vector<myModelObject*> m_BaseList;
+	vector<myModelObject*> m_DrawList;
 public:
 	MY_SPHERE	m_PickSphere;
 	Vector2		m_vBrushRad; // x Out y In
@@ -91,7 +92,7 @@ public:
 public:
 	bool	Init();
 	bool	Frame() override;
-	bool	Render() override;
+	bool	Render(ID3D11DeviceContext*	pd3dContext) override;
 	bool	Release() override;
 public:
 	void	CreateTex(int iTexSize = 1024);

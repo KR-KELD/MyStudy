@@ -123,6 +123,17 @@ bool myFbxObj::ModelInit()
 	m_pModelObject->m_BoxCollider.vPos[6] = Vector3(vMax.x, vMin.y, vMax.z);
 	m_pModelObject->m_BoxCollider.vPos[7] = Vector3(vMin.x, vMin.y, vMax.z);
 
+	mySphereCollider* pCollider = m_pModelObject->GetComponent<mySphereCollider>();
+	if (pCollider)
+	{
+		m_pModelObject->m_BoxCollider.vMin = vMin;
+		m_pModelObject->m_BoxCollider.vMax = vMax;
+		m_pModelObject->m_BoxCollider.vCenter = (vMax + vMin) / 2;
+		Vector3 range = vMax - m_pModelObject->m_BoxCollider.vCenter;
+		m_pModelObject->m_SphereCollider.vCenter = m_pModelObject->m_BoxCollider.vCenter;
+		m_pModelObject->m_SphereCollider.fRadius = range.Length();
+	}
+
 	return true;
 }
 

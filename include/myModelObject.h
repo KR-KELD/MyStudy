@@ -1,6 +1,7 @@
 #pragma once
 #include "myModelGraphics.h"
 #include "myAnimation.h"
+#include "myCollider.h"
 
 struct SampleIns
 {
@@ -30,19 +31,27 @@ class myModelObject : public myGameObject
 public:
 	DEFINE_COMPONENT(myModelObject, myGameObject, true);
 public:
+	//AnimControl
+	myAnimScene*				m_pPrevScene;
+	float						m_fPrevTick;
+	bool						m_isLerp;
+	float						m_fLerpTick;
+	myAnimScene*				m_pCurrentScene;
+	float						m_fTick;
+public:
 	//임시
 	MY_BOX							m_BoxCollider;
 	MY_SPHERE						m_SphereCollider;
 public:
 
 	//임시
-	myTexture*						m_pNormalTex;
+	myTexture*						m_pNormalTex;	//공유
 
-	myAnimation*					m_pAnim;
-	shared_ptr<myModelGraphics>		m_pGraphics;
-	ComPtr<ID3D11Buffer>			m_pBoneBuffer;
+	myAnimation*					m_pAnim;		//애님은 공유 틱만 각각
+	shared_ptr<myModelGraphics>		m_pGraphics;	//공유
+	ComPtr<ID3D11Buffer>			m_pBoneBuffer;	//공유
 	//기존의 맵을 써도 상관없음 나중에 수정해도 됨
-	vector<myGameObject*>			m_myNodeList;
+	vector<myGameObject*>			m_myNodeList;	//공유
 	vector<Matrix>					m_nodeMatList;
 	//unordered_map<string, Matrix>	m_nodeMatBindPoseMap;
 	//인스턴싱
@@ -54,10 +63,11 @@ public:
 public:
 	int					SetAnimTrack(vector<myGameObject*>& nodeList);
 	bool				SetAnim(wstring strSceneName, myAnimScene& scene, vector<myGameObject*>& nodeList);
-public:					
+	bool				ChangeAnim(wstring strSceneName, bool isLerp = false, float fLerpTime = 0.0f);
+public:
 	virtual bool		Init()	override;
 	virtual bool		Frame() override;
-	virtual bool		Render() override;
+	virtual bool		Render(ID3D11DeviceContext*	pd3dContext) override;
 public:
 	myModelObject();
 	virtual ~myModelObject();
