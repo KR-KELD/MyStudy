@@ -29,6 +29,8 @@ public:
 class myModelViewCamera : public myCamera
 {
 public:
+	DEFINE_COMPONENT(myModelViewCamera,myCamera,true)
+public:
 	myArcball	m_WorldArcball;
 	myArcball	m_ViewArcball;
 	Matrix		m_mModelLastRot;

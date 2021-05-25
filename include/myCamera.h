@@ -3,7 +3,7 @@
 class myCamera : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myCamera, myComponent, true);
+	DEFINE_COMPONENT(myCamera, myComponent, true)
 public:
 	myFrustum				m_Frustum;
 	float					m_fDistance;

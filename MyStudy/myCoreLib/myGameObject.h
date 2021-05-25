@@ -94,21 +94,6 @@ struct Component_Identifier
 //식별자의 주소를 고유 클래스 아이디로 사용
 //아래 두줄 질문
 
-#define DEFINE_COMPONENT(component_name, parent_component_name, unique_component) \
-	public: \
-		typedef Component_Identifier<component_name, parent_component_name, unique_component> Component_Identifier_T; \
-		static size_t GetComponentId(void) { return reinterpret_cast<size_t>(&identifier); } \
-		virtual const char* GetComponentName_(void) { return #component_name; } \
-		static const char* GetComponentName(void) { return #component_name; } \
-	private: \
-		static Component_Identifier_T identifier; \
-//질문
-//추정 외부에서 해당 클래스의 식별자를 전역으로 선언?
-#define DECLARE_COMPONENT(component_name) \
-	component_name::Component_Identifier_T component_name::identifier;
-	
-#pragma endregion
-
 class myGameObject;
 class myTransform;
 class myComponent;
@@ -123,6 +108,31 @@ struct myRuntimeClass
 		return (*pfnCreateObject)();
 	}
 };
+
+#define DEFINE_COMPONENT(component_name, parent_component_name, unique_component) \
+	public: \
+		typedef Component_Identifier<component_name, parent_component_name, unique_component> Component_Identifier_T; \
+		static size_t GetComponentId(void) { return reinterpret_cast<size_t>(&identifier); } \
+		virtual const char* GetComponentName_(void) { return #component_name; } \
+		static const char* GetComponentName(void) { return #component_name; } \
+		static char lpszClassName[]; \
+		static myComponent* CreateObject(); \
+		static myRuntimeClass class##component_name;	\
+		virtual myRuntimeClass* GetRuntimeClass() const; \
+	private: \
+		static Component_Identifier_T identifier; \
+//질문
+//추정 외부에서 해당 클래스의 식별자를 전역으로 선언?
+#define DECLARE_COMPONENT(component_name) \
+	component_name::Component_Identifier_T component_name::identifier; \
+	char component_name##::lpszClassName[] = (#component_name); \
+	myComponent* component_name::CreateObject()	{return new component_name;} \
+	myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject }; \
+	myRuntimeClass* component_name::GetRuntimeClass() const{return &class##component_name;} \
+	
+#define MYRUNTIME_CLASS(component_name) &component_name::class##component_name;
+
+#pragma endregion
 
 class myComponent
 {
@@ -166,7 +176,7 @@ public:
 class myTransform : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myComponent, myComponent, true)
+	DEFINE_COMPONENT(myTransform, myComponent, true)
 public:
 	float		m_fSpeed;
 public:

@@ -1,5 +1,5 @@
 #include "myAnimation.h"
-DECLARE_COMPONENT(myAnimation);
+DECLARE_COMPONENT(myAnimation)
 
 bool myAnimation::AddAnim(wstring strSceneName, myAnimScene scene)
 {

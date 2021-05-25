@@ -4,7 +4,7 @@
 class myObjectInfo : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myObjectInfo, myComponent, true);
+	DEFINE_COMPONENT(myObjectInfo, myComponent, true)
 public:
 	myObjectInfo*		pTarget;
 	int					iCurrentHP;

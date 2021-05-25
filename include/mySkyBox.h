@@ -5,7 +5,7 @@
 class mySkyBox : public myShapeBox
 {
 public:
-	DEFINE_COMPONENT(mySkyBox, myShapeBox, false);
+	DEFINE_COMPONENT(mySkyBox, myShapeBox, false)
 public:
 	ComPtr<ID3D11ShaderResourceView>	m_pTexSRV[MAX_SKYBOX_TEXTURE];
 	ComPtr<ID3D11ShaderResourceView>	m_pTexCubeSRV;

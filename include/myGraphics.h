@@ -16,7 +16,7 @@ bool CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList,
 class myGraphics : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myGraphics, myComponent, true);
+	DEFINE_COMPONENT(myGraphics, myComponent, true)
 public:
 	ID3DBlob*					m_pVSObj;
 	UINT						m_iTopology;
