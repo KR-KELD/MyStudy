@@ -1,5 +1,5 @@
 #include "myGraphics.h"
-DECLARE_COMPONENT(myGraphics);
+DECLARE_COMPONENT(myGraphics)
 
 #pragma region staticFunc
 bool AscendingTriangle(myTriangle& a, myTriangle& b)

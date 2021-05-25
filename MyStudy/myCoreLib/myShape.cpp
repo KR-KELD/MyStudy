@@ -1,8 +1,8 @@
 #include "myShape.h"
-DECLARE_COMPONENT(myShape);
-DECLARE_COMPONENT(myShapeBox);
-DECLARE_COMPONENT(myShapePlane);
-DECLARE_COMPONENT(myShapeLine);
+DECLARE_COMPONENT(myShape)
+DECLARE_COMPONENT(myShapeBox)
+DECLARE_COMPONENT(myShapePlane)
+DECLARE_COMPONENT(myShapeLine)
 myShape::myShape()
 {
 	m_fRange = 1.0f;

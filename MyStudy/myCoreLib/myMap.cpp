@@ -1,5 +1,5 @@
 #include "myMap.h"
-DECLARE_COMPONENT(myMap);
+DECLARE_COMPONENT(myMap)
 bool    myMap::CreateVertexData()
 {
 	// 정점 가로 및 세수 = 2N승+1

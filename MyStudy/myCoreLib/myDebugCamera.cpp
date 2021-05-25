@@ -1,6 +1,6 @@
 #include "myDebugCamera.h"
 #include "myInput.h"
-DECLARE_COMPONENT(myDebugCamera);
+DECLARE_COMPONENT(myDebugCamera)
 void myDebugCamera::Update(Vector4 data)
 {
 	Matrix matRoation;

@@ -111,6 +111,18 @@ struct Component_Identifier
 
 class myGameObject;
 class myTransform;
+class myComponent;
+
+struct myRuntimeClass
+{
+	char m_lpsaClassName[21];
+	int	 m_iObjectSize;
+	myComponent* (*pfnCreateObject)();
+	myComponent* CreateObject()
+	{
+		return (*pfnCreateObject)();
+	}
+};
 
 class myComponent
 {
@@ -121,7 +133,7 @@ public:
 	bool			m_isRender;
 	//공유해서 쓸 애들은 트루 아니면 펄스
 	bool			m_isUnique;
-	DEFINE_COMPONENT(myComponent, null_t, false);
+	DEFINE_COMPONENT(myComponent, null_t, false)
 public:
 	virtual myComponent* Clone();
 	virtual bool	Init();
@@ -154,7 +166,7 @@ public:
 class myTransform : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myComponent, myComponent, true);
+	DEFINE_COMPONENT(myComponent, myComponent, true)
 public:
 	float		m_fSpeed;
 public:
@@ -258,7 +270,7 @@ class myCollider :
 	public myComponent
 {
 public:
-	DEFINE_COMPONENT(myCollider, myComponent, true);
+	DEFINE_COMPONENT(myCollider, myComponent, true)
 public:
 	int					m_iSelectID = -1;
 	int					m_iCollisionID = -1;
@@ -280,7 +292,7 @@ public:
 class myGameObject : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myGameObject, myComponent, true);
+	DEFINE_COMPONENT(myGameObject, myComponent, true)
 public:
 	T_STR			m_strName;
 	T_STR			m_strTag;

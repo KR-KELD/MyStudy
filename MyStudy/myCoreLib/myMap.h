@@ -35,7 +35,7 @@ struct myMapCB
 class myMap : public myGraphics
 {
 public:
-	DEFINE_COMPONENT(myMap, myGraphics, false);
+	DEFINE_COMPONENT(myMap, myGraphics, false)
 public:
 	myMapDesc  m_MapDesc;
 	UINT m_iNumRows;

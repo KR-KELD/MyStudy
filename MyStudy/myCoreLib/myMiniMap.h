@@ -4,7 +4,7 @@
 class myMiniMap : public myShapePlane
 {
 public:
-	DEFINE_COMPONENT(myMiniMap, myShapePlane, false);
+	DEFINE_COMPONENT(myMiniMap, myShapePlane, false)
 public:
 	myDxRT			m_DxRT;
 public:

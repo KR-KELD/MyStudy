@@ -1,5 +1,5 @@
 #include "myMiniMap.h"
-DECLARE_COMPONENT(myMiniMap);
+DECLARE_COMPONENT(myMiniMap)
 bool	myMiniMap::Create(T_STR szVS, T_STR szPS, T_STR	szTex)
 {
 	m_DxRT.SetRenderTargetView();

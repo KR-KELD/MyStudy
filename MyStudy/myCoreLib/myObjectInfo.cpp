@@ -1,5 +1,5 @@
 #include "myObjectInfo.h"
-DECLARE_COMPONENT(myObjectInfo);
+DECLARE_COMPONENT(myObjectInfo)
 void myObjectInfo::Reset()
 {
 	pTarget = nullptr;

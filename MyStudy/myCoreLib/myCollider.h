@@ -5,7 +5,7 @@
 class myBoxCollider : public myCollider
 {
 public:
-	DEFINE_COMPONENT(myBoxCollider, myCollider, true);
+	DEFINE_COMPONENT(myBoxCollider, myCollider, true)
 public:
 	MY_BOX				m_Box;
 public:
@@ -22,7 +22,7 @@ public:
 class mySphereCollider : public myCollider
 {
 public:
-	DEFINE_COMPONENT(mySphereCollider, myCollider, true);
+	DEFINE_COMPONENT(mySphereCollider, myCollider, true)
 public:
 	MY_SPHERE			m_Sphere;
 public:

@@ -33,7 +33,7 @@ struct LIGHT_CONSTANT_BUFFER3
 class myLight : public myComponent
 {
 public:
-	DEFINE_COMPONENT(myLight, myComponent, false);
+	DEFINE_COMPONENT(myLight, myComponent, false)
 public:
 
 public:

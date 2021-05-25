@@ -4,7 +4,7 @@
 class myShape : public myGraphics
 {
 public:
-	DEFINE_COMPONENT(myShape, myGraphics, false);
+	DEFINE_COMPONENT(myShape, myGraphics, false)
 public:
 	float			m_fRange;
 public:
@@ -21,7 +21,7 @@ public:
 class myShapeBox : public myShape
 {
 public:
-	DEFINE_COMPONENT(myShapeBox, myShape, false);
+	DEFINE_COMPONENT(myShapeBox, myShape, false)
 public:
 	virtual bool    CreateVertexData(Vector3 vCenter, float fRange)override;
 	virtual bool    CreateIndexData()override;
@@ -33,7 +33,7 @@ public:
 class myShapePlane : public myShape
 {
 public:
-	DEFINE_COMPONENT(myShapePlane, myShape, false);
+	DEFINE_COMPONENT(myShapePlane, myShape, false)
 public:
 	virtual bool    CreateVertexData(Vector3 vCenter, float fRange)override;
 	virtual bool    CreateIndexData()override;
@@ -45,7 +45,7 @@ public:
 class myShapeLine : public myShape
 {
 public:
-	DEFINE_COMPONENT(myShapeLine, myShape, false);
+	DEFINE_COMPONENT(myShapeLine, myShape, false)
 public:
 	bool Draw(ID3D11DeviceContext*	pd3dContext, Vector3 p, Vector3 e, Vector4 c = Vector4(1, 0, 0, 1));
 public:

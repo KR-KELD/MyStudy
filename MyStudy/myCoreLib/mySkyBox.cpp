@@ -1,5 +1,5 @@
 #include "mySkyBox.h"
-DECLARE_COMPONENT(mySkyBox);
+DECLARE_COMPONENT(mySkyBox)
 
 bool mySkyBox::Create(T_STR szVS, T_STR szPS, T_STR szTex)
 {

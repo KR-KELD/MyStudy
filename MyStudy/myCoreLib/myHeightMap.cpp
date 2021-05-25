@@ -1,5 +1,5 @@
 #include "myHeightMap.h"
-DECLARE_COMPONENT(myHeightMap);
+DECLARE_COMPONENT(myHeightMap)
 
 bool myHeightMap::CreateHeightMap(const TCHAR* pszFileName, myMapDesc& mapDesc, myMapCB& tileInfo)
 {

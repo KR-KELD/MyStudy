@@ -1,6 +1,6 @@
 #include "myCamera.h"
 //#include "myInput.h"
-DECLARE_COMPONENT(myCamera);
+DECLARE_COMPONENT(myCamera)
 bool		myCamera::CreateViewMatrix(
 	Vector3 p,
 	Vector3 t,

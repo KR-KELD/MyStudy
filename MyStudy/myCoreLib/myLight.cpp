@@ -1,5 +1,5 @@
 #include "myLight.h"
-DECLARE_COMPONENT(myLight);
+DECLARE_COMPONENT(myLight)
 
 myLight::myLight()
 {

@@ -1,7 +1,7 @@
 #include "myCollider.h"
 
-DECLARE_COMPONENT(myBoxCollider);
-DECLARE_COMPONENT(mySphereCollider);
+DECLARE_COMPONENT(myBoxCollider)
+DECLARE_COMPONENT(mySphereCollider)
 
 bool myBoxCollider::Init()
 {

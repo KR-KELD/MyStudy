@@ -1,4 +1,5 @@
 #include "myModelViewCamera.h"
+DECLARE_COMPONENT(myModelViewCamera)
 int myModelViewCamera::WndProc(
 	HWND hWnd,
 	UINT message,
