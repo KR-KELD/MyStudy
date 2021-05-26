@@ -1,7 +1,7 @@
 #pragma once
 #include "myBasicStd.h"
+#include "myStaticFunc.h" //basicstd Æ÷ÇÔ
 #include <wrl.h>
-#include "myStaticFunc.h"
 //#include <Windows.Foundation.h>
 //#include <wrl\wrappers\corewrappers.h>
 //#include <wrl\client.h>

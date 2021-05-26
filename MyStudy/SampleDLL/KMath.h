@@ -88,10 +88,10 @@ struct float4
 	};
 };
 
-struct myPoint : float2
+struct KPoint : float2
 {
-	myPoint() = default;
-	myPoint(float x, float y)
+	KPoint() = default;
+	KPoint(float x, float y)
 	{
 		this->x = x;
 		this->y = y;
@@ -111,7 +111,7 @@ struct myPoint : float2
 		y = arr[1];
 	}
 
-	bool operator == (myPoint& p)
+	bool operator == (KPoint& p)
 	{
 		if (FLOAT_EQUAL(x, p.x))
 		{
@@ -122,7 +122,7 @@ struct myPoint : float2
 		}
 		return false;
 	}
-	bool operator != (myPoint& p)
+	bool operator != (KPoint& p)
 	{
 		if (FLOAT_EQUAL(x, p.x))
 		{
@@ -133,44 +133,44 @@ struct myPoint : float2
 		}
 		return true;
 	}
-	myPoint operator + (myPoint p)
+	KPoint operator + (KPoint p)
 	{
-		myPoint pt;
+		KPoint pt;
 		pt.x = x + p.x;
 		pt.y = y + p.y;
 		return pt;
 	}
-	myPoint operator + (float fValue)
+	KPoint operator + (float fValue)
 	{
-		myPoint pt;
+		KPoint pt;
 		pt.x = x + fValue;
 		pt.y = y + fValue;
 		return pt;
 	}
-	myPoint operator - (myPoint p)
+	KPoint operator - (KPoint p)
 	{
-		myPoint pt;
+		KPoint pt;
 		pt.x = x - p.x;
 		pt.y = y - p.y;
 		return pt;
 	}
-	myPoint operator - (float fValue)
+	KPoint operator - (float fValue)
 	{
-		myPoint pt;
+		KPoint pt;
 		pt.x = x - fValue;
 		pt.y = y - fValue;
 		return pt;
 	}
-	myPoint operator * (float fValue)
+	KPoint operator * (float fValue)
 	{
-		myPoint pt;
+		KPoint pt;
 		pt.x = x * fValue;
 		pt.y = y * fValue;
 		return pt;
 	}
-	myPoint operator * (myPoint p)
+	KPoint operator * (KPoint p)
 	{
-		myPoint pt;
+		KPoint pt;
 		pt.x = x * p.x;
 		pt.y = y * p.y;
 		return pt;
@@ -179,18 +179,18 @@ struct myPoint : float2
 	{
 		return sqrt(x * x + y * y);
 	}
-	myPoint Normalize()
+	KPoint Normalize()
 	{
 		float fLength = Length();
 		if (fLength == 0.0f)
 			fLength = EPSILON;
 		x /= fLength;
 		y /= fLength;
-		return myPoint(x, y);
+		return KPoint(x, y);
 	}
-	float GetAngle(myPoint& pA, myPoint& pB)
+	float GetAngle(KPoint& pA, KPoint& pB)
 	{
-		myPoint pt = pB - pA;
+		KPoint pt = pB - pA;
 		float dist = pt.Length();
 		float angle = acosf(pt.x / dist);
 
