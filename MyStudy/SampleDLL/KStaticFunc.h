@@ -1,6 +1,6 @@
 #pragma once
 
-#include "KStd.h"
+#include "KBasicStd.h"
 
 #ifdef __cplusplus
 extern "C"
