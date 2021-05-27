@@ -32,12 +32,8 @@
 #pragma comment(lib, "fmod_vc.lib")
 #pragma comment(lib, "Msimg32.lib")
 
-#include "dxtk/WICTextureLoader.h"
-#include "dxtk/DDSTextureLoader.h"
-#include "dxtk/ScreenGrab.h"
-
-
 using namespace std;
+
 using namespace Microsoft::WRL;
 
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "myBasicStd.h"
+#include "myStd.h"
 
 namespace StaticGraphics
 {

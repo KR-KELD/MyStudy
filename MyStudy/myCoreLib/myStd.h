@@ -8,6 +8,10 @@
 
 //using namespace Microsoft::WRL::Wrappers;
 
+#include "dxtk/WICTextureLoader.h"
+#include "dxtk/DDSTextureLoader.h"
+#include "dxtk/ScreenGrab.h"
+
 #include "myStaticFunc.h" //basicstd Æ÷ÇÔ
 
 #define WINDOWSTARTX 300

@@ -16,9 +16,10 @@ cbuffer myDataCB : register(b0)
 
 cbuffer myMapCB : register(b1)
 {
-	float g_iNumTile: packoffset(c0.x);
-	float g_iNumCell: packoffset(c0.y);
-	float g_iCellSize: packoffset(c0.z);
+	float g_iNumTile : packoffset(c0.x);
+	float g_iNumCell : packoffset(c0.y);
+	float g_iCellSize : packoffset(c0.z);
+	float g_iSpaceDivision : packoffset(c0.w);
 }
 
 struct VS_INPUT
