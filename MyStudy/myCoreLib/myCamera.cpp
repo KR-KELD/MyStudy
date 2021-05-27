@@ -62,6 +62,12 @@ void myCamera::Update(Vector4 data)
 }
 
 
+myComponent * myCamera::Clone()
+{
+	myCamera* pCamera = new myCamera(*this);
+	return pCamera;
+}
+
 bool myCamera::Init()
 {
 	return true;

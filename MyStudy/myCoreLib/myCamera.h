@@ -30,6 +30,7 @@ public:
 		float zNearPlane, float zFarPlane);
 	virtual bool CreateFrustum();
 	virtual bool PostInit() { return true; }
+	virtual myComponent* Clone();
 	virtual bool Init();
 	virtual bool Frame();
 	virtual bool Release();
