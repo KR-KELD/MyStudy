@@ -307,6 +307,7 @@ public:
 	T_STR			m_strName;
 	T_STR			m_strTag;
 	int				m_iObjectID;
+	myTransform		m_TransForm;
 public:
 	//게임오브젝트 언오더맵으로 바꿔보기
 	myCollider*										m_pCollider;
@@ -411,14 +412,14 @@ public:
 	{ 
 		m_pParent = nullptr;
 		m_strName = L"myGameObject";
-		m_pTransform = new myTransform;
+		m_pTransform = &m_TransForm;
 		InsertComponent(m_pTransform);
 	}
 	myGameObject(const TCHAR* szName)
 	{
 		m_pParent = nullptr;
 		m_strName = szName;
-		m_pTransform = new myTransform;
+		m_pTransform = &m_TransForm;
 		InsertComponent(m_pTransform);
 	}
 	~myGameObject() {}

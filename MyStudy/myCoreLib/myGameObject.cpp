@@ -312,6 +312,7 @@ myGameObject * myGameObject::Clone(myGameObject* pBaseObj)
 		pObj->m_ComIter != pObj->m_ComponentList.end();
 		pObj->m_ComIter++)
 	{
+		pObj->m_pGameObject = pObj;
 		pObj->m_pTransform = pTrans;
 	}
 

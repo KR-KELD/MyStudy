@@ -179,7 +179,7 @@ myCore::~myCore()
 bool myCore::GameRelease()
 {
 	m_pSkyBoxObj->Release();
-	SAFE_DELETE(m_pSkyBoxObj);
+	SAFE_DEL(m_pSkyBoxObj);
 	Release();
 	g_FbxLoader.Release();
 	g_CamMgr.Release();
