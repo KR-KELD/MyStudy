@@ -15,6 +15,8 @@ myComponent * myComponent::Clone()
 }
 bool myComponent::Init()
 {
+	myComponent* s = nullptr;
+	memcpy_s(s, 5, this, 5);
 	return true;
 }
 

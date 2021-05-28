@@ -103,23 +103,27 @@ struct myRuntimeClass
 	char m_lpsaClassName[21];
 	int	 m_iObjectSize;
 	myComponent* (*pfnCreateObject)();
-	myComponent* (*pfnCloneObject)();
+	myComponent* (*pfnCloneObject)(myComponent*);
 	myComponent* CreateObject()
 	{
 		return (*pfnCreateObject)();
 	}
-	myComponent* CloneObject()
+	myComponent* CloneObject(myComponent* pObj)
 	{
-		return (*pfnCloneObject)();
+		return (*pfnCloneObject)(pObj);
 	}
 };
+
 
 //전역화 여부 생각
 
 //선언은 필수
-#define DEFINE_CLONE virtual myComponent* CloneObject();
+#define DEFINE_CLONE static myComponent* CloneObject(myComponent* pObj);
 //구현은 상황에따라 다르게
-#define DECLARE_CLONE(component_name) myComponent* component_name::CloneObject()	{return new component_name(*this);}
+#define DECLARE_CLONE(component_name) myComponent* component_name::CloneObject(myComponent* pObj) \
+	{ component_name* p = nullptr; \
+	memcpy_s(p,class##component_name.m_iObjectSize,pObj,class##component_name.m_iObjectSize); \
+	return p;} \
 
 #define DEFINE_COMPONENT(component_name, parent_component_name, unique_component) \
 	public: \
