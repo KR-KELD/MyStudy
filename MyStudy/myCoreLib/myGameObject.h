@@ -103,11 +103,23 @@ struct myRuntimeClass
 	char m_lpsaClassName[21];
 	int	 m_iObjectSize;
 	myComponent* (*pfnCreateObject)();
+	myComponent* (*pfnCloneObject)();
 	myComponent* CreateObject()
 	{
 		return (*pfnCreateObject)();
 	}
+	myComponent* CloneObject()
+	{
+		return (*pfnCloneObject)();
+	}
 };
+
+//전역화 여부 생각
+
+//선언은 필수
+#define DEFINE_CLONE virtual myComponent* CloneObject();
+//구현은 상황에따라 다르게
+#define DECLARE_CLONE(component_name) myComponent* component_name::CloneObject()	{return new component_name(*this);}
 
 #define DEFINE_COMPONENT(component_name, parent_component_name, unique_component) \
 	public: \
@@ -119,15 +131,17 @@ struct myRuntimeClass
 		static myComponent* CreateObject(); \
 		static myRuntimeClass class##component_name;	\
 		virtual myRuntimeClass* GetRuntimeClass() const; \
+		DEFINE_CLONE \
 	private: \
 		static Component_Identifier_T identifier; \
+
 //질문
 //추정 외부에서 해당 클래스의 식별자를 전역으로 선언?
 #define DECLARE_COMPONENT(component_name) \
 	component_name::Component_Identifier_T component_name::identifier; \
 	char component_name##::lpszClassName[] = (#component_name); \
 	myComponent* component_name::CreateObject()	{return new component_name;} \
-	myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject }; \
+	myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject, component_name::CloneObject }; \
 	myRuntimeClass* component_name::GetRuntimeClass() const{return &class##component_name;} \
 	
 #define MYRUNTIME_CLASS(component_name) &component_name::class##component_name;

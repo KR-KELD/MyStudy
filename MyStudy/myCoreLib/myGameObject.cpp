@@ -1,10 +1,14 @@
 #include "myGameObject.h"
 #include "myCollisionManager.h"
 #include "myObjManager.h"
+DECLARE_CLONE(myComponent)
+
 DECLARE_COMPONENT(myComponent)
 DECLARE_COMPONENT(myTransform)
 DECLARE_COMPONENT(myCollider)
 DECLARE_COMPONENT(myGameObject)
+
+
 myComponent * myComponent::Clone()
 {
 	return new myComponent(*this);
