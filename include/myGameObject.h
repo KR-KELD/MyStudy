@@ -135,7 +135,7 @@ struct myRuntimeClass
 		static myComponent* CreateObject(); \
 		static myRuntimeClass class##component_name;	\
 		virtual myRuntimeClass* GetRuntimeClass() const; \
-		DEFINE_CLONE \
+		static myComponent* CloneObject(myComponent* pObj); \
 	private: \
 		static Component_Identifier_T identifier; \
 
@@ -147,7 +147,11 @@ struct myRuntimeClass
 	myComponent* component_name::CreateObject()	{return new component_name;} \
 	myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject, component_name::CloneObject }; \
 	myRuntimeClass* component_name::GetRuntimeClass() const{return &class##component_name;} \
-	
+	myComponent* component_name::CloneObject(myComponent* pObj) \
+	{ component_name* p = new component_name(*(component_name*)pObj); \
+	return p;} \
+//	memcpy_s(p,class##component_name.m_iObjectSize,pObj,class##component_name.m_iObjectSize); \
+
 #define MYRUNTIME_CLASS(component_name) &component_name::class##component_name;
 
 #pragma endregion

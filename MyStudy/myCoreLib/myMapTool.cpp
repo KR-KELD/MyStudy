@@ -368,7 +368,9 @@ void myMapTool::EditObject(Vector3& vPick)
 				//ins.SphereCollider.vCenter.y += m_pTargetObject->m_SphereCollider.vCenter.y * ins.vScale.y;
 				//m_pTargetObject->m_InstanceList.push_back(ins);
 
-				myModelObject* pObj = (myModelObject*)m_pTargetObject->Clone(m_pTargetObject.get());
+				myModelObject* pObj = (myModelObject*)m_pTargetObject->CloneObject(m_pTargetObject.get());
+				//pObj->m_pTransform = &pObj->m_TransForm;
+				//myModelObject* pObj = (myModelObject*)m_pTargetObject->Clone(m_pTargetObject.get());
 				pObj->m_pTransform->m_vPos = vPick;
 				mySphereCollider* pCollider = pObj->GetComponent<mySphereCollider>();
 				mySphereCollider* pBaseCollider = m_pTargetObject->GetComponent<mySphereCollider>();
