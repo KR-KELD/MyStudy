@@ -145,11 +145,15 @@ struct myRuntimeClass
 	component_name::Component_Identifier_T component_name::identifier; \
 	char component_name##::lpszClassName[] = (#component_name); \
 	myComponent* component_name::CreateObject()	{return new component_name;} \
-	myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject, component_name::CloneObject }; \
 	myRuntimeClass* component_name::GetRuntimeClass() const{return &class##component_name;} \
+	myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject, component_name::CloneObject }; \
 	myComponent* component_name::CloneObject(myComponent* pObj) \
 	{ component_name* p = new component_name(*(component_name*)pObj); \
 	return p;} \
+	//myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject}; \
+
+
+
 //	memcpy_s(p,class##component_name.m_iObjectSize,pObj,class##component_name.m_iObjectSize); \
 
 #define MYRUNTIME_CLASS(component_name) &component_name::class##component_name;
@@ -329,7 +333,7 @@ public:
 	T_STR			m_strName;
 	T_STR			m_strTag;
 	int				m_iObjectID;
-	myTransform		m_TransForm;
+	//myTransform		m_TransForm;
 public:
 	//게임오브젝트 언오더맵으로 바꿔보기
 	myCollider*										m_pCollider;
@@ -434,14 +438,19 @@ public:
 	{ 
 		m_pParent = nullptr;
 		m_strName = L"myGameObject";
-		m_pTransform = &m_TransForm;
+
+		//m_pTransform = &m_TransForm;
+		//InsertComponent(m_pTransform);
+		m_pTransform = new myTransform;
 		InsertComponent(m_pTransform);
 	}
 	myGameObject(const TCHAR* szName)
 	{
 		m_pParent = nullptr;
 		m_strName = szName;
-		m_pTransform = &m_TransForm;
+		//m_pTransform = &m_TransForm;
+		//InsertComponent(m_pTransform);
+		m_pTransform = new myTransform;
 		InsertComponent(m_pTransform);
 	}
 	~myGameObject() {}

@@ -81,6 +81,7 @@ bool myModelObject::ChangeAnim(wstring strSceneName, bool isLerp, float fLerpTim
 bool myModelObject::Init()
 {
 	myGameObject::Init();
+	m_pCurrentScene = nullptr;
 	InsertComponent(new myAnimation);
 	//InsertComponent(new myController);
 	m_pGraphics = make_shared<myModelGraphics>();

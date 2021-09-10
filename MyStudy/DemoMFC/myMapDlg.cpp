@@ -89,7 +89,7 @@ void myMapDlg::OnBnClickedOk()
 		desc.iNumRows = iNumCell * iNumTile + 1;//m_Map->m_iNumRows;
 		desc.fCellDistance = iCellSize;
 		desc.fScaleHeight = 10.0f;
-		desc.szTexFile = L"../../data/castle.jpg";
+		desc.szTexFile = L"../../data/main.png";
 		desc.szVS = L"../../data/shader/BasisVS.txt";
 		desc.szPS = L"../../data/shader/BasisPS.txt";
 		pApp->m_Sample.m_pMap->CreateMap(desc);

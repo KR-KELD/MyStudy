@@ -103,7 +103,7 @@ void myMapToolForm::OnBnClickedButton1()
 		desc.iNumRows = iNumCell * iNumTile + 1;//m_pMap->m_iNumRows;
 		desc.fCellDistance = m_iCellSize;
 		desc.fScaleHeight = 10.0f;
-		if (m_strTexName.IsEmpty()) m_strTexName = L"castle.jpg";
+		if (m_strTexName.IsEmpty()) m_strTexName = L"main.png";
 		desc.szTexFile = m_strTexName;
 		desc.szVS = L"MapVS.txt";
 		desc.szPS = L"MapPS.txt";
@@ -381,7 +381,7 @@ void myMapToolForm::OnBnClickedLoad()
 			desc.iNumRows = iNumCell * iNumTile + 1;//m_pMap->m_iNumRows;
 			desc.fCellDistance = iCellSize;
 			desc.fScaleHeight = 1.0f;
-			if (m_strTexName.IsEmpty()) m_strTexName = L"castle.jpg";
+			if (m_strTexName.IsEmpty()) m_strTexName = L"main.png";
 			desc.szTexFile = vecDesc[4];
 			desc.szVS = L"MapVS.txt";
 			desc.szPS = L"MapPS.txt";
