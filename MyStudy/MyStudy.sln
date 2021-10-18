@@ -75,6 +75,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleInstance", "SampleIns
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "myBasicDLL", "myBasicDLL\myBasicDLL.vcxproj", "{21DFED22-F50C-4FE7-B4A1-F55942F685CC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleCharacterLoader", "SampleCharacterLoader\SampleCharacterLoader.vcxproj", "{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -315,6 +317,14 @@ Global
 		{21DFED22-F50C-4FE7-B4A1-F55942F685CC}.Release|x64.Build.0 = Release|x64
 		{21DFED22-F50C-4FE7-B4A1-F55942F685CC}.Release|x86.ActiveCfg = Release|Win32
 		{21DFED22-F50C-4FE7-B4A1-F55942F685CC}.Release|x86.Build.0 = Release|Win32
+		{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}.Debug|x64.ActiveCfg = Debug|x64
+		{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}.Debug|x64.Build.0 = Debug|x64
+		{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}.Debug|x86.ActiveCfg = Debug|Win32
+		{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}.Debug|x86.Build.0 = Debug|Win32
+		{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}.Release|x64.ActiveCfg = Release|x64
+		{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}.Release|x64.Build.0 = Release|x64
+		{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}.Release|x86.ActiveCfg = Release|Win32
+		{E8FE461E-D680-4FCB-BB4E-B081A903AAFB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

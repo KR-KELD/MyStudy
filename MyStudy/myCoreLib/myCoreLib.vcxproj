@@ -323,6 +323,7 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="SimpleMath.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>

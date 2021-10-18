@@ -73,7 +73,7 @@ void myMapControlForm::Dump(CDumpContext& dc) const
 void myMapControlForm::OnBnClickedTerrainUp()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
@@ -81,13 +81,14 @@ void myMapControlForm::OnBnClickedTerrainUp()
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_fSpeed;
 		pApp->m_Sample.m_pMapTool->m_vBrushRad.x = m_fRadius;
 	}
+	UpdateData(FALSE);
 }
 
 
 void myMapControlForm::OnBnClickedTerrainDown()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
@@ -95,13 +96,14 @@ void myMapControlForm::OnBnClickedTerrainDown()
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_fSpeed;
 		pApp->m_Sample.m_pMapTool->m_vBrushRad.x = m_fRadius;
 	}
+	UpdateData(FALSE);
 }
 
 
 void myMapControlForm::OnBnClickedTerrainFlat()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
 
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
@@ -110,26 +112,28 @@ void myMapControlForm::OnBnClickedTerrainFlat()
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_fSpeed;
 		pApp->m_Sample.m_pMapTool->m_vBrushRad.x = m_fRadius;
 	}
+	UpdateData(FALSE);
 }
 
 
 void myMapControlForm::OnBnClickedUpdate()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
 		pApp->m_Sample.m_pMapTool->m_fSpeed = m_fSpeed;
 		pApp->m_Sample.m_pMapTool->m_vBrushRad.x = m_fRadius;
 	}
+	UpdateData(FALSE);
 }
 
 
 void myMapControlForm::OnBnClickedSplat1()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
@@ -137,13 +141,14 @@ void myMapControlForm::OnBnClickedSplat1()
 		pApp->m_Sample.m_pMapTool->m_eMakingMode = TOOL_SPLAT;
 		pApp->m_Sample.m_pMapTool->m_eSplatType = SPLAT_TEX_01;
 	}
+	UpdateData(FALSE);
 }
 
 
 void myMapControlForm::OnBnClickedSplat2()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
@@ -151,13 +156,14 @@ void myMapControlForm::OnBnClickedSplat2()
 		pApp->m_Sample.m_pMapTool->m_eMakingMode = TOOL_SPLAT;
 		pApp->m_Sample.m_pMapTool->m_eSplatType = SPLAT_TEX_02;
 	}
+	UpdateData(FALSE);
 }
 
 
 void myMapControlForm::OnBnClickedSplat3()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
@@ -165,13 +171,14 @@ void myMapControlForm::OnBnClickedSplat3()
 		pApp->m_Sample.m_pMapTool->m_eMakingMode = TOOL_SPLAT;
 		pApp->m_Sample.m_pMapTool->m_eSplatType = SPLAT_TEX_03;
 	}
+	UpdateData(FALSE);
 }
 
 
 void myMapControlForm::OnBnClickedSplat4()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
 	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
 	if (pApp->m_Sample.m_isCreate)
 	{
@@ -179,6 +186,7 @@ void myMapControlForm::OnBnClickedSplat4()
 		pApp->m_Sample.m_pMapTool->m_eMakingMode = TOOL_SPLAT;
 		pApp->m_Sample.m_pMapTool->m_eSplatType = SPLAT_TEX_04;
 	}
+	UpdateData(FALSE);
 }
 
 

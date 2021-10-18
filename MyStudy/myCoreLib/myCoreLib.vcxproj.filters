@@ -475,6 +475,7 @@
     <None Include="SimpleMath.inl">
       <Filter>Math</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\data\shader\VS.txt">

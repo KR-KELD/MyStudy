@@ -17,7 +17,6 @@
 #include <d3dcompiler.h>
 
 #include <wrl.h>
-
 #include "myUtil.h"
 #include "myMath.h"
 #pragma comment(lib, "d3dcompiler.lib")
