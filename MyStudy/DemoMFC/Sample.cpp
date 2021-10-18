@@ -37,14 +37,14 @@ bool Sample::Render()
 	if (g_Input.GetKey('8') == KEY_PUSH)
 	{
 		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-			myDxState::g_RasterizerDesc);
+		//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+		//	myDxState::g_RasterizerDesc);
 	}
 	if (g_Input.GetKey('9') == KEY_PUSH)
 	{
 		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
-		myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-			myDxState::g_RasterizerDesc);
+		//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+		//	myDxState::g_RasterizerDesc);
 	}
 	if (g_Input.GetKey('5') == KEY_PUSH)
 	{
@@ -64,6 +64,8 @@ bool Sample::Render()
 	}
 
 #pragma endregion
+	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+		myDxState::g_RasterizerDesc);
 
 #pragma region MiniMap
 	if (m_pMiniMap->Begin())
@@ -100,6 +102,8 @@ bool Sample::Render()
 #pragma endregion
 #pragma region HeightMapTex
 
+		g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
+
 		m_pHeightMini->Begin();
 		m_pHeightMini->End();
 		m_pHeightMini->m_pTransform->SetMatrix(NULL, NULL, NULL);
@@ -112,13 +116,13 @@ bool Sample::Render()
 
 		m_pHeightMini->myGraphics::Draw(g_pImmediateContext);
 #pragma endregion
-
+		m_pMiniMap->m_pTransform->SetMatrix(NULL,
+			NULL,
+			NULL);
+		m_pMiniMap->Render(g_pImmediateContext);
 	}
 
-	m_pMiniMap->m_pTransform->SetMatrix(NULL,
-		NULL,
-		NULL);
-	m_pMiniMap->Render(g_pImmediateContext);
+
 
 	return true;
 }
