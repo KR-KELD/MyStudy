@@ -54,6 +54,10 @@ void CS( uint3 GroupID : SV_GroupID,
 		case 1 : vAlphaColor.y = max(vAlphaColor.y, fDot);break;
 		case 2 : vAlphaColor.z = max(vAlphaColor.z, fDot);break;
 		case 3 : vAlphaColor.w = max(vAlphaColor.w, fDot);break;
+		case 99 :
+		{
+			vAlphaColor = float4(0.0f,0.0f,0.0f,0.0f);
+		} break;
 		}
 		OutputMap[texturelocation.xy] = vAlphaColor;
 		//OutputMap[texturelocation.xy] = float4(fDot,fDot,fDot,1);

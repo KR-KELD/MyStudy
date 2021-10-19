@@ -1,5 +1,6 @@
 #include "myMapTool.h"
 #include "myObjManager.h"
+#include "myDraw.h"
 
 bool myMapTool::Init()
 {
@@ -16,6 +17,10 @@ bool myMapTool::Init()
 	m_pTargetIns = nullptr;
 	m_pTargetObject = nullptr;
 	m_isSelectObject = false;
+	ZeroMemory(m_szToolType, sizeof(WCHAR) * 256);
+	ZeroMemory(m_szToolMode, sizeof(WCHAR) * 256);
+	_stprintf_s(m_szToolType, L"TOOL_TYPE_TOPOLOGY");
+	_stprintf_s(m_szToolMode, L"TOPOLOGY_MODE_TERRAIN_UP");
 
 	myFbxObj* pFbxObj = g_FbxLoader.Load("Turret_Deploy1.fbx");
 	pFbxObj->CuttingAnimScene(L"0", pFbxObj->m_AnimScene.iFirstFrame, pFbxObj->m_AnimScene.iLastFrame);
@@ -256,20 +261,107 @@ void myMapTool::EditSplatting(Vector3& vPick)
 
 void myMapTool::SetMode(int iMode)
 {
+	ZeroMemory(m_szToolType, sizeof(WCHAR) * 256);
+	ZeroMemory(m_szToolMode, sizeof(WCHAR) * 256);
+
+
 	if (iMode >= 100 && iMode < 200)
 	{
+		_stprintf_s(m_szToolType, L"TOOL_TYPE_TOPOLOGY");
 		m_eMakingMode = TOOL_TOPOLOGY;
 		m_eTopologyType = (TopologyType)iMode;
+		switch (iMode)
+		{
+		case 100:
+		{
+			_stprintf_s(m_szToolMode, L"TOPOLOGY_TERRAIN_UP");
+		}
+		break;
+		case 101:
+		{
+			_stprintf_s(m_szToolMode, L"TOPOLOGY_TERRAIN_DOWN");
+		}
+		break;
+		case 102:
+		{
+			_stprintf_s(m_szToolMode, L"TOPOLOGY_TERRAIN_FLAT");
+		}
+		break;
+		default:
+			break;
+		}
 	}
 	if (iMode >= 200 && iMode < 300)
 	{
+		_stprintf_s(m_szToolType, L"TOOL_TYPE_SPLAT");
 		m_eMakingMode = TOOL_SPLAT;
 		m_eSplatType = (SplatType)iMode;
+		switch (iMode)
+		{
+		case 200:
+		{
+			_stprintf_s(m_szToolMode, L"SPLAT_TEX_01");
+		}
+		break;
+		case 201:
+		{
+			_stprintf_s(m_szToolMode, L"SPLAT_TEX_02");
+		}
+		break;
+		case 202:
+		{
+			_stprintf_s(m_szToolMode, L"SPLAT_TEX_03");
+		}
+		break;
+		case 203:
+		{
+			_stprintf_s(m_szToolMode, L"SPLAT_TEX_04");
+		}
+		break;
+		case 299:
+		{
+			_stprintf_s(m_szToolMode, L"SPLAT_ERASE");
+		}
+		break;
+		default:
+			break;
+		}
 	}
 	if (iMode >= 300 && iMode < 400)
 	{
+		_stprintf_s(m_szToolType, L"TOOL_TYPE_OBJECT");
 		m_eMakingMode = TOOL_OBJECT;
 		m_eObjEditType = (ObjectEditType)iMode;
+		switch (iMode)
+		{
+		case 300:
+		{
+			_stprintf_s(m_szToolMode, L"OBJECT_TRANSLATE");
+		}
+		break;
+		case 301:
+		{
+			_stprintf_s(m_szToolMode, L"OBJECT_SCALE");
+		}
+		break;
+		case 302:
+		{
+			_stprintf_s(m_szToolMode, L"OBJECT_ROTATE");
+		}
+		break;
+		case 303:
+		{
+			_stprintf_s(m_szToolMode, L"OBJECT_CREATE");
+		}
+		break;
+		case 304:
+		{
+			_stprintf_s(m_szToolMode, L"OBJECT_DELETE");
+		}
+		break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -649,6 +741,12 @@ bool myMapTool::ResetTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2
 		pImmediateContext->Unmap(pTexDest, 0);
 	}
 	return true;
+}
+
+void myMapTool::DebugText()
+{
+	g_Draw.Draw(0, 0, m_szToolType);
+	g_Draw.Draw(0, 25, m_szToolMode);
 }
 
 myMapTool::myMapTool(myHeightMap* pMap, myQuadTree* pQuadTree)

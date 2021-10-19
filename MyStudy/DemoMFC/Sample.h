@@ -15,6 +15,7 @@ public:
 	myMapTool*		m_pMapTool;
 	myQuadTree		m_QuadTree;
 
+	bool			m_isDebugText = true;
 	bool			m_isCreate;
 public:
 	bool Init() override;

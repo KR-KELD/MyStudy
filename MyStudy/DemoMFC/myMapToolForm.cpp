@@ -47,8 +47,6 @@ BEGIN_MESSAGE_MAP(myMapToolForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &myMapToolForm::OnBnClickedButton1)
 	ON_WM_CREATE()
 	ON_BN_CLICKED(IDC_BUTTON2, &myMapToolForm::OnBnClickedButton2)
-	ON_BN_CLICKED(IDC_BUTTON3, &myMapToolForm::OnBnClickedTurret)
-	ON_BN_CLICKED(IDC_BUTTON4, &myMapToolForm::OnBnClickedBarrel)
 	ON_BN_CLICKED(IDC_BUTTON5, &myMapToolForm::OnBnClickedSave)
 	ON_BN_CLICKED(IDC_BUTTON6, &myMapToolForm::OnBnClickedLoad)
 END_MESSAGE_MAP()
@@ -185,31 +183,6 @@ void myMapToolForm::OnBnClickedButton2()
 	}
 
 }
-
-
-void myMapToolForm::OnBnClickedTurret()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
-	if (pApp->m_Sample.m_isCreate)
-	{
-		pApp->m_Sample.m_pMapTool->m_pTargetObject = g_FbxLoader.GetPtr("Turret_Deploy1.fbx")->m_pModelObject;
-		pApp->m_Sample.m_pMapTool->SetMode(303);
-	}
-}
-
-
-void myMapToolForm::OnBnClickedBarrel()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CDemoMFCApp* pApp = (CDemoMFCApp*)AfxGetApp();
-	if (pApp->m_Sample.m_isCreate)
-	{
-		pApp->m_Sample.m_pMapTool->m_pTargetObject = g_FbxLoader.GetPtr("SM_Barrel.fbx")->m_pModelObject;
-		pApp->m_Sample.m_pMapTool->SetMode(303);
-	}
-}
-
 
 void myMapToolForm::OnBnClickedSave()
 {

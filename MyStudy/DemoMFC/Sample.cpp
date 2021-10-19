@@ -34,6 +34,10 @@ bool Sample::Frame()
 bool Sample::Render()
 {
 #pragma region KeyControl
+	if (g_Input.GetKey('0') == KEY_PUSH)
+	{
+		m_isDebugText = !m_isDebugText;
+	}
 	if (g_Input.GetKey('8') == KEY_PUSH)
 	{
 		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
@@ -46,22 +50,22 @@ bool Sample::Render()
 		//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 		//	myDxState::g_RasterizerDesc);
 	}
-	if (g_Input.GetKey('5') == KEY_PUSH)
-	{
-		m_pMapTool->SetMode(300);
-	}
-	if (g_Input.GetKey('6') == KEY_PUSH)
-	{
-		m_pMapTool->SetMode(301);
-	}
-	if (g_Input.GetKey('7') == KEY_PUSH)
-	{
-		m_pMapTool->SetMode(302);
-	}
-	if (g_Input.GetKey('4') == KEY_PUSH)
-	{
-		m_pMapTool->SetMode(304);
-	}
+	//if (g_Input.GetKey('5') == KEY_PUSH)
+	//{
+	//	m_pMapTool->SetMode(300);
+	//}
+	//if (g_Input.GetKey('6') == KEY_PUSH)
+	//{
+	//	m_pMapTool->SetMode(301);
+	//}
+	//if (g_Input.GetKey('7') == KEY_PUSH)
+	//{
+	//	m_pMapTool->SetMode(302);
+	//}
+	//if (g_Input.GetKey('4') == KEY_PUSH)
+	//{
+	//	m_pMapTool->SetMode(304);
+	//}
 
 #pragma endregion
 	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
@@ -120,6 +124,11 @@ bool Sample::Render()
 			NULL,
 			NULL);
 		m_pMiniMap->Render(g_pImmediateContext);
+
+		if (m_isDebugText)
+		{
+			m_pMapTool->DebugText();
+		}
 	}
 
 

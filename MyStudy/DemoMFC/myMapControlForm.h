@@ -40,6 +40,14 @@ public:
 	afx_msg void OnBnClickedSplat3();
 	afx_msg void OnBnClickedSplat4();
 	virtual void OnInitialUpdate();
+	CStatic m_PictureControl;
+	afx_msg void OnBnClickedBarrel();
+	afx_msg void OnBnClickedTurret();
+	afx_msg void OnBnClickedMove();
+	afx_msg void OnBnClickedTurn();
+	afx_msg void OnBnClickedScale();
+	afx_msg void OnBnClickedDelete();
+	afx_msg void OnBnClickedSplatErase();
 };
 
 

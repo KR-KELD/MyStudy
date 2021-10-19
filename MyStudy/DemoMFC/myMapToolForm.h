@@ -37,8 +37,6 @@ public:
 	int m_iCellSize;
 	afx_msg void OnBnClickedButton2();
 	CString m_strTexName;
-	afx_msg void OnBnClickedTurret();
-	afx_msg void OnBnClickedBarrel();
 	CComboBox m_TexSize;
 	afx_msg void OnBnClickedSave();
 	afx_msg void OnBnClickedLoad();

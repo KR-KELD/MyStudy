@@ -58,7 +58,7 @@ public:
 
 public:
 	std::vector<mySubMesh2>		m_SubMeshList2;
-	//std::vector<PNCT2_VERTEX>	m_VertexList2;
+	std::vector<PNCT2_VERTEX>	m_VertexList2;
 public:
 	void			GetAnimSRT(int iAnimIndex, float fTick, Vector3& vScale, Quaternion& qRot, Vector3& vTrans);
 	int				GetTrackIndex(int iAnimIndex, float fTick);
