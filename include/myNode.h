@@ -1,15 +1,26 @@
 #pragma once
 #include "myGraphics.h"
+#include "myModelObject.h"
+
+typedef vector<DWORD> DWORD_VECTOR;
+
+struct myLodPatch
+{
+	UINT iLodLevel;
+	DWORD_VECTOR		 IndexList[16];
+	ComPtr<ID3D11Buffer> IndexBufferList[16];
+};
 
 class myNode
 {
 public:
 	//임시
-	vector<int>				m_iObjectList;
+	vector<SampleIns*>		m_ObjectList;
 public:
 	myNode*					m_pParent;
 	//깊이
 	int						m_iDepth;
+	int						m_iIndex;
 	//최하단 노드인가
 	bool					m_isLeaf;
 	// 바운딩 박스
@@ -28,7 +39,7 @@ public:
 	DWORD					m_dwFaceNum;
 	ComPtr<ID3D11Buffer>	m_pIndexBuffer;
 public:
-
+	bool			IsInRect(Vector3& vCenter);
 public:
 	myNode();
 	virtual ~myNode();

@@ -45,6 +45,36 @@ bool myMapTool::Frame()
 		m_BaseList[i]->Frame();
 	}
 #pragma region PickingMouse
+
+	if (g_Input.GetKey(VK_LBUTTON) == KEY_UP)
+	{
+		if (m_eObjEditType == OBJECT_TRANS && m_pTargetIns != nullptr)
+		{
+			for (int i = 0; i < m_pQuadTree->m_LeafNodeList[m_pTargetIns->iNodeIndex]->m_ObjectList.size(); i++)
+			{
+				if (m_pTargetIns == m_pQuadTree->m_LeafNodeList[m_pTargetIns->iNodeIndex]->m_ObjectList[i])
+				{
+					m_pQuadTree->m_LeafNodeList[m_pTargetIns->iNodeIndex]->m_ObjectList.erase(
+						m_pQuadTree->m_LeafNodeList[m_pTargetIns->iNodeIndex]->m_ObjectList.begin() + i);
+					break;
+				}
+			}
+			for (int i = 0; i < m_pQuadTree->m_LeafNodeList.size(); i++)
+			{
+				if (m_pQuadTree->m_LeafNodeList[i]->IsInRect(m_pTargetIns->vPos))
+				{
+					m_pQuadTree->m_LeafNodeList[i]->m_ObjectList.push_back(m_pTargetIns);
+					m_pTargetIns->iNodeIndex = m_pQuadTree->m_LeafNodeList[i]->m_iIndex;
+					break;
+				}
+			}
+		}
+		if (m_isPicking)
+		{
+			m_isUpdateData = true;
+		}
+		m_isPicking = false;
+	}
 	m_SelectNodeList.clear();
 	if (g_Input.GetKey(VK_LBUTTON) == KEY_HOLD)
 	{
@@ -58,14 +88,6 @@ bool myMapTool::Frame()
 				m_SelectNodeList.push_back(pNode);
 			}
 		}
-	}
-	if (g_Input.GetKey(VK_LBUTTON) == KEY_UP)
-	{
-		if (m_isPicking)
-		{
-			m_isUpdateData = true;
-		}
-		m_isPicking = false;
 	}
 	Vector3 vPick;
 	float fMaxDist = 99999.0f;
@@ -441,7 +463,6 @@ void myMapTool::EditObject(Vector3& vPick)
 				ins.vScale = Vector3::One;
 				ins.qRot = Quaternion::Identity;
 				if (m_pTargetObject->m_iObjectID == 1) ins.vScale = Vector3(0.2f, 0.2f, 0.2f);
-				ins.isActive = true;
 				ins.iID = m_pTargetObject->m_iObjectID;
 				float fScale = (ins.vScale.x + ins.vScale.y + ins.vScale.z) / 3.0f;
 				ins.SphereCollider = m_pTargetObject->m_SphereCollider;
@@ -450,6 +471,16 @@ void myMapTool::EditObject(Vector3& vPick)
 				ins.SphereCollider.vCenter.y += m_pTargetObject->m_SphereCollider.vCenter.y * ins.vScale.y;
 				//m_pTargetObject->m_InstanceList.push_back(ins);
 				InstanceList.push_back(ins);
+				for (int i = 0; i < m_SelectNodeList.size(); i++)
+				{
+					if (m_SelectNodeList[i]->IsInRect(ins.vPos))
+					{
+						m_pQuadTree->m_LeafNodeList[m_SelectNodeList[i]->m_iIndex]->m_ObjectList.push_back(&InstanceList.back());
+						InstanceList.back().iNodeIndex = m_SelectNodeList[i]->m_iIndex;
+						break;
+					}
+				}
+
 				//bool isDraw = false;
 				//for (int i = 0; i < m_DrawList.size(); i++)
 				//{
@@ -580,6 +611,7 @@ void myMapTool::ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* 
 	for (int i = 0; i < InstanceList.size(); i++)
 	{
 		if (!InstanceList[i].isActive) continue;
+		if (!InstanceList[i].isRender) continue;
 		myGameObject* pObj = g_ObjMgr.m_ObjectList[InstanceList[i].iID];
 
 		pObj->m_pTransform->m_vPos = InstanceList[i].vPos;

@@ -6,12 +6,22 @@
 struct SampleIns
 {
 	int iID;
+	int iNodeIndex;
 	bool isActive;
+	bool isRender;
 	float fTick;
 	Vector3 vPos;
 	Vector3 vScale;
 	Quaternion qRot;
 	MY_SPHERE SphereCollider;
+	SampleIns()
+	{
+		isActive = true;
+		isRender = true;
+		iID = -1;
+		iNodeIndex = -1;
+		fTick = 0.0f;
+	}
 	Matrix GetWorld()
 	{
 		Matrix matWorld = Matrix::Identity;

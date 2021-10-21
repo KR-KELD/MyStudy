@@ -1,4 +1,6 @@
 #include "myQuadTree.h"
+#include "myObjManager.h"
+#include "myCameraManager.h"
 
 bool myQuadTree::CreateQuadTree(myMap* pMap)
 {
@@ -16,12 +18,14 @@ bool myQuadTree::Partition(myNode* pParentNode)
 {
 	if (pParentNode->m_CornerIndexList[1] - pParentNode->m_CornerIndexList[0] <= 1)
 	{
+		pParentNode->m_iIndex = m_LeafNodeList.size();
 		m_LeafNodeList.push_back(pParentNode);
 		pParentNode->m_isLeaf = true;
 		return false;
 	}
 	if (pParentNode->m_iDepth + 1 > m_iMaxdepth)
 	{
+		pParentNode->m_iIndex = m_LeafNodeList.size();
 		m_LeafNodeList.push_back(pParentNode);
 		pParentNode->m_isLeaf = true;
 		return false;
@@ -99,7 +103,6 @@ bool myQuadTree::DrawCulling(ID3D11DeviceContext*	pd3dContext)
 		pd3dContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		pd3dContext->DrawIndexed(pNode->m_IndexList.size(), 0, 0);
 
-
 		//CullingVertex(pNode);
 		//g_pImmediateContext->IASetIndexBuffer(pNode->m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		//g_pImmediateContext->DrawIndexed(pNode->m_dwFaceNum, 0, 0);
@@ -112,10 +115,20 @@ bool myQuadTree::CullingNode()
 	m_DrawNodeList.clear();
 	for (myNode* pNode : m_LeafNodeList)
 	{
+		for (int i = 0; i < pNode->m_ObjectList.size(); i++)
+		{
+			if (!pNode->m_ObjectList[i]->isActive) continue;
+			pNode->m_ObjectList[i]->isRender = false;
+		}
 		for (int i = 0; i < 6; i++)
 		{
 			if (g_CamMgr.m_pMainCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[i]))
 			{
+				for (int i = 0; i < pNode->m_ObjectList.size(); i++)
+				{
+					if (!pNode->m_ObjectList[i]->isActive) continue;
+					pNode->m_ObjectList[i]->isRender = true;
+				}
 				m_DrawNodeList.push_back(pNode);
 				break;
 			}
@@ -275,8 +288,6 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	{
 		for (DWORD Col = indexStartCol; Col < indexEndCol; Col++)
 		{
-			//버텍스리스트를 0부터 담으면 문제
-			//중간부터 담아도 메모리상 문제 질문
 
 			//int a = Row * indexEndCol + Col;
 			//0 1 2 2 1 3
@@ -346,6 +357,16 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 		newNode->m_IndexList.size(),
 		sizeof(DWORD)));
 	return newNode;
+}
+
+bool myQuadTree::AddObject(SampleIns * ins)
+{
+	return false;
+}
+
+bool myQuadTree::RepreshQuadTreeObject()
+{
+	return false;
 }
 
 

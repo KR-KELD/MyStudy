@@ -1,6 +1,19 @@
 #include "myNode.h"
 
 
+bool myNode::IsInRect(Vector3 & vCenter)
+{
+	if (m_CornerList.size() > 0)
+	{
+		if (m_CornerList[0].p.x <= vCenter.x && m_CornerList[1].p.x >= vCenter.x &&
+			m_CornerList[0].p.z >= vCenter.z && m_CornerList[2].p.z <= vCenter.z)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 myNode::myNode()
 {
 	m_iDepth = 0;

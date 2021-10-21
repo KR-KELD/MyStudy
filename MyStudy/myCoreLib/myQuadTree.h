@@ -30,6 +30,10 @@ public:
 	void			RepreshBindingObj(myNode* pNode);
 	myNode*			CreateNode(myNode* pParentNode, DWORD LeftTop, DWORD RightTop, DWORD LeftBottom, DWORD RightBottom);
 public:
+	//юс╫ц
+	bool			AddObject(SampleIns* ins);
+	bool			RepreshQuadTreeObject();
+public:
 	myQuadTree();
 	virtual ~myQuadTree();
 };
