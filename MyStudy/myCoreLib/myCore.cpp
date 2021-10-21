@@ -61,6 +61,7 @@ bool myCore::GameInit()
 	pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
+	pDebugCamera->CreateFrustum();
 
 	g_CamMgr.SetMainCamera(obj);
 	g_FbxLoader.Init();

@@ -79,7 +79,7 @@ public:
 	shared_ptr<myModelObject>	m_pTargetObject;
 	SampleIns*		m_pTargetIns;
 	vector<myModelObject*> m_BaseList;
-	vector<myModelObject*> m_DrawList;
+	//vector<myModelObject*> m_DrawList;
 public:
 	MY_SPHERE	m_PickSphere;
 	Vector2		m_vBrushRad; // x Out y In
@@ -89,6 +89,7 @@ public:
 	bool		m_isUpdatePick;
 	bool		m_isSelectObject;
 	Vector3		m_vTemp;
+	vector<SampleIns> InstanceList;
 public:
 	WCHAR	m_szToolType[256];
 	WCHAR	m_szToolMode[256];

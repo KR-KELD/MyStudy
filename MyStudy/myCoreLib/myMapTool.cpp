@@ -40,9 +40,9 @@ bool myMapTool::Init()
 
 bool myMapTool::Frame()
 {
-	for (int i = 0; i < m_DrawList.size(); i++)
+	for (int i = 0; i < m_BaseList.size(); i++)
 	{
-		m_DrawList[i]->Frame();
+		m_BaseList[i]->Frame();
 	}
 #pragma region PickingMouse
 	m_SelectNodeList.clear();
@@ -448,32 +448,14 @@ void myMapTool::EditObject(Vector3& vPick)
 				ins.SphereCollider.fRadius *= fScale;
 				ins.SphereCollider.vCenter = ins.vPos;
 				ins.SphereCollider.vCenter.y += m_pTargetObject->m_SphereCollider.vCenter.y * ins.vScale.y;
-				m_pTargetObject->m_InstanceList.push_back(ins);
-
-				//myModelObject* pObj = (myModelObject*)m_pTargetObject->CloneObject(m_pTargetObject.get());
-				////pObj->m_pTransform = &pObj->m_TransForm;
-				////myModelObject* pObj = (myModelObject*)m_pTargetObject->Clone(m_pTargetObject.get());
-				//pObj->m_pTransform->m_vPos = vPick;
-				//mySphereCollider* pCollider = pObj->GetComponent<mySphereCollider>();
-				//mySphereCollider* pBaseCollider = m_pTargetObject->GetComponent<mySphereCollider>();
-				//if (pCollider)
+				//m_pTargetObject->m_InstanceList.push_back(ins);
+				InstanceList.push_back(ins);
+				//bool isDraw = false;
+				//for (int i = 0; i < m_DrawList.size(); i++)
 				//{
-				//	float fScale = (pObj->m_pTransform->m_vScale.x + 
-				//					pObj->m_pTransform->m_vScale.y + 
-				//					pObj->m_pTransform->m_vScale.z) / 3.0f;
-				//	pCollider->m_Sphere.fRadius *= fScale;
-				//	pCollider->m_Sphere.vCenter = vPick;
-				//	pCollider->m_Sphere.vCenter.y +=
-				//		pBaseCollider->m_Sphere.vCenter.y
-				//		* pObj->m_pTransform->m_vScale.y;
+				//	if (m_DrawList[i] == m_pTargetObject.get()) isDraw = true;
 				//}
-				//m_DrawList.push_back(pObj);
-				bool isDraw = false;
-				for (int i = 0; i < m_DrawList.size(); i++)
-				{
-					if (m_DrawList[i] == m_pTargetObject.get()) isDraw = true;
-				}
-				if (!isDraw) m_DrawList.push_back(m_pTargetObject.get());
+				//if (!isDraw) m_DrawList.push_back(m_pTargetObject.get());
 				m_isUpdateData = false;
 			}
 		}
@@ -482,35 +464,44 @@ void myMapTool::EditObject(Vector3& vPick)
 			if (!m_isSelectObject)
 			{
 				float fMaxDist = 99999.0f;
-				for (int i = 0; i < m_DrawList.size(); i++)
+				for (int i = 0; i < InstanceList.size(); i++)
 				{
-					for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
+					if (!InstanceList[i].isActive) continue;
+
+					if (myCollision::IntersectRayToSphere(m_Mouse.m_myRay, InstanceList[i].SphereCollider))
 					{
-						if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
-						//if (myCollision::IntersectRayToBox(m_Mouse.m_myRay, m_DrawList[i]->m_InstanceList[j].myBoxCollider))
-						//{
-						//	float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
-						//	if (fDist < fMaxDist)
-						//	{
-						//		m_pTargetIns = &m_DrawList[i]->m_InstanceList[j];
-						//		fMaxDist = fDist;
-						//		m_isSelectObject = true;
-						//	}
-						//}
-						if (myCollision::IntersectRayToSphere(m_Mouse.m_myRay, m_DrawList[i]->m_InstanceList[j].SphereCollider))
+						float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
+						if (fDist < fMaxDist)
 						{
-							float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
-							if (fDist < fMaxDist)
-							{
-								m_Mouse.m_vPrevPos = m_Mouse.m_vIntersectionPos;
-								m_pTargetIns = &m_DrawList[i]->m_InstanceList[j];
-								fMaxDist = fDist;
-								m_isSelectObject = true;
-								m_vTemp = m_pTargetIns->vScale;
-							}
+							m_Mouse.m_vPrevPos = m_Mouse.m_vIntersectionPos;
+							m_pTargetIns = &InstanceList[i];
+							fMaxDist = fDist;
+							m_isSelectObject = true;
+							m_vTemp = m_pTargetIns->vScale;
 						}
 					}
 				}
+
+				//for (int i = 0; i < m_DrawList.size(); i++)
+				//{
+				//	for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
+				//	{
+				//		if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
+
+				//		if (myCollision::IntersectRayToSphere(m_Mouse.m_myRay, m_DrawList[i]->m_InstanceList[j].SphereCollider))
+				//		{
+				//			float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
+				//			if (fDist < fMaxDist)
+				//			{
+				//				m_Mouse.m_vPrevPos = m_Mouse.m_vIntersectionPos;
+				//				m_pTargetIns = &m_DrawList[i]->m_InstanceList[j];
+				//				fMaxDist = fDist;
+				//				m_isSelectObject = true;
+				//				m_vTemp = m_pTargetIns->vScale;
+				//			}
+				//		}
+				//	}
+				//}
 			}
 			else
 			{
@@ -529,11 +520,9 @@ void myMapTool::EditObject(Vector3& vPick)
 					mat._42 = m_Mouse.m_vPrevPos.y;
 					mat._43 = m_Mouse.m_vPrevPos.z;
 					mat = mat * g_pMainCamTransform->m_matView * g_pMainCamTransform->m_matProj;
-					//Vector3 v1 = Vector3::Transform(m_Mouse.m_vPrevPos, mat);
 					Vector2 v1;
 					v1.x = ((mat._41 / mat._44) + 1.0f) * 0.5f * g_rtClient.right;
 					v1.y = (1.0f - ((mat._42 / mat._44) + 1.0f) * 0.5f) * g_rtClient.bottom;
-					//Vector3 v2 = Vector3::Transform(m_pTargetIns->vPos, mat);
 					Vector2 v2;
 					mat = Matrix::Identity;
 					mat._41 = m_pTargetIns->vPos.x;
@@ -544,8 +533,6 @@ void myMapTool::EditObject(Vector3& vPick)
 					v2.y = (1.0f - ((mat._42 / mat._44) + 1.0f) * 0.5f) * g_rtClient.bottom;
 					float fOne = fabs(v1.x - v2.x);
 					float fRange = fabs(g_Input.GetMouse().x - v2.x);
-					//float fRange = (Vector2(g_Input.GetMouse().x, g_Input.GetMouse().y) - v2).Length();
-
 					float fRatio = fRange / fOne;
 
 					m_pTargetIns->vScale = m_vTemp * fRatio;
@@ -590,44 +577,35 @@ void myMapTool::EditObject(Vector3& vPick)
 
 void myMapTool::ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera)
 {
+	for (int i = 0; i < InstanceList.size(); i++)
+	{
+		if (!InstanceList[i].isActive) continue;
+		myGameObject* pObj = g_ObjMgr.m_ObjectList[InstanceList[i].iID];
+
+		pObj->m_pTransform->m_vPos = InstanceList[i].vPos;
+		pObj->m_pTransform->m_vScale = InstanceList[i].vScale;
+		pObj->m_pTransform->m_qRot = InstanceList[i].qRot;
+		pObj->m_pTransform->SetMatrix(NULL,
+			&pTargetCamera->m_pTransform->m_matView,
+			&pTargetCamera->m_pTransform->m_matProj);
+		pObj->Render(pImmediateContext);
+	}
+
 	//for (int i = 0; i < m_DrawList.size(); i++)
 	//{
-	//	m_DrawList[i]->m_pTransform->SetMatrix(NULL,
-	//		&pTargetCamera->m_pTransform->m_matView,
-	//		&pTargetCamera->m_pTransform->m_matProj);
-	//	m_DrawList[i]->Render(pImmediateContext);
-
-	//	//for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
-	//	//{
-	//	//	if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
-	//	//	m_DrawList[i]->m_pTransform->m_vPos = m_DrawList[i]->m_InstanceList[j].vPos;
-	//	//	m_DrawList[i]->m_pTransform->m_vScale = m_DrawList[i]->m_InstanceList[j].vScale;
-	//	//	m_DrawList[i]->m_pTransform->m_qRot = m_DrawList[i]->m_InstanceList[j].qRot;
-	//	//	m_DrawList[i]->m_pTransform->SetMatrix(NULL,
-	//	//		&pTargetCamera->m_pTransform->m_matView,
-	//	//		&pTargetCamera->m_pTransform->m_matProj);
-	//	//	m_DrawList[i]->Render(pImmediateContext);
-	//	//}
+	//	for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
+	//	{
+	//		if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
+	//
+	//		m_DrawList[i]->m_pTransform->m_vPos = m_DrawList[i]->m_InstanceList[j].vPos;
+	//		m_DrawList[i]->m_pTransform->m_vScale = m_DrawList[i]->m_InstanceList[j].vScale;
+	//		m_DrawList[i]->m_pTransform->m_qRot = m_DrawList[i]->m_InstanceList[j].qRot;
+	//		m_DrawList[i]->m_pTransform->SetMatrix(NULL,
+	//			&pTargetCamera->m_pTransform->m_matView,
+	//			&pTargetCamera->m_pTransform->m_matProj);
+	//		m_DrawList[i]->Render(pImmediateContext);
+	//	}
 	//}
-	for (int i = 0; i < m_DrawList.size(); i++)
-	{
-		//m_DrawList[i]->m_pTransform->SetMatrix(NULL,
-		//	&pTargetCamera->m_pTransform->m_matView,
-		//	&pTargetCamera->m_pTransform->m_matProj);
-		//m_DrawList[i]->Render(pImmediateContext);
-		for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
-		{
-			if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
-	
-			m_DrawList[i]->m_pTransform->m_vPos = m_DrawList[i]->m_InstanceList[j].vPos;
-			m_DrawList[i]->m_pTransform->m_vScale = m_DrawList[i]->m_InstanceList[j].vScale;
-			m_DrawList[i]->m_pTransform->m_qRot = m_DrawList[i]->m_InstanceList[j].qRot;
-			m_DrawList[i]->m_pTransform->SetMatrix(NULL,
-				&pTargetCamera->m_pTransform->m_matView,
-				&pTargetCamera->m_pTransform->m_matProj);
-			m_DrawList[i]->Render(pImmediateContext);
-		}
-	}
 }
 
 bool myMapTool::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest)

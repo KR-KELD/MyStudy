@@ -292,6 +292,57 @@ void myMapToolForm::OnBnClickedSave()
 		cstrTemp = wstrTemp.c_str();
 		vecDesc.push_back(cstrTemp);
 
+		if (pApp->m_Sample.m_pMapTool->InstanceList.size() > 0)
+		{
+			wstrTemp.clear();
+			wstrTemp += L"InstanceStart\n";
+			cstrTemp = wstrTemp.c_str();
+			vecDesc.push_back(cstrTemp);
+
+			for (int i = 0; i < pApp->m_Sample.m_pMapTool->InstanceList.size(); i++)
+			{
+				wstrTemp.clear();
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].iID);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vPos.x);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vPos.y);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vPos.z);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vScale.x);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vScale.y);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vScale.z);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].qRot.x);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].qRot.y);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].qRot.z);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].qRot.w);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].SphereCollider.vCenter.x);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].SphereCollider.vCenter.y);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].SphereCollider.vCenter.z);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].SphereCollider.fRadius);
+				wstrTemp += L"\n";
+				cstrTemp = wstrTemp.c_str();
+				vecDesc.push_back(cstrTemp);
+			}
+
+			wstrTemp.clear();
+			wstrTemp += L"InstanceEnd\n";
+			cstrTemp = wstrTemp.c_str();
+			vecDesc.push_back(cstrTemp);
+		}
+
+
 		//wstrTemp = DataFolderPath;
 		//wstrTemp += L"save/";
 
@@ -369,6 +420,42 @@ void myMapToolForm::OnBnClickedLoad()
 			//pApp->m_Sample.m_pMapTool->m_NormalTex.LoadTexture(szTexPath);
 			pApp->m_Sample.m_pMapTool->m_SplatCS.CreateFromTexFile(szTexPath);
 			pApp->m_Sample.m_pMapTool->CreateTex(iTexSize);
+
+			if (vecDesc.size() >= 8 && vecDesc[8] == "InstanceStart")
+			{
+				int iIndex = 8;
+				while (true)
+				{
+					iIndex++;
+					if (vecDesc[iIndex] == "InstanceEnd") break;
+					vector<CString> InstanceData;
+					CString tempString;
+					int numP = 0;
+					while (!vecDesc[iIndex].IsEmpty())
+					{
+						tempString = vecDesc[iIndex].Tokenize(_T("/"), numP);
+						if (tempString.IsEmpty()) break;
+						InstanceData.push_back(tempString);
+					}
+					SampleIns ins;
+					ins.iID = _ttoi(InstanceData[0]);
+					ins.vPos.x = _ttof(InstanceData[1]);
+					ins.vPos.y = _ttof(InstanceData[2]);
+					ins.vPos.z = _ttof(InstanceData[3]);
+					ins.vScale.x = _ttof(InstanceData[4]);
+					ins.vScale.y = _ttof(InstanceData[5]);
+					ins.vScale.z = _ttof(InstanceData[6]);
+					ins.qRot.x = _ttof(InstanceData[7]);
+					ins.qRot.y = _ttof(InstanceData[8]);
+					ins.qRot.z = _ttof(InstanceData[9]);
+					ins.qRot.w = _ttof(InstanceData[10]);
+					ins.SphereCollider.vCenter.x = _ttof(InstanceData[11]);
+					ins.SphereCollider.vCenter.y = _ttof(InstanceData[12]);
+					ins.SphereCollider.vCenter.z = _ttof(InstanceData[13]);
+					ins.SphereCollider.fRadius = _ttof(InstanceData[14]);
+					pApp->m_Sample.m_pMapTool->InstanceList.push_back(ins);
+				}
+			}
 
 			pApp->m_Sample.m_pMap->SetMapCBData(iNumCell, iNumTile, m_iCellSize, iSpaceDivision);
 			//높이맵

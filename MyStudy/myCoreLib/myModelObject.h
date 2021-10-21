@@ -11,7 +11,6 @@ struct SampleIns
 	Vector3 vPos;
 	Vector3 vScale;
 	Quaternion qRot;
-	MY_BOX	BoxCollider;
 	MY_SPHERE SphereCollider;
 	Matrix GetWorld()
 	{
