@@ -32,7 +32,7 @@ public:
 	afx_msg void OnBnClickedTerrainUp();
 	afx_msg void OnBnClickedTerrainDown();
 	afx_msg void OnBnClickedTerrainFlat();
-	float m_fRadius;
+	float m_fOutRadius;
 	float m_fSpeed;
 	afx_msg void OnBnClickedUpdate();
 	afx_msg void OnBnClickedSplat1();
@@ -48,6 +48,7 @@ public:
 	afx_msg void OnBnClickedScale();
 	afx_msg void OnBnClickedDelete();
 	afx_msg void OnBnClickedSplatErase();
+	float m_fInRadius;
 };
 
 

@@ -61,6 +61,7 @@
 #define IDC_BUTTON15                    1026
 #define IDC_BUTTON16                    1027
 #define IDC_BUTTON17                    1028
+#define IDC_EDIT6                       1029
 #define ID_TOOL_CARACTERTOOL            32772
 #define ID_TOOL_MAPTOOL                 32774
 
