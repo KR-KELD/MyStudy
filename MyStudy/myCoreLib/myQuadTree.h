@@ -12,6 +12,8 @@ public:
 	int				m_iMaxdepth;
 	//최소 크기
 
+	myCamera*		m_pCullingCamera;
+
 	//뿌려줄 노드
 	vector<myNode*> m_LeafNodeList;
 	vector<myNode*>	m_DrawNodeList;
@@ -25,6 +27,7 @@ public:
 	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Draw(ID3D11DeviceContext*	pd3dContext, myNode* pNode);
 	virtual bool	DrawCulling(ID3D11DeviceContext*	pd3dContext);
+	bool			DrawObject(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	CullingNode();
 	virtual bool	CullingVertex(ID3D11DeviceContext*	pd3dContext, myNode* pNode);
 	void			RepreshBindingObj(myNode* pNode);

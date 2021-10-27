@@ -43,6 +43,18 @@ bool Sample::Render()
 	{
 		m_isDebugText = !m_isDebugText;
 	}
+	if (m_isCreate)
+	{
+		if (g_Input.GetKey(VK_F7) == KEY_PUSH)
+		{
+			m_QuadTree.m_pCullingCamera = g_CamList.GetGameObject(L"DebugCamera")->GetComponent<myCamera>();
+		}
+		if (g_Input.GetKey(VK_F8) == KEY_PUSH)
+		{
+			m_QuadTree.m_pCullingCamera = g_CamList.GetGameObject(L"TopCamera")->GetComponent<myCamera>();
+		}
+	}
+
 	if (g_Input.GetKey('8') == KEY_PUSH)
 	{
 		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
@@ -75,23 +87,22 @@ bool Sample::Render()
 #pragma endregion
 	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 		myDxState::g_RasterizerDesc);
-
+	g_CamMgr.SetMainCamera(L"TopCamera");
 #pragma region MiniMap
 	if (m_pMiniMap->Begin())
 	{
 		if (m_isCreate)
 		{
-			m_pMapTool->TerrainRender(g_pImmediateContext, m_pTopCamera);
-			m_pMapTool->ObjectRender(g_pImmediateContext, m_pTopCamera);
+			m_pMapTool->Render(g_pImmediateContext);
 		}
 		m_pMiniMap->End();
 	}
+	g_CamMgr.SetMainCamera(L"DebugCamera");
 #pragma endregion
 	if (m_isCreate)
 	{
 #pragma region Map&ObjectRender
-		m_pMapTool->TerrainRender(g_pImmediateContext, g_CamMgr.m_pMainCamera);
-		m_pMapTool->ObjectRender(g_pImmediateContext, g_CamMgr.m_pMainCamera);
+		m_pMapTool->Render(g_pImmediateContext);
 
 #pragma endregion
 

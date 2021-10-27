@@ -121,7 +121,17 @@ bool myMapTool::Frame()
 
 bool myMapTool::Render(ID3D11DeviceContext*	pd3dContext)
 {
+	m_pMap->m_pTransform->SetMatrix(NULL,
+		&g_pMainCamTransform->m_matView,
+		&g_pMainCamTransform->m_matProj);
+	//if (m_NormalTex.m_pSRV.Get())
+	//{
+	//	pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
+	//}
 
+	pd3dContext->PSSetShaderResources(1, 1, m_SplatCS.m_pSRVCopy.GetAddressOf());
+	pd3dContext->PSSetShaderResources(2, 4, m_pSplatTex);
+	m_pQuadTree->Render(pd3dContext);
 	return true;
 }
 
@@ -387,21 +397,6 @@ void myMapTool::SetMode(int iMode)
 	}
 }
 
-void myMapTool::TerrainRender(ID3D11DeviceContext * pImmediateContext, myCamera * pTargetCamera)
-{
-	m_pMap->m_pTransform->SetMatrix(NULL,
-		&pTargetCamera->m_pTransform->m_matView,
-		&pTargetCamera->m_pTransform->m_matProj);
-	//if (m_NormalTex.m_pSRV.Get())
-	//{
-	//	pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
-	//}
-
-	pImmediateContext->PSSetShaderResources(1, 1, m_SplatCS.m_pSRVCopy.GetAddressOf());
-	pImmediateContext->PSSetShaderResources(2, 4, m_pSplatTex);
-	m_pQuadTree->Render(pImmediateContext);
-}
-
 void myMapTool::EditTerrain(Vector3& vPick)
 {
 	if (m_isPicking)
@@ -457,26 +452,26 @@ void myMapTool::EditObject(Vector3& vPick)
 			if (m_pTargetObject != nullptr && m_isUpdateData)
 			{
 
-				SampleIns ins;
-				ins.fTick = 0.0f;
-				ins.vPos = vPick;
-				ins.vScale = Vector3::One;
-				ins.qRot = Quaternion::Identity;
-				if (m_pTargetObject->m_iObjectID == 1) ins.vScale = Vector3(0.2f, 0.2f, 0.2f);
-				ins.iID = m_pTargetObject->m_iObjectID;
-				float fScale = (ins.vScale.x + ins.vScale.y + ins.vScale.z) / 3.0f;
-				ins.SphereCollider = m_pTargetObject->m_SphereCollider;
-				ins.SphereCollider.fRadius *= fScale;
-				ins.SphereCollider.vCenter = ins.vPos;
-				ins.SphereCollider.vCenter.y += m_pTargetObject->m_SphereCollider.vCenter.y * ins.vScale.y;
+				SampleIns* ins = new SampleIns;
+				ins->fTick = 0.0f;
+				ins->vPos = vPick;
+				ins->vScale = Vector3::One;
+				ins->qRot = Quaternion::Identity;
+				if (m_pTargetObject->m_iObjectID == 1) ins->vScale = Vector3(0.2f, 0.2f, 0.2f);
+				ins->iID = m_pTargetObject->m_iObjectID;
+				float fScale = (ins->vScale.x + ins->vScale.y + ins->vScale.z) / 3.0f;
+				ins->SphereCollider = m_pTargetObject->m_SphereCollider;
+				ins->SphereCollider.fRadius *= fScale;
+				ins->SphereCollider.vCenter = ins->vPos;
+				ins->SphereCollider.vCenter.y += m_pTargetObject->m_SphereCollider.vCenter.y * ins->vScale.y;
 				//m_pTargetObject->m_InstanceList.push_back(ins);
 				InstanceList.push_back(ins);
 				for (int i = 0; i < m_SelectNodeList.size(); i++)
 				{
-					if (m_SelectNodeList[i]->IsInRect(ins.vPos))
+					if (m_SelectNodeList[i]->IsInRect(ins->vPos))
 					{
-						m_pQuadTree->m_LeafNodeList[m_SelectNodeList[i]->m_iIndex]->m_ObjectList.push_back(&InstanceList.back());
-						InstanceList.back().iNodeIndex = m_SelectNodeList[i]->m_iIndex;
+						m_pQuadTree->m_LeafNodeList[m_SelectNodeList[i]->m_iIndex]->m_ObjectList.push_back(ins);
+						ins->iNodeIndex = m_SelectNodeList[i]->m_iIndex;
 						break;
 					}
 				}
@@ -497,15 +492,15 @@ void myMapTool::EditObject(Vector3& vPick)
 				float fMaxDist = 99999.0f;
 				for (int i = 0; i < InstanceList.size(); i++)
 				{
-					if (!InstanceList[i].isActive) continue;
+					if (!InstanceList[i]->isActive) continue;
 
-					if (myCollision::IntersectRayToSphere(m_Mouse.m_myRay, InstanceList[i].SphereCollider))
+					if (myCollision::IntersectRayToSphere(m_Mouse.m_myRay, InstanceList[i]->SphereCollider))
 					{
 						float fDist = (m_Mouse.m_vIntersectionPos - m_Mouse.m_myRay.vOrigin).Length();
 						if (fDist < fMaxDist)
 						{
 							m_Mouse.m_vPrevPos = m_Mouse.m_vIntersectionPos;
-							m_pTargetIns = &InstanceList[i];
+							m_pTargetIns = InstanceList[i];
 							fMaxDist = fDist;
 							m_isSelectObject = true;
 							m_vTemp = m_pTargetIns->vScale;
@@ -606,39 +601,39 @@ void myMapTool::EditObject(Vector3& vPick)
 	}
 }
 
-void myMapTool::ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera)
-{
-	for (int i = 0; i < InstanceList.size(); i++)
-	{
-		if (!InstanceList[i].isActive) continue;
-		if (!InstanceList[i].isRender) continue;
-		myGameObject* pObj = g_ObjMgr.m_ObjectList[InstanceList[i].iID];
-
-		pObj->m_pTransform->m_vPos = InstanceList[i].vPos;
-		pObj->m_pTransform->m_vScale = InstanceList[i].vScale;
-		pObj->m_pTransform->m_qRot = InstanceList[i].qRot;
-		pObj->m_pTransform->SetMatrix(NULL,
-			&pTargetCamera->m_pTransform->m_matView,
-			&pTargetCamera->m_pTransform->m_matProj);
-		pObj->Render(pImmediateContext);
-	}
-
-	//for (int i = 0; i < m_DrawList.size(); i++)
-	//{
-	//	for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
-	//	{
-	//		if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
-	//
-	//		m_DrawList[i]->m_pTransform->m_vPos = m_DrawList[i]->m_InstanceList[j].vPos;
-	//		m_DrawList[i]->m_pTransform->m_vScale = m_DrawList[i]->m_InstanceList[j].vScale;
-	//		m_DrawList[i]->m_pTransform->m_qRot = m_DrawList[i]->m_InstanceList[j].qRot;
-	//		m_DrawList[i]->m_pTransform->SetMatrix(NULL,
-	//			&pTargetCamera->m_pTransform->m_matView,
-	//			&pTargetCamera->m_pTransform->m_matProj);
-	//		m_DrawList[i]->Render(pImmediateContext);
-	//	}
-	//}
-}
+//void myMapTool::ObjectRender(ID3D11DeviceContext * pImmediateContext)
+//{
+//	//for (int i = 0; i < InstanceList.size(); i++)
+//	//{
+//	//	if (!InstanceList[i].isActive) continue;
+//	//	if (!InstanceList[i].isRender) continue;
+//	//	myGameObject* pObj = g_ObjMgr.m_ObjectList[InstanceList[i].iID];
+//
+//	//	pObj->m_pTransform->m_vPos = InstanceList[i].vPos;
+//	//	pObj->m_pTransform->m_vScale = InstanceList[i].vScale;
+//	//	pObj->m_pTransform->m_qRot = InstanceList[i].qRot;
+//	//	pObj->m_pTransform->SetMatrix(NULL,
+//	//		&pTargetCamera->m_pTransform->m_matView,
+//	//		&pTargetCamera->m_pTransform->m_matProj);
+//	//	pObj->Render(pImmediateContext);
+//	//}
+//
+//	//for (int i = 0; i < m_DrawList.size(); i++)
+//	//{
+//	//	for (int j = 0; j < m_DrawList[i]->m_InstanceList.size(); j++)
+//	//	{
+//	//		if (!m_DrawList[i]->m_InstanceList[j].isActive) continue;
+//	//
+//	//		m_DrawList[i]->m_pTransform->m_vPos = m_DrawList[i]->m_InstanceList[j].vPos;
+//	//		m_DrawList[i]->m_pTransform->m_vScale = m_DrawList[i]->m_InstanceList[j].vScale;
+//	//		m_DrawList[i]->m_pTransform->m_qRot = m_DrawList[i]->m_InstanceList[j].qRot;
+//	//		m_DrawList[i]->m_pTransform->SetMatrix(NULL,
+//	//			&pTargetCamera->m_pTransform->m_matView,
+//	//			&pTargetCamera->m_pTransform->m_matProj);
+//	//		m_DrawList[i]->Render(pImmediateContext);
+//	//	}
+//	//}
+//}
 
 bool myMapTool::SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest)
 {
@@ -767,4 +762,9 @@ myMapTool::myMapTool(myHeightMap* pMap, myQuadTree* pQuadTree)
 
 myMapTool::~myMapTool()
 {
+	for (int i = 0; i < InstanceList.size(); i++)
+	{
+		SAFE_DEL(InstanceList[i]);
+	}
+	InstanceList.clear();
 }

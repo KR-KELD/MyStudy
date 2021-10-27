@@ -89,7 +89,7 @@ public:
 	bool		m_isUpdatePick;
 	bool		m_isSelectObject;
 	Vector3		m_vTemp;
-	vector<SampleIns> InstanceList;
+	vector<SampleIns*> InstanceList;
 public:
 	WCHAR	m_szToolType[256];
 	WCHAR	m_szToolMode[256];
@@ -105,8 +105,6 @@ public:
 	void	SetMode(int iMode);
 	void	EditTerrain(Vector3& vPick);
 	void	EditObject(Vector3& vPick);
-	void	TerrainRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera);
-	void	ObjectRender(ID3D11DeviceContext * pImmediateContext, myCamera* pTargetCamera);
 	bool	SetHeightTex(ID3D11DeviceContext * pImmediateContext, ID3D11Texture2D * pTexDest);
 	//bool	SetNormalTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest, Vector3& vPick , Vector2& vLT, Vector2& vRB);
 	bool	ResetTex(ID3D11DeviceContext*   pImmediateContext, ID3D11Texture2D* pTexDest);

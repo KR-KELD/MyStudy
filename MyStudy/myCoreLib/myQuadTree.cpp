@@ -11,6 +11,7 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 		m_pMap->m_iNumVertices - 1);
 
 	Partition(m_pRootNode);
+	m_pCullingCamera = g_CamMgr.m_pMainCamera;
 	return true;
 }
 
@@ -76,6 +77,7 @@ bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 	pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
 	DrawCulling(pd3dContext);
 	//Draw(m_pRootNode);
+	DrawObject(pd3dContext);
 	return true;
 }
 
@@ -110,6 +112,28 @@ bool myQuadTree::DrawCulling(ID3D11DeviceContext*	pd3dContext)
 	return true;
 }
 
+bool myQuadTree::DrawObject(ID3D11DeviceContext * pd3dContext)
+{
+	for (myNode* pNode : m_DrawNodeList)
+	{
+		for (int i = 0; i < pNode->m_ObjectList.size(); i++)
+		{
+			if (!pNode->m_ObjectList[i]->isActive) continue;
+			if (!pNode->m_ObjectList[i]->isRender) continue;
+			myGameObject* pObj = g_ObjMgr.m_ObjectList[pNode->m_ObjectList[i]->iID];
+
+			pObj->m_pTransform->m_vPos = pNode->m_ObjectList[i]->vPos;
+			pObj->m_pTransform->m_vScale = pNode->m_ObjectList[i]->vScale;
+			pObj->m_pTransform->m_qRot = pNode->m_ObjectList[i]->qRot;
+			pObj->m_pTransform->SetMatrix(NULL,
+				&g_pMainCamTransform->m_matView,
+				&g_pMainCamTransform->m_matProj);
+			pObj->Render(pd3dContext);
+		}
+	}
+	return false;
+}
+
 bool myQuadTree::CullingNode()
 {
 	m_DrawNodeList.clear();
@@ -122,7 +146,7 @@ bool myQuadTree::CullingNode()
 		}
 		for (int i = 0; i < 6; i++)
 		{
-			if (g_CamMgr.m_pMainCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[i]))
+			if (m_pCullingCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[i]))
 			{
 				for (int i = 0; i < pNode->m_ObjectList.size(); i++)
 				{

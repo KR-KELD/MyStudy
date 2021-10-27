@@ -75,7 +75,8 @@ void myMapToolForm::Dump(CDumpContext& dc) const
 void myMapToolForm::OnBnClickedButton1()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(FALSE);
+	UpdateData(TRUE);
+
 	CString strCellCount, strTileCount;
 	int iSelTile = m_TileCount.GetCurSel();
 	//m_TileCount.GetLBText(iSelTile, strTileCount);
@@ -92,7 +93,7 @@ void myMapToolForm::OnBnClickedButton1()
 		myMapDesc desc;
 		//int iNumCell = _ttoi(strCellCount);
 		int iNumTile = pow(2, iSelTile);
-		int iNumCell = pow(2, iSelTile);
+		int iNumCell = pow(2, iSelCell);
 		int iTexSize = 128 * pow(2, iSelTex);
 		int iSpaceDivision = iSelTile > 4 ? 4 : iSelTile;
 		// 0-1  1-2 2-4  3-8
@@ -124,6 +125,7 @@ void myMapToolForm::OnBnClickedButton1()
 			desc.iNumCols * desc.fCellDistance, 
 			desc.iNumRows * desc.fCellDistance, 1.0f, 10000);
 	}
+	UpdateData(FALSE);
 }
 
 int myMapToolForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -175,13 +177,13 @@ void myMapToolForm::OnBnClickedButton2()
 	static TCHAR BASED_CODE szFilter[] =
 		_T("이미지 파일(*.BMP, *.JPEG, *.JPG) | *.bmp;*.jpeg;*.jpg | 모든파일(*.*)|*.*||");
 	CFileDialog dlg(TRUE, _T("*.jpg"), _T("image"), OFN_HIDEREADONLY, szFilter);
-
+	UpdateData(TRUE);
 	if (dlg.DoModal() == IDOK)
 	{
 		m_strTexName = dlg.GetPathName();
-		UpdateData(FALSE);
+		
 	}
-
+	UpdateData(FALSE);
 }
 
 void myMapToolForm::OnBnClickedSave()
@@ -302,35 +304,39 @@ void myMapToolForm::OnBnClickedSave()
 			for (int i = 0; i < pApp->m_Sample.m_pMapTool->InstanceList.size(); i++)
 			{
 				wstrTemp.clear();
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].iID);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->iID);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vPos.x);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->iNodeIndex);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vPos.y);
+				wstrTemp += to_wstring((int)pApp->m_Sample.m_pMapTool->InstanceList[i]->isActive);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vPos.z);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->vPos.x);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vScale.x);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->vPos.y);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vScale.y);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->vPos.z);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].vScale.z);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->vScale.x);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].qRot.x);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->vScale.y);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].qRot.y);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->vScale.z);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].qRot.z);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->qRot.x);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].qRot.w);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->qRot.y);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].SphereCollider.vCenter.x);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->qRot.z);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].SphereCollider.vCenter.y);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->qRot.w);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].SphereCollider.vCenter.z);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->SphereCollider.vCenter.x);
 				wstrTemp += L"/";
-				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i].SphereCollider.fRadius);
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->SphereCollider.vCenter.y);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->SphereCollider.vCenter.z);
+				wstrTemp += L"/";
+				wstrTemp += to_wstring(pApp->m_Sample.m_pMapTool->InstanceList[i]->SphereCollider.fRadius);
 				wstrTemp += L"\n";
 				cstrTemp = wstrTemp.c_str();
 				vecDesc.push_back(cstrTemp);
@@ -362,6 +368,7 @@ void myMapToolForm::OnBnClickedSave()
 
 void myMapToolForm::OnBnClickedLoad()
 {
+	UpdateData(TRUE);
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CString strSaveFile = L"";
 	static TCHAR BASED_CODE szFilter[] =
@@ -393,6 +400,9 @@ void myMapToolForm::OnBnClickedLoad()
 		if (!pApp->m_Sample.m_isCreate)
 		{
 			myMapDesc desc;
+
+			//int iSpaceDivision = iSelTile > 4 ? 4 : iSelTile;
+
 			//int iNumCell = _ttoi(strCellCount);
 			int iNumTile = _ttoi(vecDesc[0]);
 			int iNumCell = _ttoi(vecDesc[1]);
@@ -437,22 +447,24 @@ void myMapToolForm::OnBnClickedLoad()
 						if (tempString.IsEmpty()) break;
 						InstanceData.push_back(tempString);
 					}
-					SampleIns ins;
-					ins.iID = _ttoi(InstanceData[0]);
-					ins.vPos.x = _ttof(InstanceData[1]);
-					ins.vPos.y = _ttof(InstanceData[2]);
-					ins.vPos.z = _ttof(InstanceData[3]);
-					ins.vScale.x = _ttof(InstanceData[4]);
-					ins.vScale.y = _ttof(InstanceData[5]);
-					ins.vScale.z = _ttof(InstanceData[6]);
-					ins.qRot.x = _ttof(InstanceData[7]);
-					ins.qRot.y = _ttof(InstanceData[8]);
-					ins.qRot.z = _ttof(InstanceData[9]);
-					ins.qRot.w = _ttof(InstanceData[10]);
-					ins.SphereCollider.vCenter.x = _ttof(InstanceData[11]);
-					ins.SphereCollider.vCenter.y = _ttof(InstanceData[12]);
-					ins.SphereCollider.vCenter.z = _ttof(InstanceData[13]);
-					ins.SphereCollider.fRadius = _ttof(InstanceData[14]);
+					SampleIns* ins = new SampleIns;
+					ins->iID = _ttoi(InstanceData[0]);
+					ins->iNodeIndex = _ttoi(InstanceData[1]);
+					ins->isRender = _ttoi(InstanceData[2]);
+					ins->vPos.x = _ttof(InstanceData[3]);
+					ins->vPos.y = _ttof(InstanceData[4]);
+					ins->vPos.z = _ttof(InstanceData[5]);
+					ins->vScale.x = _ttof(InstanceData[6]);
+					ins->vScale.y = _ttof(InstanceData[7]);
+					ins->vScale.z = _ttof(InstanceData[8]);
+					ins->qRot.x = _ttof(InstanceData[9]);
+					ins->qRot.y = _ttof(InstanceData[10]);
+					ins->qRot.z = _ttof(InstanceData[11]);
+					ins->qRot.w = _ttof(InstanceData[12]);
+					ins->SphereCollider.vCenter.x = _ttof(InstanceData[13]);
+					ins->SphereCollider.vCenter.y = _ttof(InstanceData[14]);
+					ins->SphereCollider.vCenter.z = _ttof(InstanceData[15]);
+					ins->SphereCollider.fRadius = _ttof(InstanceData[16]);
 					pApp->m_Sample.m_pMapTool->InstanceList.push_back(ins);
 				}
 			}
@@ -467,11 +479,17 @@ void myMapToolForm::OnBnClickedLoad()
 			pApp->m_Sample.m_QuadTree.CreateQuadTree(pApp->m_Sample.m_pMap);
 			pApp->m_Sample.m_isCreate = true;
 
+			for (int i = 0; i < pApp->m_Sample.m_pMapTool->InstanceList.size(); i++)
+			{
+				pApp->m_Sample.m_QuadTree.m_LeafNodeList[
+					pApp->m_Sample.m_pMapTool->InstanceList[i]->iNodeIndex]->
+					m_ObjectList.push_back(pApp->m_Sample.m_pMapTool->InstanceList[i]);
+			}
 
 			pApp->m_Sample.m_pTopCamera->CreateOrthographic(
 				desc.iNumCols * desc.fCellDistance,
 				desc.iNumRows * desc.fCellDistance, 1.0f, 10000);
 		}
 	}
-
+	UpdateData(FALSE);
 }
