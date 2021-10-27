@@ -455,9 +455,9 @@ void myMapTool::EditObject(Vector3& vPick)
 				SampleIns* ins = new SampleIns;
 				ins->fTick = 0.0f;
 				ins->vPos = vPick;
-				ins->vScale = Vector3::One;
+				ins->vScale = Vector3::One * 0.3f;
 				ins->qRot = Quaternion::Identity;
-				if (m_pTargetObject->m_iObjectID == 1) ins->vScale = Vector3(0.2f, 0.2f, 0.2f);
+				if (m_pTargetObject->m_iObjectID == 1) ins->vScale = ins->vScale *= 0.3f;
 				ins->iID = m_pTargetObject->m_iObjectID;
 				float fScale = (ins->vScale.x + ins->vScale.y + ins->vScale.z) / 3.0f;
 				ins->SphereCollider = m_pTargetObject->m_SphereCollider;
