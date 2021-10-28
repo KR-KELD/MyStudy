@@ -10,6 +10,7 @@ private:
 	std::wstring								m_szDefaultPath;
 public:
 	myTexture*									m_pWhiteTexture;
+	myTexture*									m_pBlackTexture;
 public:
 	myTexture*		Load(const TCHAR* filename);
 	myTexture*		GetPtr(wstring filename);

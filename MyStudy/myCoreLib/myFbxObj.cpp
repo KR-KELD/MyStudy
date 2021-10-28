@@ -90,7 +90,7 @@ bool myFbxObj::ModelInit()
 			wstring loadTex = pGraphics->m_MaterialList[iSub].c_str();
 			pSub->m_pTexture = g_TextureMgr.Load(loadTex.c_str());
 			if (pSub->m_pTexture == nullptr)
-				pSub->m_pTexture = g_TextureMgr.m_pWhiteTexture;
+				pSub->m_pTexture = g_TextureMgr.m_pBlackTexture;
 		}
 	}
 	if (!m_pModelObject->m_pGraphics->

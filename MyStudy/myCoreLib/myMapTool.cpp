@@ -23,11 +23,13 @@ bool myMapTool::Init()
 	_stprintf_s(m_szToolMode, L"TOPOLOGY_MODE_TERRAIN_UP");
 
 	myFbxObj* pFbxObj = g_FbxLoader.Load("Turret_Deploy1.fbx");
+	pFbxObj->m_pModelObject->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/base_normal_map.bmp");
 	pFbxObj->CuttingAnimScene(L"0", pFbxObj->m_AnimScene.iFirstFrame, pFbxObj->m_AnimScene.iLastFrame);
 	pFbxObj->m_pModelObject->ChangeAnim(L"0");
 	m_BaseList.push_back(pFbxObj->m_pModelObject.get());
 
 	pFbxObj = g_FbxLoader.Load("SM_Barrel.fbx");
+	pFbxObj->m_pModelObject->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/test_normal_map.bmp");
 	m_BaseList.push_back(pFbxObj->m_pModelObject.get());
 
 	m_pSplatTex[0] = g_TextureMgr.Load(L"tile1.jpg")->m_pTextureSRV.Get();
