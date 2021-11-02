@@ -9,21 +9,21 @@ bool Sample::Init()
 
 
 	m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
-	
 
 	m_pModelObj = m_pFbxObj->m_pModelObject;
 	m_pModelObj->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/test_normal_map.bmp");
+	//m_pModelObj->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/base_normal_map.bmp");
 	//m_pModelObj->m_pNormalTex = g_TextureMgr.m_pWhiteTexture;
-	//m_pFbxObj->CuttingAnimScene(L"0", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
-	m_pFbxObj->CuttingAnimScene(L"0", 0, 60);
-	m_pFbxObj->CuttingAnimScene(L"1", 61, 91);
-	m_pFbxObj->CuttingAnimScene(L"2", 92, 116);
-	m_pFbxObj->CuttingAnimScene(L"3", 117, 167);
-	m_pFbxObj->CuttingAnimScene(L"4", 168, 208);
+	m_pFbxObj->CuttingAnimScene(L"0", m_pFbxObj->m_AnimScene.iFirstFrame, m_pFbxObj->m_AnimScene.iLastFrame);
+	m_pFbxObj->CuttingAnimScene(L"1", 0, 60);
+	m_pFbxObj->CuttingAnimScene(L"2", 61, 91);
+	m_pFbxObj->CuttingAnimScene(L"3", 92, 116);
+	m_pFbxObj->CuttingAnimScene(L"4", 117, 167);
+	m_pFbxObj->CuttingAnimScene(L"5", 168, 208);
 
-	m_pFbxObj->CuttingAnimScene(L"5", 209, 239);
-	m_pFbxObj->CuttingAnimScene(L"6", 240, 287);
-	m_pFbxObj->CuttingAnimScene(L"7", 288, 319);
+	m_pFbxObj->CuttingAnimScene(L"6", 209, 239);
+	m_pFbxObj->CuttingAnimScene(L"7", 240, 287);
+	m_pFbxObj->CuttingAnimScene(L"8", 288, 319);
 	m_pModelObj->ChangeAnim(L"0");
 
 	return true;
@@ -33,37 +33,41 @@ bool Sample::Frame()
 {
 
 	m_pModelObj->Frame();
-	if (g_Input.GetKey('0') == KEY_PUSH)
-	{
-		m_pModelObj->ChangeAnim(L"0");
-	}
-	if (g_Input.GetKey('1') == KEY_PUSH)
+	if (g_Input.GetKey(VK_F1) == KEY_PUSH)
 	{
 		m_pModelObj->ChangeAnim(L"1");
 	}
-	if (g_Input.GetKey('2') == KEY_PUSH)
+	if (g_Input.GetKey('0') == KEY_PUSH)
+	{
+		m_pModelObj->ChangeAnim(L"1");
+	}
+	if (g_Input.GetKey('1') == KEY_PUSH)
 	{
 		m_pModelObj->ChangeAnim(L"2");
 	}
-	if (g_Input.GetKey('3') == KEY_PUSH)
+	if (g_Input.GetKey('2') == KEY_PUSH)
 	{
 		m_pModelObj->ChangeAnim(L"3");
 	}
-	if (g_Input.GetKey('4') == KEY_PUSH)
+	if (g_Input.GetKey('3') == KEY_PUSH)
 	{
 		m_pModelObj->ChangeAnim(L"4");
 	}
-	if (g_Input.GetKey('5') == KEY_PUSH)
+	if (g_Input.GetKey('4') == KEY_PUSH)
 	{
 		m_pModelObj->ChangeAnim(L"5");
 	}
-	if (g_Input.GetKey('6') == KEY_PUSH)
+	if (g_Input.GetKey('5') == KEY_PUSH)
 	{
 		m_pModelObj->ChangeAnim(L"6");
 	}
-	if (g_Input.GetKey('7') == KEY_PUSH)
+	if (g_Input.GetKey('6') == KEY_PUSH)
 	{
 		m_pModelObj->ChangeAnim(L"7");
+	}
+	if (g_Input.GetKey('7') == KEY_PUSH)
+	{
+		m_pModelObj->ChangeAnim(L"8");
 	}
 
 	//for (int i=0;i< m_ModelList.size();i++)
