@@ -78,11 +78,11 @@ bool myCore::GameFrame()
 	g_Timer.Frame();
 	g_Input.Frame();
 	g_SoundMgr.Frame();
-	Frame();
 	g_CamMgr.PreFrame();
 	g_CamMgr.Frame();
 	g_ObjMgr.PreFrame();
 	g_ObjMgr.Frame();
+	Frame();
 	g_CollisionMgr.Frame();
 	PostFrame();
 	return true;

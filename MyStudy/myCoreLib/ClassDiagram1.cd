@@ -1,0 +1,1253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="myDevice" Collapsed="true">
+    <Position X="22.25" Y="15.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CBAAAgAIIAACIgAQAAQAAAACAAEAAEAMABACABIiIEM=</HashCode>
+      <FileName>myDevice.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myDxRT" Collapsed="true">
+    <Position X="30.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQIBAAAEECAAACAiAAAABAIAAIEgEAAEAAAAABAgAAI=</HashCode>
+      <FileName>myDxRT.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myDxState" Collapsed="true">
+    <Position X="28.5" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CCQUBBAMIAAoBQIRDFAAUJBIQoAAKAphAAFQABICKAA=</HashCode>
+      <FileName>myDxState.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myBaseObject" Collapsed="true">
+    <Position X="26.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myBaseObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myButton" Collapsed="true">
+    <Position X="3" Y="19.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAQBACABAAAAU=</HashCode>
+      <FileName>myButton.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myEffect" Collapsed="true">
+    <Position X="5.25" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAEAAAAAAAAAAAABACABAAAAE=</HashCode>
+      <FileName>myEffect.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myObject" Collapsed="true">
+    <Position X="3" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAgAAAABAAAAAAAACAAAECAAABAABACABAAAAU=</HashCode>
+      <FileName>myObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myProjectile" Collapsed="true">
+    <Position X="0.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAABACABAAAAE=</HashCode>
+      <FileName>myProjectile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myUI" Collapsed="true">
+    <Position X="3" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAABACABAAAAU=</HashCode>
+      <FileName>myUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myCameraManager" Collapsed="true">
+    <Position X="31" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABCAAAAAAAACAABCEAAAAAAAAAAIAEAQABACATACAAU=</HashCode>
+      <FileName>myCameraManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myCollisionManager" Collapsed="true" HideInheritanceLine="true">
+    <Position X="6" Y="8.75" Width="1.5" />
+    <InheritanceLine Type="SingleTon&lt;myCollisionManager&gt;" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>AFAQgmgAAAQAAAAIAAAIAEBAAAAAgAAIABACABACCAE=</HashCode>
+      <FileName>myCollisionManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myObjManager" Collapsed="true" HideInheritanceLine="true">
+    <Position X="1.25" Y="13.75" Width="1.5" />
+    <InheritanceLine Type="SingleTon&lt;myObjManager&gt;" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>wAAIAAAAAAAAAABAAAAQAIAACAAIEEAAABoCADACAAU=</HashCode>
+      <FileName>myObjManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mySoundManager" Collapsed="true">
+    <Position X="27.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgwiAABAAAAACgAAAAAAAAEBAAAAAAAoBICABAAAEE=</HashCode>
+      <FileName>mySoundManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myTextureManager" Collapsed="true">
+    <Position X="22.25" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQQgAAAAAAAAAAAAAAAAAAUDAAAABAAABICABAAAAE=</HashCode>
+      <FileName>myTextureManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myNetUser" Collapsed="true">
+    <Position X="56" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACgAAQAAAAIAgAAAAAgAAAAAQAAEAAAAAAgAAA=</HashCode>
+      <FileName>myNetUser.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myNetwork" Collapsed="true" HideInheritanceLine="true">
+    <Position X="1.75" Y="12.5" Width="1.5" />
+    <InheritanceLine Type="SingleTon&lt;myNetwork&gt;" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAQDIQAAAgQAFgAEABAAAAAAAgAMAQEAgIMAAE=</HashCode>
+      <FileName>myNetwork.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myHeightMap" Collapsed="true">
+    <Position X="27.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myHeightMap.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myMap" Collapsed="true">
+    <Position X="27.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQiQAlAAAGACgAgIAAEAADAEAAIAkCAgAABAwAEEFk=</HashCode>
+      <FileName>myMap.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myMiniMap" Collapsed="true">
+    <Position X="22.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAICAAAAAAAAAgAAAAAAAAAAAAAAEEAAAAAAABAEAAA=</HashCode>
+      <FileName>myMiniMap.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myNode" Collapsed="true">
+    <Position X="26.75" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QBQAAAABIAACAIwAAQgAAAAACAAAIAEAIAAAAACAAIA=</HashCode>
+      <FileName>myNode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myQuadTree" Collapsed="true">
+    <Position X="26.75" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAggIAAEBAgBABBEAIAAABAYAwgAAAFAAABAQAAE=</HashCode>
+      <FileName>myQuadTree.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mySkyBox" Collapsed="true">
+    <Position X="25.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAgAAAAAAAAAggEAAAEAAQBAAAAAAACA=</HashCode>
+      <FileName>mySkyBox.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SingleTon&lt;T&gt;" Collapsed="true">
+    <Position X="27.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myBasicStd.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myCore" Collapsed="true">
+    <Position X="22.25" Y="17.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AYJAAQCAIEgAAABAQAQAAACAQAEACEAAIDACADAKAAM=</HashCode>
+      <FileName>myCore.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myDraw" Collapsed="true">
+    <Position X="32.75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABBAAYAAABgAGACAEAABEAAAgBAAAQFAKABIAEAE=</HashCode>
+      <FileName>myDraw.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myComponent" Collapsed="true">
+    <Position X="29" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAgAAAAIDABAEAAAAAAAAAAAAEgAABQCADACAAU=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myTransform" Collapsed="true">
+    <Position X="37.25" Y="8.25" Width="1.5" />
+    <InheritanceLine Type="myComponent" ManuallyRouted="true">
+      <Path>
+        <Point X="29.75" Y="7.562" />
+        <Point X="29.75" Y="7.853" />
+        <Point X="38" Y="7.853" />
+        <Point X="38" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AY0mACBBAhEABABkAAgACBGAgAAAAGACABjGoDCCABc=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myCollider" Collapsed="true" HideInheritanceLine="true">
+    <Position X="3.5" Y="1.75" Width="1.5" />
+    <InheritanceLine Type="myComponent" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAIAAAACAAAAAAAAAAAAAAABBACAFABYAE=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myGameObject" Collapsed="true">
+    <Position X="20.5" Y="8.25" Width="1.5" />
+    <InheritanceLine Type="myComponent" ManuallyRouted="true">
+      <Path>
+        <Point X="29.75" Y="7.562" />
+        <Point X="29.75" Y="7.79" />
+        <Point X="21.25" Y="7.79" />
+        <Point X="21.25" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>SAZAAQQgAAAAJIBACAEABJgAAAAAAEQIIFiCADAGABU=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myInput" Collapsed="true">
+    <Position X="25.75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACgAAAAAAABAAAAAAAAARAFAAACAAAABACAJAAAAE=</HashCode>
+      <FileName>myInput.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myStopwatch" Collapsed="true">
+    <Position X="50.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAIAAAAACAAAEAAAAAAAIAAEAA=</HashCode>
+      <FileName>myTimer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myTimer" Collapsed="true">
+    <Position X="29.25" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAgBIABAAABAAAAAAAAAEBAAAAABACABAAAAE=</HashCode>
+      <FileName>myTimer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myWindow" Collapsed="true">
+    <Position X="22.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAACBAAyAAAAQCAAAAAAAAEAAAIAAAAoAIAAoggAQ=</HashCode>
+      <FileName>myWindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myComputeShader" Collapsed="true" HideInheritanceLine="true">
+    <Position X="33.75" Y="2" Width="1.5" />
+    <InheritanceLine Type="myComponent" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>AgAAAABAAIAAAEghAAAAIBAARAAAAAAAAAAAEAAAIAE=</HashCode>
+      <FileName>myComputeShader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myLog" Collapsed="true">
+    <Position X="52.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myLog.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myScene" Collapsed="true">
+    <Position X="47.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAABAAAAAAAIAAAEAAAACAAAhACABAIAAE=</HashCode>
+      <FileName>myScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myLight" Collapsed="true" HideInheritanceLine="true">
+    <Position X="29.5" Y="1.75" Width="1.5" />
+    <InheritanceLine Type="myComponent" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myLight.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ExportMaterialParameter" Collapsed="true">
+    <Position X="50.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>myFbxObj.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myAnimation" Collapsed="true">
+    <Position X="35" Y="8.25" Width="1.5" />
+    <InheritanceLine Type="myComponent" ManuallyRouted="true">
+      <Path>
+        <Point X="29.75" Y="7.562" />
+        <Point X="29.75" Y="7.843" />
+        <Point X="35.75" Y="7.843" />
+        <Point X="35.75" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAQAAACAABAAAAAACEAAAAAAAAAAgAAA=</HashCode>
+      <FileName>myAnimation.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myFbxLoader" Collapsed="true">
+    <Position X="24" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQgAAAAAAAACgAAAAAAAAEBAAAAAAACAICABAAAAA=</HashCode>
+      <FileName>myFbxLoader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myFbxObj" Collapsed="true">
+    <Position X="28.5" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAAAgBAAJBgwCEAAAAAiIAAAREBAkAAAAAQCgAEAgDA=</HashCode>
+      <FileName>myFbxObj.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myModelGraphics" Collapsed="true">
+    <Position X="29.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAIAAAAAAFAAEQEAAgAQAAAAAAAICCAAAAABAAAACAA=</HashCode>
+      <FileName>myModelGraphics.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myModelObject" Collapsed="true">
+    <Position X="20.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAQAAUAQBAwAAIAARACABAAAhAAACARACAACQAAE=</HashCode>
+      <FileName>myModelObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myCamera" Collapsed="true">
+    <Position X="32.5" Y="8.25" Width="1.5" />
+    <InheritanceLine Type="myComponent" ManuallyRouted="true">
+      <Path>
+        <Point X="29.75" Y="7.562" />
+        <Point X="29.75" Y="7.804" />
+        <Point X="33.25" Y="7.804" />
+        <Point X="33.25" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AEQCAAAAAAgAACABgAEAAAICAAAAAAAAAAAaQRAAiBE=</HashCode>
+      <FileName>myCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myDebugCamera" Collapsed="true">
+    <Position X="31.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAACAAAAgAE=</HashCode>
+      <FileName>myDebugCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myFrustum" Collapsed="true">
+    <Position X="28.5" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIABAABAAAAgAAAAAAAAAAAAAEEAAAAAABAAAAE=</HashCode>
+      <FileName>myFrustum.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myArcball" Collapsed="true">
+    <Position X="30.25" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQgAAAAAkAAAAAAAAAACAAAAgAAAAAACCAIAAAAAgI=</HashCode>
+      <FileName>myModelViewCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myModelViewCamera" Collapsed="true">
+    <Position X="33.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAwAAAAAAABIAAAAAAAAAAAAAAAAQAAQAAE=</HashCode>
+      <FileName>myModelViewCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myController" Collapsed="true">
+    <Position X="39.25" Y="8.25" Width="1.5" />
+    <InheritanceLine Type="myComponent" ManuallyRouted="true">
+      <Path>
+        <Point X="29.75" Y="7.562" />
+        <Point X="29.75" Y="7.817" />
+        <Point X="40" Y="7.817" />
+        <Point X="40" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQABAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myController.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myFPSController" Collapsed="true">
+    <Position X="39.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQgAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myFPSController.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myStagingTex" Collapsed="true" HideInheritanceLine="true">
+    <Position X="40.75" Y="1.75" Width="1.5" />
+    <InheritanceLine Type="myComponent" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>AAAEQAAAAIAAAAAiAAAAAAAAAAAAAEAAAAAAEAAAAAA=</HashCode>
+      <FileName>myStagingTex.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myTexture" Collapsed="true">
+    <Position X="18.75" Y="8.25" Width="1.5" />
+    <InheritanceLine Type="myComponent" ManuallyRouted="true">
+      <Path>
+        <Point X="29.75" Y="7.562" />
+        <Point X="29.75" Y="7.81" />
+        <Point X="19.437" Y="7.81" />
+        <Point X="19.437" Y="8.25" />
+        <Point X="19.5" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AABAgAAAAAAAAAAAAAEAAAAAAABAAAAAAAACABAAAAA=</HashCode>
+      <FileName>myTexture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mySound" Collapsed="true">
+    <Position X="26.75" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgggAAAABAAAggAAEAAAAAAAAABACAAoBYCABAAAAE=</HashCode>
+      <FileName>mySound.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myGraphics" Collapsed="true">
+    <Position X="27.5" Y="8.25" Width="1.5" />
+    <InheritanceLine Type="myComponent" ManuallyRouted="true">
+      <Path>
+        <Point X="29.75" Y="7.562" />
+        <Point X="29.75" Y="7.81" />
+        <Point X="28.25" Y="7.81" />
+        <Point X="28.25" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>QJQGCAAAQIAQAgIIgBgAQAAQAQIDDEGAARACgJAGCAE=</HashCode>
+      <FileName>myGraphics.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myObjectInfo" Collapsed="true" HideInheritanceLine="true">
+    <Position X="12.25" Y="1" Width="1.5" />
+    <InheritanceLine Type="myComponent" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>AQAABAAAAAAABBAQAhACCABAAAABAAAAAAAAAABAABA=</HashCode>
+      <FileName>myObjectInfo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myShape" Collapsed="true">
+    <Position X="24" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAACEAAAAAAAAAAAAAAAAAAAABAAAAAACAAAEAAA=</HashCode>
+      <FileName>myShape.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myShapeBox" Collapsed="true">
+    <Position X="25.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>myShape.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myShapePlane" Collapsed="true">
+    <Position X="22.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myShape.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myShapeLine" Collapsed="true">
+    <Position X="24" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAEAAAAEAAA=</HashCode>
+      <FileName>myShape.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myBoxCollider" Collapsed="true">
+    <Position X="2.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAABACABAAAAE=</HashCode>
+      <FileName>myCollider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mySphereCollider" Collapsed="true">
+    <Position X="4.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoABACABAAAAE=</HashCode>
+      <FileName>myCollider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myCollision" Collapsed="true">
+    <Position X="57.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAIAAAAAAAAAAAAIAAAEAAAAAIA=</HashCode>
+      <FileName>myCollision.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myMapTool" Collapsed="true" HideInheritanceLine="true">
+    <Position X="43" Y="1.75" Width="1.5" />
+    <InheritanceLine Type="myComponent" IsHidden="true" />
+    <TypeIdentifier>
+      <HashCode>QBiBAgQAAAAUEgoABJgAEACYCEgCGAByIBASIDACDRE=</HashCode>
+      <FileName>myMapTool.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="myMouse" Collapsed="true">
+    <Position X="28.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAACsAAIAAAQAAAAAAAAAAAAACAAAAAgA=</HashCode>
+      <FileName>myMouse.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DirectX::SimpleMath::Ray" Collapsed="true">
+    <Position X="52.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAKAAAAAAAIQAAAAAAAAAAAAAgAAAAAIA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DirectX::SimpleMath::Viewport" Collapsed="true">
+    <Position X="54.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgBAAQEAAQAQgBACQggBAAgAAAAAABgAAQAAAA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DirectX::MapGuard" Collapsed="true">
+    <Position X="52.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAgAAAAAQAAAAAgQAAAAAAAhAEAAAAA=</HashCode>
+      <FileName>dxtk\DirectXHelpers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DirectX::com_exception" Collapsed="true">
+    <Position X="49" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAACAAAAABAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>dxtk\PlatformHelpers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DirectX::LoaderHelpers::auto_delete_file" Collapsed="true">
+    <Position X="45.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEAAAAAAAAAAAAAAAAAAAEAAAAAQAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>dxtk\LoaderHelpers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DirectX::LoaderHelpers::auto_delete_file_wic" Collapsed="true">
+    <Position X="47.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAEAAAgBAAAAAAAAgIAAAAAA=</HashCode>
+      <FileName>dxtk\LoaderHelpers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="MY_SPHERE" Collapsed="true">
+    <Position X="32.25" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>myBaseObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MY_BOX" Collapsed="true">
+    <Position X="32.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAgAAAAAAQAAAIACACAAA=</HashCode>
+      <FileName>myBaseObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MY_PLANE" Collapsed="true">
+    <Position X="32.25" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAECkAQAAAAAAAAA=</HashCode>
+      <FileName>myBaseObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MY_RAY" Collapsed="true">
+    <Position X="32.25" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAgAAAAAAAQ=</HashCode>
+      <FileName>myBaseObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myPacket" Collapsed="true">
+    <Position X="45.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>myNetwork.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_00dd_1" Collapsed="true">
+    <Position X="5.5" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAIAAAACAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_00dd_2" Collapsed="true">
+    <Position X="6.75" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAQAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myUnitPos" Collapsed="true">
+    <Position X="52.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAEQAAAABAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myChatMsg" Collapsed="true">
+    <Position X="56" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myLogin" Collapsed="true">
+    <Position X="49" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myLoginResult" Collapsed="true">
+    <Position X="50.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_00dd_3" Collapsed="true">
+    <Position X="1.5" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAEAAACgAQAgBAAAAAAAAAIAgABAAAAAAABIAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_00dd_4" Collapsed="true">
+    <Position X="8.75" Y="17.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABQAAAAAAAAAAAAEAABAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myMapDesc" Collapsed="true">
+    <Position X="34" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAEAgBAAAQAAAAEAAAA=</HashCode>
+      <FileName>myMap.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myNormalLookupTable" Collapsed="true">
+    <Position X="57.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAABAAA=</HashCode>
+      <FileName>myMap.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myMapCB" Collapsed="true">
+    <Position X="34" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>myMap.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myLodPatch" Collapsed="true">
+    <Position X="47.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>myNode.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myMsg" Collapsed="true">
+    <Position X="56" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAQAAAAABAA=</HashCode>
+      <FileName>myDraw.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="null_t" Collapsed="true">
+    <Position X="56" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="_If&lt;Test, True_Meta_Func, False_Meta_Func&gt;" Collapsed="true">
+    <Position X="49" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="_If&lt;true, True_Meta_Func, False_Meta_Func&gt;" Collapsed="true">
+    <Position X="47.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="_If&lt;false, True_Meta_Func, False_Meta_Func&gt;" Collapsed="true">
+    <Position X="45.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Is_Unique_Component&lt;Component_T&gt;" Collapsed="true">
+    <Position X="57.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Is_Unique_Component&lt;null_t&gt;" Collapsed="true">
+    <Position X="45.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Get_Unique_Component&lt;Component_T&gt;" Collapsed="true">
+    <Position X="54.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Get_Unique_Component&lt;null_t&gt;" Collapsed="true">
+    <Position X="52.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Get_Component&lt;Component_T&gt;" Collapsed="true">
+    <Position X="50.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Component_Identifier&lt;Component_T, Parent_Component_T, _is_unique&gt;" Collapsed="true">
+    <Position X="54.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myRuntimeClass" Collapsed="true">
+    <Position X="47.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAIAAAAAAAAAAAAAAAAAgMAAAAAAAgAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myKeyMap" Collapsed="true">
+    <Position X="45.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myStd.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="float2" Collapsed="true">
+    <Position X="8.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="float3" Collapsed="true">
+    <Position X="47.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="float4" Collapsed="true">
+    <Position X="49" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myPoint" Collapsed="true">
+    <Position X="8.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAABAAAAAAAAAAEAAAQQBAAAEAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>myMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="LIGHT_CONSTANT_BUFFER1" Collapsed="true">
+    <Position X="50.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAoAAAAQAAAAAACABAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>myLight.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="LIGHT_CONSTANT_BUFFER2" Collapsed="true">
+    <Position X="52.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACEgAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAgAAA=</HashCode>
+      <FileName>myLight.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="LIGHT_CONSTANT_BUFFER3" Collapsed="true">
+    <Position X="54.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>myLight.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myAnimScene" Collapsed="true">
+    <Position X="34" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEQIAAAAAAAABAAAAIAAAAIQAAABAAgAAQAAQAAAAA=</HashCode>
+      <FileName>myAnimation.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myAnimTrack" Collapsed="true">
+    <Position X="35.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAABIAACAAAAAACAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myModelGraphics.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myWeight" Collapsed="true">
+    <Position X="35.75" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAEAACAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myModelGraphics.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SampleIns" Collapsed="true">
+    <Position X="56" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAABABBCAAABAAAAAAAAAAAAABAAACAQA=</HashCode>
+      <FileName>myModelObject.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="P_VERTEX" Collapsed="true">
+    <Position X="57.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAACAEEQAAAAAAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PNCT_VERTEX" Collapsed="true">
+    <Position X="47.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAACAEEQAAAAAgAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PNCT2_VERTEX" Collapsed="true">
+    <Position X="35.75" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAQAAAAAAAACAEEQAAgAAAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IW_VERTEX" Collapsed="true">
+    <Position X="47.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAQBAAAAAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PNCTIW_VERTEX" Collapsed="true">
+    <Position X="35.75" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAABCAMEwAAAAAAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myTriangle" Collapsed="true">
+    <Position X="34" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAABAAAAAACAAAAAAAgAAQAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myTriangle2" Collapsed="true">
+    <Position X="35.75" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAABAAAAAAAAAAAIAAgAAQAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myBaseInstance" Collapsed="true">
+    <Position X="54.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="mySubMesh" Collapsed="true">
+    <Position X="24" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAIARAIAAAAIAgBgAQAAAAAABAAEAACAAAAAAAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="mySubMesh2" Collapsed="true">
+    <Position X="24" Y="15.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAQAAAAAAACAAAACAAAAAAAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="myDataCB" Collapsed="true">
+    <Position X="34" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAEEAAIAAAAQAAAAAA=</HashCode>
+      <FileName>myGraphicsStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SplatBuf" Collapsed="true">
+    <Position X="57.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIEAABAACAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>myMapTool.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::SimpleMath::Vector2" Collapsed="true">
+    <Position X="45.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGAIAABCBABBAAAEAAgQwRBCQAAAABAgECgAAAAAMA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::SimpleMath::Vector4" Collapsed="true">
+    <Position X="49" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGAIgABCFAABAAAEAABQwRBCQAAAABAgECgAAAAAMA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::SimpleMath::Matrix" Collapsed="true">
+    <Position X="56" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEEaAAIAAAkACEAEgAQRTIBAgADIAiEDgAAgAAAI=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::SimpleMath::Quaternion" Collapsed="true">
+    <Position X="52.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABYAAAAAAAAAEAIAAYBAKAAAAAAAgEAgAAAQAAA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::SimpleMath::Plane" Collapsed="true">
+    <Position X="45.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAMAAAAQQACAAIAEAAgAIgBAAAAAA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::SimpleMath::Rectangle" Collapsed="true">
+    <Position X="54.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAEAAAAAAAAQAQAIEAQAAAAAhAAAAAABgAQAYgIA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::SimpleMath::Vector3" Collapsed="true">
+    <Position X="47.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAGAIgKBCJAABAAAEAAgQwRBCQAAAABAiECgAAAAAMI=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::SimpleMath::Color" Collapsed="true">
+    <Position X="52.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAIAAAAAEAAQAAAARAAAAAEAAEBgQAkqAEAAQA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="std::less&lt;DirectX::SimpleMath::Rectangle&gt;" Collapsed="true">
+    <Position X="49" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SimpleMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="`anonymous-namespace'::WICTranslate" Collapsed="true">
+    <Position X="54.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>dxtk\WICTextureLoader.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="`anonymous-namespace'::WICConvert" Collapsed="true">
+    <Position X="52.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>dxtk\WICTextureLoader.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::DDS_PIXELFORMAT" Collapsed="true">
+    <Position X="45.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAQAAAIAAAAAAAAAAAAAAAAAAACAFIAQ=</HashCode>
+      <FileName>dxtk\DDS.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::DDS_HEADER" Collapsed="true">
+    <Position X="56" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAASAAAAAAAgQIQIAAIAAEgAAAAAAAAAAQIAAAAAQ=</HashCode>
+      <FileName>dxtk\DDS.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::DDS_HEADER_DXT10" Collapsed="true">
+    <Position X="57.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAgAAAAAAACAAAAAAAAAAAQAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>dxtk\DDS.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::virtual_deleter" Collapsed="true">
+    <Position X="50.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>dxtk\PlatformHelpers.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::aligned_deleter" Collapsed="true">
+    <Position X="50.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>dxtk\PlatformHelpers.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::handle_closer" Collapsed="true">
+    <Position X="56" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>dxtk\PlatformHelpers.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="RECT_ARRAY" Collapsed="true">
+    <Position X="50.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myObject.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="PACKET_HEADER" Collapsed="true">
+    <Position X="5.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="UPACKET" Collapsed="true">
+    <Position X="9.75" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="P_UPACKET" Collapsed="true">
+    <Position X="6.75" Y="19.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="TSTATUS_VARS" Collapsed="true">
+    <Position X="1.5" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="TSCORE_VARS" Collapsed="true">
+    <Position X="8.75" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DWORD_VECTOR" Collapsed="true">
+    <Position X="49" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myNode.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="T_STR" Collapsed="true">
+    <Position X="52.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myUtil.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="C_STR" Collapsed="true">
+    <Position X="47.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myUtil.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="T_STR_VECTOR" Collapsed="true">
+    <Position X="54.25" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myUtil.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="AnimTrackList" Collapsed="true">
+    <Position X="45.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myModelGraphics.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Enum Name="myObjectType" Collapsed="true">
+    <Position X="47.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAABAAEAAAAAAAAAAAAAAAAAIAAAAAAAAAAAg=</HashCode>
+      <FileName>myBaseObject.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="myCollisionState" Collapsed="true">
+    <Position X="56" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAABAAAAAAAAAAAgAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>myBaseObject.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="myOverlapState" Collapsed="true">
+    <Position X="49" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAgAAAAAAAAAEAAAAAAAAAAIAAABAA=</HashCode>
+      <FileName>myBaseObject.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="myContainerType" Collapsed="true">
+    <Position X="57.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myObjManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MYUNIT_STATE" Collapsed="true">
+    <Position X="52.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAACAAAAAYAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MYPACKET_TYPE" Collapsed="true">
+    <Position X="50.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABCIYCiIANACEEAQJACACAAAAQCKoAAAiMkMQICAAA=</HashCode>
+      <FileName>myProtocol.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="myColliderType" Collapsed="true">
+    <Position X="54.25" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>myGameObject.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="KeyState" Collapsed="true">
+    <Position X="52.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAgAAAAAAAAAAAAAAgAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>myInput.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="myEMoveState" Collapsed="true">
+    <Position X="45.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAkAAAAAAAAIAAAAAAAAAAAAAAEgAAAAAAAAAQ=</HashCode>
+      <FileName>myFPSController.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ToolType" Collapsed="true">
+    <Position X="57.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>myMapTool.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TopologyType" Collapsed="true">
+    <Position X="45.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAABA=</HashCode>
+      <FileName>myMapTool.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SplatType" Collapsed="true">
+    <Position X="56" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>myMapTool.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ObjectEditType" Collapsed="true">
+    <Position X="54.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAAAAABAAAAAAAAAAQAgBAAAA=</HashCode>
+      <FileName>myMapTool.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DirectX::DDS_RESOURCE_DIMENSION" Collapsed="true">
+    <Position X="49" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>dxtk\DDS.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DirectX::DDS_RESOURCE_MISC_FLAG" Collapsed="true">
+    <Position X="50.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>dxtk\DDS.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DirectX::DDS_MISC_FLAGS2" Collapsed="true">
+    <Position X="47.25" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>dxtk\DDS.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DirectX::DDS_ALPHA_MODE" Collapsed="true">
+    <Position X="45.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAACAAAAAQAAAQAAAAAAAAABA=</HashCode>
+      <FileName>dxtk\DDS.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DirectX::WIC_LOADER_FLAGS" Collapsed="true">
+    <Position X="47.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAASAAAIAQAAAAAQAAAAAAAACA=</HashCode>
+      <FileName>dxtk\WICTextureLoader.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

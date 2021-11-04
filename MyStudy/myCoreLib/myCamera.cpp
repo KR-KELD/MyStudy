@@ -59,6 +59,21 @@ void myCamera::Update(Vector4 data)
 	//float fHeight = m_pTransform->m_vPos.y;
 	//m_pTransform->m_vPos = m_pTransform->m_vTarget - vLocalLook * m_fDistance;
 	//m_pTransform->m_vPos.y = fHeight;
+
+	Matrix matRoation;
+	matRoation = Matrix::CreateFromYawPitchRoll(
+		data.y, data.x, data.z);
+	//D3DXMatrixAffineTransformation
+	// matRotation = quaternion * pos * scale;
+	//m_pTransform->m_vPos += m_pTransform->m_vLook * data.w;
+	m_pTransform->m_vPos += m_pTransform->m_vLook * m_fWheelDelta;
+	//TBASIS_CORE_LIB::OutputDebug("%10.4f\n", m_fWheelDelta);
+	matRoation._41 = m_pTransform->m_vPos.x;
+	matRoation._42 = m_pTransform->m_vPos.y;
+	matRoation._43 = m_pTransform->m_vPos.z;
+
+	m_pTransform->m_matView = matRoation.Invert();
+	m_fWheelDelta = 0;
 }
 
 

@@ -53,6 +53,7 @@ bool myModelObject::ChangeAnim(wstring strSceneName, bool isLerp, float fLerpTim
 	//보간 추가적으로 더 하기
 	myAnimScene* pScene = m_pAnim->GetAnim(strSceneName);
 	if (pScene == nullptr) return false;
+	if (pScene == m_pCurrentScene) return false;
 	m_isLerp = isLerp;
 	if (m_isLerp)
 	{
@@ -111,8 +112,8 @@ bool myModelObject::Init()
 
 bool myModelObject::Frame()
 {
-	//myGameObject::PreFrame();
-	//myGameObject::Frame();
+	myGameObject::PreFrame();
+	myGameObject::Frame();
 
 
 	if (m_pCurrentScene != nullptr)

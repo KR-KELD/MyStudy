@@ -138,6 +138,7 @@ struct myRuntimeClass
 		static myComponent* CloneObject(myComponent* pObj); \
 	private: \
 		static Component_Identifier_T identifier; \
+	public: \
 
 //질문
 //추정 외부에서 해당 클래스의 식별자를 전역으로 선언?

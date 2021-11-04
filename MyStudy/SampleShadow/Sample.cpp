@@ -14,11 +14,11 @@ bool Sample::Init()
 	myMapDesc desc;
 	desc.iNumCols = 65;
 	desc.iNumRows = 65;
-	desc.fCellDistance = 4;
+	desc.fCellDistance = 10;
 	desc.fScaleHeight = 10.0f;
 	desc.szTexFile = L"main.png";
 	desc.szVS = L"MapVS.txt";
-	desc.szPS = L"MapTest.txt";
+	desc.szPS = L"MapTestPS.txt";
 	m_pMap->CreateMap(desc);
 	m_pMap->SetMapCBData(8, 8, 4, 1);
 

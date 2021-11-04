@@ -152,6 +152,13 @@
   <ItemGroup>
     <ClInclude Include="Sample.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\data\shader\MapTestPS.txt" />
+    <Text Include="..\..\data\shader\MapTestVS.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
