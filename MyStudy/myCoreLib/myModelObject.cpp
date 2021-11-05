@@ -84,10 +84,11 @@ bool myModelObject::Init()
 	myGameObject::Init();
 	m_pCurrentScene = nullptr;
 	InsertComponent(new myAnimation);
-	//InsertComponent(new myController);
 	m_pGraphics = make_shared<myModelGraphics>();
 	m_pGraphics->m_pTransform = this->m_pTransform;
 	m_pGraphics->m_pGameObject = this;
+	//추가-바인드포즈벡터화-
+	//m_pGraphics->CreateAnimCBBuffer();
 	m_pAnim = GetComponent<myAnimation>();
 
 	InsertComponent(new mySphereCollider);
@@ -162,7 +163,6 @@ bool myModelObject::Frame()
 			Matrix matWorld = Matrix::Identity;
 			Matrix matParent = Matrix::Identity;
 			myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
-
 			if (m_myNodeList[iNode]->m_pParent != nullptr)
 			{
 				matParent = m_myNodeList[iNode]->m_pParent->m_pTransform->m_matAnim;
@@ -196,8 +196,12 @@ bool myModelObject::Frame()
 			//	vScale = (*pAnimTrackList)[0].vScale;
 			//	qRot = (*pAnimTrackList)[0].qRot;
 			//}
+
 			pGraphics->GetAnimSRT(m_pCurrentScene->iAnimTrackIndex, fTick
 			, vScale, qRot, vTrans);
+
+			//pGraphics->GetAnimSRT_NoneLerp(m_pCurrentScene->iAnimTrackIndex, fTick
+			//	, vScale, qRot, vTrans);
 			//if (m_pAnim->m_isLerp)
 			//{
 			//	//float fCurrent = m_pAnim->m_fTick - m_pAnim->m_fPrevTick;
@@ -228,6 +232,7 @@ bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
 	pd3dContext->PSSetShaderResources(1, 1,
 		m_pNormalTex->m_pTextureSRV.GetAddressOf());
 
+	
 	pd3dContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
 	m_pGraphics->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
 	m_pGraphics->m_cbData.vColor[1] = g_pMainCamTransform->m_vLook.y;
@@ -243,7 +248,21 @@ bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
 	for (int iNode = 0; iNode < m_myNodeList.size() ; iNode++)
 	{
 		Matrix matWorld = Matrix::Identity;
+
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
+		//추가-바인드포즈벡터화-
+		//if (pGraphics->m_eClassType != myEClassType::CLASS_GEOM) continue;
+		//for (int dwObject = 0; dwObject < pGraphics->m_BindPoseList.size(); dwObject++)
+		//{
+		//	pGraphics->m_matAnimList.matAnim[dwObject] =
+		//		pGraphics->m_BindPoseList[dwObject] *
+		//		pGraphics->m_pMeshLinkList[dwObject]->m_pTransform->m_matAnim;
+		//	pGraphics->m_matAnimList.matAnim[dwObject].Transpose();
+		//}
+		//pd3dContext->UpdateSubresource(pGraphics->m_pAnimCB.Get(), 0, NULL,
+		//	&pGraphics->m_matAnimList, 0, 0);
+		//pd3dContext->VSSetConstantBuffers(1, 1, pGraphics->m_pAnimCB.GetAddressOf());
+		
 
 		Matrix* pMatrices;
 		D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
@@ -253,6 +272,7 @@ bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
 			//바인드포즈가 있는(메시) 노드를 찾아서 크루스터(영향을 주는 노드)
 			//의 매트릭스를 채워서 상수버퍼로 전달해준다
 			//뼈대 가져올때 이부분을 참고
+
 			for (int dwObject = 0; dwObject < m_myNodeList.size(); dwObject++)
 			{
 				Matrix matBiped = Matrix::Identity;

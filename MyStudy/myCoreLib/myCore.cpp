@@ -127,7 +127,7 @@ bool myCore::PostRender()
 	g_ObjMgr.Render();
 	g_SoundMgr.Render();
 	g_Draw.Render();
-	//g_Draw.Draw(0, 0, g_Timer.m_szBuffer);
+	g_Draw.Draw(0, 0, g_Timer.m_szBuffer);
 	myDevice::PostRender();
 	return true;
 }

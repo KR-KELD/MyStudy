@@ -27,7 +27,8 @@ bool Sample::Init()
 	pBackCamera->CreateFrustum();
 
 	m_pModelObj = m_pFbxObj->m_pModelObject;
-	m_pModelObj->m_pTransform->m_qRot.y = 135.0f;
+	m_pModelObj->m_pTransform->LookAt(Vector3::Forward);
+	m_pModelObj->m_pTransform->UpdateVector();
 	//m_pModelObj->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/test_normal_map.bmp");
 	m_pModelObj->m_pNormalTex = g_TextureMgr.Load(L"../../data/object/base_normal_map.bmp");
 	//m_pModelObj->m_pNormalTex = g_TextureMgr.m_pWhiteTexture;
@@ -52,7 +53,7 @@ bool Sample::Init()
 	g_pMainCamTransform->m_vPos = Vector3(
 		g_pMainCamTransform->m_vTarget.x,
 		g_pMainCamTransform->m_vTarget.y + 100.0f,
-		g_pMainCamTransform->m_vTarget.z - 60.0f);
+		g_pMainCamTransform->m_vTarget.z + 60.0f);
 	return true;
 }
 
@@ -62,7 +63,7 @@ bool Sample::Frame()
 	g_pMainCamTransform->m_vPos = Vector3(
 		g_pMainCamTransform->m_vTarget.x,
 		g_pMainCamTransform->m_vTarget.y + 100.0f,
-		g_pMainCamTransform->m_vTarget.z - 60.0f);
+		g_pMainCamTransform->m_vTarget.z + 60.0f);
 	m_pModelObj->Frame();
 
 	myFPSController* PlayerController = m_pModelObj->GetComponent<myFPSController>();

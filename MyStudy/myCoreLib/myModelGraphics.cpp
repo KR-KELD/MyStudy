@@ -30,6 +30,23 @@ void myModelGraphics::GetAnimSRT(int iAnimIndex, float fTick, Vector3& vScale, Q
 	}
 }
 
+void myModelGraphics::GetAnimSRT_NoneLerp(int iAnimIndex, float fTick, Vector3 & vScale, Quaternion & qRot, Vector3 & vTrans)
+{
+	m_iTrackIndex = GetTrackIndex(iAnimIndex, fTick);
+	if (m_iTrackIndex >= 0)
+	{
+		vTrans = m_AnimTrackList[iAnimIndex][m_iTrackIndex].vTrans;
+		vScale = m_AnimTrackList[iAnimIndex][m_iTrackIndex].vScale;
+		qRot = m_AnimTrackList[iAnimIndex][m_iTrackIndex].qRot;
+	}
+	if (m_iTrackIndex == -1)
+	{
+		vTrans = m_AnimTrackList[iAnimIndex][0].vTrans;
+		vScale = m_AnimTrackList[iAnimIndex][0].vScale;
+		qRot = m_AnimTrackList[iAnimIndex][0].qRot;
+	}
+}
+
 int myModelGraphics::GetTrackIndex(int iAnimIndex, float fTick)
 {
 	//애님씬 입력값오류
@@ -86,12 +103,11 @@ bool myModelGraphics::MultiDraw(ID3D11DeviceContext*	pd3dContext)
 			pd3dContext->PSSetShaderResources(0, 1,
 				pMesh->m_pTexture->m_pTextureSRV.GetAddressOf());
 		}
-		//잠시주석
-		//if (m_pNormalTex != nullptr)
-		//{
-		//	pd3dContext->PSSetShaderResources(1, 1,
-		//		m_pNormalTex->m_pTextureSRV.GetAddressOf());
-		//}
+		if (m_pNormalTex != nullptr)
+		{
+			pd3dContext->PSSetShaderResources(1, 1,
+				m_pNormalTex->m_pTextureSRV.GetAddressOf());
+		}
 		if (pMesh->m_pIndexBuffer.Get() == nullptr)
 		{
 			pd3dContext->Draw(pMesh->m_iNumVertex, 0);
@@ -184,4 +200,25 @@ void myModelGraphics::CreateTangentData(Vector3 * v1, Vector3 * v2, Vector3 * v3
 	}
 	vTangent->Normalize();
 	//vBiNormal.Normalize();
+}
+
+bool myModelGraphics::CreateAnimCBBuffer()
+{
+	HRESULT hr = S_OK;
+	//hr = myGraphics::CreateConstantBuffer();
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
+	bd.ByteWidth = sizeof(myAnimMatrix);
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA sd;
+	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
+	sd.pSysMem = &m_matAnimList;
+	hr = g_pd3dDevice->CreateBuffer(&bd, &sd, m_pAnimCB.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return false;
+	}
+	return true;
 }

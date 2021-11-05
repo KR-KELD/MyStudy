@@ -37,23 +37,35 @@ bool	myGraphics::Frame()
 void    myGraphics::Update(ID3D11DeviceContext*	pd3dContext)
 {
 	D3D11_MAPPED_SUBRESOURCE mr;
-	HRESULT hr = pd3dContext->Map(m_pConstantBuffer.Get(), 0,
-		D3D11_MAP_WRITE_DISCARD, 0, &mr);
-	if (SUCCEEDED(hr))
-	{
-		myDataCB* pData = (myDataCB*)mr.pData;
-		pData->matWorld = m_pTransform->m_matWorld.Transpose();
-		pData->matView = m_pTransform->m_matView.Transpose();
-		pData->matProject = m_pTransform->m_matProj.Transpose();
 
-		pData->vColor[0] = m_cbData.vColor[0];
-		pData->vColor[1] = m_cbData.vColor[1];
-		pData->vColor[2] = m_cbData.vColor[2];
-		pData->vColor[3] = 1;
-		pData->vTime[0] = cosf(g_fGameTimer)*0.5f + 0.5f;
-		pData->vTime[1] = g_fGameTimer;
-		pd3dContext->Unmap(m_pConstantBuffer.Get(), 0);
-	}
+	m_cbData.matWorld = m_pTransform->m_matWorld.Transpose();
+	m_cbData.matView = m_pTransform->m_matView.Transpose();
+	m_cbData.matProject = m_pTransform->m_matProj.Transpose();
+
+	m_cbData.vColor[3] = 1;
+	m_cbData.vTime[0] = cosf(g_fGameTimer)*0.5f + 0.5f;
+	m_cbData.vTime[1] = g_fGameTimer;
+
+	pd3dContext->UpdateSubresource(m_pConstantBuffer.Get(), 0, NULL, &m_cbData, 0, 0);
+
+
+	//HRESULT hr = pd3dContext->Map(m_pConstantBuffer.Get(), 0,
+	//	D3D11_MAP_WRITE_DISCARD, 0, &mr);
+	//if (SUCCEEDED(hr))
+	//{
+	//	myDataCB* pData = (myDataCB*)mr.pData;
+	//	pData->matWorld = m_pTransform->m_matWorld.Transpose();
+	//	pData->matView = m_pTransform->m_matView.Transpose();
+	//	pData->matProject = m_pTransform->m_matProj.Transpose();
+
+	//	pData->vColor[0] = m_cbData.vColor[0];
+	//	pData->vColor[1] = m_cbData.vColor[1];
+	//	pData->vColor[2] = m_cbData.vColor[2];
+	//	pData->vColor[3] = 1;
+	//	pData->vTime[0] = cosf(g_fGameTimer)*0.5f + 0.5f;
+	//	pData->vTime[1] = g_fGameTimer;
+	//	pd3dContext->Unmap(m_pConstantBuffer.Get(), 0);
+	//}
 }
 bool myGraphics::PreRender(ID3D11DeviceContext*	pd3dContext)
 {
@@ -195,14 +207,16 @@ bool    myGraphics::CreateConstantBuffer()
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
 	bd.ByteWidth = sizeof(myDataCB);
-	bd.Usage = D3D11_USAGE_DYNAMIC;
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//bd.Usage = D3D11_USAGE_DYNAMIC;
+	//bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA sd;
 	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));
 	sd.pSysMem = &m_cbData;
-	HRESULT hr = g_pd3dDevice->CreateBuffer(&bd, NULL, m_pConstantBuffer.GetAddressOf());
+	HRESULT hr = g_pd3dDevice->CreateBuffer(&bd, &sd, m_pConstantBuffer.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

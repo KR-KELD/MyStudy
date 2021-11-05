@@ -19,6 +19,10 @@ bool myFbxObj::ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& s
 		auto pSkin = reinterpret_cast<FbxSkin*>(pFbxMesh->GetDeformer(dwDeformerIndex, FbxDeformer::eSkin));
 		//정점들에 영향을 주는 노드의 갯수를 가져온다
 		DWORD dwClusterCount = pSkin->GetClusterCount();
+
+		//추가-바인드포즈벡터화-
+		//pGraphics->m_BindPoseList.resize(dwClusterCount);
+
 		for (int dwClusterIndex = 0; dwClusterIndex < dwClusterCount; dwClusterIndex++)
 		{
 			//크러스터 정보를 가져온다
@@ -35,8 +39,13 @@ bool myFbxObj::ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& s
 			Matrix matInvBindPos = DxConvertMatrix(ConvertMatrixA(matBindPose));
 			matInvBindPos = matInvBindPos.Invert();
 
+			//추가-바인드포즈벡터화-
+			//pGraphics->m_BindPoseList[dwClusterIndex] = matInvBindPos;
+			FbxNode* pLinkNode = pCluster->GetLink();
+			//pGraphics->m_pFbxNodeList.push_back(pLinkNode);
+
 			pGraphics->m_nodeMatBindPoseMap.insert(
-				make_pair(pCluster->GetLink()->GetName(), matInvBindPos));
+				make_pair(pLinkNode->GetName(), matInvBindPos));
 
 			//크러스터에 영향을 받는 정점의 갯수를 가져온다
 			int  dwClusterSize = pCluster->GetControlPointIndicesCount();
@@ -58,6 +67,20 @@ bool myFbxObj::ParseMeshSkinningMap(const FbxMesh* pFbxMesh, vector<myWeight>& s
 		}
 	}
 	return true;
+}
+//추가-바인드포즈벡터화-
+myModelGraphics * myFbxObj::GetNodeIndex(FbxNode * pNode)
+{
+	//for (int iNode = 0; iNode < m_pModelObject->m_myNodeList.size(); iNode++)
+	//{
+	//	myModelGraphics* pGraphics = m_pModelObject->m_myNodeList[iNode]->
+	//		GetComponent<myModelGraphics>();
+	//	if (pGraphics->m_pFbxNode == pNode)
+	//	{
+	//		return pGraphics;
+	//	}
+	//}
+	return nullptr;
 }
 
 void myFbxObj::ParseAnimStack(FbxScene * pFbxScene, FbxString * strAnimStackName)

@@ -77,6 +77,7 @@ public:
 	virtual bool		Init()	override;
 	virtual bool		Frame() override;
 	virtual bool		Render(ID3D11DeviceContext*	pd3dContext) override;
+
 public:
 	myModelObject();
 	virtual ~myModelObject();

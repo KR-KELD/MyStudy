@@ -94,10 +94,6 @@ bool myTransform::SetMatrix(Matrix * pWorld, Matrix * pView, Matrix * pProj)
 	{
 		m_matProj = *pProj;
 	}
-	//업데이트 벡터를 쓰면 카메라 기준으로 움직이고
-	//쓰지않으면 오브젝트 기준으로 움직인다
-	//썼을때 카메라의 각도에따라 이동단위가 변한다
-	//UpdateVector();
 	return true;
 }
 

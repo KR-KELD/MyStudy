@@ -169,19 +169,38 @@ bool myFbxObj::LoadFBX(string strFileName)
 	for (int iNode = 0; iNode < m_pFbxNodeList.size(); iNode++)
 	{
 		FbxNode* pNode = m_pFbxNodeList[iNode];
-		myGameObject* pObj = myGameObject::CreateComponentObj(new myModelGraphics,
+		myModelGraphics* pGraphics = new myModelGraphics;
+		//추가-바인드포즈벡터화-
+		//pGraphics->m_pFbxNode = pNode;
+		//pGraphics->m_eClassType = myEClassType::CLASS_BONE;
+		myGameObject* pObj = myGameObject::CreateComponentObj(pGraphics,
 			to_mw(pNode->GetName()).c_str());
+
 		pObj->SetParent(m_pNodeMap[pNode->GetParent()]);
 		//노드에 대응하는 게임오브젝트 생성 및 맵에 추가
 		m_pNodeMap[pNode] = pObj;
 		//백터에도 추가
 		m_pModelObject->m_myNodeList.push_back(pObj);
-
 		if (pNode->GetMesh() != nullptr)
 		{
-			ParseMesh(pNode, pNode->GetMesh(), pObj->GetComponent<myModelGraphics>());
+			//추가-바인드포즈벡터화-
+			//pGraphics->m_eClassType = myEClassType::CLASS_GEOM;
+			//pGraphics->CreateAnimCBBuffer();
+			ParseMesh(pNode, pNode->GetMesh(), pGraphics);
 		}
 	}
+
+	//for (int iNode = 0; iNode < m_pModelObject->m_myNodeList.size(); iNode++)
+	//{
+	//	myModelGraphics* pGraphics = m_pModelObject->m_myNodeList[iNode]->
+	//		GetComponent<myModelGraphics>();
+
+	//	for (int iBone = 0; iBone < pGraphics->m_pFbxNodeList.size(); iBone++)
+	//	{
+	//		myModelGraphics* pLinkMesh = GetNodeIndex(pGraphics->m_pFbxNodeList[iBone]);
+	//		pGraphics->m_pMeshLinkList.push_back(pLinkMesh);
+	//	}
+	//}
 
 #if (FBXSDK_VERSION_MAJOR > 2014 || ((FBXSDK_VERSION_MAJOR==2014) && (FBXSDK_VERSION_MINOR>1) ) )
 	auto anim = m_pFbxScene->GetAnimationEvaluator();
@@ -250,7 +269,6 @@ bool myFbxObj::LoadFBX(string strFileName)
 	{
 		myModelGraphics* pGraphics = m_pModelObject->
 			m_myNodeList[iNode]->GetComponent<myModelGraphics>();
-
 		bool bFirst = true;
 		bool isAnim = false;
 		Vector3 vCheckScale;
@@ -360,8 +378,7 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 	}
 
 	//노드를 순회하면서 오브젝트화 시키고 리스트에 저장한다
-	myGameObject* pObj = myGameObject::CreateComponentObj(new myModelGraphics,
-										to_mw(pFbxNode->GetName()).c_str());
+	myGameObject* pObj = myGameObject::CreateGameObject(to_mw(pFbxNode->GetName()).c_str());
 
 	//노드에 대응하는 게임오브젝트 생성 및 맵에 추가
 	m_pNodeMap[pFbxNode] = pObj;
@@ -373,6 +390,9 @@ void myFbxObj::ParseNode(FbxNode * pFbxNode, Matrix matParent)
 
 	if (pFbxNode->GetMesh() != nullptr)
 	{
+		myModelGraphics* pGraphics = new myModelGraphics;
+		pGraphics->CreateAnimCBBuffer();
+		pObj->InsertComponent(pGraphics);
 		ParseMesh(pFbxNode, pFbxNode->GetMesh(), pObj->GetComponent<myModelGraphics>());
 	}
 	int dwChild = pFbxNode->GetChildCount();
@@ -762,7 +782,7 @@ string myFbxObj::ParseMaterial(FbxSurfaceMaterial * pMtrl)
 {
 	string strName = pMtrl->GetName();
 	//디퓨즈 텍스쳐 불러오기
-	auto Property = pMtrl->FindProperty(FbxSurfaceMaterial::sDiffuse);
+	FbxProperty Property = pMtrl->FindProperty(FbxSurfaceMaterial::sDiffuse);
 	if (Property.IsValid())
 	{
 		//텍스쳐의 정보를 불러온다
