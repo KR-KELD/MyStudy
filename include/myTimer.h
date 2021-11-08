@@ -32,6 +32,11 @@ private:
 class myTimer : public SingleTon<myTimer>
 {
 public:
+	LARGE_INTEGER m_Frequency;// 주파수
+	LARGE_INTEGER m_Current;
+	LARGE_INTEGER m_Frame;
+	int			  m_iTmpCounter;
+public:
 	//게임 시작 후 흐른 전체시간
 	float	m_fGameTimer;
 	//프레임당 걸리는 시간
@@ -39,8 +44,7 @@ public:
 	//초당 돌아가는 프레임
 	int		m_iFPS;
 
-	WCHAR	m_szBuffer[256];
-	float	m_fBeforeTime;
+	WCHAR	m_szBuffer[MAX_PATH] = { 0, };
 public:
 
 	bool	Init();

@@ -76,7 +76,7 @@ public:
 	//FbxNode*					m_pFbxNode;
 	//vector<myModelGraphics*>	m_pMeshLinkList;
 	ComPtr<ID3D11Buffer>		m_pAnimCB;
-	//myEClassType				m_eClassType;
+	myEClassType				m_eClassType;
 public:
 	std::vector<mySubMesh2>		m_SubMeshList2;
 	std::vector<PNCT2_VERTEX>	m_VertexList2;

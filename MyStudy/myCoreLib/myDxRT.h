@@ -6,7 +6,9 @@ public:
 	ComPtr<ID3D11RenderTargetView>	 m_pRTV;
 	ComPtr<ID3D11DepthStencilView>	 m_pDSV;
 	ComPtr<ID3D11ShaderResourceView> m_pSRV;
+	ComPtr<ID3D11ShaderResourceView> m_pSRV_DSV;
 	ComPtr<ID3D11Texture2D>			 m_pTexture2D;
+	ComPtr<ID3D11Texture2D>			 m_pTexture2D_DSV;
 	D3D11_VIEWPORT					 m_ViewPort;
 
 	ID3D11RenderTargetView*			 pSaveRTV;

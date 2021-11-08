@@ -47,25 +47,24 @@ HRESULT myDxRT::SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc,
 {
 	// create depth texture
 	HRESULT hr;
-	ComPtr<ID3D11Texture2D> pTexture = nullptr;
 	D3D11_TEXTURE2D_DESC tdesc;
 	ZeroMemory(&tdesc, sizeof(D3D11_TEXTURE2D_DESC));
 	tdesc.Width = 512;
 	tdesc.Height = 512;
 	tdesc.MipLevels = 1;
 	tdesc.ArraySize = 1;
-	tdesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	tdesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	tdesc.SampleDesc.Count = 1;
 	tdesc.SampleDesc.Quality = 0;
 	tdesc.Usage = D3D11_USAGE_DEFAULT;
-	tdesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	tdesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	if (texDesc == nullptr)
 	{
-		hr = g_pd3dDevice->CreateTexture2D(&tdesc, NULL, pTexture.GetAddressOf());
+		hr = g_pd3dDevice->CreateTexture2D(&tdesc, NULL, m_pTexture2D_DSV.GetAddressOf());
 	}
 	else
 	{
-		hr = g_pd3dDevice->CreateTexture2D(texDesc, NULL, pTexture.GetAddressOf());
+		hr = g_pd3dDevice->CreateTexture2D(texDesc, NULL, m_pTexture2D_DSV.GetAddressOf());
 	}
 	if (FAILED(hr))
 	{
@@ -79,17 +78,27 @@ HRESULT myDxRT::SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc,
 	if (dsvDesc == nullptr)
 	{
 		hr = g_pd3dDevice->CreateDepthStencilView(
-			pTexture.Get(),
+			m_pTexture2D_DSV.Get(),
 			&ddesc,
 			m_pDSV.GetAddressOf());
 	}
 	else
 	{
 		hr = g_pd3dDevice->CreateDepthStencilView(
-			pTexture.Get(),
+			m_pTexture2D_DSV.Get(),
 			dsvDesc,
 			m_pDSV.GetAddressOf());
 	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC sdesc;
+	ZeroMemory(&sdesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	sdesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	sdesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	sdesc.Texture2D.MipLevels = 1;
+
+	hr = g_pd3dDevice->CreateShaderResourceView(m_pTexture2D_DSV.Get(),
+		&sdesc,
+		m_pSRV_DSV.GetAddressOf());
 
 	if (FAILED(hr))
 	{

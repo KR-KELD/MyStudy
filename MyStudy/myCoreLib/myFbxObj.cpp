@@ -172,7 +172,7 @@ bool myFbxObj::LoadFBX(string strFileName)
 		myModelGraphics* pGraphics = new myModelGraphics;
 		//추가-바인드포즈벡터화-
 		//pGraphics->m_pFbxNode = pNode;
-		//pGraphics->m_eClassType = myEClassType::CLASS_BONE;
+		pGraphics->m_eClassType = myEClassType::CLASS_BONE;
 		myGameObject* pObj = myGameObject::CreateComponentObj(pGraphics,
 			to_mw(pNode->GetName()).c_str());
 
@@ -184,7 +184,7 @@ bool myFbxObj::LoadFBX(string strFileName)
 		if (pNode->GetMesh() != nullptr)
 		{
 			//추가-바인드포즈벡터화-
-			//pGraphics->m_eClassType = myEClassType::CLASS_GEOM;
+			pGraphics->m_eClassType = myEClassType::CLASS_GEOM;
 			//pGraphics->CreateAnimCBBuffer();
 			ParseMesh(pNode, pNode->GetMesh(), pGraphics);
 		}

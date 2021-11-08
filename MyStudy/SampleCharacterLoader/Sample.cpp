@@ -123,6 +123,11 @@ bool Sample::Frame()
 
 	return true;
 }
+bool Sample::PreFrame()
+{
+	m_pModelObj->PreFrame();
+	return true;
+}
 
 bool Sample::Render()
 {
@@ -141,6 +146,7 @@ bool Sample::Render()
 	m_pModelObj->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
+
 	m_pModelObj->Render(g_pImmediateContext);
 	g_CamMgr.m_pMainCamera->FrameFrustum();
 

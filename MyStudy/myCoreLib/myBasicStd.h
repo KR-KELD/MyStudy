@@ -10,11 +10,15 @@
 #include <sstream>
 #include <fstream>
 #include <assert.h>
+#include <mmsystem.h>
 #include <conio.h>
 #include <stdio.h>
 #include <memory>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+//메모리 누수 확인
+#include <cstdlib>
+#include <crtdbg.h>
 
 #include <wrl.h>
 #include "myUtil.h"

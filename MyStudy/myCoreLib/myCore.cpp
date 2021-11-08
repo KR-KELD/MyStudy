@@ -61,7 +61,6 @@ bool myCore::GameInit()
 	pDebugCamera->CreateViewMatrix({ 0,10,-10 }, { 0,0,0 });
 	float fAspect = g_rtClient.right / (float)g_rtClient.bottom;
 	pDebugCamera->CreateProjMatrix(1, 1000, PI2D, fAspect);
-	pDebugCamera->CreateFrustum();
 
 	g_CamMgr.SetMainCamera(obj);
 	g_FbxLoader.Init();
@@ -96,6 +95,8 @@ bool myCore::PreRender()
 		&g_pMainCamTransform->m_matProj);
 	m_pSkyBox->Render(g_pImmediateContext);
 
+
+
 	//레스터라이저 스테이트 세팅
 	m_pd3dContext->RSSetState(myDxState::g_pRSEdit.Get());
 	//픽셀 섀이더에 샘플러 세팅(보간법)
@@ -127,7 +128,7 @@ bool myCore::PostRender()
 	g_ObjMgr.Render();
 	g_SoundMgr.Render();
 	g_Draw.Render();
-	g_Draw.Draw(0, 0, g_Timer.m_szBuffer);
+	//g_Draw.Draw(0, 0, g_Timer.m_szBuffer);
 	myDevice::PostRender();
 	return true;
 }
@@ -190,6 +191,7 @@ bool myCore::GameRelease()
 	g_ObjMgr.Release();
 	g_SoundMgr.Release();
 	myDevice::Release();
+	_CrtDumpMemoryLeaks();
 	return true;
 }
 

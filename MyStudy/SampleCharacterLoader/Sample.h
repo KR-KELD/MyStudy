@@ -13,6 +13,7 @@ public:
 public:
 	bool Init() override;
 	bool Frame() override;
+	bool PreFrame() override;
 	bool Render() override;
 	bool Release() override;
 };

@@ -113,7 +113,6 @@ bool myModelObject::Init()
 
 bool myModelObject::Frame()
 {
-	myGameObject::PreFrame();
 	myGameObject::Frame();
 
 
@@ -251,7 +250,7 @@ bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
 
 		myModelGraphics* pGraphics = m_myNodeList[iNode]->GetComponent<myModelGraphics>();
 		//추가-바인드포즈벡터화-
-		//if (pGraphics->m_eClassType != myEClassType::CLASS_GEOM) continue;
+		if (pGraphics->m_eClassType != myEClassType::CLASS_GEOM) continue;
 		//for (int dwObject = 0; dwObject < pGraphics->m_BindPoseList.size(); dwObject++)
 		//{
 		//	pGraphics->m_matAnimList.matAnim[dwObject] =
