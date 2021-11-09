@@ -20,7 +20,13 @@ cbuffer myMapCB : register(b1)
 	float g_iNumCell : packoffset(c0.y);
 	float g_iCellSize : packoffset(c0.z);
 	float g_iSpaceDivision : packoffset(c0.w);
-}
+};
+
+cbuffer cbShadowMatrix : register (b2)
+{
+	matrix m_matShadow;
+};
+
 
 struct VS_INPUT
 {
@@ -35,13 +41,17 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
-	float2 nt : TEXCORRD1;
+	float2 nt : TEXCOORD1;
+	float4 s : TEXCOORD2;
 };
 VS_OUTPUT VS( VS_INPUT vIn)
 {
 	VS_OUTPUT vOut;
 	float4 p = float4(vIn.p,1.0f);
 	p = mul(p, g_matWorld);
+	
+	vOut.s = mul(p, g_matShadow);
+
 	vOut.nt = vIn.t;
 	vOut.t.x = ((p.x / g_iCellSize) + (g_iNumTile * g_iNumCell) / 2.0f) / g_iNumCell;
 	vOut.t.y = 1.0f - ((p.z / g_iCellSize) + (g_iNumTile * g_iNumCell) / 2.0f) / g_iNumCell;

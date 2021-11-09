@@ -47,6 +47,7 @@ HRESULT myDxRT::SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc,
 {
 	// create depth texture
 	HRESULT hr;
+	ComPtr<ID3D11Texture2D> pTexture2D;
 	D3D11_TEXTURE2D_DESC tdesc;
 	ZeroMemory(&tdesc, sizeof(D3D11_TEXTURE2D_DESC));
 	tdesc.Width = 512;
@@ -60,11 +61,13 @@ HRESULT myDxRT::SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc,
 	tdesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	if (texDesc == nullptr)
 	{
-		hr = g_pd3dDevice->CreateTexture2D(&tdesc, NULL, m_pTexture2D_DSV.GetAddressOf());
+		//hr = g_pd3dDevice->CreateTexture2D(&tdesc, NULL, m_pTexture2D_DSV.GetAddressOf());
+		hr = g_pd3dDevice->CreateTexture2D(&tdesc, NULL, pTexture2D.GetAddressOf());
 	}
 	else
 	{
-		hr = g_pd3dDevice->CreateTexture2D(texDesc, NULL, m_pTexture2D_DSV.GetAddressOf());
+		//hr = g_pd3dDevice->CreateTexture2D(texDesc, NULL, m_pTexture2D_DSV.GetAddressOf());
+		hr = g_pd3dDevice->CreateTexture2D(texDesc, NULL, pTexture2D.GetAddressOf());
 	}
 	if (FAILED(hr))
 	{
@@ -78,14 +81,14 @@ HRESULT myDxRT::SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc,
 	if (dsvDesc == nullptr)
 	{
 		hr = g_pd3dDevice->CreateDepthStencilView(
-			m_pTexture2D_DSV.Get(),
+			pTexture2D.Get(),//m_pTexture2D_DSV.Get(),
 			&ddesc,
 			m_pDSV.GetAddressOf());
 	}
 	else
 	{
 		hr = g_pd3dDevice->CreateDepthStencilView(
-			m_pTexture2D_DSV.Get(),
+			pTexture2D.Get(),//m_pTexture2D_DSV.Get(),
 			dsvDesc,
 			m_pDSV.GetAddressOf());
 	}
@@ -96,7 +99,7 @@ HRESULT myDxRT::SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc,
 	sdesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	sdesc.Texture2D.MipLevels = 1;
 
-	hr = g_pd3dDevice->CreateShaderResourceView(m_pTexture2D_DSV.Get(),
+	hr = g_pd3dDevice->CreateShaderResourceView(pTexture2D.Get(),//m_pTexture2D_DSV.Get(),
 		&sdesc,
 		m_pSRV_DSV.GetAddressOf());
 
@@ -140,7 +143,7 @@ bool myDxRT::Begin()
 	// apply
 	g_pImmediateContext->RSSetViewports(1, &m_ViewPort);
 	g_pImmediateContext->OMSetRenderTargets(1, m_pRTV.GetAddressOf(), m_pDSV.Get());
-	float clearColor[] = { 0,0,0,1 };
+	float clearColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	g_pImmediateContext->ClearRenderTargetView(m_pRTV.Get(), clearColor);
 	g_pImmediateContext->ClearDepthStencilView(m_pDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 	return true;

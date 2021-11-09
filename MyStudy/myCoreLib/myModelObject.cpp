@@ -225,13 +225,13 @@ bool myModelObject::Frame()
 	}
 	return true;
 }
-bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
+bool myModelObject::PreRender(ID3D11DeviceContext * pd3dContext)
 {
 	//юс╫ц
 	pd3dContext->PSSetShaderResources(1, 1,
 		m_pNormalTex->m_pTextureSRV.GetAddressOf());
 
-	
+
 	pd3dContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
 	m_pGraphics->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
 	m_pGraphics->m_cbData.vColor[1] = g_pMainCamTransform->m_vLook.y;
@@ -244,7 +244,11 @@ bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
 	pd3dContext->VSSetShader(m_pGraphics->m_pVertexShader.Get(), NULL, 0);
 	pd3dContext->PSSetShader(m_pGraphics->m_pPixelShader.Get(), NULL, 0);
 	pd3dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_pGraphics->m_iTopology);
-	for (int iNode = 0; iNode < m_myNodeList.size() ; iNode++)
+	return true;
+}
+bool myModelObject::PostRender(ID3D11DeviceContext * pd3dContext)
+{
+	for (int iNode = 0; iNode < m_myNodeList.size(); iNode++)
 	{
 		Matrix matWorld = Matrix::Identity;
 
@@ -261,7 +265,7 @@ bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
 		//pd3dContext->UpdateSubresource(pGraphics->m_pAnimCB.Get(), 0, NULL,
 		//	&pGraphics->m_matAnimList, 0, 0);
 		//pd3dContext->VSSetConstantBuffers(1, 1, pGraphics->m_pAnimCB.GetAddressOf());
-		
+
 
 		Matrix* pMatrices;
 		D3D11_MAPPED_SUBRESOURCE MappedFaceDest;
@@ -289,11 +293,16 @@ bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
 			}
 			pd3dContext->Unmap(m_pBoneBuffer.Get(), 0);
 		}
-	
+
 		pGraphics->MultiDraw(pd3dContext);
 	}
-
 	myGameObject::Render(pd3dContext);
+	return true;
+}
+bool myModelObject::Render(ID3D11DeviceContext*	pd3dContext)
+{
+	PreRender(pd3dContext);
+	PostRender(pd3dContext);
 	return true;
 }
 myModelObject::myModelObject()

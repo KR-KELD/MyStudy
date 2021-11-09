@@ -3,6 +3,7 @@ Texture2D g_txDiffuse : register(t0);
 Texture2D g_txNormal : register(t1);
 Texture2D g_txSplat[4] : register(t2);
 SamplerState g_Sample;// : register(s0);
+SamplerState g_SamplerClamp : register(s1);
 
 cbuffer myDataCB
 {
@@ -19,7 +20,8 @@ struct VS_OUTPUT
 	float3 n : NORMAL;
 	float4 c : COLOR0;
 	float2 t : TEXCOORD0;
-	float2 nt : TEXCORRD1;
+	float2 nt : TEXCOORD1;
+	float4 s : TEXCOORD2;
 };
 struct PS_OUTPUT
 {
@@ -56,6 +58,13 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 }
 
 PS_OUTPUT PSLine( VS_OUTPUT vIn)
+{
+	PS_OUTPUT vOut;
+	vOut.c = vIn.c;
+	return vOut;
+}
+
+PS_OUTPUT PSShadow(VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
 	vOut.c = vIn.c;
