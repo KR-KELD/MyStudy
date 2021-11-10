@@ -24,7 +24,7 @@ cbuffer myMapCB : register(b1)
 
 cbuffer cbShadowMatrix : register (b2)
 {
-	matrix m_matShadow;
+	matrix g_matShadow;
 };
 
 

@@ -42,7 +42,7 @@ bool Sample::Init()
 	m_pLight = new myCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"LightCamera", m_pLight);
 	m_pLight->CreateViewMatrix({ 100,100, 0 }, { 0,0,0 });
-	m_pLight->CreateProjMatrix(1, 1000, PI2D, 1.0f);
+	m_pLight->CreateProjMatrix(1.0f, 500.0f, PI4D, 1.0f);
 
 	m_matShadowTex._11 = 0.5f; m_matShadowTex._22 = -0.5f;
 	m_matShadowTex._41 = 0.5f; m_matShadowTex._42 = 0.5f;
@@ -61,8 +61,8 @@ bool Sample::Init()
 	desc.fCellDistance = 7;
 	desc.fScaleHeight = 10.0f;
 	desc.szTexFile = L"main.png";
-	desc.szVS = L"MapVS.txt";
-	desc.szPS = L"MapPS.txt";
+	desc.szVS = L"MapTestVS.txt";
+	desc.szPS = L"MapTestPS.txt";
 	m_pMap->CreateMap(desc);
 	m_pMap->SetMapCBData(8, 8, 4, 1);
 
@@ -119,6 +119,7 @@ bool Sample::Render()
 	}
 	m_cbShadow.g_matShadow.Transpose();
 	g_pImmediateContext->UpdateSubresource(m_pShadowCB, 0, NULL, &m_cbShadow, 0, 0);
+	g_pImmediateContext->VSSetConstantBuffers(2, 1, &m_pShadowCB);
 
 	g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
 	g_pImmediateContext->PSSetSamplers(1, 1, &myDxState::g_pSSClampLinear);
@@ -126,14 +127,18 @@ bool Sample::Render()
 	m_pModelObj->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
-	m_pModelObj->Render(g_pImmediateContext);
+	m_pModelObj->PreRender(g_pImmediateContext);
+	g_pImmediateContext->PSSetShaderResources(2, 1,
+		m_pShadowMapRT->m_pSRV.GetAddressOf());
+	m_pModelObj->PostRender(g_pImmediateContext);
 
 	m_pMap->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
-
 	m_pMap->Update(g_pImmediateContext);
 	m_pMap->PreRender(g_pImmediateContext);
+	g_pImmediateContext->PSSetShaderResources(3, 1,
+		m_pShadowMapRT->m_pSRV.GetAddressOf());
 	m_pMap->Render(g_pImmediateContext);
 
 	m_pShadowMinimap->m_pTransform->SetMatrix(NULL,NULL,NULL);

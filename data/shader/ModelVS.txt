@@ -84,8 +84,8 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	vOut.p = mul(vOut.p, g_matView);
 	vOut.p = mul(vOut.p, g_matProj);
 
-	float depth = vOut.p.z * 1.0f / (1000.0f - 1.0f) + -1.0f / (1000.0f - 1.0f);
-	output.c = float4(depth, depth, depth, 1);
+	float depth = vOut.p.z * 1.0f / (500.0f - 1.0f) + -1.0f / (500.0f - 1.0f);
+	vOut.c = float4(depth, depth, depth, 1);
 
 	vOut.n = normalize(mul(vOut.n, (float3x3)g_matWorld)); // g_matWorldInvTrans));
 
@@ -97,7 +97,7 @@ VS_OUTPUT VS( VS_INPUT vIn)
 						  T.z, B.z, vOut.n.z};
 	vOut.light = normalize(mul(vColor.xyz, tanMatrix));
 
-	vOut.c = vIn.c;
+	//vOut.c = vIn.c;
 	vOut.t = vIn.t;	
 
 	return vOut;

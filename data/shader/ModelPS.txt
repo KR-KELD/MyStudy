@@ -1,7 +1,8 @@
 // HLSL
 Texture2D g_txDiffuse : register(t0);
 Texture2D g_txNormalMap : register(t1);
-SamplerState g_Sample;// : register(s0);
+Texture2D g_txShadowMap : register(t2);
+SamplerState g_Sample : register(s0);
 SamplerState g_SamplerClamp : register(s1);
 cbuffer myDataCB
 {
@@ -30,7 +31,6 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
-	float4 vFinalColor;
 
 	float4 normal =	g_txNormalMap.Sample( g_Sample, vIn.t * 10);
 		   normal =	normalize( (normal - 0.5f) * 2.0f );			
@@ -39,9 +39,9 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 
 	float3 vShadowProj;
 	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
-	vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
-	float shadow = g_txShadow.Sample(g_SamplerClamp,vShadowProj.xy);
-	float4 vFinalColor = g_txDiffuse.Sample(g_Sampler, v.t);
+	vShadowProj.z = vIn.s.z * 1.0f / (500.0f - 1.0f) - 1.0f / (500.0f - 1.0f);
+	float shadow = g_txShadowMap.Sample(g_SamplerClamp,vShadowProj.xy);
+	float4 vFinalColor = g_txDiffuse.Sample(g_Sample, vIn.t);
 	if (shadow + 0.0065f <= vShadowProj.z)
 	{
 		fDot = min(fDot, 0.5f);
