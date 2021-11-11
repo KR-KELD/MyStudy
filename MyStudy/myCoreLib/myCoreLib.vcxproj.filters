@@ -252,6 +252,9 @@
     <ClCompile Include="myComputeShader.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="myDepthMap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mySoundManager.h">
@@ -470,6 +473,9 @@
     <ClInclude Include="myComputeShader.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="myDepthMap.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -514,5 +520,10 @@
     <Text Include="..\..\data\shader\SplatCS.txt">
       <Filter>Shader</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\data\shader\ShadowMap.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

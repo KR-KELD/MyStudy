@@ -32,17 +32,19 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	PS_OUTPUT vOut;
 	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
 
-	float4 normal =	g_txNormalMap.Sample( g_Sample, vIn.t * 10);
-		   normal =	normalize( (normal - 0.5f) * 2.0f );			
+	//노말매핑
+	//float4 normal =	g_txNormalMap.Sample( g_Sample, vIn.t * 10);
+	//	   normal =	normalize( (normal - 0.5f) * 2.0f );			
 
-	float  fDot	= saturate( dot( normal.xyz, -vIn.light ));
+	//float  fDot	= saturate( dot( normal.xyz, -vIn.light ));
+	float  fDot	= saturate( dot( vIn.n, -vColor.xyz ));
 
 	float3 vShadowProj;
 	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
-	vShadowProj.z = vIn.s.z * 1.0f / (500.0f - 1.0f) - 1.0f / (500.0f - 1.0f);
+	vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
 	float shadow = g_txShadowMap.Sample(g_SamplerClamp,vShadowProj.xy);
 	float4 vFinalColor = g_txDiffuse.Sample(g_Sample, vIn.t);
-	if (shadow + 0.0065f <= vShadowProj.z)
+	if (shadow + 0.0045f <= vShadowProj.z)
 	{
 		fDot = min(fDot, 0.5f);
 	}

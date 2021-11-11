@@ -26,7 +26,7 @@ bool Sample::Init()
 		"PSShadow");
 	m_pPSShadowMap = StaticGraphics::LoadPixelShaderFile(
 		g_pd3dDevice,
-		L"../../data/shader/MapPS.txt",
+		L"../../data/shader/MapTestPS.txt",
 		"PSShadow");
 
 	m_pShadowMapRT = new myDxRT;
@@ -41,8 +41,8 @@ bool Sample::Init()
 
 	m_pLight = new myCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"LightCamera", m_pLight);
-	m_pLight->CreateViewMatrix({ 100,100, 0 }, { 0,0,0 });
-	m_pLight->CreateProjMatrix(1.0f, 500.0f, PI4D, 1.0f);
+	m_pLight->CreateViewMatrix({ 200,200, 0 }, { 0,0,0 });
+	m_pLight->CreateProjMatrix(1.0f, 1000.0f, PI4D, 1.0f);
 
 	m_matShadowTex._11 = 0.5f; m_matShadowTex._22 = -0.5f;
 	m_matShadowTex._41 = 0.5f; m_matShadowTex._42 = 0.5f;
@@ -82,7 +82,6 @@ bool Sample::Frame()
 	m_pLight->Frame();
 	m_cbShadow.g_matShadow = m_pLight->m_pTransform->m_matView * m_pLight->m_pTransform->m_matProj * m_matShadowTex;
 
-	int a = 0;
 	return true;
 }
 
@@ -101,6 +100,7 @@ bool Sample::Render()
 		m_pModelObj->m_pTransform->SetMatrix(NULL,
 			&m_pLight->m_pTransform->m_matView,
 			&m_pLight->m_pTransform->m_matProj);
+
 		m_pModelObj->PreRender(g_pImmediateContext);
 		g_pImmediateContext->PSSetShader(m_pPSShadow, NULL, 0);
 		m_pModelObj->PostRender(g_pImmediateContext);
@@ -117,7 +117,7 @@ bool Sample::Render()
 
 		m_pShadowMapRT->End();
 	}
-	m_cbShadow.g_matShadow.Transpose();
+	m_cbShadow.g_matShadow = m_cbShadow.g_matShadow.Transpose();
 	g_pImmediateContext->UpdateSubresource(m_pShadowCB, 0, NULL, &m_cbShadow, 0, 0);
 	g_pImmediateContext->VSSetConstantBuffers(2, 1, &m_pShadowCB);
 
@@ -127,6 +127,10 @@ bool Sample::Render()
 	m_pModelObj->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
+
+	m_pModelObj->m_pGraphics->m_cbData.vColor[0] = m_pLight->m_pTransform->m_vLook.x;
+	m_pModelObj->m_pGraphics->m_cbData.vColor[1] = m_pLight->m_pTransform->m_vLook.y;
+	m_pModelObj->m_pGraphics->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
 	m_pModelObj->PreRender(g_pImmediateContext);
 	g_pImmediateContext->PSSetShaderResources(2, 1,
 		m_pShadowMapRT->m_pSRV.GetAddressOf());
@@ -135,6 +139,10 @@ bool Sample::Render()
 	m_pMap->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
+
+	m_pMap->m_cbData.vColor[0] = m_pLight->m_pTransform->m_vLook.x;
+	m_pMap->m_cbData.vColor[1] = m_pLight->m_pTransform->m_vLook.y;
+	m_pMap->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
 	m_pMap->Update(g_pImmediateContext);
 	m_pMap->PreRender(g_pImmediateContext);
 	g_pImmediateContext->PSSetShaderResources(3, 1,
@@ -159,6 +167,7 @@ bool Sample::Release()
 {
 	if (m_pPSShadow) m_pPSShadow->Release();
 	if (m_pPSShadowMap) m_pPSShadowMap->Release();
+	if (m_pShadowCB) m_pShadowCB->Release();
 
 	m_pShadowMapRT->Release();
 	SAFE_DEL(m_pShadowMapRT);

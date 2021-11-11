@@ -57,12 +57,10 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	p = mul(p, g_matView);
 	vOut.p = mul(p, g_matProj);
 
-	float depth1 = vOut.p.z * 1.0f / (500.0f - 1.0f) -1.0f / (500.0f - 1.0f);		
+	float depth1 = vOut.p.z * 1.0f / (1000.0f - 1.0f) -1.0f / (1000.0f - 1.0f);	
 	vOut.c = float4(depth1, depth1, depth1,1);	
 
 	// dot
 	vOut.n = vIn.n;
-	//vOut.c = vIn.c;
-	//vOut.t = vIn.t;	
 	return vOut;
 }

@@ -233,9 +233,9 @@ bool myModelObject::PreRender(ID3D11DeviceContext * pd3dContext)
 
 
 	pd3dContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
-	m_pGraphics->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
-	m_pGraphics->m_cbData.vColor[1] = g_pMainCamTransform->m_vLook.y;
-	m_pGraphics->m_cbData.vColor[2] = g_pMainCamTransform->m_vLook.z;
+	//m_pGraphics->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
+	//m_pGraphics->m_cbData.vColor[1] = g_pMainCamTransform->m_vLook.y;
+	//m_pGraphics->m_cbData.vColor[2] = g_pMainCamTransform->m_vLook.z;
 	m_pGraphics->Update(pd3dContext);
 	m_pGraphics->PreRender(pd3dContext);
 	pd3dContext->IASetInputLayout(m_pGraphics->m_pInputLayout.Get());

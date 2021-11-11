@@ -33,16 +33,15 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
 
-	float3 Light = float3(-1.0f,-1.0f,-1.0f);
-	Light = normalize(Light);
+	float3 Light = float3(vColor.x,vColor.y,vColor.z);
 	float ratio = saturate(dot(-Light,vIn.n));
 
 	float3 vShadowProj;
-	vShadowProj.xy = vIn.s.xy / vIn.s.w;
+	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
+	vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
 	float shadow = g_txShadowMap.Sample(g_SamplerClamp, vShadowProj.xy);
 	float4 color = g_txDiffuse.Sample(g_Sample, vIn.t);
-	float depth = vIn.s.z * 1.0f / (500.0f - 1.0f) - 1.0f / (500.0f - 1.0f);
-	if( shadow + 0.01f <= depth )
+	if( shadow + 0.0055f <= vShadowProj.z )
 	{
 		color = color * float4(0.5f,0.5f,0.5f,1);
 	}
