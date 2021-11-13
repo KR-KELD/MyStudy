@@ -522,7 +522,7 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\data\shader\ShadowMap.hlsl">
+    <FxCompile Include="..\..\data\shader\DepthMap.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
