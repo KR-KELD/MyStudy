@@ -516,14 +516,14 @@
     <Text Include="..\..\data\shader\MapVS.txt">
       <Filter>Shader</Filter>
     </Text>
-    <Text Include="..\..\data\shader\HeightMapPS.txt" />
     <Text Include="..\..\data\shader\SplatCS.txt">
       <Filter>Shader</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\data\shader\DepthMap.hlsl">
+    <Text Include="..\..\data\shader\HeightMapPS.txt">
       <Filter>Shader</Filter>
-    </FxCompile>
+    </Text>
+    <Text Include="..\..\data\shader\DepthMap.txt">
+      <Filter>Shader</Filter>
+    </Text>
   </ItemGroup>
 </Project>

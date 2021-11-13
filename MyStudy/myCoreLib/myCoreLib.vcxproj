@@ -333,6 +333,7 @@ copy "*.h" "..\\..\\include"</Command>
   <ItemGroup>
     <Text Include="..\..\data\shader\BasisPS.txt" />
     <Text Include="..\..\data\shader\BasisVS.txt" />
+    <Text Include="..\..\data\shader\DepthMap.txt" />
     <Text Include="..\..\data\shader\HeightMapPS.txt" />
     <Text Include="..\..\data\shader\MapPS.txt" />
     <Text Include="..\..\data\shader\MapVS.txt" />
@@ -343,9 +344,6 @@ copy "*.h" "..\\..\\include"</Command>
     <Text Include="..\..\data\shader\SkyBoxVS.txt" />
     <Text Include="..\..\data\shader\SplatCS.txt" />
     <Text Include="..\..\data\shader\VS.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\data\shader\DepthMap.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

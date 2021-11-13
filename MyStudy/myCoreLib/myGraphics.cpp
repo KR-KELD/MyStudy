@@ -314,6 +314,7 @@ bool	myGraphics::CreateInputLayout()
 		m_pVSObj->GetBufferSize(),
 		m_pInputLayout.GetAddressOf()
 	);
+	if (m_pVSObj) m_pVSObj->Release();
 	if (FAILED(hr)) return false;
 	return true;
 }

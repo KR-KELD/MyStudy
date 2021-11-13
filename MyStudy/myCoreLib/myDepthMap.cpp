@@ -6,8 +6,10 @@ bool myDepthMap::Init()
 	CreateDepthMapRT(1024, 1024);
 	m_matShadowTex._11 = 0.5f; m_matShadowTex._22 = -0.5f;
 	m_matShadowTex._41 = 0.5f; m_matShadowTex._42 = 0.5f;
-	CreateDepthVS(L"../../data/shader/DepthMap.hlsl");
-	CreateDepthPS(L"../../data/shader/DepthMap.hlsl");
+	CreateShadowCB();
+	CreateDepthVS(L"../../data/shader/DepthMap.txt");
+	CreateDepthPS(L"../../data/shader/DepthMap.txt");
+	CreateInputLayout();
 	return true;
 }
 
@@ -61,15 +63,37 @@ bool myDepthMap::CreateDepthMapRT(int iTexWidth, int iTexHeight)
 bool myDepthMap::CreateDepthVS(const TCHAR * szFileName)
 {
 	m_pVSDepthMap.Attach(
-		StaticGraphics::LoadVertexShaderFile(g_pd3dDevice, szFileName));
+		StaticGraphics::LoadVertexShaderFile(g_pd3dDevice, szFileName, &m_pVSObj,"VS"));
+
 	return true;
 }
 
 bool myDepthMap::CreateDepthPS(const TCHAR * szFileName)
 {
 	m_pPSDepthMap.Attach(
-		StaticGraphics::LoadPixelShaderFile(g_pd3dDevice, szFileName));
+		StaticGraphics::LoadPixelShaderFile(g_pd3dDevice, szFileName, "PS"));
 	return true;
+}
+
+HRESULT myDepthMap::CreateInputLayout()
+{
+	const D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXTURE",  0, DXGI_FORMAT_R32G32_FLOAT, 0, 40,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	UINT iNumElement = sizeof(layout) / sizeof(layout[0]);
+	HRESULT hr = g_pd3dDevice->CreateInputLayout(
+		layout,
+		iNumElement,
+		m_pVSObj->GetBufferPointer(),
+		m_pVSObj->GetBufferSize(),
+		m_pInputLayout.GetAddressOf()
+	);
+	if (m_pVSObj) m_pVSObj->Release();
+	if (FAILED(hr)) return false;
 }
 
 HRESULT myDepthMap::CreateShadowCB()

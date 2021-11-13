@@ -3,6 +3,7 @@
 #include "myMap.h"
 #include "myDxRT.h"
 #include "myMiniMap.h"
+#include "myDepthMap.h"
 
 struct cbShadowMatrix
 {
@@ -17,16 +18,11 @@ public:
 	myMap*	m_pMap;
 	myCamera* m_pLight;
 
-	ID3D11PixelShader*  m_pPSShadow;
-	ID3D11PixelShader*  m_pPSShadowMap;
-
 	myMiniMap* m_pShadowMinimap;
-	myDxRT* m_pShadowMapRT;
-	Matrix m_matShadowTex;
-	cbShadowMatrix   m_cbShadow;
-	ID3D11Buffer*    m_pShadowCB = nullptr;
+	myDepthMap* m_pDepthMap;
+
 public:
-	HRESULT  CreateShadowCB();
+
 
 	bool Init() override;
 	bool Frame() override;

@@ -123,17 +123,20 @@ bool myMapTool::Frame()
 
 bool myMapTool::Render(ID3D11DeviceContext*	pd3dContext)
 {
-	m_pMap->m_pTransform->SetMatrix(NULL,
-		&g_pMainCamTransform->m_matView,
-		&g_pMainCamTransform->m_matProj);
 	//if (m_NormalTex.m_pSRV.Get())
 	//{
 	//	pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
 	//}
+	m_pQuadTree->CullingNode();
 
 	pd3dContext->PSSetShaderResources(1, 1, m_SplatCS.m_pSRVCopy.GetAddressOf());
 	pd3dContext->PSSetShaderResources(2, 4, m_pSplatTex);
-	m_pQuadTree->Render(pd3dContext);
+	m_pQuadTree->DepthRender(pd3dContext);
+
+	pd3dContext->PSSetShaderResources(1, 1, m_SplatCS.m_pSRVCopy.GetAddressOf());
+	pd3dContext->PSSetShaderResources(2, 4, m_pSplatTex);
+	m_pQuadTree->ShadowRender(pd3dContext);
+	//m_pQuadTree->Render(pd3dContext);
 	return true;
 }
 

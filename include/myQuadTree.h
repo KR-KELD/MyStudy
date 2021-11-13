@@ -2,6 +2,7 @@
 #include "myNode.h"
 #include "myMap.h"
 #include "myCameraManager.h"
+#include "myDepthMap.h"
 class myQuadTree
 {
 public:
@@ -11,8 +12,10 @@ public:
 	//최대 분할 한계
 	int				m_iMaxdepth;
 	//최소 크기
-
+	bool			m_isShadow;
 	myCamera*		m_pCullingCamera;
+	myCamera*		m_pLight;
+	myDepthMap*		m_pDepthMap;
 
 	//뿌려줄 노드
 	vector<myNode*> m_LeafNodeList;
@@ -25,6 +28,8 @@ public:
 	virtual bool	PreFrame();
 	virtual bool	Frame();
 	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	DepthRender(ID3D11DeviceContext*	pd3dContext);
+	virtual bool	ShadowRender(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Draw(ID3D11DeviceContext*	pd3dContext, myNode* pNode);
 	virtual bool	DrawCulling(ID3D11DeviceContext*	pd3dContext);
 	bool			DrawObject(ID3D11DeviceContext*	pd3dContext);

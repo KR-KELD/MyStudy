@@ -1,38 +1,10 @@
 #include "Sample.h"
 GAMERUN;
 
-HRESULT Sample::CreateShadowCB()
-{
-	HRESULT hr = S_OK;
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(D3D11_BUFFER_DESC));
-	bd.ByteWidth = sizeof(cbShadowMatrix);
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	D3D11_SUBRESOURCE_DATA data;
-	ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
-	data.pSysMem = &m_cbShadow;
-	hr = g_pd3dDevice->CreateBuffer(&bd, &data, &m_pShadowCB);
-	if (FAILED(hr)) return hr;
-	return hr;
-}
-
 bool Sample::Init()
 {
-	CreateShadowCB();
-	m_pPSShadow = StaticGraphics::LoadPixelShaderFile(
-		g_pd3dDevice,
-		L"../../data/shader/ModelPS.txt",
-		"PSShadow");
-	m_pPSShadowMap = StaticGraphics::LoadPixelShaderFile(
-		g_pd3dDevice,
-		L"../../data/shader/MapTestPS.txt",
-		"PSShadow");
-
-	m_pShadowMapRT = new myDxRT;
-	m_pShadowMapRT->SetRenderTargetView();
-	m_pShadowMapRT->SetDepthStencilView();
-	m_pShadowMapRT->SetViewport();
+	m_pDepthMap = new myDepthMap;
+	m_pDepthMap->Init();
 
 	m_pShadowMinimap = new myMiniMap;
 	g_ObjMgr.CreateObjComponent(L"ShadowMap", m_pShadowMinimap, OBJECT_SUB);
@@ -43,9 +15,6 @@ bool Sample::Init()
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"LightCamera", m_pLight);
 	m_pLight->CreateViewMatrix({ 200,200, 0 }, { 0,0,0 });
 	m_pLight->CreateProjMatrix(1.0f, 1000.0f, PI4D, 1.0f);
-
-	m_matShadowTex._11 = 0.5f; m_matShadowTex._22 = -0.5f;
-	m_matShadowTex._41 = 0.5f; m_matShadowTex._42 = 0.5f;
 
 	m_pFbxObj = g_FbxLoader.Load("../../data/object/man.fbx");
 	m_pModelObj = m_pFbxObj->m_pModelObject;
@@ -80,7 +49,8 @@ bool Sample::Frame()
 	m_pLight->m_pTransform->m_vPos = Vector3::Transform(m_pLight->m_pTransform->m_vPos, Trans);
 
 	m_pLight->Frame();
-	m_cbShadow.g_matShadow = m_pLight->m_pTransform->m_matView * m_pLight->m_pTransform->m_matProj * m_matShadowTex;
+	m_pDepthMap->m_cbData.g_matShadow = m_pLight->m_pTransform->m_matView *
+		m_pLight->m_pTransform->m_matProj * m_pDepthMap->m_matShadowTex;
 
 	return true;
 }
@@ -95,14 +65,16 @@ bool Sample::Render()
 {
 	//±×¸²ÀÚ¸Ê ·£´õÅ¸°Ù ÀÛ¼º
 	g_pImmediateContext->RSSetState(myDxState::g_pRSSlopeScaledDepthBias);
-	if (m_pShadowMapRT->Begin())
+	if (m_pDepthMap->m_pRT->Begin())
 	{
 		m_pModelObj->m_pTransform->SetMatrix(NULL,
 			&m_pLight->m_pTransform->m_matView,
 			&m_pLight->m_pTransform->m_matProj);
 
 		m_pModelObj->PreRender(g_pImmediateContext);
-		g_pImmediateContext->PSSetShader(m_pPSShadow, NULL, 0);
+		g_pImmediateContext->IASetInputLayout(m_pDepthMap->m_pInputLayout.Get());
+		g_pImmediateContext->PSSetShader(m_pDepthMap->m_pPSDepthMap.Get(), NULL, 0);
+		g_pImmediateContext->VSSetShader(m_pDepthMap->m_pVSDepthMap.Get(), NULL, 0);
 		m_pModelObj->PostRender(g_pImmediateContext);
 
 		m_pMap->m_pTransform->SetMatrix(NULL,
@@ -112,14 +84,16 @@ bool Sample::Render()
 		m_pMap->Update(g_pImmediateContext);
 		m_pMap->PreRender(g_pImmediateContext);
 		m_pMap->SettingPipeLine(g_pImmediateContext);
-		g_pImmediateContext->PSSetShader(m_pPSShadowMap, NULL, 0);
+		g_pImmediateContext->IASetInputLayout(m_pDepthMap->m_pInputLayout.Get());
+		g_pImmediateContext->PSSetShader(m_pDepthMap->m_pPSDepthMap.Get(), NULL, 0);
+		g_pImmediateContext->VSSetShader(m_pDepthMap->m_pVSDepthMap.Get(), NULL, 0);
 		m_pMap->Draw(g_pImmediateContext);
 
-		m_pShadowMapRT->End();
+		m_pDepthMap->m_pRT->End();
 	}
-	m_cbShadow.g_matShadow = m_cbShadow.g_matShadow.Transpose();
-	g_pImmediateContext->UpdateSubresource(m_pShadowCB, 0, NULL, &m_cbShadow, 0, 0);
-	g_pImmediateContext->VSSetConstantBuffers(2, 1, &m_pShadowCB);
+	m_pDepthMap->m_cbData.g_matShadow = m_pDepthMap->m_cbData.g_matShadow.Transpose();
+	g_pImmediateContext->UpdateSubresource(m_pDepthMap->m_pCBDepthMap.Get(), 0, NULL, &m_pDepthMap->m_cbData, 0, 0);
+	g_pImmediateContext->VSSetConstantBuffers(2, 1, m_pDepthMap->m_pCBDepthMap.GetAddressOf());
 
 	g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
 	g_pImmediateContext->PSSetSamplers(1, 1, &myDxState::g_pSSClampLinear);
@@ -133,7 +107,7 @@ bool Sample::Render()
 	m_pModelObj->m_pGraphics->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
 	m_pModelObj->PreRender(g_pImmediateContext);
 	g_pImmediateContext->PSSetShaderResources(2, 1,
-		m_pShadowMapRT->m_pSRV.GetAddressOf());
+		m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
 	m_pModelObj->PostRender(g_pImmediateContext);
 
 	m_pMap->m_pTransform->SetMatrix(NULL,
@@ -143,10 +117,8 @@ bool Sample::Render()
 	m_pMap->m_cbData.vColor[0] = m_pLight->m_pTransform->m_vLook.x;
 	m_pMap->m_cbData.vColor[1] = m_pLight->m_pTransform->m_vLook.y;
 	m_pMap->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
-	m_pMap->Update(g_pImmediateContext);
-	m_pMap->PreRender(g_pImmediateContext);
 	g_pImmediateContext->PSSetShaderResources(3, 1,
-		m_pShadowMapRT->m_pSRV.GetAddressOf());
+		m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
 	m_pMap->Render(g_pImmediateContext);
 
 	m_pShadowMinimap->m_pTransform->SetMatrix(NULL,NULL,NULL);
@@ -156,7 +128,7 @@ bool Sample::Render()
 	m_pShadowMinimap->SettingPipeLine(g_pImmediateContext);
 
 	g_pImmediateContext->PSSetShaderResources(0, 1,
-		m_pShadowMapRT->m_pSRV.GetAddressOf());
+		m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
 
 	m_pShadowMinimap->myGraphics::Draw(g_pImmediateContext);
 
@@ -165,12 +137,7 @@ bool Sample::Render()
 
 bool Sample::Release()
 {
-	if (m_pPSShadow) m_pPSShadow->Release();
-	if (m_pPSShadowMap) m_pPSShadowMap->Release();
-	if (m_pShadowCB) m_pShadowCB->Release();
-
-	m_pShadowMapRT->Release();
-	SAFE_DEL(m_pShadowMapRT);
-	m_pLight->Release();
+	m_pDepthMap->Release();
+	SAFE_DEL(m_pDepthMap);
 	return true;
 }
