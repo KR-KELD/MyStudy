@@ -3,6 +3,7 @@
 #include "myMap.h"
 #include "myCameraManager.h"
 #include "myDepthMap.h"
+#include "myDxState.h"
 class myQuadTree
 {
 public:
@@ -12,7 +13,6 @@ public:
 	//최대 분할 한계
 	int				m_iMaxdepth;
 	//최소 크기
-	bool			m_isShadow;
 	myCamera*		m_pCullingCamera;
 	myCamera*		m_pLight;
 	myDepthMap*		m_pDepthMap;

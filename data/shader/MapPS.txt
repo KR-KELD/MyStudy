@@ -2,7 +2,8 @@
 Texture2D g_txDiffuse : register(t0);
 Texture2D g_txNormal : register(t1);
 Texture2D g_txSplat[4] : register(t2);
-SamplerState g_Sample;// : register(s0);
+Texture2D g_txShadowMap : register(t6);
+SamplerState g_Sample : register(s0);
 SamplerState g_SamplerClamp : register(s1);
 
 cbuffer myDataCB
@@ -28,6 +29,13 @@ struct PS_OUTPUT
 	float4 c : SV_TARGET;
 };
 
+struct VS_SOUTPUT
+{
+	float4 p : SV_POSITION;
+	float2 d : TEXCOORD0;
+	float4 c : TEXCOORD1;
+};
+
 PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
@@ -45,15 +53,28 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	vColor = vColor * (1.0f - vNormalTex.b) + vTex[2].xyz * vNormalTex.b;
 	vColor = vColor * (1.0f - vNormalTex.a) + vTex[3].xyz * vNormalTex.a;
 
+	float4 vFinalColor = float4(vColor, 1.0f);
+
+	float3 Light = float3(vColor.x,vColor.y,vColor.z);
+	float ratio = saturate(dot(Light,vIn.n));
+
+	vOut.c = vFinalColor * ratio;
+	return vOut;
 
 
 
-	float3 Light = float3(-1.0f,-1.0f,-1.0f);
-	Light = normalize(Light);
-	float ratio = saturate(dot(-Light,vIn.n));
+	float3 vShadowProj;
+	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
+	vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
+	float shadow = g_txShadowMap.Sample(g_SamplerClamp, vShadowProj.xy);
+	if( shadow + 0.0055f <= vShadowProj.z )
+	{
+		vFinalColor = vFinalColor * float4(0.5f,0.5f,0.5f,1);
+	}
 
-
-	vOut.c = float4(vColor,1.0f) * ratio;
+	//vOut.c = vFinalColor * ratio;
+	//vFinalColor = float4(vColor, 1.0f);
+	vOut.c = vFinalColor * ratio;
 	return vOut;
 }
 
@@ -64,9 +85,12 @@ PS_OUTPUT PSLine( VS_OUTPUT vIn)
 	return vOut;
 }
 
-PS_OUTPUT PSShadow(VS_OUTPUT vIn)
+PS_OUTPUT PS_Shadow(VS_SOUTPUT vIn)
 {
 	PS_OUTPUT vOut;
+	//float shadow = vIn.d.x / vIn.d.y;
+	//vOut.c = float4(shadow, shadow, shadow, 1.0f);
+	//vOut.c = float4(vIn.d.x,vIn.d.x,vIn.d.x,1.0f);
 	vOut.c = vIn.c;
 	return vOut;
 }

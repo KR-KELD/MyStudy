@@ -48,10 +48,10 @@ bool myObjManager::Release()
 {
 	m_SceneObj.Release();
 	m_SubObj.Release();
-	for (m_ObjIter = m_ObjectList.begin(); m_ObjIter != m_ObjectList.end(); m_ObjIter++)
-	{
-		m_ObjIter->second->Release();
-	}
+	//for (m_ObjIter = m_ObjectList.begin(); m_ObjIter != m_ObjectList.end(); m_ObjIter++)
+	//{
+	//	m_ObjIter->second->Release();
+	//}
 	m_ObjectList.clear();
 	return true;
 }

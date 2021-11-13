@@ -94,6 +94,7 @@ public:
 public:
 	virtual bool	CreateInputLayout() override;
 	virtual bool	MultiDraw(ID3D11DeviceContext*	pd3dContext) override;
+	virtual bool	Create(T_STR szVS, T_STR szPS, T_STR	szTex) override;
 public:
 	myModelGraphics();
 	virtual ~myModelGraphics();

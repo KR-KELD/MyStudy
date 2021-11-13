@@ -56,6 +56,8 @@ void myMap::Update(ID3D11DeviceContext * pd3dContext)
 {
 	myGraphics::Update(pd3dContext);
 
+
+
 	D3D11_MAPPED_SUBRESOURCE mr;
 	HRESULT hr = pd3dContext->Map(m_pMapCB.Get(), 0,
 		D3D11_MAP_WRITE_DISCARD, 0, &mr);
@@ -144,6 +146,15 @@ bool myMap::CreateMap(myMapDesc  desc)
 bool myMap::Create(T_STR szVS, T_STR szPS, T_STR szTex)
 {
 	myGraphics::Create(szVS, szPS, szTex);
+	T_STR strPath = DataFolderPath;
+	strPath += L"shader/";
+
+	T_STR strVSPath = strPath + szVS;
+	T_STR strPSPath = strPath + szPS;
+	m_pShadowVS.Attach(
+		StaticGraphics::LoadVertexShaderFile(g_pd3dDevice, strVSPath.c_str(), nullptr, "VS_Shadow"));
+	m_pShadowPS.Attach(
+		StaticGraphics::LoadPixelShaderFile(g_pd3dDevice, strPSPath.c_str(), "PS_Shadow"));
 
 	D3D11_BUFFER_DESC vbdesc;
 	ZeroMemory(&vbdesc, sizeof(D3D11_BUFFER_DESC));

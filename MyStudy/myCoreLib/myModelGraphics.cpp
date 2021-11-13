@@ -120,6 +120,22 @@ bool myModelGraphics::MultiDraw(ID3D11DeviceContext*	pd3dContext)
 	return true;
 }
 
+bool myModelGraphics::Create(T_STR szVS, T_STR szPS, T_STR szTex)
+{
+	myGraphics::Create(szVS, szPS, szTex);
+	T_STR strPath = DataFolderPath;
+	strPath += L"shader/";
+
+	T_STR strVSPath = strPath + szVS;
+	T_STR strPSPath = strPath + szPS;
+	m_pShadowVS.Attach(
+		StaticGraphics::LoadVertexShaderFile(g_pd3dDevice, strVSPath.c_str(), nullptr, "VS_Shadow"));
+	m_pShadowPS.Attach(
+		StaticGraphics::LoadPixelShaderFile(g_pd3dDevice, strPSPath.c_str(), "PS_Shadow"));
+
+	return true;
+}
+
 myModelGraphics::myModelGraphics()
 {
 	m_iNextTrackIndex = 0;

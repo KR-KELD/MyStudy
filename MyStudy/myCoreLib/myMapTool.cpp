@@ -117,7 +117,7 @@ bool myMapTool::Frame()
 
 	EditTerrain(vPick);
 
-
+	m_pQuadTree->Frame();
 	return true;
 }
 

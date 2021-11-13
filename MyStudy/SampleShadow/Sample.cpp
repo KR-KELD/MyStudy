@@ -71,23 +71,17 @@ bool Sample::Render()
 			&m_pLight->m_pTransform->m_matView,
 			&m_pLight->m_pTransform->m_matProj);
 
-		m_pModelObj->PreRender(g_pImmediateContext);
-		g_pImmediateContext->IASetInputLayout(m_pDepthMap->m_pInputLayout.Get());
-		g_pImmediateContext->PSSetShader(m_pDepthMap->m_pPSDepthMap.Get(), NULL, 0);
-		g_pImmediateContext->VSSetShader(m_pDepthMap->m_pVSDepthMap.Get(), NULL, 0);
-		m_pModelObj->PostRender(g_pImmediateContext);
+		m_pModelObj->m_pGraphics->m_isShadowRender = true;
+		m_pModelObj->Render(g_pImmediateContext);
+		m_pModelObj->m_pGraphics->m_isShadowRender = false;
 
 		m_pMap->m_pTransform->SetMatrix(NULL,
 			&m_pLight->m_pTransform->m_matView,
 			&m_pLight->m_pTransform->m_matProj);
 
-		m_pMap->Update(g_pImmediateContext);
-		m_pMap->PreRender(g_pImmediateContext);
-		m_pMap->SettingPipeLine(g_pImmediateContext);
-		g_pImmediateContext->IASetInputLayout(m_pDepthMap->m_pInputLayout.Get());
-		g_pImmediateContext->PSSetShader(m_pDepthMap->m_pPSDepthMap.Get(), NULL, 0);
-		g_pImmediateContext->VSSetShader(m_pDepthMap->m_pVSDepthMap.Get(), NULL, 0);
-		m_pMap->Draw(g_pImmediateContext);
+		m_pMap->m_isShadowRender = true;
+		m_pMap->Render(g_pImmediateContext);
+		m_pMap->m_isShadowRender = false;
 
 		m_pDepthMap->m_pRT->End();
 	}

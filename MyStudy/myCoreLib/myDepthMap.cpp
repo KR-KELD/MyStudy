@@ -7,9 +7,9 @@ bool myDepthMap::Init()
 	m_matShadowTex._11 = 0.5f; m_matShadowTex._22 = -0.5f;
 	m_matShadowTex._41 = 0.5f; m_matShadowTex._42 = 0.5f;
 	CreateShadowCB();
-	CreateDepthVS(L"../../data/shader/DepthMap.txt");
-	CreateDepthPS(L"../../data/shader/DepthMap.txt");
-	CreateInputLayout();
+	//CreateDepthVS(L"../../data/shader/DepthMap.txt");
+	//CreateDepthPS(L"../../data/shader/DepthMap.txt");
+	//CreateInputLayout();
 	return true;
 }
 
@@ -56,7 +56,7 @@ bool myDepthMap::CreateDepthMapRT(int iTexWidth, int iTexHeight)
 	desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	m_pRT->SetDepthStencilView(&desc);
-	m_pRT->SetViewport();
+	m_pRT->SetViewport(iTexWidth, iTexHeight);
 	return true;
 }
 

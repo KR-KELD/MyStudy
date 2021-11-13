@@ -23,7 +23,7 @@ public:
 public:
 
 public:
-	virtual bool		SetViewport();
+	virtual bool		SetViewport(int iWidth = 512, int iHeight = 512);
 	virtual HRESULT		SetRenderTargetView(D3D11_TEXTURE2D_DESC* texDesc = nullptr);
 	virtual HRESULT		SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc = nullptr,
 		D3D11_DEPTH_STENCIL_VIEW_DESC* dsvDesc = nullptr);

@@ -231,18 +231,21 @@ bool myModelObject::PreRender(ID3D11DeviceContext * pd3dContext)
 	pd3dContext->PSSetShaderResources(1, 1,
 		m_pNormalTex->m_pTextureSRV.GetAddressOf());
 
-
 	pd3dContext->VSSetConstantBuffers(1, 1, m_pBoneBuffer.GetAddressOf());
-	//m_pGraphics->m_cbData.vColor[0] = g_pMainCamTransform->m_vLook.x;
-	//m_pGraphics->m_cbData.vColor[1] = g_pMainCamTransform->m_vLook.y;
-	//m_pGraphics->m_cbData.vColor[2] = g_pMainCamTransform->m_vLook.z;
 	m_pGraphics->Update(pd3dContext);
-	m_pGraphics->PreRender(pd3dContext);
 	pd3dContext->IASetInputLayout(m_pGraphics->m_pInputLayout.Get());
 	pd3dContext->VSSetConstantBuffers(0, 1, m_pGraphics->m_pConstantBuffer.GetAddressOf());
 	pd3dContext->PSSetConstantBuffers(0, 1, m_pGraphics->m_pConstantBuffer.GetAddressOf());
-	pd3dContext->VSSetShader(m_pGraphics->m_pVertexShader.Get(), NULL, 0);
-	pd3dContext->PSSetShader(m_pGraphics->m_pPixelShader.Get(), NULL, 0);
+	if (m_pGraphics->m_isShadowRender)
+	{
+		if (m_pGraphics->m_pShadowVS.Get()) pd3dContext->VSSetShader(m_pGraphics->m_pShadowVS.Get(), NULL, 0);
+		if (m_pGraphics->m_pShadowPS.Get()) pd3dContext->PSSetShader(m_pGraphics->m_pShadowPS.Get(), NULL, 0);
+	}
+	else
+	{
+		pd3dContext->VSSetShader(m_pGraphics->m_pVertexShader.Get(), NULL, 0);
+		pd3dContext->PSSetShader(m_pGraphics->m_pPixelShader.Get(), NULL, 0);
+	}
 	pd3dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)m_pGraphics->m_iTopology);
 	return true;
 }

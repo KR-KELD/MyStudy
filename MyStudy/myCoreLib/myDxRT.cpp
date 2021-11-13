@@ -109,12 +109,12 @@ HRESULT myDxRT::SetDepthStencilView(D3D11_TEXTURE2D_DESC* texDesc,
 	}
 	return true;
 }
-bool myDxRT::SetViewport()
+bool myDxRT::SetViewport(int iWidth, int iHeight)
 {
 	m_ViewPort.TopLeftX = 0;
 	m_ViewPort.TopLeftY = 0;
-	m_ViewPort.Width = 512;
-	m_ViewPort.Height = 512;
+	m_ViewPort.Width = iWidth;
+	m_ViewPort.Height = iHeight;
 	m_ViewPort.MinDepth = 0.0f;
 	m_ViewPort.MaxDepth = 1.0f;
 	return true;

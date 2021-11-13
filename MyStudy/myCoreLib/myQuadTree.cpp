@@ -74,15 +74,12 @@ bool myQuadTree::PreFrame()
 
 bool myQuadTree::Frame()
 {
-	if (m_isShadow)
-	{
-		Matrix Trans = m_pLight->m_pTransform->m_matWorld * Matrix::CreateRotationY(PI4D * g_fSecondPerFrame);
-		m_pLight->m_pTransform->m_vPos = Vector3::Transform(m_pLight->m_pTransform->m_vPos, Trans);
+	Matrix Trans = m_pLight->m_pTransform->m_matWorld * Matrix::CreateRotationY(PI4D * g_fSecondPerFrame);
+	m_pLight->m_pTransform->m_vPos = Vector3::Transform(m_pLight->m_pTransform->m_vPos, Trans);
 
-		m_pLight->Frame();
-		m_pDepthMap->m_cbData.g_matShadow = m_pLight->m_pTransform->m_matView *
-			m_pLight->m_pTransform->m_matProj * m_pDepthMap->m_matShadowTex;
-	}
+	m_pLight->Frame();
+	m_pDepthMap->m_cbData.g_matShadow = m_pLight->m_pTransform->m_matView *
+		m_pLight->m_pTransform->m_matProj * m_pDepthMap->m_matShadowTex;
 	return false;
 }
 
@@ -95,9 +92,8 @@ bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 	m_pMap->Update(g_pImmediateContext);
 	m_pMap->PreRender(pd3dContext);
 	m_pMap->SettingPipeLine(pd3dContext);
-	pd3dContext->PSSetShaderResources(2, 1,
-		m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
 	pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+	DrawCulling(pd3dContext);
 
 	//Draw(m_pRootNode);
 	DrawObject(pd3dContext);
@@ -106,22 +102,23 @@ bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 
 bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 {
+	g_pImmediateContext->RSSetState(myDxState::g_pRSSlopeScaledDepthBias);
 	if (m_pDepthMap->m_pRT->Begin())
 	{
 		m_pMap->m_pTransform->SetMatrix(NULL,
 			&m_pLight->m_pTransform->m_matView,
 			&m_pLight->m_pTransform->m_matProj);
+		m_pMap->m_isShadowRender = true;
 		m_pMap->Update(g_pImmediateContext);
 		m_pMap->PreRender(pd3dContext);
 		m_pMap->SettingPipeLine(g_pImmediateContext);
+		pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+
 		m_pMap->m_cbData.vColor[0] = m_pLight->m_pTransform->m_vLook.x;
 		m_pMap->m_cbData.vColor[1] = m_pLight->m_pTransform->m_vLook.y;
 		m_pMap->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
-		pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-		pd3dContext->IASetInputLayout(m_pDepthMap->m_pInputLayout.Get());
-		pd3dContext->PSSetShader(m_pDepthMap->m_pPSDepthMap.Get(), NULL, 0);
-		pd3dContext->VSSetShader(m_pDepthMap->m_pVSDepthMap.Get(), NULL, 0);
 		DrawCulling(pd3dContext);
+		m_pMap->m_isShadowRender = false;
 
 		for (myNode* pNode : m_DrawNodeList)
 		{
@@ -130,32 +127,27 @@ bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 				if (!pNode->m_ObjectList[i]->isActive) continue;
 				if (!pNode->m_ObjectList[i]->isRender) continue;
 				myGameObject* pObj = g_ObjMgr.m_ObjectList[pNode->m_ObjectList[i]->iID];
-
+				myModelObject* pModel = (myModelObject*)pObj;
+				if (pModel != nullptr)
+				{
+					pModel->m_pGraphics->m_cbData.vColor[0] = m_pLight->m_pTransform->m_vLook.x;
+					pModel->m_pGraphics->m_cbData.vColor[1] = m_pLight->m_pTransform->m_vLook.y;
+					pModel->m_pGraphics->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
+					pModel->m_pGraphics->m_isShadowRender = true;
+				}
 				pObj->m_pTransform->m_vPos = pNode->m_ObjectList[i]->vPos;
 				pObj->m_pTransform->m_vScale = pNode->m_ObjectList[i]->vScale;
 				pObj->m_pTransform->m_qRot = pNode->m_ObjectList[i]->qRot;
 				pObj->m_pTransform->SetMatrix(NULL,
 					&m_pLight->m_pTransform->m_matView,
 					&m_pLight->m_pTransform->m_matProj);
-				pObj->PreRender(pd3dContext);
-				pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-				pd3dContext->IASetInputLayout(m_pDepthMap->m_pInputLayout.Get());
-				pd3dContext->PSSetShader(m_pDepthMap->m_pPSDepthMap.Get(), NULL, 0);
-				pd3dContext->VSSetShader(m_pDepthMap->m_pVSDepthMap.Get(), NULL, 0);
-				pObj->PostRender(pd3dContext);
+				pObj->Render(pd3dContext);
+				if (pModel != nullptr)
+				{
+					pModel->m_pGraphics->m_isShadowRender = false;
+				}
 			}
 		}
-		for (int i = 0; i < g_ObjMgr.m_ObjectList.size(); i++)
-		{
-			myModelObject* pObj = (myModelObject*)g_ObjMgr.m_ObjectList[i];
-			if (pObj != nullptr)
-			{
-				pObj->m_pGraphics->m_cbData.vColor[0] = m_pLight->m_pTransform->m_vLook.x;
-				pObj->m_pGraphics->m_cbData.vColor[1] = m_pLight->m_pTransform->m_vLook.y;
-				pObj->m_pGraphics->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
-			}
-		}
-
 		m_pDepthMap->m_pRT->End();
 	}
 	return true;
@@ -163,6 +155,9 @@ bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 
 bool myQuadTree::ShadowRender(ID3D11DeviceContext * pd3dContext)
 {
+	g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
+	g_pImmediateContext->PSSetSamplers(1, 1, &myDxState::g_pSSClampLinear);
+
 	m_pDepthMap->m_cbData.g_matShadow = m_pDepthMap->m_cbData.g_matShadow.Transpose();
 	pd3dContext->UpdateSubresource(m_pDepthMap->m_pCBDepthMap.Get(), 0, NULL, &m_pDepthMap->m_cbData, 0, 0);
 	pd3dContext->VSSetConstantBuffers(2, 1, m_pDepthMap->m_pCBDepthMap.GetAddressOf());
@@ -173,9 +168,10 @@ bool myQuadTree::ShadowRender(ID3D11DeviceContext * pd3dContext)
 	m_pMap->Update(pd3dContext);
 	m_pMap->PreRender(pd3dContext);
 	m_pMap->SettingPipeLine(pd3dContext);
-	pd3dContext->PSSetShaderResources(3, 1,
+	pd3dContext->PSSetShaderResources(6, 1,
 		m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
 	pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+	DrawCulling(pd3dContext);
 
 	for (myNode* pNode : m_DrawNodeList)
 	{
@@ -516,7 +512,6 @@ myQuadTree::myQuadTree(void)
 {
 	m_pRootNode = NULL;
 	m_iMaxdepth = 4; // ÄõµåÆ®¸® µª½º 1 = ¾ÈÂÉ°· 2 = 2¹øÂÉ°·
-	m_isShadow = true;
 }
 
 myQuadTree::~myQuadTree(void)

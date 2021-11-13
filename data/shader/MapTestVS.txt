@@ -35,6 +35,7 @@ struct VS_INPUT
 	float4 c : COLOR;
 	float2 t : TEXTURE;
 };
+
 struct VS_OUTPUT
 {
 	float4 p : SV_POSITION;
@@ -44,6 +45,14 @@ struct VS_OUTPUT
 	float2 nt : TEXCOORD1;
 	float4 s : TEXCOORD2;
 };
+
+struct VS_SOUTPUT
+{
+	float4 p : SV_POSITION;
+	float2 d : TEXCOORD0;
+	float4 c : TEXCOORD1;
+};
+
 VS_OUTPUT VS( VS_INPUT vIn)
 {
 	VS_OUTPUT vOut;
@@ -57,7 +66,24 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	p = mul(p, g_matView);
 	vOut.p = mul(p, g_matProj);
 
+	float depth1 = vOut.p.z * 1.0f / (1000.0f - 1.0f) -1.0f / (1000.0f - 1.0f);	
+	vOut.c = float4(depth1, depth1, depth1,1);	
+
 	// dot
 	vOut.n = vIn.n;
+	return vOut;
+}
+
+VS_SOUTPUT VS_Shadow(VS_INPUT vIn)
+{
+	VS_SOUTPUT vOut = (VS_SOUTPUT)0;
+	vOut.p = float4(vIn.p, 1.0f);
+	
+	vOut.p = mul(vOut.p, g_matWorld);
+	vOut.p = mul(vOut.p, g_matView);
+	vOut.p = mul(vOut.p, g_matProj);
+	vOut.d = vOut.p.zw;
+	float depth = vOut.p.z * 1.0f / (1000.0f - 1.0f) + -1.0f / (1000.0f - 1.0f);
+	vOut.c = float4(depth, depth, depth, 1);
 	return vOut;
 }

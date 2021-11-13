@@ -45,7 +45,10 @@ public:
 	ComPtr<ID3D11InputLayout>	m_pInputLayout;
 	ComPtr<ID3D11VertexShader>	m_pVertexShader;
 	ComPtr<ID3D11PixelShader>	m_pPixelShader;
+	ComPtr<ID3D11VertexShader>	m_pShadowVS;
+	ComPtr<ID3D11PixelShader>	m_pShadowPS;
 	myTexture*					m_pTexture;
+	bool						m_isShadowRender = false;
 public:
 	virtual bool	Init();
 	virtual bool	Frame();
