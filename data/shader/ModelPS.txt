@@ -52,25 +52,56 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	//float  fDot	= saturate( dot( normal.xyz, -vIn.light ));
 	float  fDot	= saturate( dot( vIn.n, -vColor.xyz ));
 
-	float3 vShadowProj;
-	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
-	//vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
-	float shadow = g_txShadowMap.Sample(g_SamplerClamp,vShadowProj.xy);
-	float4 vFinalColor = g_txDiffuse.Sample(g_Sample, vIn.t);
-	if (shadow <= vShadowProj.z)
+
+	float fLightAmount = 0.0f;
+	
+	float3 vShadowProj = vIn.s.xyz / vIn.s.w;
+	
+	const float fdelta = 1.0f / DEPTH_TEX_SIZE;
+	int iHalf = (PCF_KERNEL - 1) / 2;
+	
+	for (int v = -iHalf; v <= iHalf; v++)
 	{
-		fDot = min(fDot, 0.5f);
-	}
-	vFinalColor *= fDot;
-	vFinalColor.a = 1.0f;
+		for (int u = -iHalf; u <= iHalf; u++)
+		{
+			float2 vOffset = float2(u*fdelta, v*fdelta);	
+			fLightAmount += g_txShadowMap.SampleCmpLevelZero(g_SamplerCom, 
+									vShadowProj.xy+vOffset, vShadowProj.z).r;
+		}											
+	}	
+	fLightAmount /= PCF_KERNEL * PCF_KERNEL;
+
+	float4 vFinalColor = g_txDiffuse.Sample(g_Sample, vIn.t);
+	vFinalColor = vFinalColor * max(0.5f,fLightAmount) * fDot;
+	vFinalColor.w = 1.0f;
+	vOut.c = vFinalColor;
+	return vOut;
+
+	//float3 vShadowProj;
+	//vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
+	////vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
+	//float shadow = g_txShadowMap.Sample(g_SamplerClamp,vShadowProj.xy);
+	//float4 vFinalColor = g_txDiffuse.Sample(g_Sample, vIn.t);
+	//if (shadow <= vShadowProj.z)
+	//{
+	//	fDot = min(fDot, 0.5f);
+	//}
+	//vFinalColor *= fDot;
+	//vFinalColor.a = 1.0f;
+
+
+
+
+
+
 
 	//float3 Light = normalize(vColor.xyz);
 	//float c = dot(-Light,vIn.n);
 	//float4 vLightColor = float4(c,c,c,1);
 	//float4 vAmbientLight = float4(0.3f, 0.3f, 0.3f,1.0f);
 	//vTexture.a = 1.0f;
-	vOut.c = vFinalColor; // vFinalColor * (vAmbientLight + vLightColor);
-	return vOut;
+	//vOut.c = vFinalColor; // vFinalColor * (vAmbientLight + vLightColor);
+	//return vOut;
 }
 
 PS_OUTPUT PSLine( VS_OUTPUT vIn)

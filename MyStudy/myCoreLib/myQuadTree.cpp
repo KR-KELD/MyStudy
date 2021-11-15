@@ -19,7 +19,20 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 	m_pLight = new myCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"LightCamera", m_pLight);
 	m_pLight->CreateViewMatrix({ 400,300, 0 }, { 0,0,0 });
-	m_pLight->CreateProjMatrix(1.0f, 1000, PI4D, 1.0f);
+	//m_pLight->CreateProjMatrix(1.0f, 1000, PI4D, 1.0f);
+
+	float fWidthLength = m_pMap->m_fCellDistance*m_pMap->m_iNumCols*
+		m_pMap->m_fCellDistance*m_pMap->m_iNumCols;
+	float fHeightLength = m_pMap->m_fCellDistance*m_pMap->m_iNumRows*
+		m_pMap->m_fCellDistance*m_pMap->m_iNumRows;
+	float fMaxViewDistance = sqrt(fWidthLength + fHeightLength);
+
+	m_pLight->m_pTransform->m_matProj = Matrix::CreateOrthographicOffCenter(
+		-fMaxViewDistance / 2,
+		fMaxViewDistance / 2,
+		-fMaxViewDistance / 2,
+		fMaxViewDistance / 2,
+		1.0f, 1000.0f);
 	return true;
 }
 

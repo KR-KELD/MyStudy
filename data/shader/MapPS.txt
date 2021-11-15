@@ -63,43 +63,43 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	Light = normalize(Light);
 	float ratio = saturate(dot(vIn.n,-Light));
 
-	//float fLightAmount = 0.0f;
-	//
-	//float3 vShadowProj = vIn.s.xyz / vIn.s.w;
-	//
-	//const float fdelta = 1.0f / DEPTH_TEX_SIZE;
-	//int iHalf = (PCF_KERNEL - 1) / 2;
-	//
-	//for (int v = -iHalf; v <= iHalf; v++)
-	//{
-	//	for (int u = -iHalf; u <= iHalf; u++)
-	//	{
-	//		float2 vOffset = float2(u*fdelta, v*fdelta);	
-	//		fLightAmount += g_txShadowMap.SampleCmpLevelZero(g_SamplerCom, 
-	//								vShadowProj.xy+vOffset, vShadowProj.z).r;
-	//	}											
-	//}	
-	//fLightAmount /= PCF_KERNEL * PCF_KERNEL;
-	//vFinalColor = vFinalColor * max(0.5f,fLightAmount) * ratio;
-	//vFinalColor.w = 1.0f;
-	//vOut.c = vFinalColor;
-	//return vOut;
-
+	float fLightAmount = 0.0f;
 	
-
+	float3 vShadowProj = vIn.s.xyz / vIn.s.w;
 	
-	float3 vShadowProj;
-	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
-	//vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
-	float shadow = g_txShadowMap.Sample(g_SamplerClamp, vShadowProj.xy);
-	if( shadow  <= vShadowProj.z )
+	const float fdelta = 1.0f / DEPTH_TEX_SIZE;
+	int iHalf = (PCF_KERNEL - 1) / 2;
+	
+	for (int v = -iHalf; v <= iHalf; v++)
 	{
-		vFinalColor = vFinalColor * float4(0.5f,0.5f,0.5f,1);
-	}
-	
-	vOut.c = vFinalColor * ratio;
-	vOut.c.w = 1.0f;
+		for (int u = -iHalf; u <= iHalf; u++)
+		{
+			float2 vOffset = float2(u*fdelta, v*fdelta);	
+			fLightAmount += g_txShadowMap.SampleCmpLevelZero(g_SamplerCom, 
+									vShadowProj.xy+vOffset, vShadowProj.z).r;
+		}											
+	}	
+	fLightAmount /= PCF_KERNEL * PCF_KERNEL;
+	vFinalColor = vFinalColor * max(0.5f,fLightAmount) * ratio;
+	vFinalColor.w = 1.0f;
+	vOut.c = vFinalColor;
 	return vOut;
+
+	
+
+	
+	//float3 vShadowProj;
+	//vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
+	////vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
+	//float shadow = g_txShadowMap.Sample(g_SamplerClamp, vShadowProj.xy);
+	//if( shadow  <= vShadowProj.z )
+	//{
+	//	vFinalColor = vFinalColor * float4(0.5f,0.5f,0.5f,1);
+	//}
+	//
+	//vOut.c = vFinalColor * ratio;
+	//vOut.c.w = 1.0f;
+	//return vOut;
 }
 
 PS_OUTPUT PSLine( VS_OUTPUT vIn)
