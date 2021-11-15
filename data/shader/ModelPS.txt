@@ -1,9 +1,13 @@
 // HLSL
+#define DEPTH_TEX_SIZE 1024
+#define PCF_KERNEL 3
+
 Texture2D g_txDiffuse : register(t0);
 Texture2D g_txNormalMap : register(t1);
 Texture2D g_txShadowMap : register(t2);
 SamplerState g_Sample : register(s0);
 SamplerState g_SamplerClamp : register(s1);
+SamplerComparisonState g_SamplerCom : register(s2);
 cbuffer myDataCB
 {
 	float4x4  g_matWorld: packoffset(c0);
@@ -50,10 +54,10 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 
 	float3 vShadowProj;
 	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
-	vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
+	//vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
 	float shadow = g_txShadowMap.Sample(g_SamplerClamp,vShadowProj.xy);
 	float4 vFinalColor = g_txDiffuse.Sample(g_Sample, vIn.t);
-	if (shadow + 0.0045f <= vShadowProj.z)
+	if (shadow <= vShadowProj.z)
 	{
 		fDot = min(fDot, 0.5f);
 	}
@@ -81,7 +85,7 @@ PS_OUTPUT PS_Shadow(VS_SOUTPUT vIn)
 	PS_OUTPUT vOut;
 	//float shadow = vIn.d.x / vIn.d.y;
 	//vOut.c = float4(shadow, shadow, shadow, 1.0f);
-	//vOut.c = float4(vIn.d.x, vIn.d.x, vIn.d.x, 1.0f);
+	vOut.c = float4(vIn.d.x, vIn.d.x, vIn.d.x, 1.0f);
 	vOut.c = vIn.c;
 	return vOut;
 }

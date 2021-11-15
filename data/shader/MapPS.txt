@@ -1,10 +1,14 @@
 // HLSL
+#define DEPTH_TEX_SIZE 1024
+#define PCF_KERNEL 3
+
 Texture2D g_txDiffuse : register(t0);
 Texture2D g_txNormal : register(t1);
 Texture2D g_txSplat[4] : register(t2);
 Texture2D g_txShadowMap : register(t6);
 SamplerState g_Sample : register(s0);
 SamplerState g_SamplerClamp : register(s1);
+SamplerComparisonState g_SamplerCom : register(s2);
 
 cbuffer myDataCB
 {
@@ -54,24 +58,47 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	vTexColor = vTexColor * (1.0f - vNormalTex.a) + vTex[3].xyz * vNormalTex.a;
 
 	float4 vFinalColor = float4(vTexColor, 1.0f);
-	//float3 Light = float3(0.55f,-0.7f,0.22f);
-	
+
 	float3 Light = float3(vColor.x,vColor.y,vColor.z);
 	Light = normalize(Light);
 	float ratio = saturate(dot(vIn.n,-Light));
 
+	//float fLightAmount = 0.0f;
+	//
+	//float3 vShadowProj = vIn.s.xyz / vIn.s.w;
+	//
+	//const float fdelta = 1.0f / DEPTH_TEX_SIZE;
+	//int iHalf = (PCF_KERNEL - 1) / 2;
+	//
+	//for (int v = -iHalf; v <= iHalf; v++)
+	//{
+	//	for (int u = -iHalf; u <= iHalf; u++)
+	//	{
+	//		float2 vOffset = float2(u*fdelta, v*fdelta);	
+	//		fLightAmount += g_txShadowMap.SampleCmpLevelZero(g_SamplerCom, 
+	//								vShadowProj.xy+vOffset, vShadowProj.z).r;
+	//	}											
+	//}	
+	//fLightAmount /= PCF_KERNEL * PCF_KERNEL;
+	//vFinalColor = vFinalColor * max(0.5f,fLightAmount) * ratio;
+	//vFinalColor.w = 1.0f;
+	//vOut.c = vFinalColor;
+	//return vOut;
+
+	
+
+	
 	float3 vShadowProj;
 	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
-	vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
+	//vShadowProj.z = vIn.s.z * 1.0f / (1000.0f - 1.0f) - 1.0f / (1000.0f - 1.0f);
 	float shadow = g_txShadowMap.Sample(g_SamplerClamp, vShadowProj.xy);
-	if( shadow + 0.0055f <= vShadowProj.z )
+	if( shadow  <= vShadowProj.z )
 	{
 		vFinalColor = vFinalColor * float4(0.5f,0.5f,0.5f,1);
 	}
-
-	//vOut.c = vFinalColor * ratio;
-	//vFinalColor = float4(vColor, 1.0f);
+	
 	vOut.c = vFinalColor * ratio;
+	vOut.c.w = 1.0f;
 	return vOut;
 }
 
@@ -87,7 +114,7 @@ PS_OUTPUT PS_Shadow(VS_SOUTPUT vIn)
 	PS_OUTPUT vOut;
 	//float shadow = vIn.d.x / vIn.d.y;
 	//vOut.c = float4(shadow, shadow, shadow, 1.0f);
-	//vOut.c = float4(vIn.d.x,vIn.d.x,vIn.d.x,1.0f);
+	vOut.c = float4(vIn.d.x,vIn.d.x,vIn.d.x,1.0f);
 	vOut.c = vIn.c;
 	return vOut;
 }

@@ -32,6 +32,7 @@ public:
 	bool CreateDepthMapRT(int iTexWidth, int iTexHeight);
 	bool CreateDepthVS(const TCHAR* szFileName);
 	bool CreateDepthPS(const TCHAR* szFileName);
+	bool CreateDS(int iTexWidth, int iTexHeight);
 	HRESULT CreateInputLayout();
 	HRESULT CreateShadowCB();
 };

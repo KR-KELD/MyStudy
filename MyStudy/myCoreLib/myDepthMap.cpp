@@ -52,10 +52,7 @@ bool myDepthMap::CreateDepthMapRT(int iTexWidth, int iTexHeight)
 		D3D11_BIND_SHADER_RESOURCE;
 
 	m_pRT->SetRenderTargetView(&desc);
-
-	desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-	m_pRT->SetDepthStencilView(&desc);
+	CreateDS(iTexWidth, iTexHeight);
 	m_pRT->SetViewport(iTexWidth, iTexHeight);
 	return true;
 }
@@ -72,6 +69,57 @@ bool myDepthMap::CreateDepthPS(const TCHAR * szFileName)
 {
 	m_pPSDepthMap.Attach(
 		StaticGraphics::LoadPixelShaderFile(g_pd3dDevice, szFileName, "PS"));
+	return true;
+}
+
+bool myDepthMap::CreateDS(int iTexWidth, int iTexHeight)
+{
+	HRESULT hr;
+	ComPtr<ID3D11Texture2D> pTexture2D = nullptr;
+	D3D11_TEXTURE2D_DESC tdesc;
+	ZeroMemory(&tdesc, sizeof(D3D11_TEXTURE2D_DESC));
+	tdesc.Width = iTexWidth;
+	tdesc.Height = iTexHeight;
+	tdesc.MipLevels = 1;
+	tdesc.ArraySize = 1;
+	tdesc.Format = DXGI_FORMAT_R32_TYPELESS;
+	tdesc.SampleDesc.Count = 1;
+	tdesc.SampleDesc.Quality = 0;
+	tdesc.Usage = D3D11_USAGE_DEFAULT;
+	tdesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+
+	if (FAILED(hr = g_pd3dDevice->CreateTexture2D(&tdesc, NULL, pTexture2D.GetAddressOf())))
+	{
+		return hr;
+	}
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC ddesc;
+	ZeroMemory(&ddesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+	ddesc.Format = DXGI_FORMAT_D32_FLOAT;
+	ddesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	ddesc.Texture2D.MipSlice = 0;
+
+
+	if (FAILED(hr = g_pd3dDevice->CreateDepthStencilView(
+		pTexture2D.Get(), &ddesc, m_pRT->m_pDSV.GetAddressOf())))
+	{
+		return hr;
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC sdesc;
+	ZeroMemory(&sdesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	sdesc.Format = DXGI_FORMAT_R32_FLOAT;
+	sdesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	sdesc.Texture2D.MipLevels = 1;
+
+	hr = g_pd3dDevice->CreateShaderResourceView(pTexture2D.Get(),//m_pTexture2D_DSV.Get(),
+		&sdesc,
+		m_pRT->m_pSRV_DSV.GetAddressOf());
+
+	if (FAILED(hr))
+	{
+		return false;
+	}
 	return true;
 }
 

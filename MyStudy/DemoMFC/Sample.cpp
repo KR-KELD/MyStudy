@@ -70,35 +70,15 @@ bool Sample::Render()
 			myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
 			//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 			//	myDxState::g_RasterizerDesc);
-			int a = 0;
+
 		}
 		if (g_Input.GetKey(VK_F8) == KEY_PUSH)
 		{
 			myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
 			//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 			//	myDxState::g_RasterizerDesc);
-			int a = 0;
 		}
 	}
-
-
-
-	//if (g_Input.GetKey('5') == KEY_PUSH)
-	//{
-	//	m_pMapTool->SetMode(300);
-	//}
-	//if (g_Input.GetKey('6') == KEY_PUSH)
-	//{
-	//	m_pMapTool->SetMode(301);
-	//}
-	//if (g_Input.GetKey('7') == KEY_PUSH)
-	//{
-	//	m_pMapTool->SetMode(302);
-	//}
-	//if (g_Input.GetKey('4') == KEY_PUSH)
-	//{
-	//	m_pMapTool->SetMode(304);
-	//}
 
 	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 		myDxState::g_RasterizerDesc);
@@ -135,9 +115,7 @@ bool Sample::Render()
 		//}
 #pragma endregion
 
-		g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
-
-
+		ApplyRS(g_pImmediateContext, myDxState::g_pRSSolid);
 
 		if (m_eMinimapType != eTypeMinimap::RENDER_NONE)
 		{
@@ -160,7 +138,7 @@ bool Sample::Render()
 				case eTypeMinimap::RENDER_DEPTH:
 				{
 					g_pImmediateContext->PSSetShaderResources(0, 1,
-						m_QuadTree.m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
+						m_QuadTree.m_pDepthMap->m_pRT->m_pSRV_DSV.GetAddressOf());
 				}
 				break;
 				case eTypeMinimap::RENDER_HEIGHT:

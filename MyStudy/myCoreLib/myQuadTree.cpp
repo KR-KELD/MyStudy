@@ -19,7 +19,7 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 	m_pLight = new myCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"LightCamera", m_pLight);
 	m_pLight->CreateViewMatrix({ 400,300, 0 }, { 0,0,0 });
-	m_pLight->CreateProjMatrix(1.0f, 1000.0f, PI4D, 1.0f);
+	m_pLight->CreateProjMatrix(1.0f, 1000, PI4D, 1.0f);
 	return true;
 }
 
@@ -103,8 +103,8 @@ bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 
 bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 {
-	//g_pImmediateContext->RSSetState(myDxState::g_pRSSlopeScaledDepthBias);
-	g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
+	ApplyDSS(pd3dContext, myDxState::g_pDSSDepthEnable);
+	ApplyRS(pd3dContext, myDxState::g_pRSSlopeScaledDepthBias);
 	if (m_pDepthMap->m_pRT->Begin())
 	{
 		m_pMap->m_pTransform->SetMatrix(NULL,
@@ -159,7 +159,8 @@ bool myQuadTree::ShadowRender(ID3D11DeviceContext * pd3dContext)
 {
 	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
 		myDxState::g_RasterizerDesc);
-	g_pImmediateContext->PSSetSamplers(1, 1, &myDxState::g_pSSClampLinear);
+	ApplySS(pd3dContext, myDxState::g_pSSClampLinear, 1);
+	ApplySS(pd3dContext, myDxState::g_pSSShadowMap, 2);
 
 	pd3dContext->UpdateSubresource(m_pDepthMap->m_pCBDepthMap.Get(), 0, NULL, &m_pDepthMap->m_cbData, 0, 0);
 
@@ -172,7 +173,7 @@ bool myQuadTree::ShadowRender(ID3D11DeviceContext * pd3dContext)
 	m_pMap->SettingPipeLine(pd3dContext);
 	pd3dContext->VSSetConstantBuffers(2, 1, m_pDepthMap->m_pCBDepthMap.GetAddressOf());
 	pd3dContext->PSSetShaderResources(6, 1,
-		m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
+		m_pDepthMap->m_pRT->m_pSRV_DSV.GetAddressOf());
 	pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
 	DrawCulling(pd3dContext);
 
@@ -193,7 +194,7 @@ bool myQuadTree::ShadowRender(ID3D11DeviceContext * pd3dContext)
 			pObj->PreRender(pd3dContext);
 			pd3dContext->VSSetConstantBuffers(2, 1, m_pDepthMap->m_pCBDepthMap.GetAddressOf());
 			pd3dContext->PSSetShaderResources(2, 1,
-				m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
+				m_pDepthMap->m_pRT->m_pSRV_DSV.GetAddressOf());
 			pObj->PostRender(pd3dContext);
 		}
 	}
