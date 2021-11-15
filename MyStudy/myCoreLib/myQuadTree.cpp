@@ -103,7 +103,8 @@ bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 
 bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 {
-	g_pImmediateContext->RSSetState(myDxState::g_pRSSlopeScaledDepthBias);
+	//g_pImmediateContext->RSSetState(myDxState::g_pRSSlopeScaledDepthBias);
+	g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
 	if (m_pDepthMap->m_pRT->Begin())
 	{
 		m_pMap->m_pTransform->SetMatrix(NULL,
@@ -156,7 +157,8 @@ bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 
 bool myQuadTree::ShadowRender(ID3D11DeviceContext * pd3dContext)
 {
-	g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
+	myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+		myDxState::g_RasterizerDesc);
 	g_pImmediateContext->PSSetSamplers(1, 1, &myDxState::g_pSSClampLinear);
 
 	pd3dContext->UpdateSubresource(m_pDepthMap->m_pCBDepthMap.Get(), 0, NULL, &m_pDepthMap->m_cbData, 0, 0);

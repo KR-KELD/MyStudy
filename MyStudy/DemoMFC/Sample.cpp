@@ -35,7 +35,6 @@ bool Sample::Frame()
 
 bool Sample::Render()
 {
-#pragma region KeyControl
 	if (g_Input.GetKey('0') == KEY_PUSH)
 	{
 		m_isDebugText = !m_isDebugText;
@@ -66,21 +65,24 @@ bool Sample::Render()
 		{
 			m_QuadTree.m_pCullingCamera = g_CamList.GetGameObject(L"TopCamera")->GetComponent<myCamera>();
 		}
+		if (g_Input.GetKey(VK_F7) == KEY_PUSH)
+		{
+			myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+			//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+			//	myDxState::g_RasterizerDesc);
+			int a = 0;
+		}
+		if (g_Input.GetKey(VK_F8) == KEY_PUSH)
+		{
+			myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
+			//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
+			//	myDxState::g_RasterizerDesc);
+			int a = 0;
+		}
 	}
 
 
-	if (g_Input.GetKey(VK_F7) == KEY_PUSH)
-	{
-		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-		//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-		//	myDxState::g_RasterizerDesc);
-	}
-	if (g_Input.GetKey(VK_F8) == KEY_PUSH)
-	{
-		myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
-		//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-		//	myDxState::g_RasterizerDesc);
-	}
+
 	//if (g_Input.GetKey('5') == KEY_PUSH)
 	//{
 	//	m_pMapTool->SetMode(300);
@@ -114,13 +116,6 @@ bool Sample::Render()
 		m_pMiniMap->End();
 	}
 	g_CamMgr.SetMainCamera(L"DebugCamera");
-
-
-
-
-
-#pragma endregion
-
 
 	if (m_isCreate)
 	{
