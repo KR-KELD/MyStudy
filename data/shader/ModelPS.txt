@@ -39,7 +39,7 @@ struct PS_OUTPUT
 PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
-	float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
+	//float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
 
 	//노말매핑
 	//float4 normal =	g_txNormalMap.Sample( g_Sample, vIn.t * 10);
@@ -57,7 +57,7 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	{
 		fDot = min(fDot, 0.5f);
 	}
-	vFinalColor = vTexture * fDot;
+	vFinalColor *= fDot;
 	vFinalColor.a = 1.0f;
 
 	//float3 Light = normalize(vColor.xyz);

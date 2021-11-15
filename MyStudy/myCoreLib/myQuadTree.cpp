@@ -18,7 +18,7 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 
 	m_pLight = new myCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"LightCamera", m_pLight);
-	m_pLight->CreateViewMatrix({ 200,200, 0 }, { 0,0,0 });
+	m_pLight->CreateViewMatrix({ 400,300, 0 }, { 0,0,0 });
 	m_pLight->CreateProjMatrix(1.0f, 1000.0f, PI4D, 1.0f);
 	return true;
 }
@@ -80,6 +80,7 @@ bool myQuadTree::Frame()
 	m_pLight->Frame();
 	m_pDepthMap->m_cbData.g_matShadow = m_pLight->m_pTransform->m_matView *
 		m_pLight->m_pTransform->m_matProj * m_pDepthMap->m_matShadowTex;
+		m_pDepthMap->m_cbData.g_matShadow = m_pDepthMap->m_cbData.g_matShadow.Transpose();
 	return false;
 }
 
@@ -109,14 +110,14 @@ bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 			&m_pLight->m_pTransform->m_matView,
 			&m_pLight->m_pTransform->m_matProj);
 		m_pMap->m_isShadowRender = true;
+		m_pMap->m_cbData.vColor[0] = m_pLight->m_pTransform->m_vLook.x;
+		m_pMap->m_cbData.vColor[1] = m_pLight->m_pTransform->m_vLook.y;
+		m_pMap->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
 		m_pMap->Update(g_pImmediateContext);
 		m_pMap->PreRender(pd3dContext);
 		m_pMap->SettingPipeLine(g_pImmediateContext);
 		pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
 
-		m_pMap->m_cbData.vColor[0] = m_pLight->m_pTransform->m_vLook.x;
-		m_pMap->m_cbData.vColor[1] = m_pLight->m_pTransform->m_vLook.y;
-		m_pMap->m_cbData.vColor[2] = m_pLight->m_pTransform->m_vLook.z;
 		DrawCulling(pd3dContext);
 		m_pMap->m_isShadowRender = false;
 
@@ -158,16 +159,16 @@ bool myQuadTree::ShadowRender(ID3D11DeviceContext * pd3dContext)
 	g_pImmediateContext->RSSetState(myDxState::g_pRSSolid);
 	g_pImmediateContext->PSSetSamplers(1, 1, &myDxState::g_pSSClampLinear);
 
-	m_pDepthMap->m_cbData.g_matShadow = m_pDepthMap->m_cbData.g_matShadow.Transpose();
 	pd3dContext->UpdateSubresource(m_pDepthMap->m_pCBDepthMap.Get(), 0, NULL, &m_pDepthMap->m_cbData, 0, 0);
-	pd3dContext->VSSetConstantBuffers(2, 1, m_pDepthMap->m_pCBDepthMap.GetAddressOf());
 
 	m_pMap->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
+
 	m_pMap->Update(pd3dContext);
 	m_pMap->PreRender(pd3dContext);
 	m_pMap->SettingPipeLine(pd3dContext);
+	pd3dContext->VSSetConstantBuffers(2, 1, m_pDepthMap->m_pCBDepthMap.GetAddressOf());
 	pd3dContext->PSSetShaderResources(6, 1,
 		m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
 	pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
@@ -188,6 +189,7 @@ bool myQuadTree::ShadowRender(ID3D11DeviceContext * pd3dContext)
 				&g_pMainCamTransform->m_matView,
 				&g_pMainCamTransform->m_matProj);
 			pObj->PreRender(pd3dContext);
+			pd3dContext->VSSetConstantBuffers(2, 1, m_pDepthMap->m_pCBDepthMap.GetAddressOf());
 			pd3dContext->PSSetShaderResources(2, 1,
 				m_pDepthMap->m_pRT->m_pSRV.GetAddressOf());
 			pObj->PostRender(pd3dContext);

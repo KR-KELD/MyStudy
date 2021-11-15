@@ -4,16 +4,24 @@
 #include "myMiniMap.h"
 #include "myMapTool.h"
 
+enum class eTypeMinimap
+{
+	RENDER_NORMAL = 0,
+	RENDER_DEPTH,
+	RENDER_HEIGHT,
+	RENDER_NONE = 99,
+};
 
 class Sample : public myCore
 {
 public:
 	myCamera*		m_pTopCamera;
 	myMiniMap*		m_pMiniMap;
-	myMiniMap*		m_pHeightMini;
 	myHeightMap*	m_pMap;
 	myMapTool*		m_pMapTool;
 	myQuadTree		m_QuadTree;
+
+	eTypeMinimap	m_eMinimapType;
 
 	bool			m_isDebugText = true;
 	bool			m_isCreate;

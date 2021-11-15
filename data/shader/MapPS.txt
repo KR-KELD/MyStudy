@@ -48,20 +48,17 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 	vTex[2] = g_txSplat[2].Sample(g_Sample, vIn.t);
 	vTex[3] = g_txSplat[3].Sample(g_Sample, vIn.t);
 	
-	float3 vColor = vTexture.xyz * (1.0f - vNormalTex.r) + vTex[0].xyz * vNormalTex.r;
-	vColor = vColor * (1.0f - vNormalTex.g) + vTex[1].xyz * vNormalTex.g;
-	vColor = vColor * (1.0f - vNormalTex.b) + vTex[2].xyz * vNormalTex.b;
-	vColor = vColor * (1.0f - vNormalTex.a) + vTex[3].xyz * vNormalTex.a;
+	float3 vTexColor = vTexture.xyz * (1.0f - vNormalTex.r) + vTex[0].xyz * vNormalTex.r;
+	vTexColor = vTexColor * (1.0f - vNormalTex.g) + vTex[1].xyz * vNormalTex.g;
+	vTexColor = vTexColor * (1.0f - vNormalTex.b) + vTex[2].xyz * vNormalTex.b;
+	vTexColor = vTexColor * (1.0f - vNormalTex.a) + vTex[3].xyz * vNormalTex.a;
 
-	float4 vFinalColor = float4(vColor, 1.0f);
-
+	float4 vFinalColor = float4(vTexColor, 1.0f);
+	//float3 Light = float3(0.55f,-0.7f,0.22f);
+	
 	float3 Light = float3(vColor.x,vColor.y,vColor.z);
-	float ratio = saturate(dot(Light,vIn.n));
-
-	vOut.c = vFinalColor * ratio;
-	return vOut;
-
-
+	Light = normalize(Light);
+	float ratio = saturate(dot(vIn.n,-Light));
 
 	float3 vShadowProj;
 	vShadowProj.xyz = vIn.s.xyz / vIn.s.w;
