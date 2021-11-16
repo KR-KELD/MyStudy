@@ -33,6 +33,7 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 		-fMaxViewDistance / 2,
 		fMaxViewDistance / 2,
 		1.0f, 1000.0f);
+
 	return true;
 }
 
@@ -118,6 +119,7 @@ bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 {
 	ApplyDSS(pd3dContext, myDxState::g_pDSSDepthEnable);
 	ApplyRS(pd3dContext, myDxState::g_pRSSlopeScaledDepthBias);
+	//ApplyRS(pd3dContext, myDxState::g_pRSFrontCullSolid);
 	if (m_pDepthMap->m_pRT->Begin())
 	{
 		m_pMap->m_pTransform->SetMatrix(NULL,

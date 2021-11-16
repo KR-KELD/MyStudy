@@ -76,7 +76,7 @@ PS_OUTPUT PS( VS_OUTPUT vIn)
 		{
 			float2 vOffset = float2(u*fdelta, v*fdelta);	
 			fLightAmount += g_txShadowMap.SampleCmpLevelZero(g_SamplerCom, 
-									vShadowProj.xy+vOffset, vShadowProj.z).r;
+									vShadowProj.xy+vOffset, vShadowProj.z - 0.0005f).r;
 		}											
 	}	
 	fLightAmount /= PCF_KERNEL * PCF_KERNEL;
