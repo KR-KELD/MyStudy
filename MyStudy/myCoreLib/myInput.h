@@ -15,6 +15,7 @@ class myInput : public SingleTon<myInput>
 private:
 	DWORD		m_dwKeyState[256];
 	POINT		m_MousePos;
+	POINT		m_MousePrePos;
 	bool		m_bEnable;
 public:
 	bool		Init();
@@ -25,6 +26,7 @@ public:
 public:
 
 	DWORD		GetKey(DWORD dwKey);
+	POINT&		GetPrevMouse();
 	POINT&		GetMouse();
 	void		SetEnable(bool bEnable = true);
 	bool		GetEnable();

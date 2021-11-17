@@ -571,10 +571,15 @@ void myMapTool::EditObject(Vector3& vPick)
 				break;
 				case OBJECT_ROTATE:
 				{
-					float fAngleX = (g_Input.GetMouse().x - g_CamMgr.m_pMainCamera->m_ptPrePosition.x);
+					//float fAngleX = (g_Input.GetMouse().x - g_CamMgr.m_pMainCamera->m_ptPrePosition.x);
 					//float fAngleY = (g_Input.GetMouse().y - g_CamMgr.m_pMainCamera->m_ptPrePosition.y);
+					//POINT pTemp;
+					//pTemp.x = g_Input.GetMouse().x - g_Input.GetPrevMouse().x;
+					//pTemp.y = g_Input.GetMouse().y - g_Input.GetPrevMouse().y;
+					//float fAngle = max(fabs(pTemp.x), fabs(pTemp.y));
 
-					m_pTargetIns->qRot.y -= XMConvertToRadians(fAngleX / 2.0f);
+					float fAngle = g_Input.GetMouse().x - g_Input.GetPrevMouse().x;
+					m_pTargetIns->qRot.y -= XMConvertToRadians(fAngle / 2.0f);
 				}
 				break;
 				case OBJECT_DELETE:

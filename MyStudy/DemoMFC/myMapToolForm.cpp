@@ -450,7 +450,7 @@ void myMapToolForm::OnBnClickedLoad()
 					SampleIns* ins = new SampleIns;
 					ins->iID = _ttoi(InstanceData[0]);
 					ins->iNodeIndex = _ttoi(InstanceData[1]);
-					ins->isRender = _ttoi(InstanceData[2]);
+					ins->isActive = _ttoi(InstanceData[2]);
 					ins->vPos.x = _ttof(InstanceData[3]);
 					ins->vPos.y = _ttof(InstanceData[4]);
 					ins->vPos.z = _ttof(InstanceData[5]);

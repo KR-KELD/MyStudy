@@ -21,6 +21,7 @@ bool myInput::Frame()
 {
 	//if (g_bActive == false) return true;
 	//커서의 위치를 받아오는 함수
+	m_MousePrePos = m_MousePos;
 	GetCursorPos(&m_MousePos);
 	//화면 좌표를 클라이언트 좌표로 변환해주는 함수
 	//HWND hWnd = WindowFromPoint(m_MousePos);
@@ -85,6 +86,11 @@ bool myInput::Reset()
 DWORD myInput::GetKey(DWORD dwKey)
 {
 	return m_dwKeyState[dwKey];
+}
+
+POINT & myInput::GetPrevMouse()
+{
+	return m_MousePrePos;
 }
 
 POINT& myInput::GetMouse()
