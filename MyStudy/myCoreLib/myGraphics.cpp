@@ -227,7 +227,7 @@ bool    myGraphics::CreateConstantBuffer()
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	//bd.Usage = D3D11_USAGE_DYNAMIC;
 	//bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA sd;
 	ZeroMemory(&sd, sizeof(D3D11_SUBRESOURCE_DATA));

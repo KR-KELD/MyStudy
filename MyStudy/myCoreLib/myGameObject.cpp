@@ -165,7 +165,7 @@ void myTransform::LookAt(Vector3 vTarget)
 {
 	m_vTarget = vTarget;
 	Vector3 vUp = { 0,1,0 };
-	m_pTransform->m_matView = Matrix::CreateLookAt(m_pTransform->m_vPos, vTarget, vUp);
+	m_matView = Matrix::CreateLookAt(m_vPos, vTarget, vUp);
 }
 
 bool myTransform::Init()
