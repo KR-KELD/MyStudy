@@ -25,9 +25,6 @@
     <Filter Include="Mgr">
       <UniqueIdentifier>{a789e033-86dd-409c-a625-ed950f9ab571}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{d11d5da1-7847-4023-9946-7120b65c41da}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{201cb891-2a46-49a3-b8e6-20234ed8aff2}</UniqueIdentifier>
     </Filter>
@@ -72,9 +69,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="myObject.cpp">
-      <Filter>Obj</Filter>
-    </ClCompile>
     <ClCompile Include="myCore.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -84,23 +78,8 @@
     <ClCompile Include="myInput.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="myButton.cpp">
-      <Filter>Obj</Filter>
-    </ClCompile>
-    <ClCompile Include="myEffect.cpp">
-      <Filter>Obj</Filter>
-    </ClCompile>
     <ClCompile Include="myObjManager.cpp">
       <Filter>Mgr</Filter>
-    </ClCompile>
-    <ClCompile Include="myParsingScript.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
-    <ClCompile Include="myProjectile.cpp">
-      <Filter>Obj</Filter>
-    </ClCompile>
-    <ClCompile Include="myScene.cpp">
-      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="mySound.cpp">
       <Filter>Resource</Filter>
@@ -110,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="myTimer.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="myUI.cpp">
-      <Filter>Obj</Filter>
     </ClCompile>
     <ClCompile Include="myWindow.cpp">
       <Filter>Core</Filter>
@@ -156,9 +132,6 @@
     <ClCompile Include="myGameObject.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="myObjectInfo.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
     <ClCompile Include="myDxRT.cpp">
       <Filter>DX</Filter>
     </ClCompile>
@@ -176,9 +149,6 @@
     </ClCompile>
     <ClCompile Include="myCameraManager.cpp">
       <Filter>Mgr</Filter>
-    </ClCompile>
-    <ClCompile Include="myLog.cpp">
-      <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="myBaseObject.cpp">
       <Filter>Obj</Filter>
@@ -284,29 +254,8 @@
     <ClInclude Include="myWindow.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="myUI.h">
-      <Filter>Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="myObject.h">
-      <Filter>Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="myEffect.h">
-      <Filter>Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="myButton.h">
-      <Filter>Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="myProjectile.h">
-      <Filter>Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="myParsingScript.h">
-      <Filter>Util</Filter>
-    </ClInclude>
     <ClInclude Include="myStd.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="myScene.h">
-      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="myUtil.h">
       <Filter>Util</Filter>
@@ -377,9 +326,6 @@
     <ClInclude Include="myGameObject.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="myObjectInfo.h">
-      <Filter>Component</Filter>
-    </ClInclude>
     <ClInclude Include="myDxRT.h">
       <Filter>DX</Filter>
     </ClInclude>
@@ -397,9 +343,6 @@
     </ClInclude>
     <ClInclude Include="myCameraManager.h">
       <Filter>Mgr</Filter>
-    </ClInclude>
-    <ClInclude Include="myLog.h">
-      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="myBaseObject.h">
       <Filter>Obj</Filter>

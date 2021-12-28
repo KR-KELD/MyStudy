@@ -4,12 +4,11 @@
 #pragma region ComponentMetaFunc
 
 
+//struct true_type { enum _value_ { value = true }; };
+//struct false_type { enum _value_ { value = false }; };
 
 //템플릿 타입에서 null타입을 대체
 struct null_t {};
-
-//struct true_type { enum _value_ { value = true }; };
-//struct false_type { enum _value_ { value = false }; };
 
 template <bool Test, class True_Meta_Func, class False_Meta_Func>
 struct _If
@@ -37,21 +36,21 @@ struct Is_Unique_Component
 	typedef typename Component_T::Component_Identifier_T			Identifier_T;
 	//템플릿 타입으로 들어온 컴포넌트의 부모 컴포넌트
 	typedef typename Identifier_T::Parent_Component_T				Parent_T;
-
 	enum
 	{
-		//이부분 질문
-		//추측 <1 조건, 2 true일경우, 3 false일경우>
+		//<1 조건, 2 true일경우, 3 false일경우>
 		//유니크 컴포넌트인지 부모를 타고 가며 재귀적으로 확인
 		value = _If<Identifier_T::is_unique, std::true_type, Is_Unique_Component<Parent_T>>::type::value
 	};
 };
+
 //유니크 컴포넌트 판별에 null_t 타입이 들어오면 value에 false를 넣는다
 template <>
 struct Is_Unique_Component<null_t>
 {
 	enum { value = false };
 };
+
 //유니크 컴포넌트를 가져오는 메타함수
 template <class Component_T>
 struct Get_Unique_Component
@@ -63,13 +62,14 @@ struct Get_Unique_Component
 	//아니면 부모를 타며 재귀호출
 	typedef typename _If<Identifier_T::is_unique, Component_T, typename Get_Unique_Component<Parent_T>::type>::type type;
 };
+
 template <>
 struct Get_Unique_Component<null_t>
 {
 	typedef null_t type;
 };
 
-//컴포넌트를 불로오는 메타함수
+//컴포넌트를 불러오는 메타함수
 template <class Component_T>
 struct Get_Component
 {
@@ -80,6 +80,7 @@ struct Get_Component
 		typename Get_Unique_Component<Component_T>::type,
 		Component_T>::type type;
 };
+
 //컴포넌트 식별자 생성 메타함수
 template <class Component_T, class Parent_Component_T, bool _is_unique>
 struct Component_Identifier
@@ -92,7 +93,6 @@ struct Component_Identifier
 //컴포넌트 생성 매크로
 //생성할 컴포넌트,부모컴포넌트,유니크여부 를 넘겨줘서 컴포넌트 클래스를 생성
 //식별자의 주소를 고유 클래스 아이디로 사용
-//아래 두줄 질문
 
 class myGameObject;
 class myTransform;
@@ -118,8 +118,9 @@ struct myRuntimeClass
 //전역화 여부 생각
 
 //선언은 필수
+
 #define DEFINE_CLONE static myComponent* CloneObject(myComponent* pObj);
-//구현은 상황에따라 다르게
+
 #define DECLARE_CLONE(component_name) myComponent* component_name::CloneObject(myComponent* pObj) \
 	{ component_name* p = nullptr; \
 	memcpy_s(p,class##component_name.m_iObjectSize,pObj,class##component_name.m_iObjectSize); \
@@ -140,17 +141,17 @@ struct myRuntimeClass
 		static Component_Identifier_T identifier; \
 	public: \
 
-//질문
-//추정 외부에서 해당 클래스의 식별자를 전역으로 선언?
 #define DECLARE_COMPONENT(component_name) \
 	component_name::Component_Identifier_T component_name::identifier; \
 	char component_name##::lpszClassName[] = (#component_name); \
 	myComponent* component_name::CreateObject()	{return new component_name;} \
 	myRuntimeClass* component_name::GetRuntimeClass() const{return &class##component_name;} \
-	myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject, component_name::CloneObject }; \
+	myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name),\
+    component_name::CreateObject, component_name::CloneObject }; \
 	myComponent* component_name::CloneObject(myComponent* pObj) \
 	{ component_name* p = new component_name(*(component_name*)pObj); \
 	return p;} \
+
 	//myRuntimeClass component_name::class##component_name={ #component_name, sizeof(component_name), component_name::CreateObject}; \
 
 
@@ -168,7 +169,6 @@ public:
 	myTransform*	m_pTransform;
 	bool			m_isActive;
 	bool			m_isRender;
-	//공유해서 쓸 애들은 트루 아니면 펄스
 	bool			m_isUnique;
 	DEFINE_COMPONENT(myComponent, null_t, false)
 public:
@@ -197,8 +197,6 @@ public:
 	};
 	virtual ~myComponent() {}
 };
-//여기 있으면 오류
-//DECLARE_COMPONENT(myComponent);
 
 class myTransform : public myComponent
 {
@@ -334,9 +332,7 @@ public:
 	T_STR			m_strName;
 	T_STR			m_strTag;
 	int				m_iObjectID;
-	//myTransform		m_TransForm;
 public:
-	//게임오브젝트 언오더맵으로 바꿔보기
 	myCollider*										m_pCollider;
 	myGameObject*									m_pParent;
 	multimap<wstring, myGameObject*>				m_Childs;
@@ -372,8 +368,6 @@ public:
 		m_strName = szName;
 	}
 public:
-
-public:
 	virtual myGameObject* Clone(myGameObject* pBaseObj);
 	virtual bool	Init();
 	virtual bool	PreFrame();
@@ -399,49 +393,31 @@ public:
 public:
 	void					SetParent(myGameObject* pParent);
 public:
-
 	template <class Component_T>
 	void InsertComponent(Component_T* component)
 	{
-		//--------------------------------------------------------
-		// 컴포넌트 식별자 ID 취득
-		//--------------------------------------------------------
-		size_t componentId = Get_Component<Component_T>::type::GetComponentId();
+		size_t iComponentId = Get_Component<Component_T>::type::GetComponentId();
 
-		//--------------------------------------------------------
-		// 컴포넌트를 컨테이너에 삽입
-		//--------------------------------------------------------
 		component->Set(this);
 		component->m_pTransform = this->m_pTransform;
-		this->m_ComponentList[componentId] = component;
+		this->m_ComponentList[iComponentId] = component;
  	}
+
 	template <class Component_T>
 	Component_T* GetComponent()
 	{
-		//--------------------------------------------------------
-		// 컴포넌트 식별자 ID 취득
-		//--------------------------------------------------------
-		size_t componentId = Get_Component<Component_T>::type::GetComponentId();
+		size_t iComponentId = Get_Component<Component_T>::type::GetComponentId();
 
-		//--------------------------------------------------------
-		// 컴포넌트가 컨테이너에 존재하지 않다면 nullptr 리턴
-		//--------------------------------------------------------
-		if (this->m_ComponentList.find(componentId) == this->m_ComponentList.end())
+		if (this->m_ComponentList.find(iComponentId) == this->m_ComponentList.end())
 			return nullptr;
 
-		//--------------------------------------------------------
-		// 컴포넌트가 존재한다면 컴포넌트 리턴
-		//--------------------------------------------------------
-		return reinterpret_cast<Component_T*>(this->m_ComponentList[componentId]);
+		return reinterpret_cast<Component_T*>(this->m_ComponentList[iComponentId]);
 	}
 public:
 	myGameObject() 
 	{ 
 		m_pParent = nullptr;
 		m_strName = L"myGameObject";
-
-		//m_pTransform = &m_TransForm;
-		//InsertComponent(m_pTransform);
 		m_pTransform = new myTransform;
 		InsertComponent(m_pTransform);
 	}
@@ -449,8 +425,6 @@ public:
 	{
 		m_pParent = nullptr;
 		m_strName = szName;
-		//m_pTransform = &m_TransForm;
-		//InsertComponent(m_pTransform);
 		m_pTransform = new myTransform;
 		InsertComponent(m_pTransform);
 	}

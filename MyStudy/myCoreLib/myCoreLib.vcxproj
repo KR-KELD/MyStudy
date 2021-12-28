@@ -192,7 +192,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="dxtk\WICTextureLoader.cpp" />
     <ClCompile Include="myAnimation.cpp" />
     <ClCompile Include="myBaseObject.cpp" />
-    <ClCompile Include="myButton.cpp" />
     <ClCompile Include="myCamera.cpp" />
     <ClCompile Include="myCameraManager.cpp" />
     <ClCompile Include="myCollider.cpp" />
@@ -206,7 +205,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myDraw.cpp" />
     <ClCompile Include="myDxRT.cpp" />
     <ClCompile Include="myDxState.cpp" />
-    <ClCompile Include="myEffect.cpp" />
     <ClCompile Include="myFbxAnimation.cpp" />
     <ClCompile Include="myFbxLoader.cpp" />
     <ClCompile Include="myFbxObj.cpp" />
@@ -217,7 +215,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myHeightMap.cpp" />
     <ClCompile Include="myInput.cpp" />
     <ClCompile Include="myLight.cpp" />
-    <ClCompile Include="myLog.cpp" />
     <ClCompile Include="myMap.cpp" />
     <ClCompile Include="myMapTool.cpp" />
     <ClCompile Include="myMiniMap.cpp" />
@@ -228,13 +225,8 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myNetUser.cpp" />
     <ClCompile Include="myNetwork.cpp" />
     <ClCompile Include="myNode.cpp" />
-    <ClCompile Include="myObject.cpp" />
-    <ClCompile Include="myObjectInfo.cpp" />
     <ClCompile Include="myObjManager.cpp" />
-    <ClCompile Include="myParsingScript.cpp" />
-    <ClCompile Include="myProjectile.cpp" />
     <ClCompile Include="myQuadTree.cpp" />
-    <ClCompile Include="myScene.cpp" />
     <ClCompile Include="myDepthMap.cpp" />
     <ClCompile Include="myShape.cpp" />
     <ClCompile Include="mySkyBox.cpp" />
@@ -245,7 +237,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClCompile Include="myTexture.cpp" />
     <ClCompile Include="myTextureManager.cpp" />
     <ClCompile Include="myTimer.cpp" />
-    <ClCompile Include="myUI.cpp" />
     <ClCompile Include="myWindow.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
   </ItemGroup>
@@ -261,7 +252,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myAnimation.h" />
     <ClInclude Include="myBaseObject.h" />
     <ClInclude Include="myBasicStd.h" />
-    <ClInclude Include="myButton.h" />
     <ClInclude Include="myCamera.h" />
     <ClInclude Include="myCameraManager.h" />
     <ClInclude Include="myCollider.h" />
@@ -276,7 +266,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myDraw.h" />
     <ClInclude Include="myDxRT.h" />
     <ClInclude Include="myDxState.h" />
-    <ClInclude Include="myEffect.h" />
     <ClInclude Include="myFbxLoader.h" />
     <ClInclude Include="myFbxObj.h" />
     <ClInclude Include="myFPSController.h" />
@@ -287,7 +276,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myHeightMap.h" />
     <ClInclude Include="myInput.h" />
     <ClInclude Include="myLight.h" />
-    <ClInclude Include="myLog.h" />
     <ClInclude Include="myMap.h" />
     <ClInclude Include="myMapTool.h" />
     <ClInclude Include="myMath.h" />
@@ -300,14 +288,9 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myNetUser.h" />
     <ClInclude Include="myNetwork.h" />
     <ClInclude Include="myNode.h" />
-    <ClInclude Include="myObject.h" />
-    <ClInclude Include="myObjectInfo.h" />
     <ClInclude Include="myObjManager.h" />
-    <ClInclude Include="myParsingScript.h" />
-    <ClInclude Include="myProjectile.h" />
     <ClInclude Include="myProtocol.h" />
     <ClInclude Include="myQuadTree.h" />
-    <ClInclude Include="myScene.h" />
     <ClInclude Include="myDepthMap.h" />
     <ClInclude Include="myShape.h" />
     <ClInclude Include="mySkyBox.h" />
@@ -319,7 +302,6 @@ copy "*.h" "..\\..\\include"</Command>
     <ClInclude Include="myTexture.h" />
     <ClInclude Include="myTextureManager.h" />
     <ClInclude Include="myTimer.h" />
-    <ClInclude Include="myUI.h" />
     <ClInclude Include="myUtil.h" />
     <ClInclude Include="myWindow.h" />
     <ClInclude Include="SimpleMath.h" />

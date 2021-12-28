@@ -19,18 +19,15 @@ public:
 	myCamera*		m_pLight;
 	//뎁스맵 객체
 	myDepthMap*		m_pDepthMap;
-
-	//뿌려줄 노드
+	//최하위 노드 리스트
 	vector<myNode*> m_LeafNodeList;
+	//그려줄 노드 리스트
 	vector<myNode*>	m_DrawNodeList;
 public:
 	//쿼드트리 생성
 	bool			CreateQuadTree(myMap* pMap);
 	//분할
 	bool			Partition(myNode* pParentNode);
-	virtual bool	Release();
-	virtual bool	PreFrame();
-	virtual bool	Frame();
 	//일반 랜더링
 	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
 	//뎁스맵을 그려줄 랜더타겟에 뎁스맵을 랜더링
@@ -47,12 +44,16 @@ public:
 	virtual bool	CullingObject();
 	//쿼드트리 컬링
 	virtual bool	CullingVertex(ID3D11DeviceContext*	pd3dContext, myNode* pNode);
+	//쿼드트리 노드의 바인딩 박스 갱신
 	void			RepreshBindingObj(myNode* pNode);
+	//쿼드트리 노드 생성
 	myNode*			CreateNode(myNode* pParentNode, DWORD LeftTop, DWORD RightTop, DWORD LeftBottom, DWORD RightBottom);
 public:
-	//임시
-	bool			AddObject(SampleIns* ins);
-	bool			RepreshQuadTreeObject();
+	virtual bool	Release();
+	virtual bool	PreFrame();
+	virtual bool	Frame();
+	//bool			AddObject(SampleIns* ins);
+	//bool			RepreshQuadTreeObject();
 public:
 	myQuadTree();
 	virtual ~myQuadTree();

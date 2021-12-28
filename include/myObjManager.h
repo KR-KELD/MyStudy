@@ -5,7 +5,6 @@ enum myContainerType
 {
 	OBJECT_SCENE = 0,
 	OBJECT_SUB,
-
 };
 
 class myObjManager : public SingleTon<myObjManager>
@@ -17,7 +16,6 @@ public:
 public:
 	int				m_iObjectID;
 public:
-	//나중에 공간분할 필요
 	map<int, myGameObject*> m_ObjectList;
 	map<int, myGameObject*>::iterator m_ObjIter;
 	int SetObjectList(myGameObject* pObj)
