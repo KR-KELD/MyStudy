@@ -127,7 +127,7 @@ bool myMapTool::Render(ID3D11DeviceContext*	pd3dContext)
 	//{
 	//	pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
 	//}
-	m_pQuadTree->CullingNode();
+	m_pQuadTree->CullingObject();
 
 	pd3dContext->PSSetShaderResources(1, 1, m_SplatCS.m_pSRVCopy.GetAddressOf());
 	pd3dContext->PSSetShaderResources(2, 4, m_pSplatTex);

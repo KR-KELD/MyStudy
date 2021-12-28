@@ -11,6 +11,9 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 		m_pMap->m_iNumVertices - 1);
 
 	Partition(m_pRootNode);
+
+
+
 	m_pCullingCamera = g_CamMgr.m_pMainCamera;
 
 	m_pDepthMap = new myDepthMap;
@@ -19,7 +22,6 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 	m_pLight = new myCamera;
 	myGameObject* obj = g_CamMgr.CreateCameraObj(L"LightCamera", m_pLight);
 	m_pLight->CreateViewMatrix({ 400,300, 0 }, { 0,0,0 });
-	//m_pLight->CreateProjMatrix(1.0f, 1000, PI4D, 1.0f);
 
 	float fWidthLength = m_pMap->m_fCellDistance*m_pMap->m_iNumCols*
 		m_pMap->m_fCellDistance*m_pMap->m_iNumCols;
@@ -100,7 +102,7 @@ bool myQuadTree::Frame()
 
 bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 {
-	CullingNode();
+	CullingObject();
 	m_pMap->m_pTransform->SetMatrix(NULL,
 		&g_pMainCamTransform->m_matView,
 		&g_pMainCamTransform->m_matProj);
@@ -119,7 +121,6 @@ bool myQuadTree::DepthRender(ID3D11DeviceContext * pd3dContext)
 {
 	ApplyDSS(pd3dContext, myDxState::g_pDSSDepthEnable);
 	ApplyRS(pd3dContext, myDxState::g_pRSSlopeScaledDepthBias);
-	//ApplyRS(pd3dContext, myDxState::g_pRSFrontCullSolid);
 	if (m_pDepthMap->m_pRT->Begin())
 	{
 		m_pMap->m_pTransform->SetMatrix(NULL,
@@ -268,7 +269,7 @@ bool myQuadTree::DrawObject(ID3D11DeviceContext * pd3dContext)
 	return true;
 }
 
-bool myQuadTree::CullingNode()
+bool myQuadTree::CullingObject()
 {
 	m_DrawNodeList.clear();
 	for (myNode* pNode : m_LeafNodeList)
@@ -277,18 +278,13 @@ bool myQuadTree::CullingNode()
 		{
 			if (!pNode->m_ObjectList[i]->isActive) continue;
 			pNode->m_ObjectList[i]->isRender = false;
-		}
-		for (int i = 0; i < 6; i++)
-		{
-			if (m_pCullingCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[i]))
+			for (int iVertex = 0; iVertex < 6; iVertex++)
 			{
-				for (int i = 0; i < pNode->m_ObjectList.size(); i++)
+				if (m_pCullingCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[iVertex]))
 				{
-					if (!pNode->m_ObjectList[i]->isActive) continue;
 					pNode->m_ObjectList[i]->isRender = true;
+					break;
 				}
-				m_DrawNodeList.push_back(pNode);
-				break;
 			}
 		}
 	}
@@ -313,7 +309,7 @@ bool myQuadTree::CullingVertex(ID3D11DeviceContext*	pd3dContext, myNode * pNode)
 		v[2] = m_pMap->m_VertexList[index[2]].p;
 		for (int j = 0; j < 3; j++)
 		{
-			bool isDraw = g_CamMgr.m_pMainCamera->m_Frustum.ClassifyPoint(v[j]);
+			bool isDraw = m_pCullingCamera->m_Frustum.ClassifyPoint(v[j]);
 			if (isDraw)
 			{
 				drawIndexList[pNode->m_dwFaceNum * 3 + 0] = index[0];
@@ -517,15 +513,15 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	return newNode;
 }
 
-bool myQuadTree::AddObject(SampleIns * ins)
-{
-	return false;
-}
-
-bool myQuadTree::RepreshQuadTreeObject()
-{
-	return false;
-}
+//bool myQuadTree::AddObject(SampleIns * ins)
+//{
+//	return false;
+//}
+//
+//bool myQuadTree::RepreshQuadTreeObject()
+//{
+//	return false;
+//}
 
 
 myQuadTree::myQuadTree(void)

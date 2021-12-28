@@ -1,9 +1,6 @@
 #pragma once
 #include "myShape.h"
 
-//카메라 게임오브젝트
-//아래 카메라 컴포넌트
-//프러스텀 박스도 컴포넌트화 해야할것같음
 class myFrustum
 {
 public:
@@ -15,11 +12,15 @@ public:
 	std::vector<MY_PLANE>		m_Plane;
 public:
 	virtual bool Create();
-	virtual bool Frame(Matrix& matInvViewProj);
+	//프러스텀 갱신
+	virtual bool Frame(Matrix& matInvViewProj);\
 	virtual bool Release();
+	//점-프러스텀평면 충돌 판별
 	BOOL	ClassifyPoint(Vector3 v);
-	//bool	ClassifyLine(Vector3 v);
-	BOOL	ClassifyBox(myShapeBox box);
+	//박스-프러스텀평면 충돌 판별
 	BOOL    CheckOBBInPlane(MY_BOX* pBox);
+
+	//bool	ClassifyLine(Vector3 v);
+	//BOOL	ClassifyBox(myShapeBox box);
 };
 

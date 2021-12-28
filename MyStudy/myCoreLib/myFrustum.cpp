@@ -2,20 +2,29 @@
 
 BOOL myFrustum::CheckOBBInPlane(MY_BOX*  pBox)
 {
-	float		fPlaneToCenter = 0.0;
-	float		fDistance = 0.0f;
+	float fPlaneToCenter = 0.0f;
+	float fDistance = 0.0f;
 	Vector3 vDir;
+	//각 평면과 박스의 충돌을 체크(분리축 검사)
 	for (int iPlane = 0; iPlane < 6; iPlane++)
 	{
 		vDir = pBox->vAxis[0] * pBox->fExtent[0];
-		fDistance = fabs(m_Plane[iPlane].a * vDir.x + m_Plane[iPlane].b*vDir.y + m_Plane[iPlane].c * vDir.z);
+		fDistance = fabs(m_Plane[iPlane].a * vDir.x +
+						 m_Plane[iPlane].b * vDir.y +
+						 m_Plane[iPlane].c * vDir.z);
 		vDir = pBox->vAxis[1] * pBox->fExtent[1];
-		fDistance += fabs(m_Plane[iPlane].a * vDir.x + m_Plane[iPlane].b*vDir.y + m_Plane[iPlane].c * vDir.z);
+		fDistance += fabs(m_Plane[iPlane].a * vDir.x +
+						  m_Plane[iPlane].b * vDir.y + 
+						  m_Plane[iPlane].c * vDir.z);
 		vDir = pBox->vAxis[2] * pBox->fExtent[2];
-		fDistance += fabs(m_Plane[iPlane].a * vDir.x + m_Plane[iPlane].b*vDir.y + m_Plane[iPlane].c * vDir.z);
+		fDistance += fabs(m_Plane[iPlane].a * vDir.x + 
+						  m_Plane[iPlane].b * vDir.y +
+						  m_Plane[iPlane].c * vDir.z);
 
-		fPlaneToCenter = m_Plane[iPlane].a * pBox->vCenter.x + m_Plane[iPlane].b*pBox->vCenter.y +
-			m_Plane[iPlane].c * pBox->vCenter.z + m_Plane[iPlane].d;
+		fPlaneToCenter = m_Plane[iPlane].a * pBox->vCenter.x +
+						 m_Plane[iPlane].b * pBox->vCenter.y +
+						 m_Plane[iPlane].c * pBox->vCenter.z + 
+						 m_Plane[iPlane].d;
 
 		if (fPlaneToCenter <= -fDistance)
 		{
@@ -37,7 +46,6 @@ bool myFrustum::Create()
 	{
 		m_VertexList.push_back(v);
 	}
-	//???
 	m_VertexList[0].p.z = 0.0f;
 	m_VertexList[1].p.z =  0.0f;
 	m_VertexList[2].p.z =  0.0f;
@@ -112,7 +120,6 @@ BOOL myFrustum::ClassifyPoint(Vector3 v)
 	//프러스텀 각 평면과 한 점사이의 위치관계를 판별
 	//평면의 방정식에 점을 대입해서 양수면 평면의 앞
 	//음수면 평면의 뒤쪽 점이 된다
-	//쌤코드는 평면의 노말이 안쪽을 향해서 바깥쪽에 찍힌 점을 거르는거로 추정
 	for (int iPlane = 0; iPlane < m_Plane.size(); iPlane++)
 	{
 		float fDist = m_Plane[iPlane].a * v.x +
@@ -143,7 +150,7 @@ BOOL myFrustum::ClassifyPoint(Vector3 v)
 //	return true;
 //}
 
-BOOL myFrustum::ClassifyBox(myShapeBox box)
-{
-	return 0;
-}
+//BOOL myFrustum::ClassifyBox(myShapeBox box)
+//{
+//	return 0;
+//}
