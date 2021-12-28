@@ -2,16 +2,8 @@
 #include "myGraphicsStruct.h"
 #include "myBaseObject.h"
 
-#pragma region staticFuncArea
-
-//////////////////////////// 아래의 경고가 있을 경우 사용한다.
-//// 이와 같은 경고는 이미 쉐이더 파이프라인에 할당(리소스 및 상태값들이)되어 사용 중일 경우에 발생한다.
-////D3D11 WARNING : ID3D11DeviceContext::SOSetTargets : Resource being set to SO buffer slot 0 is still bound on input![STATE_SETTING WARNING #10: DEVICE_SOSETTARGETS_HAZARD]
-////D3D11 WARNING : ID3D11DeviceContext::SOSetTargets : Forcing Vertex Buffer slot 0 to NULL.[STATE_SETTING WARNING #1: DEVICE_IASETVERTEXBUFFERS_HAZARD]
 bool AscendingTriangle(myTriangle& a, myTriangle& b);
-
 bool CreateVnIFromTri(vector<PNCT_VERTEX>& vertexList, vector<DWORD>& indexList, vector<myTriangle>& triList);
-#pragma endregion
 
 class myGraphics : public myComponent
 {
@@ -32,9 +24,7 @@ public:
 	UINT						m_iNumIndex;
 public:
 	myDataCB					m_cbData;
-	//std::vector<PNCT2_VERTEX>	m_VertexList;
 	std::vector<PNCT_VERTEX>	m_VertexList;
-	//std::vector<PNCTIW_VERTEX>	m_VertexListIW;
 	std::vector<DWORD>			m_IndexList;
 	std::vector<myTriangle>		m_TriangleList;
 	std::vector<wstring>		m_MaterialList;
@@ -49,29 +39,43 @@ public:
 	ComPtr<ID3D11PixelShader>	m_pShadowPS;
 	myTexture*					m_pTexture;
 	bool						m_isShadowRender = false;
+
+	//std::vector<PNCT2_VERTEX>	m_VertexList;
+	//std::vector<PNCTIW_VERTEX> m_VertexListIW;
 public:
 	virtual bool	Init();
 	virtual bool	Frame();
 	virtual void    Update(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	PreRender(ID3D11DeviceContext*	pd3dContext);
+	//기본 랜더링
 	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	PostRender(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Release();
+	//파이프라인 세팅
 	virtual bool	SettingPipeLine(ID3D11DeviceContext*	pd3dContext);
-	//임시
+	//서브메시 랜더링
 	virtual bool	MultiDraw(ID3D11DeviceContext*	pd3dContext);
 	virtual bool	Draw(ID3D11DeviceContext*	pd3dContext);
+	//버텍스 데이터 생성
 	virtual bool    CreateVertexData(Vector3 vCenter, float fRange);
 	virtual bool    CreateVertexData();
-
+	//인덱스 데이터 생성
 	virtual bool    CreateIndexData();
+	//버텍스 버퍼 생성
 	virtual bool    CreateVertexBuffer();
+	//인덱스 버퍼 생성
 	virtual bool    CreateIndexBuffer();
+	//콘스턴트 버퍼 생성
 	virtual bool    CreateConstantBuffer();
+	//쉐이더 로드
 	virtual bool	LoadShader(T_STR szVS, T_STR szPS);
+	//레이아웃 설정 및 생성
 	virtual bool	CreateInputLayout();
+	//텍스쳐 로드
 	virtual bool	LoadTexture(T_STR szTex);
+	//모델 데이터 생성
 	virtual bool	Create(T_STR szVS, T_STR szPS, T_STR	szTex);
+	//쉐이더 컴파일
 	void			CompilerCheck(ID3DBlob* pErrorMsgs);
 public:
 	myGraphics();

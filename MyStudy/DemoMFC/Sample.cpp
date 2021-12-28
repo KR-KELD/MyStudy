@@ -12,8 +12,6 @@ bool Sample::Init()
 	m_pMiniMap->SetInfo(Vector3(-0.75f, 0.75f, 0.0f), 0.25f);
 	m_pMiniMap->Create(L"BasisVS.txt", L"BasisPS.txt", L"");
 
-
-
 	m_pTopCamera = new myCamera;
 	g_CamMgr.CreateCameraObj(L"TopCamera", m_pTopCamera);
 	m_pTopCamera->CreateViewMatrix({ 0,500.0f,-0.1f }, { 0,0,0 });
@@ -68,15 +66,10 @@ bool Sample::Render()
 		if (g_Input.GetKey(VK_F7) == KEY_PUSH)
 		{
 			myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-			//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-			//	myDxState::g_RasterizerDesc);
-
 		}
 		if (g_Input.GetKey(VK_F8) == KEY_PUSH)
 		{
 			myDxState::g_RasterizerDesc.FillMode = D3D11_FILL_SOLID;
-			//myDxState::SetRasterizerState(g_pd3dDevice, g_pImmediateContext,
-			//	myDxState::g_RasterizerDesc);
 		}
 	}
 
@@ -85,7 +78,6 @@ bool Sample::Render()
 	g_CamMgr.SetMainCamera(L"TopCamera");
 	if (m_pMiniMap->Begin())
 	{
-	
 		if (m_isCreate)
 		{
 			if (m_eMinimapType == eTypeMinimap::RENDER_NORMAL)
@@ -99,7 +91,6 @@ bool Sample::Render()
 
 	if (m_isCreate)
 	{
-		m_pMapTool->Render(g_pImmediateContext);
 #pragma region SelectDraw
 
 		////셀렉트노드 드로우
@@ -115,20 +106,16 @@ bool Sample::Render()
 		//}
 #pragma endregion
 
+		m_pMapTool->Render(g_pImmediateContext);
 		ApplyRS(g_pImmediateContext, myDxState::g_pRSSolid);
-
 		if (m_eMinimapType != eTypeMinimap::RENDER_NONE)
 		{
-			m_pMiniMap->m_pTransform->SetMatrix(NULL,
-				NULL,
-				NULL);
+			m_pMiniMap->m_pTransform->SetMatrix(NULL, NULL, NULL);
 			m_pMiniMap->Update(g_pImmediateContext);
 			m_pMiniMap->PreRender(g_pImmediateContext);
 			m_pMiniMap->SettingPipeLine(g_pImmediateContext);
-
 			switch (m_eMinimapType)
 			{
-
 				case eTypeMinimap::RENDER_NORMAL:
 				{
 					g_pImmediateContext->PSSetShaderResources(0, 1,
@@ -147,8 +134,11 @@ bool Sample::Render()
 						m_pMapTool->m_HeightTex.m_pSRV.GetAddressOf());
 				}
 				break;
-
 				default:
+				{
+					g_pImmediateContext->PSSetShaderResources(0, 1,
+						m_pMiniMap->m_DxRT.m_pSRV.GetAddressOf());
+				}
 					break;
 			}
 			m_pMiniMap->myGraphics::Draw(g_pImmediateContext);

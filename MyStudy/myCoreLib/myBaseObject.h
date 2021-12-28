@@ -44,13 +44,10 @@ struct MY_SPHERE
 
 struct MY_BOX
 {
-	// Common
 	Vector3		vCenter;
 	Vector3		vPos[8];
-	// AABB
 	Vector3		vMax;
 	Vector3		vMin;
-	// OBB
 	Vector3		vAxis[3];
 	float		fExtent[3];
 };
