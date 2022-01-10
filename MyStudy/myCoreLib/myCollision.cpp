@@ -14,7 +14,6 @@ bool myCollision::IntersectSegToFace(Vector3 & vSegStart, Vector3 & vSegEnd, Vec
 	float fDir = vFaceNormal.Dot(vDir);
 	float fPlane = vFaceNormal.Dot(v1 - vSegStart);
 	float fRatio = fPlane / fDir;
-	//´Ù½Ã
 	if (fRatio < 0.0f || fRatio > 1.0f)
 	{
 		return false;

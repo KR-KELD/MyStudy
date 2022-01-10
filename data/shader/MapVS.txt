@@ -1,4 +1,4 @@
-// HLSL
+//기본 ConstantBuffer
 cbuffer myDataCB : register(b0)
 {
 	float4x4  g_matWorld: packoffset(c0);
@@ -8,12 +8,7 @@ cbuffer myDataCB : register(b0)
 	float  fTime  : packoffset(c13.x);
 	float  fGameTime  : packoffset(c13.y);
 };
-
-//cbuffer myMatTex : register(b1)
-//{
-//	float4x4  g_matTexCoord;
-//}
-
+//맵의 정보를 담는 ConstantBuffer
 cbuffer myMapCB : register(b1)
 {
 	float g_iNumTile : packoffset(c0.x);
@@ -21,13 +16,13 @@ cbuffer myMapCB : register(b1)
 	float g_iCellSize : packoffset(c0.z);
 	float g_iSpaceDivision : packoffset(c0.w);
 };
-
+//그림자의 매트릭스 정보를 담는 ConstantBuffer
 cbuffer cbShadowMatrix : register (b2)
 {
 	matrix g_matShadow : packoffset(c0);
 };
 
-
+//기본 랜더링 인풋,아웃풋 레이아웃
 struct VS_INPUT
 {
 	float3 p : POSITION;
@@ -44,14 +39,14 @@ struct VS_OUTPUT
 	float2 nt : TEXCOORD1;
 	float4 s : TEXCOORD2;
 };
-
+//그림자 랜더링 아웃풋 레이아웃
 struct VS_SOUTPUT
 {
 	float4 p : SV_POSITION;
 	float2 d : TEXCOORD0;
 	float4 c : TEXCOORD1;
 };
-
+//맵의 타일 랜더링 VertexShader
 VS_OUTPUT VS( VS_INPUT vIn)
 {
 	VS_OUTPUT vOut;
@@ -61,20 +56,21 @@ VS_OUTPUT VS( VS_INPUT vIn)
 	vOut.s = mul(p, g_matShadow);
 
 	vOut.nt = vIn.t;
+	//타일 랜더링
 	vOut.t.x = ((p.x / g_iCellSize) + (g_iNumTile * g_iNumCell) / 2.0f) / g_iNumCell;
 	vOut.t.y = 1.0f - ((p.z / g_iCellSize) + (g_iNumTile * g_iNumCell) / 2.0f) / g_iNumCell;
 
 	p = mul(p, g_matView);
 	vOut.p = mul(p, g_matProj);
-	// dot
 	vOut.n = vIn.n;
 	vOut.c = vIn.c;
-	//vOut.t = vIn.t;	
+
 	return vOut;
 }
-
+//맵의 그림자 랜더링 VertexShader
 VS_SOUTPUT VS_Shadow(VS_INPUT vIn)
 {
+
 	VS_SOUTPUT vOut = (VS_SOUTPUT)0;
 	vOut.p = float4(vIn.p, 1.0f);
 	
@@ -82,6 +78,7 @@ VS_SOUTPUT VS_Shadow(VS_INPUT vIn)
 	vOut.p = mul(vOut.p, g_matView);
 	vOut.p = mul(vOut.p, g_matProj);
 	vOut.d = vOut.p.zw;
+	//뎁스값을 저장
 	float depth = vOut.p.z * 1.0f / (1000.0f - 1.0f) + -1.0f / (1000.0f - 1.0f);
 	vOut.c = float4(depth, depth, depth, 1);
 	return vOut;
