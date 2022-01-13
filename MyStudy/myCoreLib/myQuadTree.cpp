@@ -112,7 +112,6 @@ bool myQuadTree::Render(ID3D11DeviceContext*	pd3dContext)
 	pd3dContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
 	DrawCulling(pd3dContext);
 
-	//Draw(m_pRootNode);
 	DrawObject(pd3dContext);
 	return true;
 }
@@ -274,17 +273,37 @@ bool myQuadTree::CullingObject()
 	m_DrawNodeList.clear();
 	for (myNode* pNode : m_LeafNodeList)
 	{
+		//for (int i = 0; i < pNode->m_ObjectList.size(); i++)
+		//{
+		//	if (!pNode->m_ObjectList[i]->isActive) continue;
+		//	pNode->m_ObjectList[i]->isRender = false;
+		//	for (int iVertex = 0; iVertex < 6; iVertex++)
+		//	{
+		//		if (m_pCullingCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[iVertex]))
+		//		{
+		//			pNode->m_ObjectList[i]->isRender = true;
+		//
+		//			break;
+		//		}
+		//	}
+		//}
+
 		for (int i = 0; i < pNode->m_ObjectList.size(); i++)
 		{
 			if (!pNode->m_ObjectList[i]->isActive) continue;
 			pNode->m_ObjectList[i]->isRender = false;
-			for (int iVertex = 0; iVertex < 6; iVertex++)
+		}
+		for (int i = 0; i < 6; i++)
+		{
+			if (m_pCullingCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[i]))
 			{
-				if (m_pCullingCamera->m_Frustum.ClassifyPoint(pNode->m_myBox.vPos[iVertex]))
+				for (int i = 0; i < pNode->m_ObjectList.size(); i++)
 				{
+					if (!pNode->m_ObjectList[i]->isActive) continue;
 					pNode->m_ObjectList[i]->isRender = true;
-					break;
 				}
+				m_DrawNodeList.push_back(pNode);
+				break;
 			}
 		}
 	}

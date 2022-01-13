@@ -173,7 +173,7 @@ bool myFbxObj::LoadFBX(string strFileName)
 		//추가-바인드포즈벡터화-
 		//pGraphics->m_pFbxNode = pNode;
 		pGraphics->m_eClassType = myEClassType::CLASS_BONE;
-		myGameObject* pObj = myGameObject::CreateComponentObj(pGraphics,
+		myGameObject* pObj = myGameObject::CreateGameObject(pGraphics,
 			to_mw(pNode->GetName()).c_str());
 
 		pObj->SetParent(m_pNodeMap[pNode->GetParent()]);

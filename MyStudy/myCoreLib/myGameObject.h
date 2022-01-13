@@ -350,14 +350,14 @@ public:
 		return new myGameObject(szName);
 	}
 	template <class Component_T>
-	static myGameObject* CreateComponentObj(Component_T* component)
+	static myGameObject* CreateGameObject(Component_T* component)
 	{
 		myGameObject* pObj = new myGameObject;
 		pObj->InsertComponent(component);
 		return pObj;
 	}
 	template <class Component_T>
-	static myGameObject* CreateComponentObj(Component_T* component, const TCHAR* szName)
+	static myGameObject* CreateGameObject(Component_T* component, const TCHAR* szName)
 	{
 		myGameObject* pObj = new myGameObject(szName);
 		pObj->InsertComponent(component);

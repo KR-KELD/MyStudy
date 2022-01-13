@@ -1,8 +1,12 @@
-// HLSL
+//큐브맵 텍스쳐의 갯수
 static const int g_iNumTexture = 6;
+//디퓨즈 텍스쳐
 Texture2D g_txDiffuse : register(t0);
+//큐브 텍스쳐(큐브맵 텍스쳐 로딩시)
 TextureCube g_txCubeMap : register(t1);
+//큐브 텍스쳐(텍스쳐6면 로딩시)
 Texture2D g_txDiffuseArray[g_iNumTexture] : register(t2);
+//샘플링
 SamplerState		g_Sample : register(s0);
 SamplerState        g_samPointClamp : register(s1);
 SamplerState        g_samLinearWrap : register(s2);
@@ -32,15 +36,15 @@ struct PS_OUTPUT
 	float4 c : SV_TARGET;
 };
 
+//큐브맵 텍스쳐 스카이박스 랜더링
 PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
-	//float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
 	float4 vTexture = g_txCubeMap.Sample( g_Sample, vIn.tex);
 	vOut.c = vTexture;
 	return vOut;
 }
-
+//6면의 텍스쳐 각각 샘플링
 float4 GetTextureColor(uint index, float2 uv)
 {
 	float4 fColor = float4(1,1,1,1);
@@ -55,6 +59,7 @@ float4 GetTextureColor(uint index, float2 uv)
 	}	
 	return fColor;
 }
+//6면 텍스쳐 스카이박스 랜더링
 float4 PS_TextureIndex(VS_OUTPUT vIn) : SV_Target
 {
 	uint index = vIn.PrimitiveID / 2;

@@ -453,12 +453,6 @@
     <Text Include="..\..\data\shader\SkyBoxVS.txt">
       <Filter>Shader</Filter>
     </Text>
-    <Text Include="..\..\data\shader\MapPS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\MapVS.txt">
-      <Filter>Shader</Filter>
-    </Text>
     <Text Include="..\..\data\shader\SplatCS.txt">
       <Filter>Shader</Filter>
     </Text>
@@ -466,6 +460,12 @@
       <Filter>Shader</Filter>
     </Text>
     <Text Include="..\..\data\shader\DepthMap.txt">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\MapPS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\MapVS.hlsl">
       <Filter>Shader</Filter>
     </Text>
   </ItemGroup>

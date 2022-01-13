@@ -104,8 +104,8 @@ void myMapToolForm::OnBnClickedButton1()
 		desc.fScaleHeight = 10.0f;
 		if (m_strTexName.IsEmpty()) m_strTexName = L"main.png";
 		desc.szTexFile = m_strTexName;
-		desc.szVS = L"MapVS.txt";
-		desc.szPS = L"MapPS.txt";
+		desc.szVS = L"MapVS.hlsl";
+		desc.szPS = L"MapPS.hlsl";
 		pApp->m_Sample.m_pMap->CreateMap(desc);
 		pApp->m_Sample.m_pMap->m_isRender = false;
 

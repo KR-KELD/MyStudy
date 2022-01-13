@@ -1,10 +1,13 @@
-// HLSL
 #define DEPTH_TEX_SIZE 1024
 #define PCF_KERNEL 3
 
+//디퓨즈 텍스쳐
 Texture2D g_txDiffuse : register(t0);
+//노멀 텍스쳐
 Texture2D g_txNormalMap : register(t1);
+//뎁스쉐도우맵 텍스쳐
 Texture2D g_txShadowMap : register(t2);
+//샘플링
 SamplerState g_Sample : register(s0);
 SamplerState g_SamplerClamp : register(s1);
 SamplerComparisonState g_SamplerCom : register(s2);
@@ -43,23 +46,15 @@ struct PS_OUTPUT
 PS_OUTPUT PS( VS_OUTPUT vIn)
 {
 	PS_OUTPUT vOut;
-	//float4 vTexture = g_txDiffuse.Sample( g_Sample, vIn.t);
-
-	//노말매핑
+	//노멀매핑
 	float4 normal =	g_txNormalMap.Sample( g_Sample, vIn.t * 10);
 	normal = normalize( (normal - 0.5f) * 2.0f );			
 
 	float  fDot	= saturate( dot( normal.xyz, -vIn.light ));
-	//float  fDot	= saturate( dot( vIn.n, -vColor.xyz ));
-
-
 	float fLightAmount = 0.0f;
-	
 	float3 vShadowProj = vIn.s.xyz / vIn.s.w;
-	
 	const float fdelta = 1.0f / DEPTH_TEX_SIZE;
 	int iHalf = (PCF_KERNEL - 1) / 2;
-	
 	for (int v = -iHalf; v <= iHalf; v++)
 	{
 		for (int u = -iHalf; u <= iHalf; u++)

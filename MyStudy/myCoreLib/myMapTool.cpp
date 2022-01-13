@@ -261,7 +261,7 @@ void myMapTool::EditSplatting(Vector3& vPick)
 
 	g_pImmediateContext->CopyResource(m_SplatCS.m_pTextureCopy.Get(), m_SplatCS.m_pTexture.Get());
 
-
+#pragma region Splat Lagacy
 	//int iLastIndex = m_pMap->m_iNumCols * m_pMap->m_iNumRows - 1;
 	//Vector2 LT = Vector2(m_pMap->m_VertexList[0].p.x, m_pMap->m_VertexList[0].p.z);
 	//Vector2 RB = Vector2(m_pMap->m_VertexList[iLastIndex].p.x,
@@ -294,6 +294,8 @@ void myMapTool::EditSplatting(Vector3& vPick)
 	//
 	//SetNormalTex(g_pImmediateContext, m_NormalTex.m_pStaging.Get(), vPick, LT, RB);
 	//g_pImmediateContext->CopyResource(m_NormalTex.m_pTexture.Get(), m_NormalTex.m_pStaging.Get());
+#pragma endregion
+
 }
 
 void myMapTool::SetMode(int iMode)
@@ -469,7 +471,6 @@ void myMapTool::EditObject(Vector3& vPick)
 				ins->SphereCollider.fRadius *= fScale;
 				ins->SphereCollider.vCenter = ins->vPos;
 				ins->SphereCollider.vCenter.y += m_pTargetObject->m_SphereCollider.vCenter.y * ins->vScale.y;
-				//m_pTargetObject->m_InstanceList.push_back(ins);
 				InstanceList.push_back(ins);
 				for (int i = 0; i < m_SelectNodeList.size(); i++)
 				{
@@ -480,13 +481,6 @@ void myMapTool::EditObject(Vector3& vPick)
 						break;
 					}
 				}
-
-				//bool isDraw = false;
-				//for (int i = 0; i < m_DrawList.size(); i++)
-				//{
-				//	if (m_DrawList[i] == m_pTargetObject.get()) isDraw = true;
-				//}
-				//if (!isDraw) m_DrawList.push_back(m_pTargetObject.get());
 				m_isUpdateData = false;
 			}
 		}

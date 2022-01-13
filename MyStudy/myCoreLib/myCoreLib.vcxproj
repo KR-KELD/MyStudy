@@ -317,8 +317,8 @@ copy "*.h" "..\\..\\include"</Command>
     <Text Include="..\..\data\shader\BasisVS.txt" />
     <Text Include="..\..\data\shader\DepthMap.txt" />
     <Text Include="..\..\data\shader\HeightMapPS.txt" />
-    <Text Include="..\..\data\shader\MapPS.txt" />
-    <Text Include="..\..\data\shader\MapVS.txt" />
+    <Text Include="..\..\data\shader\MapPS.hlsl" />
+    <Text Include="..\..\data\shader\MapVS.hlsl" />
     <Text Include="..\..\data\shader\ModelPS.txt" />
     <Text Include="..\..\data\shader\ModelVS.txt" />
     <Text Include="..\..\data\shader\PS.txt" />

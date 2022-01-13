@@ -43,7 +43,7 @@ bool myCore::GameInit()
 		g_rtClient.right,
 		g_rtClient.bottom, pBackBuffer.Get());
 
-	m_pSkyBoxObj = myGameObject::CreateComponentObj(new mySkyBox);
+	m_pSkyBoxObj = myGameObject::CreateGameObject(new mySkyBox);
 	m_pSkyBox = m_pSkyBoxObj->GetComponent<mySkyBox>(); 
 	m_pSkyBox->Create(L"SkyBoxVS.txt", L"SkyBoxPS.txt", L"");
 

@@ -23,11 +23,6 @@ public:
 	void RunComputeShader(ID3D11DeviceContext* pContext, 
 		ID3D11ShaderResourceView** ppSRV,
 		int iNumSRV, UINT uX, UINT uY, UINT uZ);
-	//void RunComputeShader(ID3D11DeviceContext* pContext, 
-	//	ID3D11ComputeShader* pCS,
-	//	ID3D11ShaderResourceView** ppSRV,
-	//	ID3D11UnorderedAccessView** ppUAV,
-	//	int iNumSRV, UINT uX, UINT uY, UINT uZ);
 	HRESULT CreateStructuredBuffer(ID3D11Device* pDevice, UINT uElementSize,
 		UINT uCount, void* pInitData);
 	HRESULT CreateBufferSRV(ID3D11Device* pDevice, ID3D11Buffer* pBuffer);

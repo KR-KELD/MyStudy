@@ -44,13 +44,14 @@ static Matrix ConvertMatrixA(const FbxMatrix& matrix)
 class myFbxObj
 {
 public:
+	//fbx로 로드한 오브젝트의 정보를 컨버팅해서 담을 모델
 	shared_ptr<myModelObject>		m_pModelObject;
 
 	FbxManager*						m_pFbxManager;
 	FbxImporter*					m_pFbxImporter;
 	FbxScene*						m_pFbxScene;
 	myAnimScene						m_AnimScene;
-
+	//스켈레톤의
 	unordered_map<string, Matrix>::iterator			 m_dxMatIter;
 	vector<FbxNode*>								 m_pFbxNodeList;
 	unordered_map<FbxNode*, myGameObject*>			 m_pNodeMap;
