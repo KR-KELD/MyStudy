@@ -69,6 +69,7 @@ public:
 	ID3D11ShaderResourceView* m_pSplatTex[4];
 public:
 	vector<myNode*> m_SelectNodeList;
+	myNode*			m_pSelectNode = nullptr;
 	vector<myNode*> m_ControlNodeList;
 public:
 	ToolType		m_eMakingMode;

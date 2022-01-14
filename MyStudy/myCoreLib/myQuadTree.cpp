@@ -36,6 +36,14 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 		fMaxViewDistance / 2,
 		1.0f, 1000.0f);
 
+	m_pQuadTreeLine = new myShapeLine;
+	g_RunGameObject.InsertComponent(m_pQuadTreeLine);
+	m_pQuadTreeLine->Init();
+	if (!m_pQuadTreeLine->Create(L"BasisVS.txt", L"BasisPS.txt", L""))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -388,12 +396,12 @@ void myQuadTree::RepreshBindingObj(myNode * pNode)
 	pNode->m_myBox.fExtent[2] = range.z;
 	pNode->m_myBox.vPos[0] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
 	pNode->m_myBox.vPos[1] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMin.z);
-	pNode->m_myBox.vPos[2] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMin.z);
-	pNode->m_myBox.vPos[3] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMin.z);
+	pNode->m_myBox.vPos[2] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMin.z);
+	pNode->m_myBox.vPos[3] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMin.z);
 	pNode->m_myBox.vPos[4] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
 	pNode->m_myBox.vPos[5] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMax.y, pNode->m_myBox.vMax.z);
-	pNode->m_myBox.vPos[6] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMax.z);
-	pNode->m_myBox.vPos[7] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMax.z);
+	pNode->m_myBox.vPos[6] = Vector3(pNode->m_myBox.vMin.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMax.z);
+	pNode->m_myBox.vPos[7] = Vector3(pNode->m_myBox.vMax.x, pNode->m_myBox.vMin.y, pNode->m_myBox.vMax.z);
 
 }
 
@@ -518,18 +526,47 @@ myNode * myQuadTree::CreateNode(myNode * pParentNode, DWORD LeftTop, DWORD Right
 	newNode->m_myBox.fExtent[2] = range.z;
 	newNode->m_myBox.vPos[0] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMin.z);
 	newNode->m_myBox.vPos[1] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMin.z);
-	newNode->m_myBox.vPos[2] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMin.z);
-	newNode->m_myBox.vPos[3] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMin.z);
+	newNode->m_myBox.vPos[2] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMin.z);
+	newNode->m_myBox.vPos[3] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMin.z);
 	newNode->m_myBox.vPos[4] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMax.z);
 	newNode->m_myBox.vPos[5] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMax.y, newNode->m_myBox.vMax.z);
-	newNode->m_myBox.vPos[6] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
-	newNode->m_myBox.vPos[7] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
+	newNode->m_myBox.vPos[6] = Vector3(newNode->m_myBox.vMin.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
+	newNode->m_myBox.vPos[7] = Vector3(newNode->m_myBox.vMax.x, newNode->m_myBox.vMin.y, newNode->m_myBox.vMax.z);
 
 	newNode->m_pIndexBuffer.Attach(StaticGraphics::CreateIndexBuffer(
 		g_pd3dDevice, &newNode->m_IndexList.at(0),
 		newNode->m_IndexList.size(),
 		sizeof(DWORD)));
 	return newNode;
+}
+
+bool myQuadTree::DrawNodeCollider(ID3D11DeviceContext*	pd3dContext, myNode* pNode)
+{
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[0], pNode->m_myBox.vPos[1], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[2], pNode->m_myBox.vPos[3], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[0], pNode->m_myBox.vPos[2], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[1], pNode->m_myBox.vPos[3], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[4], pNode->m_myBox.vPos[5], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[6], pNode->m_myBox.vPos[7], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[4], pNode->m_myBox.vPos[6], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[5], pNode->m_myBox.vPos[7], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[0], pNode->m_myBox.vPos[4], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[1], pNode->m_myBox.vPos[5], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[2], pNode->m_myBox.vPos[6], Vector4(1,1,1,1));
+	m_pQuadTreeLine->Draw(pd3dContext, pNode->m_myBox.vPos[3], pNode->m_myBox.vPos[7], Vector4(1,1,1,1));
+	return true;
+}
+
+bool myQuadTree::DrawCollider(ID3D11DeviceContext * pd3dContext)
+{
+	m_pQuadTreeLine->m_pTransform->SetMatrix(NULL,
+		&g_pMainCamTransform->m_matView,
+		&g_pMainCamTransform->m_matProj);
+	for (myNode* pNode : m_DrawNodeList)
+	{
+		DrawNodeCollider(pd3dContext, pNode);
+	}
+	return true;
 }
 
 //bool myQuadTree::AddObject(SampleIns * ins)

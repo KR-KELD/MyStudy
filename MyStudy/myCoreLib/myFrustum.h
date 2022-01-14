@@ -13,7 +13,8 @@ public:
 public:
 	virtual bool Create();
 	//프러스텀 갱신
-	virtual bool Frame(Matrix& matInvViewProj);\
+	virtual bool Frame(Matrix& matInvViewProj);
+	virtual bool Render(ID3D11DeviceContext*	pd3dContext);
 	virtual bool Release();
 	//점-프러스텀평면 충돌 판별
 	BOOL	ClassifyPoint(Vector3 v);

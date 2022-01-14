@@ -55,6 +55,9 @@ bool myMouse::PickingFace(myNode * pNode, myMap * pMap)
 		if (myCollision::IntersectSegToFace(m_myRay, v[0], v[1], v[2], &fT, &fU, &fV))
 		{
 			m_vIntersectionPos = m_myRay.vOrigin + m_myRay.vDir * fT;
+			m_vPickingFace[0] = v[0];
+			m_vPickingFace[1] = v[1];
+			m_vPickingFace[2] = v[2];
 			return true;
 		}
 	}

@@ -105,6 +105,7 @@ bool myMapTool::Frame()
 				vPick = m_Mouse.m_vIntersectionPos;
 				fMaxDist = fDist;
 				m_isUpdatePick = true;
+				m_pSelectNode = pNode;
 			}
 		}
 	}
@@ -128,6 +129,26 @@ bool myMapTool::Render(ID3D11DeviceContext*	pd3dContext)
 	//	pImmediateContext->PSSetShaderResources(1, 1, m_NormalTex.m_pSRV.GetAddressOf());
 	//}
 	m_pQuadTree->CullingObject();
+	//바운딩 박스 랜더링
+	//m_pQuadTree->DrawCollider(pd3dContext);
+	//마우스 피킹 랜더링
+	if (m_pSelectNode != nullptr)
+	{
+		m_pQuadTree->m_pQuadTreeLine->Draw(pd3dContext,
+			m_Mouse.m_myRay.vOrigin + m_Mouse.m_myRay.vDir * 5.0f,
+			m_Mouse.m_myRay.vOrigin + m_Mouse.m_myRay.vDir * 100.0f,
+			Vector4(1, 0, 0, 1));
+		m_pQuadTree->m_pQuadTreeLine->Draw(pd3dContext, 
+			m_Mouse.m_vPickingFace[0], m_Mouse.m_vPickingFace[1],
+			Vector4(0, 1, 0, 1));
+		m_pQuadTree->m_pQuadTreeLine->Draw(pd3dContext,
+			m_Mouse.m_vPickingFace[1], m_Mouse.m_vPickingFace[2],
+			Vector4(0, 1, 0, 1));
+		m_pQuadTree->m_pQuadTreeLine->Draw(pd3dContext,
+			m_Mouse.m_vPickingFace[2], m_Mouse.m_vPickingFace[0],
+			Vector4(0, 1, 0, 1));
+		m_pQuadTree->DrawNodeCollider(pd3dContext, m_pSelectNode);
+	}
 
 	pd3dContext->PSSetShaderResources(1, 1, m_SplatCS.m_pSRVCopy.GetAddressOf());
 	pd3dContext->PSSetShaderResources(2, 4, m_pSplatTex);

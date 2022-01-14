@@ -109,6 +109,11 @@ bool myFrustum::Frame(Matrix& matInvViewProj)
 	return true;
 }
 
+bool myFrustum::Render(ID3D11DeviceContext * pd3dContext)
+{
+	return true;
+}
+
 bool myFrustum::Release()
 {
 	m_FrustumObj.Release();

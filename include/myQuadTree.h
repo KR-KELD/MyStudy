@@ -23,13 +23,13 @@ public:
 	vector<myNode*> m_LeafNodeList;
 	//그려줄 노드 리스트
 	vector<myNode*>	m_DrawNodeList;
+	myShapeLine*	m_pQuadTreeLine;
 public:
 	//쿼드트리 생성
 	bool			CreateQuadTree(myMap* pMap);
 	//분할
 	bool			Partition(myNode* pParentNode);
-	//일반 랜더링
-	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
+
 	//뎁스맵을 그려줄 랜더타겟에 뎁스맵을 랜더링
 	virtual bool	DepthRender(ID3D11DeviceContext*	pd3dContext);
 	//오브젝트와 뎁스맵 쉐도우를 랜더링
@@ -48,10 +48,14 @@ public:
 	void			RepreshBindingObj(myNode* pNode);
 	//쿼드트리 노드 생성
 	myNode*			CreateNode(myNode* pParentNode, DWORD LeftTop, DWORD RightTop, DWORD LeftBottom, DWORD RightBottom);
+	bool			DrawNodeCollider(ID3D11DeviceContext*	pd3dContext, myNode* pNode);
+	bool			DrawCollider(ID3D11DeviceContext*	pd3dContext);
 public:
 	virtual bool	Release();
 	virtual bool	PreFrame();
 	virtual bool	Frame();
+	//일반 랜더링
+	virtual bool	Render(ID3D11DeviceContext*	pd3dContext);
 	//bool			AddObject(SampleIns* ins);
 	//bool			RepreshQuadTreeObject();
 public:

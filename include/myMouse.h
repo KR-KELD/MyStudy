@@ -11,6 +11,7 @@ public:
 	MY_RAY		m_myRay;
 	Vector3		m_vIntersectionPos;
 	Vector3		m_vPrevPos;
+	Vector3		m_vPickingFace[3];
 	float		m_fRange;
 public:
 	//스크린상의 마우스 좌표를 레이로 변환해주는 함수
