@@ -589,6 +589,6 @@ myQuadTree::myQuadTree(void)
 myQuadTree::~myQuadTree(void)
 {
 	Release();
-	m_pDepthMap->Release();
+	if (m_pDepthMap) m_pDepthMap->Release();
 	SAFE_DEL(m_pDepthMap);
 }
