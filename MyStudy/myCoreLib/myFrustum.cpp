@@ -37,7 +37,7 @@ BOOL myFrustum::CheckOBBInPlane(MY_BOX*  pBox)
 bool myFrustum::Create()
 {
 	//육면체 프러스텀 오브젝트 생성
-	if (!m_FrustumObj.Create(L"BasisVS.txt", L"BasisPS.txt",L""))
+	if (!m_FrustumObj.Create(L"BasisVS.hlsl", L"BasisPS.hlsl",L""))
 	{
 		return false;
 	}

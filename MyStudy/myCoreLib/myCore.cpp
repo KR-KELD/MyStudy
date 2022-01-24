@@ -45,12 +45,12 @@ bool myCore::GameInit()
 
 	m_pSkyBoxObj = myGameObject::CreateGameObject(new mySkyBox);
 	m_pSkyBox = m_pSkyBoxObj->GetComponent<mySkyBox>(); 
-	m_pSkyBox->Create(L"SkyBoxVS.txt", L"SkyBoxPS.txt", L"");
+	m_pSkyBox->Create(L"SkyBoxVS.hlsl", L"SkyBoxPS.hlsl", L"");
 
 	m_pBasisLine = new myShapeLine;
 	g_RunGameObject.InsertComponent(m_pBasisLine);
 	m_pBasisLine->Init();
-	if (!m_pBasisLine->Create(L"BasisVS.txt", L"BasisPS.txt", L""))
+	if (!m_pBasisLine->Create(L"BasisVS.hlsl", L"BasisPS.hlsl", L""))
 	{
 		return false;
 	}

@@ -94,7 +94,7 @@ bool myFbxObj::ModelInit()
 		}
 	}
 	if (!m_pModelObject->m_pGraphics->
-		Create(L"modelvs.txt", L"modelps.txt", L""))
+		Create(L"modelvs.hlsl", L"modelps.hlsl", L""))
 	{
 		return false;
 	}

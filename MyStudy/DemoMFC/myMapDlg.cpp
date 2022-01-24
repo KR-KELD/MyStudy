@@ -90,8 +90,8 @@ void myMapDlg::OnBnClickedOk()
 		desc.fCellDistance = iCellSize;
 		desc.fScaleHeight = 10.0f;
 		desc.szTexFile = L"../../data/main.png";
-		desc.szVS = L"../../data/shader/BasisVS.txt";
-		desc.szPS = L"../../data/shader/BasisPS.txt";
+		desc.szVS = L"../../data/shader/BasisVS.hlsl";
+		desc.szPS = L"../../data/shader/BasisPS.hlsl";
 		pApp->m_Sample.m_pMap->CreateMap(desc);
 		pApp->m_Sample.m_pMap->m_isRender = false;
 

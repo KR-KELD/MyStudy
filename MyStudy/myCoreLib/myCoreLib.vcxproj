@@ -313,19 +313,19 @@ copy "*.h" "..\\..\\include"</Command>
     <None Include="SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\data\shader\BasisPS.txt" />
-    <Text Include="..\..\data\shader\BasisVS.txt" />
-    <Text Include="..\..\data\shader\DepthMap.txt" />
-    <Text Include="..\..\data\shader\HeightMapPS.txt" />
+    <Text Include="..\..\data\shader\BasisPS.hlsl" />
+    <Text Include="..\..\data\shader\BasisVS.hlsl" />
+    <Text Include="..\..\data\shader\DepthMap.hlsl" />
+    <Text Include="..\..\data\shader\HeightMapPS.hlsl" />
     <Text Include="..\..\data\shader\MapPS.hlsl" />
     <Text Include="..\..\data\shader\MapVS.hlsl" />
-    <Text Include="..\..\data\shader\ModelPS.txt" />
-    <Text Include="..\..\data\shader\ModelVS.txt" />
-    <Text Include="..\..\data\shader\PS.txt" />
-    <Text Include="..\..\data\shader\SkyBoxPS.txt" />
-    <Text Include="..\..\data\shader\SkyBoxVS.txt" />
-    <Text Include="..\..\data\shader\SplatCS.txt" />
-    <Text Include="..\..\data\shader\VS.txt" />
+    <Text Include="..\..\data\shader\ModelPS.hlsl" />
+    <Text Include="..\..\data\shader\ModelVS.hlsl" />
+    <Text Include="..\..\data\shader\PS.hlsl" />
+    <Text Include="..\..\data\shader\SkyBoxPS.hlsl" />
+    <Text Include="..\..\data\shader\SkyBoxVS.hlsl" />
+    <Text Include="..\..\data\shader\SplatCS.hlsl" />
+    <Text Include="..\..\data\shader\VS.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

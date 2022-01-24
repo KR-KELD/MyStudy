@@ -39,7 +39,7 @@ bool myQuadTree::CreateQuadTree(myMap* pMap)
 	m_pQuadTreeLine = new myShapeLine;
 	g_RunGameObject.InsertComponent(m_pQuadTreeLine);
 	m_pQuadTreeLine->Init();
-	if (!m_pQuadTreeLine->Create(L"BasisVS.txt", L"BasisPS.txt", L""))
+	if (!m_pQuadTreeLine->Create(L"BasisVS.hlsl", L"BasisPS.hlsl", L""))
 	{
 		return false;
 	}

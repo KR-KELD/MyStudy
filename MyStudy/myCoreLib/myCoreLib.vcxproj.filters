@@ -429,43 +429,43 @@
     <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\data\shader\VS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\BasisPS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\BasisVS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\ModelPS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\ModelVS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\PS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\SkyBoxPS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\SkyBoxVS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\SplatCS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\HeightMapPS.txt">
-      <Filter>Shader</Filter>
-    </Text>
-    <Text Include="..\..\data\shader\DepthMap.txt">
-      <Filter>Shader</Filter>
-    </Text>
     <Text Include="..\..\data\shader\MapPS.hlsl">
       <Filter>Shader</Filter>
     </Text>
     <Text Include="..\..\data\shader\MapVS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\BasisPS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\BasisVS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\DepthMap.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\HeightMapPS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\ModelPS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\ModelVS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\PS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\SkyBoxPS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\SkyBoxVS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\SplatCS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="..\..\data\shader\VS.hlsl">
       <Filter>Shader</Filter>
     </Text>
   </ItemGroup>

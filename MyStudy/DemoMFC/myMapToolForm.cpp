@@ -354,7 +354,7 @@ void myMapToolForm::OnBnClickedSave()
 
 		wstrTemp = wstrFilePath;
 		wstrTemp += wstrFileName;
-		wstrTemp += L".txt";
+		wstrTemp += L".hlsl";
 		file.Open(wstrTemp.c_str(), CFile::modeCreate | CFile::modeWrite, NULL);
 		for (int i = 0; i < vecDesc.size(); i++)
 		{
@@ -372,8 +372,8 @@ void myMapToolForm::OnBnClickedLoad()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CString strSaveFile = L"";
 	static TCHAR BASED_CODE szFilter[] =
-		_T("텍스트 파일(*.txt)|*.txt|모든파일(*.*)|*.*|");
-	CFileDialog dlg(TRUE, _T("(*.txt)"),NULL , 
+		_T("텍스트 파일(*.hlsl)|*.hlsl|모든파일(*.*)|*.*|");
+	CFileDialog dlg(TRUE, _T("(*.hlsl)"),NULL , 
 		OFN_FILEMUSTEXIST |
 		OFN_PATHMUSTEXIST | 
 		OFN_HIDEREADONLY
@@ -417,8 +417,8 @@ void myMapToolForm::OnBnClickedLoad()
 			desc.fScaleHeight = 1.0f;
 			if (m_strTexName.IsEmpty()) m_strTexName = L"main.png";
 			desc.szTexFile = vecDesc[4];
-			desc.szVS = L"MapVS.txt";
-			desc.szPS = L"MapPS.txt";
+			desc.szVS = L"MapVS.hlsl";
+			desc.szPS = L"MapPS.hlsl";
 
 			pApp->m_Sample.m_pMapTool = new myMapTool(pApp->m_Sample.m_pMap,
 				&pApp->m_Sample.m_QuadTree);

@@ -179,7 +179,7 @@ void myMapTool::CreateTex(int iTexSize)
 	m_SplatCS.CreateBufferSRV(g_pd3dDevice, m_SplatCS.m_pStBuff.Get());
 
 	m_SplatCS.CreateTextureUAV(g_pd3dDevice,NULL, iTexSize, iTexSize);
-	m_SplatCS.CreateComputeShader(g_pd3dDevice, L"SplatCS.txt", "CS");
+	m_SplatCS.CreateComputeShader(g_pd3dDevice, L"SplatCS.hlsl", "CS");
 
 	m_NormalTex.Create(iTexSize);
 	m_HeightTex.Create(iTexSize);

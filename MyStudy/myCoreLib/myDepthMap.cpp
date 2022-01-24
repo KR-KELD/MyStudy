@@ -7,8 +7,8 @@ bool myDepthMap::Init()
 	m_matShadowTex._11 = 0.5f; m_matShadowTex._22 = -0.5f;
 	m_matShadowTex._41 = 0.5f; m_matShadowTex._42 = 0.5f;
 	CreateShadowCB();
-	//CreateDepthVS(L"../../data/shader/DepthMap.txt");
-	//CreateDepthPS(L"../../data/shader/DepthMap.txt");
+	//CreateDepthVS(L"../../data/shader/DepthMap.hlsl");
+	//CreateDepthPS(L"../../data/shader/DepthMap.hlsl");
 	//CreateInputLayout();
 	return true;
 }

@@ -10,7 +10,7 @@ bool Sample::Init()
 	m_pMiniMap = new myMiniMap;
 	g_ObjMgr.CreateObjComponent(L"MiniMap", m_pMiniMap, OBJECT_SUB);
 	m_pMiniMap->SetInfo(Vector3(-0.75f, 0.75f, 0.0f), 0.25f);
-	m_pMiniMap->Create(L"BasisVS.txt", L"BasisPS.txt", L"");
+	m_pMiniMap->Create(L"BasisVS.hlsl", L"BasisPS.hlsl", L"");
 
 	m_pTopCamera = new myCamera;
 	g_CamMgr.CreateCameraObj(L"TopCamera", m_pTopCamera);
